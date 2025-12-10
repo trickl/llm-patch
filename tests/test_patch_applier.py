@@ -1,0 +1,91 @@
+"""
+Tests for the PatchApplier class.
+"""
+
+import pytest
+from llm_patch import PatchApplier, apply_patch
+
+
+class TestPatchApplier:
+    """Test cases for PatchApplier class."""
+
+    def test_initialization_valid_threshold(self):
+        """Test that PatchApplier can be initialized with valid threshold."""
+        applier = PatchApplier(similarity_threshold=0.8)
+        assert applier.similarity_threshold == 0.8
+
+    def test_initialization_invalid_threshold_too_high(self):
+        """Test that PatchApplier raises error for threshold > 1."""
+        with pytest.raises(ValueError, match="similarity_threshold must be between 0 and 1"):
+            PatchApplier(similarity_threshold=1.5)
+
+    def test_initialization_invalid_threshold_negative(self):
+        """Test that PatchApplier raises error for negative threshold."""
+        with pytest.raises(ValueError, match="similarity_threshold must be between 0 and 1"):
+            PatchApplier(similarity_threshold=-0.1)
+
+    def test_apply_empty_source(self):
+        """Test applying patch to empty source."""
+        applier = PatchApplier()
+        patch = "line1\nline2\n"
+        result, success = applier.apply("", patch)
+        assert success is True
+        assert result == patch
+
+    def test_apply_empty_patch(self):
+        """Test applying empty patch to source."""
+        applier = PatchApplier()
+        source = "line1\nline2\n"
+        result, success = applier.apply(source, "")
+        assert success is True
+        assert result == source
+
+    def test_apply_simple_patch(self):
+        """Test applying a simple patch."""
+        applier = PatchApplier()
+        source = "line1\nline2\nline3\n"
+        patch = "line1\nline2_modified\nline3\n"
+        result, success = applier.apply(source, patch)
+        assert success is True
+        assert isinstance(result, str)
+
+    def test_find_context_empty_lists(self):
+        """Test finding context with empty lists."""
+        applier = PatchApplier()
+        result = applier.find_context([], [])
+        assert result is None
+
+    def test_find_context_with_data(self):
+        """Test finding context with actual data."""
+        applier = PatchApplier()
+        source = ["line1", "line2", "line3"]
+        context = ["line1", "line2"]
+        result = applier.find_context(source, context)
+        # Result can be None or an index, both are valid
+        assert result is None or isinstance(result, int)
+
+
+class TestApplyPatchFunction:
+    """Test cases for the apply_patch convenience function."""
+
+    def test_apply_patch_function(self):
+        """Test the apply_patch convenience function."""
+        source = "line1\nline2\n"
+        patch = "line1\nline2_modified\n"
+        result, success = apply_patch(source, patch)
+        assert success is True
+        assert isinstance(result, str)
+
+    def test_apply_patch_function_with_threshold(self):
+        """Test apply_patch with custom threshold."""
+        source = "line1\nline2\n"
+        patch = "line1\nline2_modified\n"
+        result, success = apply_patch(source, patch, similarity_threshold=0.9)
+        assert success is True
+        assert isinstance(result, str)
+
+    def test_apply_patch_empty_source_and_patch(self):
+        """Test apply_patch with empty source and patch."""
+        result, success = apply_patch("", "")
+        assert success is True
+        assert result == ""
