@@ -47,8 +47,13 @@ class PatchApplier:
         # Parse the patch
         source_lines = source.splitlines()
 
-        # For now, implement a simple line-by-line application
-        # This is a basic implementation that can be enhanced
+        # TODO: Implement full patch application logic using unified diff format
+        # For now, this is a minimal implementation that provides the framework
+        # for future enhancements including:
+        # - Parsing unified diff format (@@, -, +, context lines)
+        # - Using fuzzy_matcher to find best location for patch hunks
+        # - Applying additions, deletions, and modifications
+        # - Handling conflicts and edge cases
         result_lines = source_lines.copy()
         success = True
 
