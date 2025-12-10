@@ -1,0 +1,2 @@
+# Main dependencies for llm-patch
+# Currently, the package has no external runtime dependencies
