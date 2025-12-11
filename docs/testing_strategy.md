@@ -200,6 +200,6 @@ Key behaviours:
 - Results land under each case directory inside `results/<model_slug>__<algorithm>.json`.
 - Summaries print to stdout (attempts/applied/success per algorithm).
 - Use `--limit-per-language` for smoke tests and `--overwrite` to recompute existing verdicts.
-- Add `--markdown-report <path>` to emit a README-ready table that breaks down applied %, fixed %, and compound success % for every `problem_id × language` suite per algorithm, along with the git commit hash used for that evaluation.
+- Add `--markdown-report <path>` to emit a README-ready HTML table (complete with grouped columns per algorithm and a red→green heatmap) that breaks down applied %, fixed %, and compound success % for every `problem_id × language` suite, along with the git commit hash used for that evaluation.
 
 These artifacts satisfy steps 4–7 of the broad testing strategy: patch attempts, recompilation, validation, and scoring for every algorithm under evaluation.
