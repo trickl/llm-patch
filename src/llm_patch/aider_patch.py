@@ -43,7 +43,9 @@ def _perfect_replace(
     return None
 
 
-def _match_but_for_leading_whitespace(whole_lines: Sequence[str], part_lines: Sequence[str]) -> str | None:
+def _match_but_for_leading_whitespace(
+    whole_lines: Sequence[str], part_lines: Sequence[str]
+) -> str | None:
     count = len(whole_lines)
     if count != len(part_lines):
         return None
@@ -71,7 +73,9 @@ def _replace_part_with_missing_leading_whitespace(
             replace_lines = [p[offset:] if p.strip() else p for p in replace_lines]
     part_len = len(part_lines)
     for idx in range(len(whole_lines) - part_len + 1):
-        add_leading = _match_but_for_leading_whitespace(whole_lines[idx : idx + part_len], part_lines)
+        add_leading = _match_but_for_leading_whitespace(
+            whole_lines[idx : idx + part_len], part_lines
+        )
         if add_leading is None:
             continue
         adjusted_replace = [add_leading + line if line.strip() else line for line in replace_lines]
