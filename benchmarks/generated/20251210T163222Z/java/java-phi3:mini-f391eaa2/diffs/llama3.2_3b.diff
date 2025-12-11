@@ -1,0 +1,7 @@
+--- before.java
++++ after.java
+@@ -23,7 +23,7 @@
+     TokenStream tokenizer = new TokenStream(expression);
+-    ParseTree parseTree = parser.parse(tokenizer);
++    ParseTree parseTree = parser.parse(tokenizer); // Add 'parser' to the class name
+     return evaluator.evaluate(parseTree);

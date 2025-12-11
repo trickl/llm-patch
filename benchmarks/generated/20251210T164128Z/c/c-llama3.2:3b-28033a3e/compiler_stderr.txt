@@ -1,0 +1,80 @@
+In file included from expression_evaluator.c:1:
+expression_evaluator.c:14:5: error: expected identifier before ‘(’ token
+   14 |     EOF
+      |     ^~~
+expression_evaluator.c: In function ‘lexer’:
+expression_evaluator.c:32:34: error: implicit declaration of function ‘get_token_type’ [-Wimplicit-function-declaration]
+   32 |             tokens[index].type = get_token_type(token);
+      |                                  ^~~~~~~~~~~~~~
+expression_evaluator.c: In function ‘parser’:
+expression_evaluator.c:55:41: error: incompatible type for argument 1 of ‘strlen’
+   55 |     for (int i = 0; i < strlen(tokens[0].value); i++) {
+      |                                ~~~~~~~~~^~~~~~
+      |                                         |
+      |                                         double
+In file included from expression_evaluator.c:3:
+/usr/include/string.h:407:35: note: expected ‘const char *’ but argument is of type ‘double’
+  407 | extern size_t strlen (const char *__s)
+      |                       ~~~~~~~~~~~~^~~
+expression_evaluator.c:70:16: warning: dereferencing ‘void *’ pointer
+   70 |             ast[index] = parser(tokens + index + 1);
+      |                ^
+expression_evaluator.c:70:24: error: invalid use of void expression
+   70 |             ast[index] = parser(tokens + index + 1);
+      |                        ^
+expression_evaluator.c:77:16: warning: dereferencing ‘void *’ pointer
+   77 |             ast[index] = NULL; // Leaf node
+      |                ^
+expression_evaluator.c:77:24: error: invalid use of void expression
+   77 |             ast[index] = NULL; // Leaf node
+      |                        ^
+expression_evaluator.c: In function ‘evaluator’:
+expression_evaluator.c:89:20: warning: comparison between pointer and integer
+   89 |     } else if (ast == LPAREN) {
+      |                    ^~
+expression_evaluator.c:93:20: warning: comparison between pointer and integer
+   93 |     } else if (ast == PLUS || ast == MINUS ||
+      |                    ^~
+expression_evaluator.c:93:35: warning: comparison between pointer and integer
+   93 |     } else if (ast == PLUS || ast == MINUS ||
+      |                                   ^~
+expression_evaluator.c:94:20: warning: comparison between pointer and integer
+   94 |                ast == MUL || ast == DIV) {
+      |                    ^~
+expression_evaluator.c:94:34: warning: comparison between pointer and integer
+   94 |                ast == MUL || ast == DIV) {
+      |                                  ^~
+expression_evaluator.c: In function ‘main’:
+expression_evaluator.c:115:46: error: excess elements in ‘char[]’ initializer
+  115 |     char expressions[] = {"3 + 4 * (2 - 1)", "2 * 3 + 4", "2 * (3 + 4)", "8 / 2 * (2 + 2)"};
+      |                                              ^~~~~~~~~~~
+expression_evaluator.c:115:46: note: (near initialization for ‘expressions’)
+expression_evaluator.c:115:59: error: excess elements in ‘char[]’ initializer
+  115 |     char expressions[] = {"3 + 4 * (2 - 1)", "2 * 3 + 4", "2 * (3 + 4)", "8 / 2 * (2 + 2)"};
+      |                                                           ^~~~~~~~~~~~~
+expression_evaluator.c:115:59: note: (near initialization for ‘expressions’)
+expression_evaluator.c:115:74: error: excess elements in ‘char[]’ initializer
+  115 |     char expressions[] = {"3 + 4 * (2 - 1)", "2 * 3 + 4", "2 * (3 + 4)", "8 / 2 * (2 + 2)"};
+      |                                                                          ^~~~~~~~~~~~~~~~~
+expression_evaluator.c:115:74: note: (near initialization for ‘expressions’)
+expression_evaluator.c:116:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘long unsigned int’ [-Wsign-compare]
+  116 |     for (int i = 0; i < sizeof(expressions) / strlen(expressions); i++) {
+      |                       ^
+expression_evaluator.c:117:42: error: passing argument 1 of ‘lexer’ makes pointer from integer without a cast [-Wint-conversion]
+  117 |         Token* tokens = lexer(expressions[i]);
+      |                               ~~~~~~~~~~~^~~
+      |                                          |
+      |                                          char
+expression_evaluator.c:24:20: note: expected ‘char *’ but argument is of type ‘char’
+   24 | Token* lexer(char* expression) {
+      |              ~~~~~~^~~~~~~~~~
+expression_evaluator.c:120:18: warning: format ‘%s’ expects argument of type ‘char *’, but argument 2 has type ‘int’ [-Wformat=]
+  120 |         printf("%s => %f\n", expressions[i], result);
+      |                 ~^           ~~~~~~~~~~~~~~
+      |                  |                      |
+      |                  char *                 int
+      |                 %d
+expression_evaluator.c: In function ‘evaluator’:
+expression_evaluator.c:112:1: warning: control reaches end of non-void function [-Wreturn-type]
+  112 | }
+      | ^

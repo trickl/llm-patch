@@ -1,0 +1,6 @@
+--- before.c
++++ after.c
+@@ -1 +1 @@
+-**Constraints:
++**Constraints:
+ You areas, can youtics/business and

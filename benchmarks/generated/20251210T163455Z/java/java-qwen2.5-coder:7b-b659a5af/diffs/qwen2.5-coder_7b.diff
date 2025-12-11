@@ -1,0 +1,17 @@
+--- before.java	2023-04-10 12:34:56.000000000 +0800
++++ after.java	2023-04-10 12:35:00.000000000 +0800
+@@ -72,7 +72,7 @@
+             if (token.type == TokenType.OPERATOR && (token.value.equals('+') || token.value.equals('-'))) {
+                                                                 ^
+-                if (token.value == '+') {
++                if (token.value.equals('+')) {
+                                 ^
+@@ -91,7 +91,7 @@
+             if (token.type == TokenType.OPERATOR && (token.value.equals('*') || token.value.equals('/'))) {
+                                                                 ^
+-                if (token.value == '*') {
++                if (token.value.equals('*')) {
+                                 ^
+@@ -119,7 +119,7 @@
+         } else if (token.type == TokenType.OPERATOR && token.value.equals('-')) {
+                                                                   ^

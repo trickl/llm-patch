@@ -1,0 +1,20 @@
+--- before.ts
++++ before.ts
+@@ -1,4 +1,6 @@
+ // expression_evaluator.ts
+
++import * as process from 'process';
+ import { evaluateExpression } from './expression_evaluator';
+
+ function tokenize(input: string): string[] {
+     return input.match(/[\d\+\-\*\/\(\)\s]/g)?.filter(Boolean) || [];
+@@ -85,7 +87,7 @@ function applyOp(values: number[], ops: string[]): void {
+         }
+     }
+ }
+
+-// CLI example
++if (require.main === module) {
+     const input = process.argv[2];
+     if (!input) {
+         console.log("Usage: node expression_evaluator.ts <expression>");

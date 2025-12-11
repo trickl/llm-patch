@@ -1,0 +1,19 @@
+{
+  "case_id": "c-llama3.2:3b-54ee56fe",
+  "language": "c",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "diff-match-patch",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "patch_applied": true,
+  "patch_diagnostics": "statuses=[True]",
+  "compile_returncode": 1,
+  "errors_before": 6,
+  "errors_after": 26,
+  "first_error_removed": false,
+  "added_lines": 8,
+  "removed_lines": 7,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": ""
+}

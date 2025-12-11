@@ -1,0 +1,7 @@
+ExpressionEvaluator.java:125: error: method evaluate(String) is already defined in class ExpressionEvaluator
+    public int evaluate(String expression) {
+               ^
+ExpressionEvaluator.java:90: error: selector type double is not allowed
+                    switch (token.value) {
+                           ^
+2 errors

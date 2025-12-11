@@ -1,0 +1,6 @@
+--- before.java
++++ after.java
+@@ -80,7 +80,7 @@
+     private final List<Token> tokens;
+-    ^
++    private final List<Token> tokens = new ArrayList<>();

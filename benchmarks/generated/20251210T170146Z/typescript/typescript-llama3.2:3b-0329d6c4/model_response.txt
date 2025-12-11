@@ -1,0 +1,163 @@
+```typescript
+// expression_evaluator.ts
+
+interface Token {
+  type: 'NUMBER' | 'PLUS' | 'MINUS' | 'MUL' | 'DIV' | 'LPAREN' | 'RPAREN';
+  value: number | string;
+}
+
+class ExpressionEvaluator {
+  private tokens: Token[];
+
+  constructor(input: string) {
+    this.tokens = this.tokenize(input);
+  }
+
+  private tokenize(input: string): Token[] {
+    const output: Token[] = [];
+    let currentNumber = '';
+    for (const char of input) {
+      if (char.match(/[0-9]/)) {
+        currentNumber += char;
+      } else {
+        if (currentNumber !== '') {
+          output.push({ type: 'NUMBER', value: parseInt(currentNumber, 10) });
+          currentNumber = '';
+        }
+        switch (char) {
+          case '+':
+            output.push({ type: 'PLUS', value: '+' });
+            break;
+          case '-':
+            output.push({ type: 'MINUS', value: '-' });
+            break;
+          case '*':
+            output.push({ type: 'MUL', value: '*' });
+            break;
+          case '/':
+            output.push({ type: 'DIV', value: '/' });
+            break;
+          case '(':
+            output.push({ type: 'LPAREN', value: '(' });
+            break;
+          case ')':
+            output.push({ type: 'RPAREN', value: ')' });
+            break;
+        }
+      }
+    }
+    if (currentNumber !== '') {
+      output.push({ type: 'NUMBER', value: parseInt(currentNumber, 10) });
+    }
+    return output;
+  }
+
+  private parse(tokens: Token[]): number[] {
+    const output: number[] = [];
+    let currentTokenIndex = 0;
+
+    while (currentTokenIndex < tokens.length) {
+      if (tokens[currentTokenIndex].type === 'LPAREN') {
+        const depth = 1;
+        const tempOutput: number[] = [];
+
+        while (depth > 0 && currentTokenIndex < tokens.length) {
+          switch (tokens[currentTokenIndex].type) {
+            case 'RPAREN':
+              depth--;
+              break;
+            case 'NUMBER':
+              tempOutput.push(tokens[currentTokenIndex].value);
+              break;
+            default:
+              if (tempOutput[tempOutput.length - 1] === undefined) {
+                throw new Error('Malformed expression');
+              }
+              const operand = tempOutput.pop() as number;
+              switch (tokens[currentTokenIndex].type) {
+                case 'PLUS':
+                  output.push(operand + tokens[currentTokenIndex].value);
+                  break;
+                case 'MINUS':
+                  output.push(-operand + tokens[currentTokenIndex].value);
+                  break;
+                case 'MUL':
+                  output.push(operand * tokens[currentTokenIndex].value);
+                  break;
+                case 'DIV':
+                  output.push(operand / tokens[currentTokenIndex].value);
+                  break;
+              }
+          }
+          currentTokenIndex++;
+        }
+
+        if (tempOutput.length > 0) {
+          throw new Error('Malformed expression');
+        }
+      } else {
+        switch (tokens[currentTokenIndex].type) {
+          case 'NUMBER':
+            output.push(tokens[currentTokenIndex].value);
+            break;
+          default:
+            if (output[output.length - 1] === undefined) {
+              throw new Error('Malformed expression');
+            }
+            const operand = output.pop() as number;
+            switch (tokens[currentTokenIndex].type) {
+              case 'PLUS':
+                output.push(operand + tokens[currentTokenIndex].value);
+                break;
+              case 'MINUS':
+                output.push(-operand + tokens[currentTokenIndex].value);
+                break;
+              case 'MUL':
+                output.push(operand * tokens[currentTokenIndex].value);
+                break;
+              case 'DIV':
+                output.push(operand / tokens[currentTokenIndex].value);
+                break;
+            }
+        }
+      }
+
+      currentTokenIndex++;
+    }
+
+    return output;
+  }
+
+  private evaluate(output: number[]): number {
+    if (output.length === 1) {
+      return output[0];
+    } else {
+      throw new Error('Malformed expression');
+    }
+  }
+
+  public evaluateExpression(input: string): number {
+    const tokens = this.tokenize(input);
+    try {
+      const parsedOutput = this.parse(tokens);
+      return this.evaluate(parsedOutput);
+    } catch (error) {
+      console.error(error.message);
+      return NaN;
+    }
+  }
+}
+
+// CLI example
+const evaluator = new ExpressionEvaluator('1 + 2');
+console.log(evaluator.evaluateExpression()); // Output: 3
+
+const evaluator2 = new ExpressionEvaluator('2 * 3 + 4');
+console.log(evaluator2.evaluateExpression()); // Output: 10
+
+const evaluator3 = new ExpressionEvaluator('2 * (3 + 4)');
+console.log(evaluator3.evaluateExpression()); // Output: 14
+
+const evaluator4 = new ExpressionEvaluator('8 / 2 * (2 + 2)');
+console.log(evaluator4.evaluateExpression()); // Output: 16
+```

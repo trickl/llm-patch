@@ -1,0 +1,2 @@
+expression_evaluator.ts(99,27): error TS2367: This comparison appears to be unintentional because the types 'number' and 'string' have no overlap.
+expression_evaluator.ts(116,29): error TS18046: 'error' is of type 'unknown'.

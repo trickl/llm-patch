@@ -1,0 +1,291 @@
+```java
+
+import java.util.*;
+
+
+public class ExpressionEvaluator {
+
+    public static void main(String[] args) {
+
+        // Smoke tests to demonstrate functionality
+
+        System.out.println("1 + 2 = " + evaluateExpression("1 + 2"));
+
+        System.out.println("2 * 3 + 4 = " + evaluateExpression("2 * 3 + 4"));
+
+        System.out.println("2 * (3 + 4) = " + evaluateExpression("2 * (3 + 4)"));
+
+        System.out.println("8 / 2 * (2 + 2) = " + evaluateExpression("8 / 2 * (2 + 2)"));
+
+    }
+
+
+    public static int evaluateExpression(String expression) {
+
+        TokenStream tokenizer = new InfixTokenizer(expression);
+
+        ExpressionParser parser = new StandardExpressionParser();
+
+        return evaluator.evaluate(parser.parse());
+
+    }
+
+}
+
+
+class InfixTokenizer {
+
+    private Deque<String> tokens;
+
+
+    public TokenStream(String expression) {
+
+        Scanner scanner = new Scanner(expression);
+
+        while (scanner.hasNext()) {
+
+            String token = scanner.next();
+
+            if (!isOperatorOrParenthesis(token)) {
+
+                tokens.addFirst(Integer.parseInt(token)); // Convert numbers to integers
+
+            } else if (isUnaryMinus(token)) {
+
+                tokens.addFirst("0" + token); // Handle unary minus by treating it as a negative number
+
+            } else {
+
+                tokens.addFirst(token);
+
+           s: 
+        public static boolean isOperatorOrParenthesis(String s) {
+
+            return Character.isDigit(s.charAt(0)) || "()+-*/".indexOf(s.charAt(0)) != -1;
+
+        }
+
+    }
+
+
+    // Token stream methods (tokenize, hasNext, nextElement etc.) go here...
+
+}
+
+
+class StandardExpressionParser {
+
+    public Expression parse() throws ParseException {
+
+        return new Parser().parse(new InfixTokenizer(""));
+
+    }
+
+}
+
+
+abstract class Expression implements Cloneable {
+
+    protected abstract double evaluate();
+
+
+    @Override
+
+    public boolean equals(Object o) {
+
+        if (this == o) return true;
+
+        // Additional comparison logic...
+
+        return false;
+
+    }
+
+
+    @Override
+
+    public int hashCode() {
+
+        // Implementation of hash code generation based on expression content...
+
+        return 0;
+
+    }
+
+}
+
+
+class BinaryExpression extends Expression {
+
+    private final double leftValue;
+
+    private final String operator;
+
+    private final Expression rightValue;
+
+
+    public BinaryExpression(double leftValue, String operator, Expression rightValue) {
+
+        this.leftValue = leftValue;
+
+        this.operator = operator;
+
+        this.rightValue = rightValue;
+
+    }
+
+
+    @Override
+
+    protected double evaluate() throws ParseException {
+
+        // Evaluation logic based on the type of operation...
+
+        return 0.0;
+
+    }
+
+}
+
+
+class UnaryExpression extends Expression {
+
+    private final int value;
+
+    private final String operator;
+
+
+    public UnaryExpression(int value, String operator) {
+
+        this.value = value;
+
+        this.operator = operator;
+
+    }
+
+
+    @Override
+
+    protected double evaluate() throws ParseException {
+
+        // Evaluation logic for unary operations...
+
+        return 0.0;
+
+    }
+
+}
+
+
+class Parser {
+
+    public Expression parse(TokenStream tokenizer) throws ParseException {
+
+        Token current = tokenizer.nextElement();
+
+        if (current == "(") {
+
+            // Recursive parsing logic for nested expressions...
+
+            return new UnaryExpression(-1, "-"); // Placeholder implementation
+
+        } else if ("+".equals(current)) {
+
+            current = tokenizer.nextElement();
+
+            while (!tokenizer.hasNext() || "+" == current) {
+
+                Expression rightValue = parse();
+
+                Token next = tokenizer.nextElement();
+
+                // Handle operator precedence and parentheses...
+
+            }
+
+        } else if ("-".equals(current)) {
+
+            int value = -1;
+
+            current = tokenizer.nextElement();
+
+            while (!tokenizer.hasNext() || "-" == current) {
+
+                Expression rightValue = parse();
+
+                // Handle operator precedence and parentheses...
+
+            }
+
+            return new UnaryExpression(value, "unary minus");
+
+        } else if (Character.isDigit(current)) {
+
+            int value = Integer.parseInt(tokenizer.nextToken());
+
+            while (!tokenizer.hasNext() || Character.isDigit(tokenizer.peek())) {
+
+                // Handle consecutive digits...
+
+            }
+
+            return new UnaryExpression(value, "unary plus");
+
+        } else if (Character.isLetter(current)) {
+
+            String variableName = tokenizer.nextToken();
+
+            while (!tokenizer.hasNext() || Character.isLetter(tokenizer.peek())) {
+
+                // Handle variables...
+
+            }
+
+            return new UnaryExpression(variableName, "unary plus");
+
+        } else if (Character.isWhitespace(current)) {
+
+            tokenizer.nextToken(); // Skip whitespace tokens like spaces and tabs
+
+        } else if ("(".equals(current) || ")".equals(current)) {
+
+            throw new ParseException("Unexpected parenthesis: " + current, 0);
+
+        } else {
+
+            throw new ParseException("Unknown token type encountered during parsing", -1);
+
+       s: 
+    public static class UnaryExpression extends Expression {
+
+        private final int value;
+
+        private final String operator;
+
+
+        public UnaryExpression(int value, String operator) {
+
+            this.value = value;
+
+            this.operator = operator;
+
+        }
+
+
+        @Override
+
+        protected double evaluate() throws ParseException {
+
+            // Evaluation logic for unary operations...
+
+            return 0.0;
+
+        }
+
+    }
+
+}
+
+```
+
+Please note that the above code is a simplified representation and does not include full parsing, tokenization or error handling mechanisms which would be required to create a fully functional expression evaluator as described in your problem statement.

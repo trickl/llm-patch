@@ -1,0 +1,4 @@
+expression_evaluator.ts(65,45): error TS2366: Function lacks ending return statement and return type does not include 'undefined'.
+expression_evaluator.ts(77,33): error TS2366: Function lacks ending return statement and return type does not include 'undefined'.
+expression_evaluator.ts(104,32): error TS2366: Function lacks ending return statement and return type does not include 'undefined'.
+expression_evaluator.ts(154,13): error TS2365: Operator '+=' cannot be applied to types 'number' and 'string | number'.

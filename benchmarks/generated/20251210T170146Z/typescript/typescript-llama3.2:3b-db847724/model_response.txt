@@ -1,0 +1,251 @@
+```typescript
+// Token types
+enum TokenType {
+    Number,
+    Plus,
+    Minus,
+    Multiply,
+    Divide,
+    LeftParenthesis,
+    RightParenthesis,
+}
+
+// Token class
+class Token {
+    type: TokenType;
+    value: string | number;
+
+    constructor(type: TokenType, value: string | number) {
+        this.type = type;
+        this.value = value;
+    }
+}
+
+// Lexer class
+class Lexer {
+    private input: string;
+    private pos: number;
+    private currentChar: string | null;
+
+    constructor(input: string) {
+        this.input = input;
+        this.pos = 0;
+        this.currentChar = null;
+    }
+
+    private advance(): void {
+        if (this.currentChar === null) {
+            this.currentChar = this.input[this.pos];
+            this.pos++;
+        }
+    }
+
+    private skipWhitespace(): void {
+        while (this.currentChar !== null && /\s/.test(this.currentChar)) {
+            this.advance();
+        }
+    }
+
+    private integer(): number {
+        let result = '';
+        while (this.currentChar !== null && /\d/.test(this.currentChar)) {
+            result += this.currentChar;
+            this.advance();
+        }
+        return parseInt(result, 10);
+    }
+
+    private get precedence(operator: string): number {
+        if (operator === '+' || operator === '-') {
+            return 1;
+        } else if (operator === '*' || operator === '/') {
+            return 2;
+        } else {
+            throw new Error(`Unknown operator: ${operator}`);
+        }
+    }
+
+    public nextToken(): Token {
+        while (this.currentChar !== null && /\s/.test(this.currentChar)) {
+            this.advance();
+        }
+
+        if (this.currentChar === null) {
+            return new Token(TokenType.Empty, '');
+        }
+
+        let type = TokenType.Number;
+        let value = '';
+
+        switch (this.currentChar) {
+            case '+':
+                type = TokenType.Plus;
+                break;
+            case '-':
+                type = TokenType.Minus;
+                break;
+            case '*':
+                type = TokenType.Multiply;
+                break;
+            case '/':
+                type = TokenType.Divide;
+                break;
+            case '(':
+                type = TokenType.LeftParenthesis;
+                break;
+            case ')':
+                type = TokenType.RightParenthesis;
+                break;
+        }
+
+        if (type === TokenType.Number) {
+            value = this.integer();
+        } else {
+            while (this.currentChar !== null && !/\s/.test(this.currentChar)) {
+                value += this.currentChar;
+                this.advance();
+            }
+        }
+
+        return new Token(type, value);
+    }
+}
+
+// Parser class
+class Parser {
+    private lexer: Lexer;
+    private pos: number;
+
+    constructor(lexer: Lexer) {
+        this.lexer = lexer;
+        this.pos = 0;
+    }
+
+    public parse(): Token[] {
+        const tokens = [];
+        while (this.lexer.currentChar !== null) {
+            const token = this.lexer.nextToken();
+            if (token.type === TokenType.Empty) {
+                continue;
+            }
+            tokens.push(token);
+        }
+        return tokens;
+    }
+
+    private factor(): Token {
+        const token = this.lexer.nextToken();
+        if (token.type === TokenType.Number) {
+            return token;
+        } else if (token.type === TokenType.LeftParenthesis) {
+            const expr = this.expr();
+            if (this.lexer.currentChar !== null && this.lexer.currentChar !== ')') {
+                throw new Error('Expected right parenthesis');
+            }
+            return new Token(TokenType.Empty, '');
+        } else {
+            throw new Error(`Unexpected token: ${token.type}`);
+        }
+    }
+
+    private term(): Token {
+        const token = this.factor();
+        while (this.lexer.currentChar !== null && this.lexer.pos < this.lexer.tokens.length) {
+            if (this.lexer.tokens[this.lexer.pos].type === TokenType.Multiply || this.lexer.tokens[this.lexer.pos].type === TokenType.Divide) {
+                this.lexer.pos++;
+                const operator = this.lexer.tokens[this.lexer.pos].value;
+                const rightOperand = this.term();
+                tokens.push(new Token(TokenType.Empty, `(${operator}${rightOperand.value})`));
+            } else {
+                break;
+            }
+        }
+        return token;
+    }
+
+    private expr(): Token[] {
+        const leftOperand = this.term();
+        while (this.lexer.currentChar !== null && this.lexer.pos < this.lexer.tokens.length) {
+            if (this.lexer.tokens[this.lexer.pos].type === TokenType.Plus || this.lexer.tokens[this.lexer.pos].type === TokenType.Minus) {
+                this.lexer.pos++;
+                const operator = this.lexer.tokens[this.lexer.pos].value;
+                const rightOperand = this.expr();
+                tokens.push(new Token(TokenType.Empty, `(${operator}${rightOperand.value})`));
+            } else {
+                break;
+            }
+        }
+        return [leftOperand];
+    }
+
+    public parseExpression(): Token[] {
+        return this.expr();
+    }
+}
+
+// Evaluator class
+class Evaluator {
+    private pos: number;
+
+    constructor() {
+        this.pos = 0;
+    }
+
+    public evaluate(tokens: Token[]): number {
+        const stack: number[] = [];
+        for (const token of tokens) {
+            if (token.type === TokenType.Number) {
+                stack.push(parseInt(token.value, 10));
+            } else if (token.type === TokenType.Plus || token.type === TokenType.Minus) {
+                const operand2 = stack.pop();
+                const operand1 = stack.pop();
+                let result: number;
+                if (token.type === TokenType.Plus) {
+                    result = operand1 + operand2;
+                } else {
+                    result = operand1 - operand2;
+                }
+                stack.push(result);
+            } else if (token.type === TokenType.Multiply || token.type === TokenType.Divide) {
+                const operand2 = stack.pop();
+                const operand1 = stack.pop();
+                let result: number;
+                if (token.type === TokenType.Multiply) {
+                    result = operand1 * operand2;
+                } else {
+                    result = Math.floor(operand1 / operand2);
+                }
+                stack.push(result);
+            } else if (token.type === TokenType.LeftParenthesis) {
+                this.pos++;
+            } else if (token.type === TokenType.RightParenthesis) {
+                while (this.pos < tokens.length && tokens[this.pos].type !== TokenType.LeftParenthesis) {
+                    const operand = stack.pop();
+                    let result: number;
+                    if (tokens[this.pos].value === '+') {
+                        result = operand + parseInt(tokens[++this.pos].value, 10);
+                    } else if (tokens[this.pos].value === '-') {
+                        result = operand - parseInt(tokens[++this.pos].value, 10);
+                    }
+                    stack.push(result);
+                }
+                this.pos++;
+            } else {
+                throw new Error(`Unexpected token: ${token.type}`);
+            }
+        }
+        return stack[0];
+    }
+}
+
+// Main function
+function evaluateExpression(input: string): number {
+    const lexer = new Lexer(input);
+    const parser = new Parser(lexer);
+    const tokens = parser.parseExpression();
+    const evaluator = new Evaluator();
+    return evaluator.evaluate(tokens);
+}
+
+export default evaluateExpression;
+```

@@ -1,0 +1,22 @@
+--- before.ts
++++ after.ts
+@@(63,30)-(63,31)
+-const output = [];
++let outputQueue: number[] | undefined = [];
+
+@@(77,30)-(77,31)
+-let currentToken = '';
++let currentToken: string | undefined = '';
+
+@@(89,26)-(89,27)
+-while (
++while (
+  operatorStack.length &&
+  this.precedence[operatorStack[operatorStack.length - 1]] >=
+    this.precedence[token]
++) {
+    const op = operatorStack.pop();
+    const rightOperand = outputQueue?.pop();
+    const leftOperand = outputQueue?.pop();
+
+    this.applyOperator(op, leftOperand, rightOperand);

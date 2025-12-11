@@ -1,0 +1,5 @@
+--- before.py
++++ before.py
+@@ -1,1 +1 @@
+-I's most recent news article
++"I's most recent news article"

@@ -1,0 +1,43 @@
+expression_evaluator.c: In function ‘lexer’:
+expression_evaluator.c:30:13: error: implicit declaration of function ‘isdigit’ [-Wimplicit-function-declaration]
+   30 |         if (isdigit(expression[i])) {
+      |             ^~~~~~~
+expression_evaluator.c:4:1: note: include ‘<ctype.h>’ or provide a declaration of ‘isdigit’
+    3 | #include <string.h>
+  +++ |+#include <ctype.h>
+    4 | 
+expression_evaluator.c:36:36: warning: assignment discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+   36 |             tokens[i - start].text = expression + start;
+      |                                    ^
+expression_evaluator.c: In function ‘parser’:
+expression_evaluator.c:111:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+  111 |     for (int i = 0; i < strlen(tokens[0].text); ++i) {
+      |                       ^
+expression_evaluator.c:129:20: error: ‘Token’ has no member named ‘children’
+  129 |                 ast->children = malloc(2 * sizeof(Token*));
+      |                    ^~
+expression_evaluator.c:130:20: error: ‘Token’ has no member named ‘children’
+  130 |                 ast->children[0] = left;
+      |                    ^~
+expression_evaluator.c:131:20: error: ‘Token’ has no member named ‘children’
+  131 |                 ast->children[1] = NULL;
+      |                    ^~
+expression_evaluator.c: In function ‘evaluate’:
+expression_evaluator.c:148:35: error: ‘Token’ has no member named ‘children’
+  148 |         double left = evaluate(ast->children[0]);
+      |                                   ^~
+expression_evaluator.c:149:36: error: ‘Token’ has no member named ‘children’
+  149 |         double right = evaluate(ast->children[1]);
+      |                                    ^~
+expression_evaluator.c:156:35: error: ‘Token’ has no member named ‘children’
+  156 |         double left = evaluate(ast->children[0]);
+      |                                   ^~
+expression_evaluator.c:157:36: error: ‘Token’ has no member named ‘children’
+  157 |         double right = evaluate(ast->children[1]);
+      |                                    ^~
+expression_evaluator.c:164:36: error: ‘Token’ has no member named ‘children’
+  164 |         double value = evaluate(ast->children[0]);
+      |                                    ^~
+expression_evaluator.c:167:26: error: ‘Token’ has no member named ‘children’
+  167 |         Token* left = ast->children[0];
+      |                          ^~

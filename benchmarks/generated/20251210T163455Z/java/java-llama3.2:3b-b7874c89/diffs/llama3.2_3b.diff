@@ -1,0 +1,12 @@
+--- before.java
++++ after.java
+@@ -60,7 +60,7 @@
+             while (start  tokens.get(0).type.equals("NUMBER") ? tokens.get(0).value : '0') {
+-            if (tokens.get(0).type.equals("NUMBER")) {
++            if (tokens.get(0).type.equals("NUMBER")) {
+                 return tokens.get(0).value * 10 + (tokens.get(0).value % 10);
+             } else {
+-                throw new RuntimeException("Unexpected character: " + tokens.get(0).value);
++                throw new RuntimeException("Unexpected token type: " + tokens.get(0).type);
+             }
+         }

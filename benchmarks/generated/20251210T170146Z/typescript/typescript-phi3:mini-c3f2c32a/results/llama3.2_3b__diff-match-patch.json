@@ -1,0 +1,19 @@
+{
+  "case_id": "typescript-phi3:mini-c3f2c32a",
+  "language": "typescript",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "diff-match-patch",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "patch_applied": false,
+  "patch_diagnostics": "Diff does not contain any hunks",
+  "compile_returncode": null,
+  "errors_before": 24,
+  "errors_after": null,
+  "first_error_removed": false,
+  "added_lines": 1,
+  "removed_lines": 1,
+  "hunks": 0,
+  "delete_only": false,
+  "success": false,
+  "notes": ""
+}

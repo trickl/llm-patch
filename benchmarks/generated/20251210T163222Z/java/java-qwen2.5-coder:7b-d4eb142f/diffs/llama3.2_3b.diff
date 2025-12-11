@@ -1,0 +1,14 @@
+--- before.java
++++ after.java
+@@ -34,7 +34,7 @@
+         } else if (token.type == TokenType.LPAREN) {
+             pos++;
+-            int result = expression();
++            int result = parseExpression();
+             if (pos  tokens.size() && tokens.get(pos).type == TokenType.RPAREN) {
+                 pos++;
+-                return result;
++                return parseExpression();
+             } else {
+                 throw new IllegalArgumentException("Expected ')'");
+             }

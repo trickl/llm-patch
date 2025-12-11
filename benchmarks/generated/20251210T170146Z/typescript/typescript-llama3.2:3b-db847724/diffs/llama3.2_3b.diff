@@ -1,0 +1,13 @@
+--- before.ts
++++ after.ts
+@@ -197,7 +197,8 @@
+   const operand2 = stack.pop();
+   const operand1 = stack.pop();
+   let result: number;
+   if (token.type === TokenType.Plus) {
+-    result = operand1 + operand2;
++    result = operand1 + parseInt(operand2, 10);
+   } else {
+     result = operand1 - operand2;
+   }
+   stack.push(result);

@@ -1,0 +1,4 @@
+  File "expression_evaluator.py", line 7
+    To provide mealbeitteacher a)eUser
+                                ^
+SyntaxError: unmatched ')'

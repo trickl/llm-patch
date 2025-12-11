@@ -1,0 +1,13 @@
+expression_evaluator.ts(27,23): error TS2322: Type 'string' is not assignable to type '"NUMBER" | "PLUS" | "MINUS" | "MUL" | "DIV" | "LPAREN" | "RPAREN"'.
+expression_evaluator.ts(70,38): error TS2367: This comparison appears to be unintentional because the types 'number' and 'string' have no overlap.
+expression_evaluator.ts(73,31): error TS2345: Argument of type 'number[]' is not assignable to parameter of type 'Token[]'.
+  Type 'number' is not assignable to type 'Token'.
+expression_evaluator.ts(76,26): error TS2367: This comparison appears to be unintentional because the types 'number' and 'string' have no overlap.
+expression_evaluator.ts(79,32): error TS2345: Argument of type 'number[]' is not assignable to parameter of type 'Token[]'.
+  Type 'number' is not assignable to type 'Token'.
+expression_evaluator.ts(86,50): error TS2345: Argument of type 'Token' is not assignable to parameter of type 'number'.
+expression_evaluator.ts(87,31): error TS2345: Argument of type 'number[]' is not assignable to parameter of type 'Token[]'.
+  Type 'number' is not assignable to type 'Token'.
+expression_evaluator.ts(88,32): error TS2345: Argument of type 'number[]' is not assignable to parameter of type 'Token[]'.
+  Type 'number' is not assignable to type 'Token'.
+expression_evaluator.ts(129,19): error TS18046: 'error' is of type 'unknown'.

@@ -1,0 +1,26 @@
+--- before.c
++++ before.c
+@@ -3,6 +3,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+
++#include <ctype.h>  // Added to include ctype functions
+
+ // Token types
+ typedef enum {
+     NUMBER,
+@@ -149,7 +150,7 @@ int main() {
+     const char* expressions[] = {"3 + 4 * (2 - 1)", "1 + 2", "2 * 3 + 4", "2 * (3 + 4)", "8 / 2 * (2 + 2)"};
+     for (const char* expression : expressions) {  // Fixed the range-based for loop syntax
+         Token* tokens = lexer(expression);
+         if (!tokens) {
+             printf("Error: Malformed expression '%s'\n", expression);
+             return 1;
+         }
+         Token* parsed_expression = parser(tokens);
+         double result = evaluator(parsed_expression);
+         free(tokens);
+         printf("%s => %f\n", expression, result);
+     }
+     return 0;
+ }

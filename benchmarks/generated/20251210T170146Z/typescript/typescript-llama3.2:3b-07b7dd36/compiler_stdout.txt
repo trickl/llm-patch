@@ -1,0 +1,10 @@
+expression_evaluator.ts(20,36): error TS2304: Cannot find name 'Token'.
+expression_evaluator.ts(21,19): error TS2304: Cannot find name 'Token'.
+expression_evaluator.ts(40,25): error TS2304: Cannot find name 'Token'.
+expression_evaluator.ts(40,35): error TS2304: Cannot find name 'ParseTree'.
+expression_evaluator.ts(83,15): error TS7022: 'rightOperand' implicitly has type 'any' because it does not have a type annotation and is referenced directly or indirectly in its own initializer.
+expression_evaluator.ts(84,15): error TS7022: 'leftOperand' implicitly has type 'any' because it does not have a type annotation and is referenced directly or indirectly in its own initializer.
+expression_evaluator.ts(90,15): error TS7022: 'rightOperand' implicitly has type 'any' because it does not have a type annotation and is referenced directly or indirectly in its own initializer.
+expression_evaluator.ts(91,15): error TS7022: 'leftOperand' implicitly has type 'any' because it does not have a type annotation and is referenced directly or indirectly in its own initializer.
+expression_evaluator.ts(94,15): error TS7022: 'rightOperand' implicitly has type 'any' because it does not have a type annotation and is referenced directly or indirectly in its own initializer.
+expression_evaluator.ts(95,15): error TS7022: 'leftOperand' implicitly has type 'any' because it does not have a type annotation and is referenced directly or indirectly in its own initializer.

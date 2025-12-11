@@ -1,0 +1,258 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Token types
+typedef enum {
+    NUMBER,
+    PLUS,
+    MINUS,
+    MUL,
+    DIV,
+    LPAREN,
+    RPAREN,
+    EOF
+} TokenType;
+
+// Token structure
+typedef struct {
+    TokenType type;
+    double value;
+    char* str;
+} Token;
+
+// Lexer function to tokenize the input string
+Token* lexer(const char* expression) {
+    int len = strlen(expression);
+    Token* tokens = malloc(len * sizeof(Token));
+    int tokenIndex = 0;
+    char currentChar = '\0';
+
+    for (int i = 0; i < len; i++) {
+        if (isspace(currentChar)) {
+            // Skip whitespace
+            continue;
+        }
+
+        if (isdigit(currentChar) || currentChar == '.') {
+            // Parse number token
+            int start = i;
+            while (i < len && (isdigit(currentChar) || currentChar == '.')) {
+                i++;
+                currentChar = expression[i];
+            }
+            tokens[tokenIndex].type = NUMBER;
+            tokens[tokenIndex].value = atof(expression + start);
+            tokens[tokenIndex].str = malloc(strlen(expression + start) + 1);
+            strcpy(tokens[tokenIndex].str, expression + start);
+            tokenIndex++;
+
+        } else if (currentChar == '+') {
+            // Parse '+' operator
+            int start = i;
+            while (i < len && currentChar != ' ') {
+                i++;
+                currentChar = expression[i];
+            }
+            tokens[tokenIndex].type = PLUS;
+            tokens[tokenIndex].value = 1.0;
+            tokens[tokenIndex].str = malloc(strlen(expression + start) + 2);
+            strcpy(tokens[tokenIndex].str, "+");
+            tokenIndex++;
+
+        } else if (currentChar == '-') {
+            // Parse '-' operator
+            int start = i;
+            while (i < len && currentChar != ' ') {
+                i++;
+                currentChar = expression[i];
+            }
+            tokens[tokenIndex].type = MINUS;
+            tokens[tokenIndex].value = -1.0;
+            tokens[tokenIndex].str = malloc(strlen(expression + start) + 2);
+            strcpy(tokens[tokenIndex].str, "-");
+            tokenIndex++;
+
+        } else if (currentChar == '*') {
+            // Parse '*' operator
+            int start = i;
+            while (i < len && currentChar != ' ') {
+                i++;
+                currentChar = expression[i];
+            }
+            tokens[tokenIndex].type = MUL;
+            tokens[tokenIndex].value = 1.0;
+            tokens[tokenIndex].str = malloc(strlen(expression + start) + 2);
+            strcpy(tokens[tokenIndex].str, "*");
+            tokenIndex++;
+
+        } else if (currentChar == '/') {
+            // Parse '/' operator
+            int start = i;
+            while (i < len && currentChar != ' ') {
+                i++;
+                currentChar = expression[i];
+            }
+            tokens[tokenIndex].type = DIV;
+            tokens[tokenIndex].value = 1.0;
+            tokens[tokenIndex].str = malloc(strlen(expression + start) + 2);
+            strcpy(tokens[tokenIndex].str, "/");
+            tokenIndex++;
+
+        } else if (currentChar == '(') {
+            // Parse '(' operator
+            int start = i;
+            while (i < len && currentChar != ')') {
+                i++;
+                currentChar = expression[i];
+            }
+            tokens[tokenIndex].type = LPAREN;
+            tokens[tokenIndex].value = 0.0;
+            tokens[tokenIndex].str = malloc(strlen(expression + start) + 2);
+            strcpy(tokens[tokenIndex].str, "(");
+            tokenIndex++;
+
+        } else if (currentChar == ')') {
+            // Parse ')' operator
+            int start = i;
+            while (i < len && currentChar != ' ') {
+                i++;
+                currentChar = expression[i];
+            }
+            tokens[tokenIndex].type = RPAREN;
+            tokens[tokenIndex].value = 0.0;
+            tokens[tokenIndex].str = malloc(strlen(expression + start) + 2);
+            strcpy(tokens[tokenIndex].str, ")");
+            tokenIndex++;
+
+        } else {
+            // Error: unknown character
+            printf("Error: unknown character '%c'\n", currentChar);
+            exit(1);
+        }
+    }
+
+    tokens[tokenIndex].type = EOF;
+    return tokens;
+}
+
+// Parser function to parse the tokens into an abstract syntax tree (AST)
+Token* parser(Token* tokens) {
+    Token* ast = NULL;
+
+    while (tokens[0].type != EOF) {
+        if (tokens[0].type == LPAREN) {
+            // Parse expression inside parentheses
+            Token* expr = parser(tokens + 1);
+            if (expr->type == EOF) {
+                printf("Error: unbalanced parentheses\n");
+                exit(1);
+            }
+            ast = malloc(sizeof(Token));
+            ast->type = NUMBER;
+            ast->value = expr->value;
+            ast->str = malloc(strlen(expr->str) + 2);
+            strcpy(ast->str, "(");
+        } else if (tokens[0].type == RPAREN) {
+            // Parse expression inside parentheses
+            Token* expr = parser(tokens - 1);
+            if (expr->type == EOF) {
+                printf("Error: unbalanced parentheses\n");
+                exit(1);
+            }
+            free(expr->str);
+            free(expr);
+            ast = malloc(sizeof(Token));
+            ast->type = NUMBER;
+            ast->value = expr->value;
+            ast->str = malloc(strlen(expr->str) + 2);
+            strcpy(ast->str, ")");
+        } else if (tokens[0].type == MINUS) {
+            // Parse unary minus
+            Token* num = parser(tokens + 1);
+            free(num->str);
+            free(num);
+            ast = malloc(sizeof(Token));
+            ast->type = NUMBER;
+            ast->value = -num->value;
+            ast->str = malloc(strlen(num->str) + 2);
+            strcpy(ast->str, "-");
+        } else if (tokens[0].type == PLUS || tokens[0].type == MUL || tokens[0].type == DIV) {
+            // Parse binary expression
+            Token* left = parser(tokens + 1);
+            free(left->str);
+            free(left);
+
+            Token* right = parser(tokens + 1);
+            free(right->str);
+            free(right);
+
+            ast = malloc(sizeof(Token));
+            ast->type = NUMBER;
+            if (tokens[0].type == PLUS) {
+                ast->value = left->value + right->value;
+                strcpy(ast->str, "+");
+            } else if (tokens[0].type == MUL) {
+                ast->value = left->value * right->value;
+                strcpy(ast->str, "*");
+            } else if (tokens[0].type == DIV) {
+                ast->value = left->value / right->value;
+                strcpy(ast->str, "/");
+            }
+
+            free(left->str);
+            free(right->str);
+
+        }
+        tokens++;
+    }
+
+    return ast;
+}
+
+// Evaluator function to evaluate the abstract syntax tree (AST)
+double evaluator(Token* ast) {
+    if (ast->type == NUMBER) {
+        return ast->value;
+    } else if (ast->type == PLUS || ast->type == MINUS) {
+        double left = evaluator(ast + 1);
+        double right = evaluator(ast + 2);
+        if (ast->type == PLUS) {
+            return left + right;
+        } else {
+            return left - right;
+        }
+    } else if (ast->type == MUL || ast->type == DIV) {
+        double left = evaluator(ast + 1);
+        double right = evaluator(ast + 2);
+        if (ast->type == MUL) {
+            return left * right;
+        } else {
+            return left / right;
+        }
+    }
+
+    // Error: unknown token
+    printf("Error: unknown token '%c'\n", ast->str[0]);
+    exit(1);
+
+}
+
+int main() {
+    const char* expressions[] = {"3 + 4 * (2 - 1)", "1 + 2", "2 * 3 + 4", "2 * (3 + 4)", "8 / 2 * (2 + 2)"};
+    int numExpressions = sizeof(expressions) / sizeof(expressions[0]);
+
+    for (int i = 0; i < numExpressions; i++) {
+        Token* tokens = lexer(expressions[i]);
+        Token* ast = parser(tokens);
+        double result = evaluator(ast);
+
+        printf("%s = %f\n", expressions[i], result);
+
+        free(tokens->str);
+        free(ast->str);
+        free(ast);
+    }
+
+    return 0;
+}

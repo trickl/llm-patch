@@ -1,0 +1,40 @@
+--- expression_evaluator.ts
++++ expression_evaluator.ts
+@@ -75,26 +75,27 @@
+   } else if (token.type === 'MUL' || token.type === 'DIV') {
+     while (
+       operatorStack.length > 0 &&
+-         this.precedence[operatorStack[operatorStack.length - 1]] >=
++         this.precedence[operatorStack[operatorStack.length - 1]] > 
+           this.precedence[token.type]
+     ) {
+       const op = operatorStack.pop() as string;
+       const rightOperand = outputQueue.pop();
+       const leftOperand = outputQueue.pop();
+
+-       let result: number;
++       let result: number | null;
+         switch (op) {
+           case '+':
+             result = leftOperand + rightOperand;
+             break;
+           case '-':
+             result = leftOperand - rightOperand;
+             break;
+-           case '*':
+-             result = leftOperand * rightOperand;
+-             break;
+-           case '/':
+-             result = leftOperand / rightOperand;
+-             break;
++           default:
++             result = null;
++             break;
+         }
+
+-       outputQueue.push(result);
++       if (result !== null) {
++         outputQueue.push(result);
++       }
+     }
+     operatorStack.push(token.type);

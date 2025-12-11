@@ -1,0 +1,19 @@
+{
+  "case_id": "typescript-phi3:mini-26256c93",
+  "language": "typescript",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "aider",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "patch_applied": false,
+  "patch_diagnostics": "aider matcher could not locate context",
+  "compile_returncode": null,
+  "errors_before": 15,
+  "errors_after": null,
+  "first_error_removed": false,
+  "added_lines": 2,
+  "removed_lines": 2,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": ""
+}

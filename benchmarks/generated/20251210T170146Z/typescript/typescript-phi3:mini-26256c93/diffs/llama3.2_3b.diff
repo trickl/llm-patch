@@ -1,0 +1,11 @@
+--- before.ts
++++ patched_before.ts
+@@ -1,5 +1,6 @@
+-Your task, I'de
++Your task, I'd be
+ #.
+-
+ Documentation to answer. You areas a)
++You will beats theorically-"
+ 
+  ```

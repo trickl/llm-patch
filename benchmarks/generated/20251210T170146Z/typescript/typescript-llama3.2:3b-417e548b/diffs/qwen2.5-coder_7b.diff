@@ -1,0 +1,38 @@
+--- before.ts
++++ before.ts
+@@ -62,7 +62,7 @@ class ExpressionEvaluator {
+     return outputQueue[0];
+   }
+ 
+-  private applyOperator(operand1: number, operand2: number, operator: string): number {
++  private applyOperator(operand1: number | undefined, operand2: number | undefined, operator: string): number {
+     switch (operator) {
+       case '+':
+         return operand1! + operand2!;
+@@ -80,7 +80,7 @@ class ExpressionEvaluator {
+     return outputQueue[0];
+   }
+ 
+-  private applyOperator(operand1: number, operand2: number, operator: string): number {
++  private applyOperator(operand1: number | undefined, operand2: number | undefined, operator: string): number {
+     switch (operator) {
+       case '+':
+         return operand1! + operand2!;
+@@ -94,7 +94,7 @@ class ExpressionEvaluator {
+     return outputQueue[0];
+   }
+ 
+-  private applyOperator(operand1: number, operand2: number, operator: string): number {
++  private applyOperator(operand1: number | undefined, operand2: number | undefined, operator: string): number {
+     switch (operator) {
+       case '+':
+         return operand1! + operand2!;
+@@ -138,7 +138,7 @@ export function evaluateExpression(input: string): number {
+   try {
+     return evaluator.evaluateExpression(input);
+   } catch (error) {
+-    console.error(error.message);
++    console.error((error as Error).message);
+     return NaN;
+   }
+ }

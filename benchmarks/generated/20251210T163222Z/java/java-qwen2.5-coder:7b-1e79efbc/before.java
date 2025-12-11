@@ -1,0 +1,105 @@
+import java.util.*;
+
+public class ExpressionEvaluator {
+    public static void main(String[] args) {
+        System.out.println(evaluate("3 + 4 * (2 - 1)")); // Expected: 7
+        System.out.println(evaluate("2 * 3 + 4")); // Expected: 10
+        System.out.println(evaluate("2 * (3 + 4)")); // Expected: 14
+        System.out.println(evaluate("8 / 2 * (2 + 2)")); // Expected: 16
+    }
+
+    public static int evaluate(String expression) {
+        return new Evaluator().evaluate(expression);
+    }
+
+    private static class Tokenizer {
+        private final String input;
+        private int pos = 0;
+
+        public Tokenizer(String input) {
+            this.input = input;
+        }
+
+        public List<String> tokenize() {
+            List<String> tokens = new ArrayList<>();
+            while (pos < input.length()) {
+                char c = input.charAt(pos);
+                if (Character.isDigit(c)) {
+                    int numStart = pos;
+                    while (pos < input.length() && Character.isDigit(input.charAt(pos))) {
+                        pos++;
+                    }
+                    tokens.add(input.substring(numStart, pos));
+                } else if (c == '+' || c == '-' || c == '*' || c == '/' || c == '(' || c == ')') {
+                    tokens.add(String.valueOf(c));
+                    pos++;
+                } else if (Character.isWhitespace(c)) {
+                    pos++;
+                } else {
+                    throw new IllegalArgumentException("Unexpected character: " + c);
+                }
+            }
+            return tokens;
+        }
+    }
+
+    private static class Evaluator {
+        private final List<String> tokens;
+        private int pos = 0;
+
+        public Evaluator() {
+            this.tokens = new Tokenizer("").tokenize();
+        }
+
+        public Evaluator(List<String> tokens) {
+            this.tokens = tokens;
+        }
+
+        public int evaluate(String expression) {
+            this.tokens = new Tokenizer(expression).tokenize();
+            return parseExpression();
+        }
+
+        private int parseExpression() {
+            return parseTerm();
+        }
+
+        private int parseTerm() {
+            int result = parseFactor();
+            while (pos < tokens.size()) {
+                String op = tokens.get(pos);
+                if (op.equals("+") || op.equals("-")) {
+                    pos++;
+                    int nextValue = parseFactor();
+                    if (op.equals("+")) {
+                        result += nextValue;
+                    } else {
+                        result -= nextValue;
+                    }
+                } else {
+                    break;
+                }
+            }
+            return result;
+        }
+
+        private int parseFactor() {
+            String token = tokens.get(pos);
+            pos++;
+            if (token.equals("(")) {
+                int value = parseExpression();
+                if (!tokens.get(pos).equals(")")) {
+                    throw new IllegalArgumentException("Expected ')'");
+                }
+                pos++;
+                return value;
+            } else if (token.equals("-") && (pos == 1 || tokens.get(pos - 2).matches("[\\(+-]"))) {
+                return -parseFactor();
+            } else if (token.matches("\\d+")) {
+                return Integer.parseInt(token);
+            } else {
+                throw new IllegalArgumentException("Unexpected token: " + token);
+            }
+        }
+    }
+}

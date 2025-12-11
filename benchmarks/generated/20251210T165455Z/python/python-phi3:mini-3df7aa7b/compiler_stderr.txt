@@ -1,0 +1,4 @@
+  File "expression_evaluator.py", line 13
+    You are you'in a) theta 
+               ^
+SyntaxError: unterminated string literal (detected at line 13)

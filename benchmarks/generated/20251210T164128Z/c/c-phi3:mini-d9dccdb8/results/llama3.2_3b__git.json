@@ -1,0 +1,19 @@
+{
+  "case_id": "c-phi3:mini-d9dccdb8",
+  "language": "c",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "git",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "patch_applied": false,
+  "patch_diagnostics": "error: corrupt patch at line 7",
+  "compile_returncode": null,
+  "errors_before": 4,
+  "errors_after": null,
+  "first_error_removed": false,
+  "added_lines": 6,
+  "removed_lines": 4,
+  "hunks": 4,
+  "delete_only": false,
+  "success": false,
+  "notes": ""
+}

@@ -1,0 +1,89 @@
+--- before.ts
++++ before.ts
+@@ -47,10 +47,10 @@ class Evaluator {
+     }
+   }
+
+-  parse(tokens: Token[]): number[] {
++  parse(tokens: Token[]): number {
+     const outputQueue: number[] = [];
+     const operatorStack: string[] = [];
+
+@@ -53,10 +53,10 @@ class Evaluator {
+       if (token.type === 'NUMBER') {
+         outputQueue.push(token.value);
+       } else if (token.type === 'LPAREN') {
+-        operatorStack.push(token.type);
++        operatorStack.push('LPAREN');
+       } else if (token.type === 'RPAREN') {
+         while (operatorStack[operatorStack.length - 1] !== 'LPAREN') {
+           const op = operatorStack.pop() as string;
+@@ -65,10 +65,10 @@ class Evaluator {
+       } else if (token.type === 'PLUS' || token.type === 'MINUS') {
+         while (
+           operatorStack.length > 0 &&
+-          this.precedence[operatorStack[operatorStack.length - 1]] >=
++          this.precedence[operatorStack[operatorStack.length - 1]] >
+             this.precedence[token.type]
+         ) {
+           const op = operatorStack.pop() as string;
+@@ -75,10 +75,10 @@ class Evaluator {
+       } else if (token.type === 'MUL' || token.type === 'DIV') {
+         while (
+           operatorStack.length > 0 &&
+-          this.precedence[operatorStack[operatorStack.length - 1]] >=
++          this.precedence[operatorStack[operatorStack.length - 1]] >
+             this.precedence[token.type]
+         ) {
+           const op = operatorStack.pop() as string;
+@@ -87,10 +87,10 @@ class Evaluator {
+       } else if (token.type === '-') {
+         while (
+           operatorStack.length > 0 &&
+-          this.precedence[operatorStack[operatorStack.length - 1]] >=
++          this.precedence[operatorStack[operatorStack.length - 1]] >
+             this.precedence['MINUS']
+         ) {
+           const op = operatorStack.pop() as string;
+@@ -96,10 +96,10 @@ class Evaluator {
+     while (operatorStack.length > 0) {
+       const op = operatorStack.pop() as string;
+       const rightOperand = outputQueue.pop();
+-      const leftOperand = outputQueue.pop();
+
++      let leftOperand: number | undefined = outputQueue.pop();
+       let result: number;
+       switch (op) {
+         case '+':
+@@ -106,10 +106,10 @@ class Evaluator {
+           break;
+         case '-':
+-          result = leftOperand - rightOperand;
++          result = leftOperand ? leftOperand - rightOperand : 0;
+           break;
+         case '*':
+-          result = leftOperand * rightOperand;
++          result = leftOperand ? leftOperand * rightOperand : 0;
+           break;
+         case '/':
+-          result = leftOperand / rightOperand;
++          result = leftOperand ? leftOperand / rightOperand : 0;
+           break;
+       }
+
+@@ -123,10 +123,10 @@ class Evaluator {
+     return outputQueue[0];
+   }
+ }
+
+-function evaluateExpression(input: string): number {
++export function evaluateExpression(input: string): number {
+   const evaluator = new Evaluator();
+   evaluator.tokenize(input);
+
+   try {
+     return evaluator.parse(evaluator.tokens);
+   } catch (error) {
+     throw new Error('Invalid expression');
+   }
+ }

@@ -1,0 +1,64 @@
+--- before.java	2023-04-10 12:34:56.000000000 +0800
++++ after.java	2023-04-10 12:35:07.000000000 +0800
+@@ -35,7 +35,7 @@
+                             yield(expression.substring(pos, endPos));
+                             pos = endPos;
+                             break;
+-                        }
++                    }
+                     ++pos;
+                 }
+             }
+@@ -43,7 +43,7 @@
+                             yield(expression.substring(pos, endPos));
+                             pos = endPos;
+                             break;
+-                        }
++                    }
+                     ++pos;
+                 }
+             }
+@@ -51,7 +51,7 @@
+                             yield(expression.substring(pos, endPos));
+                             pos = endPos;
+                             break;
+-                        }
++                    }
+                     ++pos;
+                 }
+             }
+@@ -82,7 +82,7 @@
+                         Token token = tokenizer.iterator().next();
+                         if (token.matches("number")) {
+                             pos++;
+-                            continue;
++                            return true;
+                         }
+                         if (token.matches("(")) {
+                             pos++;
+-                            continue;
++                            return true;
+                         }
+                         yield(token);
+@@ -142,7 +142,7 @@
+                     Parser subParser = new Parser(tokenizer);
+                     Token resultToken = subParser.next();
+                     if (!resultToken.matches("+") && !resultToken.matches("-")) {
+-                        throw new RuntimeException("Expected a number or an operator after '('");
++                        return false;
+                     }
+                     int operand2 = stack.pop();
+                     int operand1 = stack.pop();
+@@ -149,7 +149,7 @@
+                     switch (resultToken.value()) {
+                         case "+":
+                             stack.push(operand1 + operand2);
+-                            break;
++                            return true;
+                         case "-":
+                             stack.push(operand1 - operand2);
+-                            break;
++                            return true;
+                     }
+                 } else if (token.matches("-")) {
+                     stack.push(-stack.pop());

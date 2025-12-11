@@ -1,0 +1,25 @@
+--- before.c
++++ before.c
+@@ -60,7 +60,7 @@ int evaluate_expression() {
+     int result = evaluate_term();
+     while (tokens[token_index].type == TOKEN_PLUS || tokens[token_index].type == TOKEN_MINUS) {
+         TokenType operator = tokens[token_index++].type;
+-        if (operator == TOKEN_PLUS) {
++        if (operator == TOKEN_PLUS) { // Add a semicolon here
+             result += evaluate_term();
+         } else {
+             result -= evaluate_term();
+@@ -73,7 +73,7 @@ int evaluate_term() {
+     int result = evaluate_factor();
+     while (tokens[token_index].type == TOKEN_MULTIPLY || tokens[token_index].type == TOKEN_DIVIDE) {
+         TokenType operator = tokens[token_index++].type;
+-        if (operator == TOKEN_MULTIPLY) {
++        if (operator == TOKEN_MULTIPLY) { // Add a semicolon here
+             result *= evaluate_factor();
+         } else {
+             int divisor = evaluate_factor();
+@@ -105,6 +105,7 @@ int evaluate_factor() {
+     }
+     return result;
+ }
++

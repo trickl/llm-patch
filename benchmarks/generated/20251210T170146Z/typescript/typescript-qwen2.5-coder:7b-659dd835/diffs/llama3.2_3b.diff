@@ -1,0 +1,17 @@
+--- before.ts
++++ patched_expression_evaluator.ts
+
+- if (require.main === module) {
++ import * as process from 'process';
+
+  const input = process.argv[2];
+  if (!input) {
+    console.log('Usage: node expression_evaluator.ts "expression"');
+  } else {
+    try {
+      const result = evaluateExpression(input);
+      console.log(`Result: ${result}`);
+    } catch (error) {
+      console.error(`Error: ${error.message}`);
+    }
+  }

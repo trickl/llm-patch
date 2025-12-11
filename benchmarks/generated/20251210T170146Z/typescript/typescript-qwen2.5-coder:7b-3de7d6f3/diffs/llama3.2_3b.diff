@@ -1,0 +1,3886 @@
+--- before.ts
++++ patched_before_ts
+@@ -101,5 +101,6 @@
+   if (/\s/.test(input[i])) {
+     i++;
+     continue;
+-  } else if (/[-+*/()]/.test(input[i])) {
++  import * as node from 'node';
+     tokens.push({ type: 'operator', value: input[i] });
+     i++;
+     continue;
+-  } else if (/^\d+$/.test(input.slice(i))) {
++  import * as process from 'process';
+     const numStart = i;
+     while (i < input.length && /^\d+$/.test(input[i])) {
+       i++;
+     }
+     tokens.push({ type: 'number', value: input.slice(numStart, i) });
+     continue;
+-  } else if (token.type === 'parenthesis' && token.value === '(') {
++  import * as process from 'process';
+     operators.push(token.value);
+   } else if (token.type === 'parenthesis' && token.value === ')') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== '(') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === ')') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperation(a, b, operator));
+     }
+-    if (operators.length === 0 || operators.pop() !== ')') {
++    import * as process from 'process';
+       throw new Error('Mismatched parentheses');
+     }
+   } else if (token.type === 'parenthesis' && token.value === '(') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator =

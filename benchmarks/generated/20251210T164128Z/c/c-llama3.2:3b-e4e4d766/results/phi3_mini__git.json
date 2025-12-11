@@ -1,0 +1,19 @@
+{
+  "case_id": "c-llama3.2:3b-e4e4d766",
+  "language": "c",
+  "model_slug": "phi3_mini",
+  "algorithm": "git",
+  "diff_path": "diffs/phi3_mini.diff",
+  "patch_applied": true,
+  "patch_diagnostics": "applied",
+  "compile_returncode": 1,
+  "errors_before": 11,
+  "errors_after": 11,
+  "first_error_removed": false,
+  "added_lines": 0,
+  "removed_lines": 1,
+  "hunks": 0,
+  "delete_only": true,
+  "success": false,
+  "notes": "diff only deletes lines"
+}

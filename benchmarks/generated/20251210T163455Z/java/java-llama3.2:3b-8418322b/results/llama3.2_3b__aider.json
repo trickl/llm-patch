@@ -1,0 +1,19 @@
+{
+  "case_id": "java-llama3.2:3b-8418322b",
+  "language": "java",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "aider",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 1,
+  "errors_before": 21,
+  "errors_after": 5,
+  "first_error_removed": true,
+  "added_lines": 1,
+  "removed_lines": 1,
+  "hunks": 1,
+  "delete_only": false,
+  "success": true,
+  "notes": ""
+}

@@ -1,0 +1,9 @@
+--- before.py	2016-05-03 17:47:58.977000000 -0400
++++ after.py	2016-05-03 17:47:58.977000000 -0400
+@@ -1,10 +1,13 @@
+ import re
+ def is_palindrome(s):
++    return s == s[::-1] and len(re.findall('[^a-zA-Z]', s)) < 2
+     if not s:
+@@ -4,5 +4,6 @@
+         elif re0.match('^' + str(float(selfsxte[i+1]))):

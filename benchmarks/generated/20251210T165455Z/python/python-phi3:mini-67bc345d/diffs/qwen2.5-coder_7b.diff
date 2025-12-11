@@ -1,0 +1,5 @@
+--- before.py
++++ before.py
+@@ -1,2 +1 @@
+-(b 
++A string that was cut off

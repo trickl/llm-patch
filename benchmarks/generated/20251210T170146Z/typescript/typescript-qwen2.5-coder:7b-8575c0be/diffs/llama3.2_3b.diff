@@ -1,0 +1,37 @@
+--- before.ts
++++ after.ts
+@@(41,5)-(41,6)
+-const values: number[] = [];
++const values: number[] = [];
+
+@@(75,5)-(75,7)
+-let i = 0;
++let i = 0;
+
+@@(79,5)-(79,8)
+-while (i  tokens.length) {
+-    const token = tokens[i];
++while (i  tokens.length) {
++    const token = tokens[i];
+
+      if (!isNaN(Number(token))) {
+          values.push(Number(token));
+      } else if (token === '(') {
+          ops.push(token);
+      } else if (token === ')') {
+          while (ops[ops.length - 1] !== '(') {
+              values.push(applyOp(ops.pop()!, values.pop()!, values.pop()!));
+          }
+          ops.pop();
+      } else {
+          while (
+              ops.length > 0 &&
+              precedence(ops[ops.length - 1]) >= precedence(token)
+          ) {
+              values.push(applyOp(ops.pop()!, values.pop()!, values.pop()!));
+          }
+          ops.push(token);
+      }
+
+      i++;
++    i++;

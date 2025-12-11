@@ -1,0 +1,26 @@
+ExpressionEvaluator.java:23: error: cannot find symbol
+        TokenStream tokenizer = new TokenStream(expression);
+        ^
+  symbol:   class TokenStream
+  location: class ExpressionEvaluator
+ExpressionEvaluator.java:23: error: cannot find symbol
+        TokenStream tokenizer = new TokenStream(expression);
+                                    ^
+  symbol:   class TokenStream
+  location: class ExpressionEvaluator
+ExpressionEvaluator.java:25: error: cannot find symbol
+        ParseTree parseTree = parser.parse(tokenizer);
+        ^
+  symbol:   class ParseTree
+  location: class ExpressionEvaluator
+ExpressionEvaluator.java:25: error: cannot find symbol
+        ParseTree parseTree = parser.parse(tokenizer);
+                              ^
+  symbol:   variable parser
+  location: class ExpressionEvaluator
+ExpressionEvaluator.java:27: error: cannot find symbol
+        return evaluator.evaluate(parseTree);
+               ^
+  symbol:   variable evaluator
+  location: class ExpressionEvaluator
+5 errors

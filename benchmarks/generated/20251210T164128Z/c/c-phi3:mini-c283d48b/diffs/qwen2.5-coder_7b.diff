@@ -1,0 +1,7 @@
+--- before.c
++++ before.c
+@@ -1,2 +1 @@
+-**Constraints:
+-
+-# Instance you are there'de]
++# Constraints: # Instance you are there'de]

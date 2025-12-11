@@ -1,0 +1,5 @@
+--- before.ts
++++ before.ts
+@@ -1,2 +1 @@
+-Your task: "You are there'de
++Your task: "You are there"

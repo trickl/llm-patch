@@ -1,0 +1,19 @@
+{
+  "case_id": "python-phi3:mini-8e6dcda3",
+  "language": "python",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "diff-match-patch",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "patch_applied": true,
+  "patch_diagnostics": "statuses=[True]",
+  "compile_returncode": 0,
+  "errors_before": 1,
+  "errors_after": 0,
+  "first_error_removed": true,
+  "added_lines": 0,
+  "removed_lines": 1,
+  "hunks": 1,
+  "delete_only": true,
+  "success": false,
+  "notes": "diff only deletes lines"
+}

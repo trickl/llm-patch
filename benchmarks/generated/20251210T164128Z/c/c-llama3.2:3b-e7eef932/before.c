@@ -1,0 +1,172 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Token types
+typedef enum {
+    NUMBER,
+    PLUS,
+    MINUS,
+    MUL,
+    DIV,
+    LPAREN,
+    RPAREN,
+    EOF
+} TokenType;
+
+// Token structure
+typedef struct {
+    TokenType type;
+    double value;
+} Token;
+
+// Lexer function
+Token* lexer(char* expression) {
+    int length = strlen(expression);
+    Token* tokens = malloc((length + 1) * sizeof(Token));
+    char* currentChar = expression;
+    int pos = 0;
+
+    while (*currentChar != '\0') {
+        if (isdigit(*currentChar)) {
+            double value = 0;
+            while (isdigit(*currentChar)) {
+                value = value * 10 + (*currentChar - '0');
+                currentChar++;
+            }
+            tokens[pos].type = NUMBER;
+            tokens[pos].value = value;
+            pos++;
+        } else if (*currentChar == '+') {
+            tokens[pos].type = PLUS;
+            pos++;
+            currentChar++;
+        } else if (*currentChar == '-') {
+            tokens[pos].type = MINUS;
+            pos++;
+            currentChar++;
+        } else if (*currentChar == '*') {
+            tokens[pos].type = MUL;
+            pos++;
+            currentChar++;
+        } else if (*currentChar == '/') {
+            tokens[pos].type = DIV;
+            pos++;
+            currentChar++;
+        } else if (*currentChar == '(') {
+            tokens[pos].type = LPAREN;
+            pos++;
+            currentChar++;
+        } else if (*currentChar == ')') {
+            tokens[pos].type = RPAREN;
+            pos++;
+            currentChar++;
+        } else {
+            return NULL; // Invalid character
+        }
+    }
+
+    tokens[pos].type = EOF;
+    tokens[pos].value = 0;
+
+    return tokens;
+}
+
+// Parser function
+Token* parse(Token* tokens) {
+    Token* stack = malloc((tokens[1].pos + 1) * sizeof(Token));
+    int pos = 0;
+
+    while (tokens[pos].type != EOF) {
+        if (tokens[pos].type == LPAREN) {
+            // Handle left parenthesis
+            Token* temp = parse(tokens + pos + 1);
+            stack[pos] = *temp;
+            pos++;
+        } else if (tokens[pos].type == RPAREN) {
+            // Handle right parenthesis
+            while (stack[pos - 1].type != LPAREN) {
+                Token* temp = stack[--pos];
+                if (tokens[pos].type == PLUS || tokens[pos].type == MINUS) {
+                    double result = evaluate(stack[pos - 1], tokens[pos]);
+                    stack[pos - 1] = (Token){tokens[pos].type, result};
+                    pos--;
+                } else {
+                    break;
+                }
+            }
+            pos++;
+        } else if (tokens[pos].type == NUMBER || tokens[pos].type == PLUS || tokens[pos].type == MINUS) {
+            // Handle number or operator
+            stack[pos] = *tokens;
+            pos++;
+        } else {
+            return NULL; // Invalid token type
+        }
+    }
+
+    while (pos > 0 && stack[pos - 1].type != LPAREN) {
+        Token* temp = stack[--pos];
+        if (tokens[pos].type == PLUS || tokens[pos].type == MINUS) {
+            double result = evaluate(stack[pos], tokens[pos]);
+            stack[pos] = (Token){tokens[pos].type, result};
+            pos--;
+        } else {
+            break;
+        }
+    }
+
+    return stack;
+}
+
+// Evaluator function
+double evaluate(Token* token, Token* operator) {
+    if (token->type == NUMBER) {
+        // Evaluate number expression
+        double value = token->value;
+        if (operator->type == MINUS) {
+            value = -value;
+        }
+        return value;
+    } else {
+        // Handle operator
+        switch (operator->type) {
+            case PLUS:
+                return evaluate(token, parse(tokens + pos + 1));
+            case MINUS:
+                return -evaluate(token, parse(tokens + pos + 1));
+            case MUL:
+                return evaluate(token, parse(tokens + pos + 1)) * operator->value;
+            case DIV:
+                return evaluate(token, parse(tokens + pos + 1)) / operator->value;
+        }
+    }
+}
+
+int main() {
+    char expressions[][20] = {"3 + 4 * (2 - 1)", "1 + 2", "2 * 3 + 4", "8 / 2 * (2 + 2)"};
+    int numExpressions = sizeof(expressions) / sizeof(expressions[0]);
+
+    for (int i = 0; i < numExpressions; i++) {
+        Token* tokens = lexer(expressions[i]);
+        if (tokens == NULL) {
+            printf("Error: %s\n", expressions[i]);
+            continue;
+        }
+
+        Token* parsedTokens = parse(tokens);
+        if (parsedTokens == NULL) {
+            printf("Error: %s\n", expressions[i]);
+            free(tokens);
+            continue;
+        }
+
+        double result = evaluate(parsedTokens[0], parsedTokens[1]);
+        printf("%s => %f\n", expressions[i], result);
+
+        free(parsedTokens);
+        free(tokens);
+    }
+
+    return 0;
+}

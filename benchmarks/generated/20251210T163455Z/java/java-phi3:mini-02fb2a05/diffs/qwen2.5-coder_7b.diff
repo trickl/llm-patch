@@ -1,0 +1,9 @@
+--- before.java
++++ before.java
+@@ -10,7 +10,7 @@
+     public void someMethod() {
+         // Some code here
+-        System.out.println("Hello, World!");
++        System.out.println("Hello, Java!");
+     }
+ }

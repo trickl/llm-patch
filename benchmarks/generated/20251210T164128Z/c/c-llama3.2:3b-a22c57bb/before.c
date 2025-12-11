@@ -1,0 +1,3683 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Token types
+typedef enum {
+    NUMBER,
+    PLUS,
+    MINUS,
+    MUL,
+    DIV,
+    LPAREN,
+    RPAREN,
+    UNARY_MINUS,
+    END_OF_EXPRESSION
+} TokenType;
+
+// Token structure
+typedef struct {
+    TokenType type;
+    double value;
+    char* str;
+} Token;
+
+// Lexer function to tokenize the input string
+Token* lexer(const char* expression) {
+    int length = strlen(expression);
+    Token* tokens = malloc((length + 1) * sizeof(Token));
+    for (int i = 0; i < length; ++i) {
+        if (isdigit(expression[i])) {
+            int start = i;
+            while (i < length && isdigit(expression[i])) {
+                ++i;
+            }
+            double value = atof(expression + start);
+            tokens[i - start] = {NUMBER, value, NULL};
+        } else if (expression[i] == '+' || expression[i] == '-') {
+            int start = i;
+            while (i < length && (expression[i] == '+' || expression[i] == '-')) {
+                ++i;
+            }
+            double value = expression[start] == '+' ? 1 : -1;
+            tokens[i - start] = {PLUS, value, NULL};
+        } else if (expression[i] == '*' || expression[i] == '/') {
+            int start = i;
+            while (i < length && (expression[i] == '*' || expression[i] == '/')) {
+                ++i;
+            }
+            double value = expression[start] == '*' ? 1 : 0.5;
+            tokens[i - start] = {MUL, value, NULL};
+        } else if (expression[i] == '(') {
+            int start = i;
+            while (i < length && expression[i] != ')') {
+                ++i;
+            }
+            double value = 1; // default value for LPAREN
+            tokens[i - start] = {LPAREN, value, NULL};
+        } else if (expression[i] == ')') {
+            int start = i;
+            while (i < length && expression[i] != '(') {
+                ++i;
+            }
+            double value = 0; // default value for RPAREN
+            tokens[i - start] = {RPAREN, value, NULL};
+        } else if (expression[i] == '-') {
+            int start = i;
+            while (i < length && expression[i] == '-') {
+                ++i;
+            }
+            double value = -1; // default value for UNARY_MINUS
+            tokens[i - start] = {UNARY_MINUS, value, NULL};
+        } else if (expression[i] == '\0') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 1; // default value for END_OF_EXPRESSION
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n') {
+            int start = i;
+            while (i < length && expression[i] != '\n') {
+                ++i;
+            }
+            double value = 0; // default value for newline
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\t') {
+            int start = i;
+            while (i < length && expression[i] != '\t') {
+                ++i;
+            }
+            double value = 0; // default value for tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\r') {
+            int start = i;
+            while (i < length && expression[i] != '\r') {
+                ++i;
+            }
+            double value = 0; // default value for carriage return
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\b') {
+            int start = i;
+            while (i < length && expression[i] != '\b') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08' || expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x08' && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r') {
+            int start = i;
+            while (i < length && (expression[i] == '\n' || expression[i] == '\t' || expression[i] == '\r')) {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == ' ') {
+            int start = i;
+            while (i < length && expression[i] != ' ') {
+                ++i;
+            }
+            double value = 0; // default value for whitespace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x08') {
+            int start = i;
+            while (i < length && expression[i] != '\x08') {
+                ++i;
+            }
+            double value = 0; // default value for backspace
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\x0b') {
+            int start = i;
+            while (i < length && expression[i] != '\x0b') {
+                ++i;
+            }
+            double value = 0; // default value for other special characters
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\f') {
+            int start = i;
+            while (i < length && expression[i] != '\f') {
+                ++i;
+            }
+            double value = 0; // default value for form feed
+            tokens[i - start] = {END_OF_EXPRESSION, value, NULL};
+        } else if (expression[i] == '\v') {
+            int start = i;
+            while (i < length && expression[i] != '\v') {
+                ++i;
+            }
+            double value = 0; // default value for vertical tab
+            tokens[i - start] = {END_OF_EXPRESSION, value

@@ -1,0 +1,5 @@
+--- before.py
++++ patched_before.py
+@@ -1 +1 @@
+- Your task:
++ Your task:

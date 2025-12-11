@@ -1,0 +1,19 @@
+{
+  "case_id": "c-phi3:mini-a2ae7db1",
+  "language": "c",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "aider",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 1,
+  "errors_before": 7,
+  "errors_after": 2,
+  "first_error_removed": true,
+  "added_lines": 2,
+  "removed_lines": 4,
+  "hunks": 1,
+  "delete_only": false,
+  "success": true,
+  "notes": ""
+}

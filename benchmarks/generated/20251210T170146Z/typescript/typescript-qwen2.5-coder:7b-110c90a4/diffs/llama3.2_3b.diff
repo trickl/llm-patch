@@ -1,0 +1,8 @@
+--- before.ts
++++ patched_before_ts
+@@ -96,7 +96,8 @@
+     if (currentToken !== '') {
+       tokens.push({ type: 'number', value: currentToken });
+     }
+-    return tokens;
++    return tokens;

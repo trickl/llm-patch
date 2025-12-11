@@ -1,0 +1,19 @@
+--- before.java
++++ after.java
+@@ -59,7 +59,7 @@
+     return parseExpression();
+ }
+ 
+ private int parseTerm() {
+-    int result = parseFactor();
++    int result = parseFactor();
+     while (pos  tokens.size()) {
+         String op = tokens.get(pos);
+         if (op.equals("+") || op.equals("-")) {
+             pos++;
+-            int nextValue = parseFactor();
++            int nextValue = parseFactor();
+             if (op.equals("+")) {
+                 result += nextValue;
+             } else {
+                 result -= nextValue;

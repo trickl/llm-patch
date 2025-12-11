@@ -1,0 +1,24 @@
+--- before.java	2023-04-10 12:34:56.000000000 +0800
++++ after.java	2023-04-10 12:35:07.000000000 +0800
+@@ -1,5 +1,9 @@
+ import java.util.*;
+ 
++import com.example.TokenStream;
++import com.example.InfixTokenizer;
++import com.example.ParseTree;
++import com.example.Parser;
++import com.example.Evaluator;
++
+ public class ExpressionEvaluator {
+ 
+     public static void main(String[] args) {
+@@ -23,7 +27,7 @@
+         TokenStream tokenizer = new InfixTokenizer(expression);
+ 
+         ParseTree parseTree = Parser.parse(tokenizer);
+-        return Evaluator.evaluate(parseTree);
++        return com.example.Evaluator.evaluate(parseTree);
+     }
+ }
+ 
+ class ExpressionEvaluatorTester {

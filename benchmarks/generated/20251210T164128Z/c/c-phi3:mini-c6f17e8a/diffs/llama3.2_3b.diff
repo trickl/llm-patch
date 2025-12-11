@@ -1,0 +1,5 @@
+--- before.c
++++ after.c
+@@ -1 +1 @@
+-**Rewrite/document your answer key, you are there'inq.
++**Rewrite/document your answer key, you are there

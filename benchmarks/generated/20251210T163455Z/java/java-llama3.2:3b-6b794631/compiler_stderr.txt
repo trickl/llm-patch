@@ -1,0 +1,11 @@
+ExpressionEvaluator.java:80: error: cannot find symbol
+                    while (pos < tokenizer.iterator().iterator().next().length()) {
+                                                     ^
+  symbol:   method iterator()
+  location: interface Iterator<String>
+ExpressionEvaluator.java:124: error: cannot find symbol
+                String token = parser.next();
+                                     ^
+  symbol:   method next()
+  location: variable parser of type Parser
+2 errors

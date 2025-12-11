@@ -1,0 +1,186 @@
+```java
+import java.util.*;
+
+public class ExpressionEvaluator {
+
+    public static int evaluate(String expression) {
+        return new Tokenizer().tokenize(expression).parse().evaluate();
+    }
+
+    private static class Tokenizer {
+        private List<Token> tokens = tokenize(expression);
+
+        private List<Token> tokenize(String expression) {
+            List<Token> output = new ArrayList<>();
+            StringBuilder currentNumber = new StringBuilder();
+
+            for (char c : expression.toCharArray()) {
+                if (Character.isDigit(c)) {
+                    currentNumber.append(c);
+                } else if (c == '(' || c == ')') {
+                    output.add(new Token(c, Token.Type.PAREN));
+                } else if (c == '+' || c == '-' || c == '*' || c == '/') {
+                    output.add(new Token(c, Token.Type.OPERATOR));
+                }
+            }
+
+            if (!currentNumber.toString().isEmpty()) {
+                output.add(new Token(currentNumber.toString(), Token.Type.NUMBER));
+            }
+
+            return output;
+        }
+    }
+
+    private static class Parser {
+        private List<Token> tokens = new ArrayList<>();
+        private int index = 0;
+
+        public void parse() throws Exception {
+            while (index < tokens.size()) {
+                Token token = tokens.get(index);
+                switch (token.type) {
+                    case NUMBER:
+                        evaluateNumber(token.value);
+                        break;
+                    case OPERATOR:
+                        if (token.value.equals("+") || token.value.equals("-")) {
+                            evaluateBinaryOperator();
+                        } else if (token.value.equals("*") || token.value.equals("/")) {
+                            evaluateMultiplicationOperator();
+                        }
+                        index++;
+                        break;
+                    case PAREN:
+                        parseInParentheses();
+                        break;
+                }
+            }
+        }
+
+        private void evaluateNumber(String number) throws Exception {
+            throw new UnsupportedOperationException("Numbers are not supported");
+        }
+
+        private void evaluateBinaryOperator() throws Exception {
+            Token operator = tokens.get(index);
+            index++;
+            int rightOperand = parse();
+            int leftOperand = parse();
+
+            if (operator.value.equals("+")) {
+                result += leftOperand + rightOperand;
+            } else if (operator.value.equals("-")) {
+                result -= leftOperand + rightOperand;
+            }
+        }
+
+        private void evaluateMultiplicationOperator() throws Exception {
+            Token operator = tokens.get(index);
+            index++;
+            int rightOperand = parse();
+            int leftOperand = parse();
+
+            if (operator.value.equals("*")) {
+                result *= leftOperand * rightOperand;
+            } else if (operator.value.equals("/")) {
+                result /= leftOperand / rightOperand;
+            }
+        }
+
+        private void parseInParentheses() throws Exception {
+            index++;
+            int result = parse();
+            index++;
+        }
+
+        private int parse() throws Exception {
+            return evaluateExpression();
+        }
+
+        private int evaluateExpression() throws Exception {
+            int result = parseTerm();
+
+            while (index < tokens.size()) {
+                Token token = tokens.get(index);
+                switch (token.type) {
+                    case OPERATOR:
+                        if (token.value.equals("+") || token.value.equals("-")) {
+                            evaluateBinaryOperator();
+                        } else if (token.value.equals("*") || token.value.equals("/")) {
+                            evaluateMultiplicationOperator();
+                        }
+                        index++;
+                        break;
+                }
+            }
+
+            return result;
+        }
+
+        private int parseTerm() throws Exception {
+            int result = parseFactor();
+
+            while (index < tokens.size()) {
+                Token token = tokens.get(index);
+                switch (token.type) {
+                    case OPERATOR:
+                        if (token.value.equals("*") || token.value.equals("/")) {
+                            evaluateMultiplicationOperator();
+                        }
+                        index++;
+                        break;
+                }
+            }
+
+            return result;
+        }
+
+        private int parseFactor() throws Exception {
+            Token token = tokens.get(index);
+            switch (token.type) {
+                case NUMBER:
+                    index++;
+                    return Integer.parseInt(token.value);
+                case PAREN:
+                    index++;
+                    int result = parse();
+                    index++;
+                    return result;
+                case MINUS:
+                    index++;
+                    return -parseFactor();
+            }
+        }
+
+        private int result = 0;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(evaluate("1 + 2")); // 3
+        System.out.println(evaluate("2 * 3 + 4")); // 10
+        System.out.println(evaluate("2 * (3 + 4)")); // 14
+        System.out.println(evaluate("8 / 2 * (2 + 2)")); // 16
+    }
+}
+
+class Token {
+    private String value;
+    private Type type;
+
+    public enum Type { NUMBER, OPERATOR, PAREN, MINUS }
+
+    public Token(String value, Type type) {
+        this.value = value;
+        this.type = type;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public Type getType() {
+        return type;
+    }
+}
+```

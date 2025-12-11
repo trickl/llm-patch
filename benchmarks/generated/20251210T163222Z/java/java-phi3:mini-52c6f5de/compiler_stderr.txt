@@ -1,0 +1,13 @@
+ExpressionEvaluator.java:97: error: not a statement
+           0r;
+           ^
+ExpressionEvaluator.java:97: error: ';' expected
+           0r;
+            ^
+ExpressionEvaluator.java:106: error: illegal start of expression
+    private Iterator<Token> yield(Token t) {
+    ^
+ExpressionEvaluator.java:173: error: illegal start of expression
+                                                new OperatorToken('*'), new IntegerToken("4"), new LeftParenthesisToken(), ...);
+                                                                                                                           ^
+4 errors

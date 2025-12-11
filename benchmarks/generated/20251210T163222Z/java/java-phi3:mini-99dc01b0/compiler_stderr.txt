@@ -1,0 +1,46 @@
+ExpressionEvaluator.java:23: error: cannot find symbol
+        TokenStream tokenizer = new InfixTokenizer(expression);
+        ^
+  symbol:   class TokenStream
+  location: class ExpressionEvaluator
+ExpressionEvaluator.java:23: error: cannot find symbol
+        TokenStream tokenizer = new InfixTokenizer(expression);
+                                    ^
+  symbol:   class InfixTokenizer
+  location: class ExpressionEvaluator
+ExpressionEvaluator.java:25: error: cannot find symbol
+        ParseTree parseTree = Parser.parse(tokenizer);
+        ^
+  symbol:   class ParseTree
+  location: class ExpressionEvaluator
+ExpressionEvaluator.java:25: error: cannot find symbol
+        ParseTree parseTree = Parser.parse(tokenizer);
+                              ^
+  symbol:   variable Parser
+  location: class ExpressionEvaluator
+ExpressionEvaluator.java:27: error: cannot find symbol
+        return Evaluator.evaluate(parseTree);
+               ^
+  symbol:   variable Evaluator
+  location: class ExpressionEvaluator
+ExpressionEvaluator.java:40: error: cannot find symbol
+        System.out.println("1 + 2 = " + evaluateExpression("1 + 2"));         // Expected: 3
+                                        ^
+  symbol:   method evaluateExpression(String)
+  location: class ExpressionEvaluatorTester
+ExpressionEvaluator.java:42: error: cannot find symbol
+        System.out.println("2 * 3 + 4 = " + evaluateExpression("2 * 3 + 4")); // Expected: 10
+                                            ^
+  symbol:   method evaluateExpression(String)
+  location: class ExpressionEvaluatorTester
+ExpressionEvaluator.java:44: error: cannot find symbol
+        System.out.println("2 * (3 + 4) = " + evaluateExpression("2 * (3 + 4)")); // Expected: 14
+                                              ^
+  symbol:   method evaluateExpression(String)
+  location: class ExpressionEvaluatorTester
+ExpressionEvaluator.java:46: error: cannot find symbol
+        System.out.println("8 / 2 * (2 + 2) = " + evaluateExpression("8 / 2 * (2 + 2)")); // Expected: 16
+                                                  ^
+  symbol:   method evaluateExpression(String)
+  location: class ExpressionEvaluatorTester
+9 errors

@@ -1,0 +1,19 @@
+{
+  "case_id": "java-llama3.2:3b-0102db63",
+  "language": "java",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "diff-match-patch",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "patch_applied": false,
+  "patch_diagnostics": "statuses=[False, False, False]",
+  "compile_returncode": null,
+  "errors_before": 12,
+  "errors_after": null,
+  "first_error_removed": false,
+  "added_lines": 3,
+  "removed_lines": 3,
+  "hunks": 3,
+  "delete_only": false,
+  "success": false,
+  "notes": ""
+}

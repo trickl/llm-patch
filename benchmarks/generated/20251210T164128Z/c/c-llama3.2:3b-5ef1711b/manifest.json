@@ -1,0 +1,19 @@
+{
+  "case_id": "c-llama3.2:3b-5ef1711b",
+  "language": "c",
+  "problem_id": "expr_eval_v1",
+  "model": "llama3.2:3b",
+  "provider": "ollama",
+  "timestamp_utc": "2025-12-10T16:45:16.037826+00:00",
+  "compile_command": [
+    "gcc",
+    "expression_evaluator.c",
+    "-std=c17",
+    "-Wall",
+    "-Wextra",
+    "-O0",
+    "-o",
+    "expr_eval.out"
+  ],
+  "return_code": 1
+}

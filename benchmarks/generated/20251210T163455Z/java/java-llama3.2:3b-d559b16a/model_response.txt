@@ -1,0 +1,156 @@
+```java
+import java.util.*;
+
+public class ExpressionEvaluator {
+
+    public static int evaluate(String expression) {
+        List<Token> tokens = tokenize(expression);
+        return parse(tokens).evaluate();
+    }
+
+    private static class Token {
+        String type;
+        Object value;
+
+        Token(String type, Object value) {
+            this.type = type;
+            this.value = value;
+        }
+    }
+
+    private static List<Token> tokenize(String expression) {
+        List<Token> tokens = new ArrayList<>();
+        StringBuilder currentNumber = new StringBuilder();
+        char currentChar;
+
+        for (char c : expression.toCharArray()) {
+            if (Character.isDigit(c)) {
+                currentNumber.append(c);
+            } else if (c == '(' || c == ')') {
+                tokens.add(new Token(String.valueOf(c), null));
+            } else if (c == '+' || c == '-' || c == '*' || c == '/') {
+                if (!currentNumber.isEmpty()) {
+                    tokens.add(new Token("NUMBER", Integer.parseInt(currentNumber.toString())));
+                    currentNumber.setLength(0);
+                }
+                tokens.add(new Token(String.valueOf(c), null));
+            }
+        }
+
+        if (!currentNumber.isEmpty()) {
+            tokens.add(new Token("NUMBER", Integer.parseInt(currentNumber.toString())));
+        }
+
+        return tokens;
+    }
+
+    private static Expression parse(List<Token> tokens) {
+        List<Operand> operands = new ArrayList<>();
+        Stack<Operator> operators = new Stack<>();
+
+        for (Token token : tokens) {
+            if (token.type.equals("NUMBER")) {
+                operands.add(new Operand(token.value));
+            } else if (token.type.equals("+") || token.type.equals("-") || token.type.equals("*") || token.type.equals("/")) {
+                while (!operators.isEmpty() && getPrecedence(operators.peek()) >= getPrecedence(token)) {
+                    operands.add(new Operand(operators.pop().evaluate(operands)));
+                }
+                operators.push(new Operator(token.type));
+            } else if (token.type.equals("(")) {
+                operators.push(new Operator(token.type));
+            } else if (token.type.equals(")")) {
+                while (!operators.peek().type.equals("(")) {
+                    operands.add(new Operand(operators.pop().evaluate(operands)));
+                }
+                operators.pop();
+            }
+        }
+
+        while (!operators.isEmpty()) {
+            operands.add(new Operand(operators.pop().evaluate(operands)));
+        }
+
+        return new Expression(operands);
+    }
+
+    private static int getPrecedence(Operator operator) {
+        switch (operator.type) {
+            case "*":
+            case "/":
+                return 2;
+            case "+":
+            case "-":
+                return 1;
+            default:
+                return 0;
+        }
+    }
+
+    private interface Operand {
+        int evaluate(List<Operand> operands);
+    }
+
+    private static class OperandImpl implements Operand {
+        final Object value;
+
+        OperandImpl(Object value) {
+            this.value = value;
+        }
+
+        @Override
+        public int evaluate(List<Operand> operands) {
+            return (int) value;
+        }
+    }
+
+    private interface Expression {
+        int evaluate();
+    }
+
+    private static class ExpressionImpl implements Expression {
+        final List<Operand> operands;
+
+        ExpressionImpl(List<Operand> operands) {
+            this.operands = operands;
+        }
+
+        @Override
+        public int evaluate() {
+            int result = 0;
+            for (Operand operand : operands) {
+                result += operand.evaluate(new ArrayList<>());
+            }
+            return result;
+        }
+    }
+
+    private static class Operator {
+        final String type;
+
+        Operator(String type) {
+            this.type = type;
+        }
+
+        int evaluate(List<Operand> operands) {
+            switch (type) {
+                case "+":
+                    return operands.get(operands.size() - 2).evaluate(new ArrayList<>()) + operands.get(operands.size() - 1).evaluate(new ArrayList<>());
+                case "-":
+                    return operands.get(operands.size() - 2).evaluate(new ArrayList<>()) - operands.get(operands.size() - 1).evaluate(new ArrayList<>());
+                case "*":
+                    return (int) operands.get(operands.size() - 2).evaluate(new ArrayList<>()) * (int) operands.get(operands.size() - 1).evaluate(new ArrayList<>());
+                case "/":
+                    return (int) operands.get(operands.size() - 2).evaluate(new ArrayList<>()) / (int) operands.get(operands.size() - 1).evaluate(new ArrayList<>());
+            }
+            throw new RuntimeException("Invalid operator");
+        }
+    }
+
+    public static void main(String[] args) {
+        System.out.println(evaluate("1 + 2")); // 3
+        System.out.println(evaluate("2 * 3 + 4")); // 10
+        System.out.println(evaluate("2 * (3 + 4)")); // 14
+        System.out.println(evaluate("8 / 2 * (2 + 2)")); // 16
+    }
+}
+```

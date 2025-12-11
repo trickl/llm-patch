@@ -1,0 +1,86 @@
+ExpressionEvaluator.java:34: error: cannot find symbol
+                tokens.add(new Token(TokenType.NUMBER, value));
+                                     ^
+  symbol:   variable TokenType
+  location: class Tokenizer
+ExpressionEvaluator.java:36: error: cannot find symbol
+                tokens.add(new Token(TokenType.OPERATOR, ch));
+                                     ^
+  symbol:   variable TokenType
+  location: class Tokenizer
+ExpressionEvaluator.java:39: error: cannot find symbol
+                tokens.add(new Token(TokenType.LPAREN, null));
+                                     ^
+  symbol:   variable TokenType
+  location: class Tokenizer
+ExpressionEvaluator.java:42: error: cannot find symbol
+                tokens.add(new Token(TokenType.RPAREN, null));
+                                     ^
+  symbol:   variable TokenType
+  location: class Tokenizer
+ExpressionEvaluator.java:70: error: cannot find symbol
+            if (token.type == TokenType.OPERATOR && (token.value == '+' || token.value == '-')) {
+                              ^
+  symbol:   variable TokenType
+  location: class Parser
+ExpressionEvaluator.java:70: error: bad operand types for binary operator '=='
+            if (token.type == TokenType.OPERATOR && (token.value == '+' || token.value == '-')) {
+                                                                 ^
+  first type:  Object
+  second type: char
+ExpressionEvaluator.java:70: error: bad operand types for binary operator '=='
+            if (token.type == TokenType.OPERATOR && (token.value == '+' || token.value == '-')) {
+                                                                                       ^
+  first type:  Object
+  second type: char
+ExpressionEvaluator.java:73: error: bad operand types for binary operator '=='
+                if (token.value == '+') {
+                                ^
+  first type:  Object
+  second type: char
+ExpressionEvaluator.java:89: error: cannot find symbol
+            if (token.type == TokenType.OPERATOR && (token.value == '*' || token.value == '/')) {
+                              ^
+  symbol:   variable TokenType
+  location: class Parser
+ExpressionEvaluator.java:89: error: bad operand types for binary operator '=='
+            if (token.type == TokenType.OPERATOR && (token.value == '*' || token.value == '/')) {
+                                                                 ^
+  first type:  Object
+  second type: char
+ExpressionEvaluator.java:89: error: bad operand types for binary operator '=='
+            if (token.type == TokenType.OPERATOR && (token.value == '*' || token.value == '/')) {
+                                                                                       ^
+  first type:  Object
+  second type: char
+ExpressionEvaluator.java:92: error: bad operand types for binary operator '=='
+                if (token.value == '*') {
+                                ^
+  first type:  Object
+  second type: char
+ExpressionEvaluator.java:106: error: cannot find symbol
+        if (token.type == TokenType.LPAREN) {
+                          ^
+  symbol:   variable TokenType
+  location: class Parser
+ExpressionEvaluator.java:109: error: cannot find symbol
+            if (tokens.get(pos).type != TokenType.RPAREN) {
+                                        ^
+  symbol:   variable TokenType
+  location: class Parser
+ExpressionEvaluator.java:114: error: cannot find symbol
+        } else if (token.type == TokenType.OPERATOR && token.value == '-') {
+                                 ^
+  symbol:   variable TokenType
+  location: class Parser
+ExpressionEvaluator.java:114: error: bad operand types for binary operator '=='
+        } else if (token.type == TokenType.OPERATOR && token.value == '-') {
+                                                                   ^
+  first type:  Object
+  second type: char
+ExpressionEvaluator.java:117: error: cannot find symbol
+        } else if (token.type == TokenType.NUMBER) {
+                                 ^
+  symbol:   variable TokenType
+  location: class Parser
+17 errors

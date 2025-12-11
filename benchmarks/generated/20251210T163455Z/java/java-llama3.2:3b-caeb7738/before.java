@@ -1,0 +1,179 @@
+import java.util.*;
+
+public class ExpressionEvaluator {
+
+    public static void main(String[] args) {
+        System.out.println(evaluate("1 + 2")); // 3
+        System.out.println(evaluate("2 * 3 + 4")); // 10
+        System.out.println(evaluate("2 * (3 + 4)")); // 14
+        System.out.println(evaluate("8 / 2 * (2 + 2)")); // 16
+    }
+
+    public static int evaluate(String expression) {
+        return new ExpressionEvaluator().evaluate(expression);
+    }
+
+    private static class Tokenizer {
+        private final List<String> tokens = new ArrayList<>();
+
+        public void tokenize(String expression) {
+            String[] operators = {"+", "-", "*", "/"};
+            for (char c : expression.toCharArray()) {
+                if (Character.isDigit(c)) {
+                    StringBuilder sb = new StringBuilder();
+                    while (c != '\0' && Character.isDigit(c)) {
+                        sb.append(c);
+                        c = expression.charAt(expression.indexOf(c) + 1);
+                    }
+                    tokens.add(sb.toString());
+                } else if (Arrays.asList(operators).contains(String.valueOf(c))) {
+                    tokens.add(String.valueOf(c));
+                } else if (c == '(' || c == ')') {
+                    tokens.add(String.valueOf(c));
+                } else if (c == '-') {
+                    if (!tokens.isEmpty() && tokens.get(tokens.size() - 1).equals("-")) {
+                        continue;
+                    }
+                    tokens.add("-");
+                }
+            }
+        }
+
+        public List<String> getTokens() {
+            return tokens;
+        }
+    }
+
+    private static class Parser {
+        private final List<String> tokens = new ArrayList<>();
+        private int index;
+
+        public Parser(List<String> tokens) {
+            this.tokens = tokens;
+            this.index = 0;
+        }
+
+        public Expression parseExpression() {
+            return parseTerm();
+        }
+
+        private Expression parseTerm() {
+            Expression left = parseFactor();
+            while (index < tokens.size()) {
+                if (tokens.get(index).equals("*") || tokens.get(index).equals("/")) {
+                    String operator = tokens.get(index);
+                    index++;
+                    Expression right = parseFactor();
+                    return new BinaryOperator(left, operator, right);
+                } else {
+                    break;
+                }
+            }
+            return left;
+        }
+
+        private Expression parseFactor() {
+            if (tokens.get(index).equals("-")) {
+                index++;
+                return new UnaryOperator(tokens.get(index));
+            } else if (Character.isDigit(tokens.get(index).charAt(0))) {
+                StringBuilder sb = new StringBuilder();
+                while (index < tokens.size() && Character.isDigit(tokens.get(index).charAt(0))) {
+                    sb.append(tokens.get(index));
+                    index++;
+                }
+                return new NumberLiteral(Integer.parseInt(sb.toString()));
+            } else if (tokens.get(index).equals("(")) {
+                index++;
+                Expression expression = parseExpression();
+                index++; // consume ')'
+                return expression;
+            } else {
+                throw new RuntimeException("Invalid token: " + tokens.get(index));
+            }
+        }
+
+        private class BinaryOperator implements Expression {
+            public final Expression left;
+            public final String operator;
+            public final Expression right;
+
+            public BinaryOperator(Expression left, String operator, Expression right) {
+                this.left = left;
+                this.operator = operator;
+                this.right = right;
+            }
+
+            @Override
+            public int evaluate() {
+                switch (operator) {
+                    case "+":
+                        return left.evaluate() + right.evaluate();
+                    case "-":
+                        return left.evaluate() - right.evaluate();
+                    case "*":
+                        return left.evaluate() * right.evaluate();
+                    case "/":
+                        return left.evaluate() / right.evaluate();
+                    default:
+                        throw new RuntimeException("Invalid operator: " + operator);
+                }
+            }
+
+            @Override
+            public String toString() {
+                return "(" + left + " " + operator + " " + right + ")";
+            }
+        }
+
+        private class UnaryOperator implements Expression {
+            public final int value;
+
+            public UnaryOperator(String token) {
+                value = Integer.parseInt(token);
+            }
+
+            @Override
+            public int evaluate() {
+                return -value;
+            }
+
+            @Override
+            public String toString() {
+                return "-" + value;
+            }
+        }
+
+        private class NumberLiteral implements Expression {
+            public final int value;
+
+            public NumberLiteral(int value) {
+                this.value = value;
+            }
+
+            @Override
+            public int evaluate() {
+                return value;
+            }
+
+            @Override
+            public String toString() {
+                return Integer.toString(value);
+            }
+        }
+    }
+
+    private static class ExpressionEvaluator {
+        public final Expression parseExpression(String expression) {
+            Tokenizer tokenizer = new Tokenizer();
+            tokenizer.tokenize(expression);
+            Parser parser = new Parser(tokenizer.getTokens());
+            return parser.parseExpression();
+        }
+
+        @Override
+        public int evaluate(String expression) {
+            return parseExpression(expression).evaluate();
+        }
+    }
+}

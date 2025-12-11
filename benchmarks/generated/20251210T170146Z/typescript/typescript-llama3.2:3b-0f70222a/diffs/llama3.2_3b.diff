@@ -1,0 +1,25 @@
+--- before.ts
++++ after.ts
+@@(54,26)-(54,27)
+-const output = [];
++let output: string[] | undefined = [];
+
+@@(80,12)-(80,13)
+-let currentToken = '';
++let currentToken: string | undefined = '';
+
+@@(85,7)-(85,8)
+-const operatorStack = [];
++const operatorStack: string[] | undefined = [];
+
+@@(85,24)-(85,25)
+-let outputQueue: string[] = [];
++let outputQueue: string[] | undefined = [];
+
+@@(103,18)-(103,19)
+-require('node');
++import * as require from 'node';
+
+@@(105,10)-(105,11)
+-process;
++import * as process from 'process';

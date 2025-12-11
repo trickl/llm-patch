@@ -1,0 +1,208 @@
+import java.util.*;
+
+public class ExpressionEvaluator {
+    public static void main(String[] args) {
+        System.out.println(evaluate("1 + 2")); // 3
+        System.out.println(evaluate("2 * 3 + 4")); // 10
+        System.out.println(evaluate("2 * (3 + 4)")); // 14
+        System.out.println(evaluate("8 / 2 * (2 + 2)")); // 16
+    }
+
+    public static int evaluate(String expression) {
+        return new ExpressionEvaluator().evaluate(expression);
+    }
+
+    private static class Tokenizer implements Iterable<String> {
+        private final String expression;
+        private int pos = 0;
+
+        public Tokenizer(String expression) {
+            this.expression = expression;
+        }
+
+        @Override
+        public Iterator<String> iterator() {
+            return new Iterator<>() {
+                @Override
+                public boolean hasNext() {
+                    while (pos < expression.length()) {
+                        if (Character.isDigit(expression.charAt(pos))) {
+                            break;
+                        }
+                        pos++;
+                    }
+                    return pos < expression.length();
+                }
+
+                @Override
+                public String next() {
+                    int end = pos;
+                    while (end < expression.length() && Character.isDigit(expression.charAt(end))) {
+                        end++;
+                    }
+                    return expression.substring(pos, end);
+                }
+            };
+        }
+    }
+
+    private static class Parser implements Iterable<Integer> {
+        private final Tokenizer tokenizer;
+
+        public Parser(Tokenizer tokenizer) {
+            this.tokenizer = tokenizer;
+        }
+
+        @Override
+        public Iterator<Integer> iterator() {
+            return new Iterator<>() {
+                @Override
+                public boolean hasNext() {
+                    while (tokenizer.iterator().hasNext()) {
+                        String token = tokenizer.next();
+                        if (token.equals("(")) {
+                            break;
+                        }
+                        if (token.equals("-")) {
+                            yield -1;
+                        } else if (token.matches("\\d+")) {
+                            yield Integer.parseInt(token);
+                        } else if (token.equals("+") || token.equals("*") || token.equals("/")) {
+                            yield getPrecedence(token);
+                        }
+                    }
+                    return false;
+                }
+
+                private int getPrecedence(String operator) {
+                    switch (operator) {
+                        case "+":
+                        case "-":
+                            return 1;
+                        case "*":
+                        case "/":
+                            return 2;
+                        default:
+                            throw new RuntimeException("Invalid operator");
+                    }
+                }
+            };
+        }
+    }
+
+    private static class Evaluator implements Iterable<Integer> {
+        private final Parser parser;
+
+        public Evaluator(Parser parser) {
+            this.parser = parser;
+        }
+
+        @Override
+        public Iterator<Integer> iterator() {
+            return new Iterator<>() {
+                private int pos = 0;
+
+                @Override
+                public boolean hasNext() {
+                    while (pos < parser.iterator().iterator().next()) {
+                        if (parser.iterator().iterator().hasNext()) {
+                            String token = parser.iterator().next();
+                            if (token.equals("(")) {
+                                yield evaluateExpression();
+                            } else if (token.equals("-")) {
+                                yield -1;
+                            } else if (token.matches("\\d+")) {
+                                yield Integer.parseInt(token);
+                            } else if (token.equals("+") || token.equals("*") || token.equals("/")) {
+                                yield getPrecedence(token);
+                            }
+                        }
+                    }
+                    return false;
+                }
+
+                private int evaluateExpression() {
+                    List<Integer> operands = new ArrayList<>();
+                    while (parser.iterator().iterator().hasNext()) {
+                        String token = parser.iterator().next();
+                        if (token.equals("(")) {
+                            break;
+                        } else if (token.matches("\\d+")) {
+                            operands.add(Integer.parseInt(token));
+                        }
+                    }
+
+                    int operator = getPrecedence(parser.iterator().next());
+                    while (parser.iterator().iterator().hasNext()) {
+                        String token = parser.iterator().next();
+                        if (token.equals("(")) {
+                            break;
+                        } else if (token.matches("\\d+")) {
+                            operands.add(Integer.parseInt(token));
+                        }
+                    }
+
+                    int result = evaluate(operands, operator);
+                    while (parser.iterator().iterator().hasNext()) {
+                        String token = parser.iterator().next();
+                        if (token.equals("+") || token.equals("*") || token.equals("/")) {
+                            yield getPrecedence(token);
+                        } else if (token.equals("-")) {
+                            yield -1;
+                        }
+                    }
+
+                    return result;
+                }
+
+                private int evaluate(List<Integer> operands, int operator) {
+                    switch (operator) {
+                        case 2:
+                            return operands.get(0) * operands.get(1);
+                        case 1:
+                            return operands.get(0) + operands.get(1);
+                        default:
+                            throw new RuntimeException("Invalid operator");
+                    }
+                }
+
+                private int getPrecedence(String operator) {
+                    switch (operator) {
+                        case "+":
+                        case "-":
+                            return 1;
+                        case "*":
+                        case "/":
+                            return 2;
+                        default:
+                            throw new RuntimeException("Invalid operator");
+                    }
+                }
+            };
+        }
+    }
+
+    public static int evaluate(List<Integer> operands, int operator) {
+        switch (operator) {
+            case 2:
+                return operands.get(0) * operands.get(1);
+            case 1:
+                return operands.get(0) + operands.get(1);
+            default:
+                throw new RuntimeException("Invalid operator");
+        }
+    }
+
+    public static int evaluate(String expression) {
+        Tokenizer tokenizer = new Tokenizer(expression);
+        Parser parser = new Parser(tokenizer);
+        Evaluator evaluator = new Evaluator(parser);
+
+        List<Integer> result = new ArrayList<>();
+        while (evaluator.iterator().hasNext()) {
+            result.add(evaluator.next());
+        }
+
+        return evaluate(result, 1); // + operator
+    }
+}

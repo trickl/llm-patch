@@ -1,0 +1,29 @@
+--- before.ts
++++ before.ts
+@@ -62,7 +62,7 @@ class ExpressionEvaluator {
+     return this.parse(tokens);
+   }
+ 
+-  private tokenize(input: string): string[] {
++  private tokenize(input: string | undefined): string[] {
+     const output = [];
+     let currentToken = '';
+ 
+@@ -125,7 +125,7 @@ export function evaluateExpression(input: string): number {
+   return evaluator.evaluateExpression(input);
+ }
+ 
+-const input = '1 + 2';
++let input: string | undefined = '1 + 2';
+ console.log(evaluateExpression(input)); // Output: 3
+ 
+ input = '2 * 3 + 4';
+@@ -131,7 +131,7 @@ input = '2 * 3 + 4';
+ console.log(evaluateExpression(input)); // Output: 10
+ 
+ input = '2 * (3 + 4)';
+-console.log(evaluateExpression(input)); // Output: 14
++console.log(evaluateExpression(input!)); // Output: 14
+ 
+ input = '8 / 2 * (2 + 2)';
+ console.log(evaluateExpression(input)); // Output: 16

@@ -1,0 +1,4 @@
+  File "expression_evaluator.py", line 101
+    self.tokens = [token for token in re0.split(r'\s+', str(expression)) if int(float(str(eval(str(int(float(token))))))]  # Tokenize and remove empty strings from input string; handle errors gracefully with minimal error handling without stopping execution completely by skipping malformed tokens instead of raising exceptions
+                                                                                                                        ^
+SyntaxError: closing parenthesis ']' does not match opening parenthesis '('

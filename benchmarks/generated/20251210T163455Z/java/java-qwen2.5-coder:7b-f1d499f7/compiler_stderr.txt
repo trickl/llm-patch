@@ -1,0 +1,4 @@
+ExpressionEvaluator.java:98: error: Node is not abstract and does not override abstract method evaluate() in Node
+    private static class Node {
+                   ^
+1 error

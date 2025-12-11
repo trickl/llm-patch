@@ -1,0 +1,19 @@
+{
+  "case_id": "python-llama3.2:3b-22d7e1d2",
+  "language": "python",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "diff-match-patch",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "patch_applied": false,
+  "patch_diagnostics": "DMP parse error: Invalid patch string: @@ -35,7 +35,7 @@ class Parser:",
+  "compile_returncode": null,
+  "errors_before": 1,
+  "errors_after": null,
+  "first_error_removed": false,
+  "added_lines": 1,
+  "removed_lines": 1,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": ""
+}

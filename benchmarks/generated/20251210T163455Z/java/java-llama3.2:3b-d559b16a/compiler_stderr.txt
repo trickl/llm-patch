@@ -1,0 +1,20 @@
+ExpressionEvaluator.java:52: error: Operand is abstract; cannot be instantiated
+                operands.add(new Operand(token.value));
+                             ^
+ExpressionEvaluator.java:54: error: incompatible types: Token cannot be converted to Operator
+                while (!operators.isEmpty() && getPrecedence(operators.peek()) >= getPrecedence(token)) {
+                                                                                                ^
+ExpressionEvaluator.java:55: error: Operand is abstract; cannot be instantiated
+                    operands.add(new Operand(operators.pop().evaluate(operands)));
+                                 ^
+ExpressionEvaluator.java:62: error: Operand is abstract; cannot be instantiated
+                    operands.add(new Operand(operators.pop().evaluate(operands)));
+                                 ^
+ExpressionEvaluator.java:69: error: Operand is abstract; cannot be instantiated
+            operands.add(new Operand(operators.pop().evaluate(operands)));
+                         ^
+ExpressionEvaluator.java:72: error: Expression is abstract; cannot be instantiated
+        return new Expression(operands);
+               ^
+Note: Some messages have been simplified; recompile with -Xdiags:verbose to get full output
+6 errors

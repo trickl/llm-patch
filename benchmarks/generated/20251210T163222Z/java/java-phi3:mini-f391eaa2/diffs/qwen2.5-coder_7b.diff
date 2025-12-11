@@ -1,0 +1,19 @@
+--- before.java	2023-04-10 12:34:56.000000000 +0800
++++ after.java	2023-04-10 12:35:00.000000000 +0800
+@@ -1,5 +1,7 @@
+ import java.util.Stack;
++import org.antlr.v4.runtime.TokenStream;
++import org.antlr.v4.runtime.Parser;
++import org.antlr.v4.runtime.tree.ParseTree;
+ 
+ public class ExpressionEvaluator {
+ 
+@@ -23,6 +25,8 @@ public class ExpressionEvaluator {
+         TokenStream tokenizer = new TokenStream(expression);
+ 
+         ParseTree parseTree = parser.parse(tokenizer);
++
++        return evaluator.evaluate(parseTree);
+     }
+ 
+ }

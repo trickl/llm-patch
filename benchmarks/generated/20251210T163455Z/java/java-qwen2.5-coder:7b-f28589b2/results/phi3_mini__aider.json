@@ -1,0 +1,19 @@
+{
+  "case_id": "java-qwen2.5-coder:7b-f28589b2",
+  "language": "java",
+  "model_slug": "phi3_mini",
+  "algorithm": "aider",
+  "diff_path": "diffs/phi3_mini.diff",
+  "patch_applied": true,
+  "patch_diagnostics": "no hunks",
+  "compile_returncode": 1,
+  "errors_before": 5,
+  "errors_after": 5,
+  "first_error_removed": false,
+  "added_lines": 0,
+  "removed_lines": 1,
+  "hunks": 0,
+  "delete_only": true,
+  "success": false,
+  "notes": "diff only deletes lines"
+}

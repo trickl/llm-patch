@@ -1,0 +1,18 @@
+{
+  "java": {
+    "failures_collected": 1,
+    "attempts": 2
+  },
+  "c": {
+    "failures_collected": 1,
+    "attempts": 2
+  },
+  "python": {
+    "failures_collected": 1,
+    "attempts": 3
+  },
+  "typescript": {
+    "failures_collected": 1,
+    "attempts": 1
+  }
+}

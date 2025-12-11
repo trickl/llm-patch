@@ -1,0 +1,19 @@
+--- before.c
++++ before.c
+@@ -3,6 +3,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+
++#include <ctype.h>
+ // Token types
+ typedef enum {
+     NUMBER,
+@@ -124,8 +125,8 @@ double evaluate(Token* token, Token* operator) {
+         if (token->type == NUMBER) {
+             // Evaluate number expression
+             double value = token->value;
+-            if (operator->type == MINUS) {
++            if (operator->type == MINUS && operator != NULL) {
+                 value = -value;
+             }
+             return value;

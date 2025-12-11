@@ -1,0 +1,201 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Token types
+typedef enum {
+    NUMBER,
+    PLUS,
+    MINUS,
+    MUL,
+    DIV,
+    LPAREN,
+    RPAREN,
+    UMINUS,
+    EOF
+} TokenType;
+
+// Token structure
+typedef struct {
+    TokenType type;
+    double value;
+    char* str;
+} Token;
+
+// Lexer function to tokenize the input string
+Token* lexer(const char* expression) {
+    int length = strlen(expression);
+    Token tokens[length];
+    int index = 0;
+
+    for (int i = 0; i < length; ++i) {
+        if (isdigit(expression[i])) {
+            while (i < length && isdigit(expression[i])) {
+                ++i;
+            }
+            tokens[index].type = NUMBER;
+            tokens[index].value = atof(expression + index);
+            tokens[index].str = expression + index;
+            ++index;
+        } else if (expression[i] == '+' || expression[i] == '-') {
+            while (i < length && (expression[i] == '+' || expression[i] == '-' || expression[i] == '*' || expression[i] == '/')) {
+                ++i;
+            }
+            tokens[index].type = expression[i] == '+' ? PLUS : MINUS;
+            tokens[index].value = 0.0; // dummy value
+            tokens[index].str = "";
+            ++index;
+        } else if (expression[i] == '*' || expression[i] == '/') {
+            while (i < length && (expression[i] == '*' || expression[i] == '/' || expression[i] == '+' || expression[i] == '-')) {
+                ++i;
+            }
+            tokens[index].type = expression[i] == '*' ? MUL : DIV;
+            tokens[index].value = 0.0; // dummy value
+            tokens[index].str = "";
+            ++index;
+        } else if (expression[i] == '(') {
+            while (i < length && expression[i] != ')') {
+                ++i;
+            }
+            tokens[index].type = LPAREN;
+            tokens[index].value = 0.0; // dummy value
+            tokens[index].str = "";
+            ++index;
+        } else if (expression[i] == ')') {
+            while (i < length && expression[i] != '(') {
+                --i;
+            }
+            tokens[index].type = RPAREN;
+            tokens[index].value = 0.0; // dummy value
+            tokens[index].str = "";
+            ++index;
+        } else if (expression[i] == '-') {
+            while (i < length && expression[i] != '-' && expression[i] != '*' && expression[i] != '/' && expression[i] != '+' && expression[i] != '(' && expression[i] != ')') {
+                --i;
+            }
+            tokens[index].type = UMINUS;
+            tokens[index].value = 0.0; // dummy value
+            tokens[index].str = "";
+            ++index;
+        } else {
+            break;
+        }
+    }
+
+    Token* result = (Token*)malloc(index * sizeof(Token));
+    for (int i = 0; i < index; ++i) {
+        result[i] = tokens[i];
+    }
+    return result;
+}
+
+// Parser function to parse the tokenized expression
+double parser(Token* tokens, int start, int end) {
+    double left = tokens[start].value;
+    int operatorIndex = start + 1;
+
+    while (operatorIndex < end && getPrecedence(tokens[operatorIndex].type) >= getPrecedence(tokens[start].type)) {
+        switch (tokens[operatorIndex].type) {
+            case PLUS:
+                left += parser(tokens, operatorIndex + 1, end);
+                break;
+            case MINUS:
+                left -= parser(tokens, operatorIndex + 1, end);
+                break;
+            case MUL:
+                left *= parser(tokens, operatorIndex + 1, end);
+                break;
+            case DIV:
+                left /= parser(tokens, operatorIndex + 1, end);
+                break;
+        }
+        ++operatorIndex;
+    }
+
+    if (operatorIndex < end && getPrecedence(tokens[operatorIndex].type) == getPrecedence(tokens[start].type)) {
+        double right = parser(tokens, operatorIndex + 1, end);
+        return applyOperator(left, tokens[operatorIndex].value, right);
+    } else {
+        return left;
+    }
+}
+
+// Evaluator function to evaluate the parsed expression
+double evaluator(double value) {
+    if (value < 0.0) {
+        return -evaluator(-value);
+    }
+    return value;
+}
+
+// Helper function to apply an operator to two values
+double applyOperator(double a, double b, double c) {
+    switch (c) {
+        case '+':
+            return a + b;
+        case '-':
+            return a - b;
+        case '*':
+            return a * b;
+        case '/':
+            return a / b;
+        default:
+            return 0.0; // invalid operator
+    }
+}
+
+// Helper function to get the precedence of an operator
+int getPrecedence(TokenType type) {
+    switch (type) {
+        case PLUS:
+        case MINUS:
+            return 1;
+        case MUL:
+        case DIV:
+            return 2;
+        default:
+            return 0;
+    }
+}
+
+// Helper function to print the tokenized expression
+void printTokens(Token* tokens, int start, int end) {
+    for (int i = start; i < end; ++i) {
+        switch (tokens[i].type) {
+            case NUMBER:
+                printf("%.2f ", tokens[i].value);
+                break;
+            case PLUS:
+            case MINUS:
+                printf("%c ", tokens[i].type == PLUS ? '+' : '-');
+                break;
+            case MUL:
+            case DIV:
+                printf("%c ", tokens[i].type == '*' ? '*' : '/');
+                break;
+            case LPAREN:
+                printf("(");
+                break;
+            case RPAREN:
+                printf(")");
+                break;
+            case UMINUS:
+                printf("-");
+                break;
+        }
+    }
+}
+
+int main() {
+    const char* expressions[] = {"1 + 2", "2 * 3 + 4", "2 * (3 + 4)", "8 / 2 * (2 + 2)"};
+    int numExpressions = sizeof(expressions) / sizeof(expressions[0]);
+
+    for (int i = 0; i < numExpressions; ++i) {
+        Token* tokens = lexer(expressions[i]);
+        double result = parser(tokens, 0, strlen((char*)tokens[0].str));
+        printf("%s = %f\n", expressions[i], result);
+        free(tokens);
+    }
+
+    return 0;
+}

@@ -1,0 +1,6 @@
+expression_evaluator.c:1:3: error: invalid preprocessing directive #Instruct
+    1 | # Instruct you can'dejson
+      |   ^~~~~~~~
+expression_evaluator.c:1:19: warning: missing terminating ' character
+    1 | # Instruct you can'dejson
+      |                   ^

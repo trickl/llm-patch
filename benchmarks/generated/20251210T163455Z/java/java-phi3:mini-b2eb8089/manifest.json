@@ -1,0 +1,13 @@
+{
+  "case_id": "java-phi3:mini-b2eb8089",
+  "language": "java",
+  "problem_id": "expr_eval_v1",
+  "model": "phi3:mini",
+  "provider": "ollama",
+  "timestamp_utc": "2025-12-10T16:39:16.726860+00:00",
+  "compile_command": [
+    "javac",
+    "ExpressionEvaluator.java"
+  ],
+  "return_code": 1
+}

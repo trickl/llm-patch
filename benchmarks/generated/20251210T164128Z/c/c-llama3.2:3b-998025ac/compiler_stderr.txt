@@ -1,0 +1,72 @@
+expression_evaluator.c: In function ‘lexer’:
+expression_evaluator.c:30:13: error: implicit declaration of function ‘isdigit’ [-Wimplicit-function-declaration]
+   30 |         if (isdigit(expression[i])) {
+      |             ^~~~~~~
+expression_evaluator.c:4:1: note: include ‘<ctype.h>’ or provide a declaration of ‘isdigit’
+    3 | #include <string.h>
+  +++ |+#include <ctype.h>
+    4 | 
+expression_evaluator.c:36:42: error: passing argument 1 of ‘atof’ makes pointer from integer without a cast [-Wint-conversion]
+   36 |             tokens[i].value = atof(start - expression);
+      |                                    ~~~~~~^~~~~~~~~~~~
+      |                                          |
+      |                                          long int
+In file included from expression_evaluator.c:2:
+/usr/include/stdlib.h:102:33: note: expected ‘const char *’ but argument is of type ‘long int’
+  102 | extern double atof (const char *__nptr)
+      |                     ~~~~~~~~~~~~^~~~~~
+expression_evaluator.c:38:45: error: passing argument 2 of ‘strcpy’ makes pointer from integer without a cast [-Wint-conversion]
+   38 |             strcpy(tokens[i].literal, start - expression);
+      |                                       ~~~~~~^~~~~~~~~~~~
+      |                                             |
+      |                                             long int
+In file included from expression_evaluator.c:3:
+/usr/include/string.h:141:70: note: expected ‘const char * restrict’ but argument is of type ‘long int’
+  141 | extern char *strcpy (char *__restrict __dest, const char *__restrict __src)
+      |                                               ~~~~~~~~~~~~~~~~~~~~~~~^~~~~
+expression_evaluator.c: In function ‘parser’:
+expression_evaluator.c:84:31: error: ‘tokens’ is a pointer; did you mean to use ‘->’?
+   84 |     for (int i = 0; i < tokens.length; ++i) {
+      |                               ^
+      |                               ->
+expression_evaluator.c:87:13: warning: enumeration value ‘NUMBER’ not handled in switch [-Wswitch]
+   87 |             switch (tokens[i].type) {
+      |             ^~~~~~
+expression_evaluator.c:87:13: warning: enumeration value ‘LPAREN’ not handled in switch [-Wswitch]
+expression_evaluator.c:87:13: warning: enumeration value ‘RPAREN’ not handled in switch [-Wswitch]
+expression_evaluator.c:87:13: warning: enumeration value ‘UNARY_MINUS’ not handled in switch [-Wswitch]
+expression_evaluator.c:87:13: warning: enumeration value ‘END_OF_EXPRESSION’ not handled in switch [-Wswitch]
+expression_evaluator.c:114:21: error: switch quantity not an integer
+  114 |             switch (tokens[i].value) {
+      |                     ^~~~~~
+expression_evaluator.c:115:17: error: case label does not reduce to an integer constant
+  115 |                 case -1.0:
+      |                 ^~~~
+expression_evaluator.c: In function ‘evaluator’:
+expression_evaluator.c:128:25: error: request for member ‘type’ in something not a structure or union
+  128 |         switch (stack[i].type) {
+      |                         ^
+expression_evaluator.c: In function ‘main’:
+expression_evaluator.c:152:27: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘:’ token
+  152 |     for (char* expression : expressions) {
+      |                           ^
+expression_evaluator.c:153:31: error: ‘expression’ undeclared (first use in this function); did you mean ‘expressions’?
+  153 |         Token* tokens = lexer(expression);
+      |                               ^~~~~~~~~~
+      |                               expressions
+expression_evaluator.c:153:31: note: each undeclared identifier is reported only once for each function it appears in
+expression_evaluator.c:155:66: error: passing argument 1 of ‘strlen’ from incompatible pointer type [-Wincompatible-pointer-types]
+  155 |         printf("%s => %f\n", expression, evaluator(stack, strlen(stack)));
+      |                                                                  ^~~~~
+      |                                                                  |
+      |                                                                  double *
+/usr/include/string.h:407:35: note: expected ‘const char *’ but argument is of type ‘double *’
+  407 | extern size_t strlen (const char *__s)
+      |                       ~~~~~~~~~~~~^~~
+expression_evaluator.c:158:35: error: ‘tokens’ is a pointer; did you mean to use ‘->’?
+  158 |         for (int i = 0; i < tokens.length - 1; ++i) {
+      |                                   ^
+      |                                   ->
+expression_evaluator.c:151:11: warning: unused variable ‘expressions’ [-Wunused-variable]
+  151 |     char* expressions[] = {"3 + 4 * (2 - 1)", "2 * 3 + 4", "2 * (3 + 4)", "8 / 2 * (2 + 2)"};
+      |           ^~~~~~~~~~~

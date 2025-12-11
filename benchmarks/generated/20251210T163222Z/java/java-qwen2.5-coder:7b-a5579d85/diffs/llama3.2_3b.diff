@@ -1,0 +1,7 @@
+--- before.java
++++ after.java
+@@ -12,7 +12,7 @@
+     public static int evaluate(String expression) {
+-        return new Parser(new Tokenizer(expression)).parse();
++        return new Parser(new TokenTokenizer(expression)).parse();
+     }

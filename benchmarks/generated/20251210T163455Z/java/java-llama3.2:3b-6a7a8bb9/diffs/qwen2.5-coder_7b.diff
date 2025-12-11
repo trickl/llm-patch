@@ -1,0 +1,10 @@
+--- before.java	2023-04-10 12:34:56.000000000 +0800
++++ after.java	2023-04-10 12:35:00.000000000 +0800
+@@ -7,7 +7,7 @@
+     public static int evaluate(String expression) {
+         List<Token> tokens = tokenize(expression);
+-        return parse(tokens).evaluate();
++        return new Parser().parse(tokens).evaluate();
+     }
+ 
+     private static class Token {

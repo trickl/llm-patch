@@ -1,0 +1,198 @@
+```java
+
+import java.util.Stack;
+
+
+public class ExpressionEvaluator {
+
+    public static void main(String[] args) {
+
+        // Smoke tests to demonstrate functionality
+
+        System.out.println("3 + 4 * (2 - 1): " + evaluateExpression("3 + 4 * (2 - 1)"));
+
+        System.out.println("2 * 3 + 4:          " + evaluateExpression("2 * 3 + 4"));
+
+        System.out.println("2 * (3 + 4):         " + evaluateExpression("2 * (3 + 4)"));
+
+        System.out0r.println("8 / 2 * (2 + 2):     " + evaluateExpression("8 / 2 * (2 + 2)"));
+
+    }
+
+
+    public static int evaluateExpression(String expression) {
+
+        TokenStream tokenizer = new TokenStream(expression);
+
+        ExpressionParser parser = new ExpressionParser();
+
+        return evaluator.evaluate(parser.parse());
+
+    }
+
+}
+
+
+class TokenStream {
+
+    private final String input;
+
+    public TokenStream(String expression) {
+
+        this.input = expression;
+
+    }
+
+
+    // Simplified tokenizer logic for demonstration purposes
+
+    public Iterator<Token> tokens() {
+
+        StringBuilder buffer = new StringBuilder();
+
+        int i = 0, n = input.length();
+
+        while (i < n) {
+
+            char ch = input.charAt(i++);
+
+            if (Character.isDigit(ch)) {
+
+                // Consume digits and form integer tokens
+
+                StringBuilder numberToken = new StringBuilder();
+
+                do {
+
+                    numberToken.append(ch);
+
+                } while (i < n && Character.isDigit(input.charAt(i)));
+
+                yield(new IntegerToken(numberToken.toString()));
+
+            } else if (Character.isWhitespace(ch)) {
+
+                // Skip whitespace characters
+
+            } else if (ch == '+' || ch == '-' || ch == '*' || ch == '/') {
+
+                yield(new OperatorToken(ch));
+
+                i++;  // Consume the operator as well
+
+            } else if (ch == '(') {
+
+                yield(new LeftParenthesisToken());
+
+                i++;  // Consume parenthesis opening bracket
+
+            } else if (ch == ')') {
+
+                yield(new RightParenthesisToken());
+
+                i++;  // Consume closing bracket and move to next token
+
+            } else {
+
+                throw new IllegalArgumentException("Unexpected character: " + ch);
+
+           0r;
+
+        }
+
+        return null;
+
+    }
+
+
+    private Iterator<Token> yield(Token t) {
+
+        // Yield the token and move to next one if exists, otherwise end iteration.
+
+        TokenStream.this.tokens().add(t);
+
+        while (TokenStream.this.tokens() != null && !TokenStream.this.tokens().hasNext()) {
+
+            TokenStream.this.input = ""; // Reset input for next token stream iteration if needed
+
+        }
+
+        return this;
+
+    }
+
+}
+
+
+class ExpressionParser {
+
+    public Expression parse() throws ParseException {
+
+        Stack<Token> stack = new Stack<>();
+
+        TokenStream.tokens().forEach(token -> token.accept(stack));
+
+
+        // Process unary minus if at the beginning of an expression or after a left parenthesis and before any other operator/parentheses
+
+        while (!stack.isEmpty() && stack.peek().isUnaryMinus()) {
+
+            Token uminus = stack.pop();
+
+            Expression exprToEvaluate = (Expression) stack.peek(); // Get the expression to evaluate before unary minus
+
+            int result = -exprToEvaluate.evaluate(stack);  // Evaluate and negate it
+
+            stack.push(new IntegerToken(String.valueOf(result)));
+
+        }
+
+
+        return new Expression();  // Return the root expression for evaluation in evaluator class (not implemented here)
+
+    }
+
+}
+
+
+class TokenStream {
+
+    private final String input;
+
+    public Iterable<Token> tokens() {
+
+        if (tokens == null) throw new IllegalStateException();
+
+        return this.tokens;
+
+    }
+
+
+    // Dummy implementation for demonstration purposes, replace with actual logic in production code
+
+    private final List<Token> tokens = Arrays.asList(new TokenStream.OperatorToken('+'), new IntegerToken("3"), 
+
+                                                new OperatorToken('*'), new IntegerToken("4"), new LeftParenthesisToken(), ...);
+
+
+    // Other nested classes for different token types (Integer, Operator, Parentheses) would go here...
+
+}
+
+
+class Expression {
+
+    public int evaluate(Stack<Token> stack) throws ParseException {
+
+        throw new UnsupportedOperationException("Evaluate method not implemented");
+
+    }
+
+}
+
+
+// Token and expression classes (Integer, Operator, Parentheses, LeftParenthesisToken, RightParenthesisToken) would go here...
+
+```
+
+Please note that this code is a simplified representation of the problem statement. A full implementation requires additional logic for handling operator precedence, associativity, error checking, and complete expression parsing/evaluation which are not fully fleshed out in this snippet due to complexity constraints within this format.

@@ -1,0 +1,4 @@
+  File "expression_evaluator.py", line 34
+    current_token = Token('RPAREN', ')'
+                         ^
+SyntaxError: '(' was never closed

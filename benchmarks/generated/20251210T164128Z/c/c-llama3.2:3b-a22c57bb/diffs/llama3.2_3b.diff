@@ -1,0 +1,15 @@
+// before.c
+// ...
+
+// ... (rest of the file remains the same)
+
+// --- before.c    2023-02-20 14:30:00.000000000 +0000
+//+++ after.c    2023-02-20 14:30:01.000000000 +0000
+//@@ -123,7 +123,7 @@ 
+//  } else if (expression[i] == '\x08') {
+//  int start = i;
+//  while (i < length && expression[i] != '\x08') {
+//+  ++i;
+//-  ++i;
+//  double value = 0; // default value for backspace
+//  tokens[i - start] = {END_OF_EXPRESSION, value, NULL};

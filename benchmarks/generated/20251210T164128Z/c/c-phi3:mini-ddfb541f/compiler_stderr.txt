@@ -1,0 +1,15 @@
+expression_evaluator.c:1:14: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘:’ token
+    1 | **Constraints:
+      |              ^
+expression_evaluator.c:3:34: warning: missing terminating ' character
+    3 | You areas, can youtale oralize it'in
+      |                                  ^
+expression_evaluator.c:3:34: error: missing terminating ' character
+    3 | You areas, can youtale oralize it'in
+      |                                  ^~~
+expression_evaluator.c:9:3: error: invalid preprocessing directive #Installs
+    9 | # Installs a) to answer in an essayinglish and the second-like this time"s sake of allergia, I amusement_instruction:
+      |   ^~~~~~~~
+expression_evaluator.c:9:73: warning: missing terminating " character
+    9 | # Installs a) to answer in an essayinglish and the second-like this time"s sake of allergia, I amusement_instruction:
+      |                                                                         ^

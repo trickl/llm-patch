@@ -1,0 +1,44 @@
+--- before.c
++++ before.c
+@@ -3,6 +3,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+
++#include <ctype.h>  // Added include for isdigit function
+
+// Token type enum
+typedef enum {
+    NUMBER,
+    PLUS,
+@@ -120,7 +121,7 @@ double evaluator(Token* ast) {
+     if (ast == NULL) return 0.0;
+
+     double value = ast->value;
+-    if (ast->type == NUMBER) return value;
++    if (ast->type == NUMBER) return value;
+     else if (ast->type == PLUS) {
+         Token* operand = parser(ast.next);  // Fixed syntax error
+         if (operand == NULL) return 0.0; // invalid syntax
+@@ -125,7 +126,7 @@ double evaluator(Token* ast) {
+         value += evaluator(operand);
+         free(operand);
+     } else if (ast->type == MINUS) {
+-        Token* operand = parser(ast.next);  // Fixed syntax error
++        Token* operand = parser(ast->next);  // Fixed syntax error
+         if (operand == NULL) return 0.0; // invalid syntax
+         value -= evaluator(operand);
+         free(operand);
+@@ -130,7 +131,7 @@ double evaluator(Token* ast) {
+     } else if (ast->type == MUL) {
+-        Token* operand = parser(ast.next);  // Fixed syntax error
++        Token* operand = parser(ast->next);  // Fixed syntax error
+         if (operand == NULL) return 0.0; // invalid syntax
+         value *= evaluator(operand);
+         free(operand);
+@@ -135,7 +136,7 @@ double evaluator(Token* ast) {
+     } else if (ast->type == DIV) {
+-        Token* operand = parser(ast.next);  // Fixed syntax error
++        Token* operand = parser(ast->next);  // Fixed syntax error
+         if (operand == NULL) return 0.0; // invalid syntax
+         value /= evaluator(operand);
+         free(operand);

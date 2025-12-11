@@ -1,0 +1,62 @@
+--- before.ts
++++ before.ts
+@@ -103,5 +103,2 @@
+ type Token = { type: 'number' | 'operator' | 'parenthesis'; value: string };
+
+ const isNumber = (char: string): boolean => !isNaN(Number(char));
+-const isOperator = (char: string): boolean => '+-*/'.includes(char);
+-const isParenthesis = (char: string): boolean => char === '(' || char === ')';
+
+ function tokenize(input: string): Token[] {
+     const tokens: Token[] = [];
+@@ -108,3 +115,2 @@
+         if (token.type === 'number') {
+             values.push(Number(token.value));
+         } else if (token.type === 'operator' && token.value !== '(') {
+-            while (
+-                operators.length > 0 &&
+-                precedence(operators[operators.length - 1]) >= precedence(token.value)
+-            ) {
+-                const operator = operators.pop()!;
+-                const b = values.pop()!;
+-                const a = values.pop()!;
+-                values.push(applyOperator(a, b, operator));
+-            }
+             operators.push(token.value);
+         } else if (token.value === '(') {
+@@ -113,2 +119,2 @@
+     }
+
+-    while (operators.length > 0) {
+-        const operator = operators.pop()!;
+-        const b = values.pop()!;
+-        const a = values.pop()!;
+-        values.push(applyOperator(a, b, operator));
++    return values;
+     }
+
+@@ -123,2 +129,2 @@
+         }
+     }
+
+-    return values;
++    return result[0];
+ }
+
+ export function evaluateExpression(input: string): number {
+     const tokens = tokenize(input);
+     const result = parse(tokens);
+-    if (result.length !== 1) throw new Error('Invalid expression');
+-    return result[0];
+ }
+
+ // CLI example
+-if (require.main === module) {
++if (typeof require !== 'undefined' && require.main === module) {
+     const input = process.argv[2] || '3 + 4 * (2 - 1)';
+     try {
+         console.log(`Result: ${evaluateExpression(input)}`);
+     } catch (error) {
+         console.error(`Error: ${error.message}`);
+     }
+ }

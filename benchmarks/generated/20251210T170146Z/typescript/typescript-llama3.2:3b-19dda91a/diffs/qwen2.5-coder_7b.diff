@@ -1,0 +1,50 @@
+--- before.ts
++++ before.ts
+@@ -37,12 +37,12 @@ class ExpressionEvaluator {
+     return outputQueue[0];
+   }
+ 
+-  private applyOperator(operator: string, leftOperand: number, rightOperand: number): void {
++  private applyOperator(operator: '+' | '-' | '*' | '/', leftOperand: number, rightOperand: number): void {
+     switch (operator) {
+       case '+':
+         outputQueue.push(leftOperand + rightOperand);
+         break;
+-      case '-':
++      case '-': // This line was already correct
+         outputQueue.push(leftOperand - rightOperand);
+         break;
+       case '*':
+@@ -62,11 +62,11 @@ class ExpressionEvaluator {
+     return outputQueue[0];
+   }
+ 
+-  private applyOperator(operator: string, leftOperand: number, rightOperand: number): void {
++  private applyOperator(operator: '+' | '-' | '*' | '/', leftOperand: number, rightOperand: number): void {
+     switch (operator) {
+       case '+':
+         outputQueue.push(leftOperand + rightOperand);
+         break;
+-      case '-':
++      case '-': // This line was already correct
+         outputQueue.push(leftOperand - rightOperand);
+         break;
+       case '*':
+@@ -86,9 +86,9 @@ export function evaluateExpression(input: string): number {
+   }
+ 
+   const input = '1 + 2';
+-  console.log(evaluateExpression(input)); // Output: 3
++  console.log(evaluateExpression(input!)); // Output: 3
+ 
+   input = '2 * 3 + 4';
+-  console.log(evaluateExpression(input)); // Output: 10
++  console.log(evaluateExpression(input!)); // Output: 10
+ 
+   input = '2 * (3 + 4)';
+-  console.log(evaluateExpression(input)); // Output: 14
++  console.log(evaluateExpression(input!)); // Output: 14
+ 
+   input = '8 / 2 * (2 + 2)';
+-  console.log(evaluateExpression(input)); // Output: 16
++  console.log(evaluateExpression(input!)); // Output: 16

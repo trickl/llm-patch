@@ -1,0 +1,19 @@
+{
+  "case_id": "java-llama3.2:3b-778c9107",
+  "language": "java",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "git",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "patch_applied": true,
+  "patch_diagnostics": "applied",
+  "compile_returncode": 1,
+  "errors_before": 22,
+  "errors_after": 22,
+  "first_error_removed": false,
+  "added_lines": 204,
+  "removed_lines": 204,
+  "hunks": 0,
+  "delete_only": false,
+  "success": false,
+  "notes": ""
+}

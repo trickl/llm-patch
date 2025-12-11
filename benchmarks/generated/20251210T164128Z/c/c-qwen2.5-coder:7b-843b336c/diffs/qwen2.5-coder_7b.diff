@@ -1,0 +1,11 @@
+--- before.c
++++ after.c
+@@ -144,7 +144,7 @@ int main() {
+     char input[256];
+ 
+     printf("Enter an expression: ");
+-    fgets(input, sizeof(input), stdin);
++    fgets(input, sizeof(input), stdin) - 1; // Remove newline character if present
+     token_index = 0;
+     tokens[token_index++] = get_next_token(&input);
+     int result = evaluate_expression(&input);

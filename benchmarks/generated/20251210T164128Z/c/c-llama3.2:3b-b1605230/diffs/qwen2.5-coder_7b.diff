@@ -1,0 +1,51 @@
+--- before.c
++++ before.c
+@@ -3,6 +3,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+
++#include <ctype.h>  // Added include for isdigit function
+
+// Token types
+typedef enum {
+    NUMBER,
+    PLUS,
+@@ -129,7 +130,7 @@ Token* parse(Token* tokens) {
+                 double result = 0.0;
+
+                 if (operator.type == PLUS) {
+-                    result = left.value + right.value;
++                    result = left->value + right->value;  // Fixed pointer usage
+                 } else if (operator.type == MINUS) {
+-                    result = left.value - right.value;
++                    result = left->value - right->value;  // Fixed pointer usage
+                 } else if (operator.type == MUL) {
+-                    result = left.value * right.value;
++                    result = left->value * right->value;  // Fixed pointer usage
+                 } else if (operator.type == DIV) {
+                     if (right.value != 0.0) {
+-                        result = left.value / right.value;
++                        result = left->value / right->value;  // Fixed pointer usage
+                     } else {
+                         printf("Error: Division by zero\n");
+                         exit(1);
+@@ -146,7 +147,7 @@ Token* parse(Token* tokens) {
+                 }
+
+                 output[tokenIndex] = {NUMBER, result, NULL};
+-                tokenIndex += 2;
++                tokenIndex += 3;  // Fixed index increment
+             }
+         }
+     }
+
+@@ -156,7 +157,7 @@ double evaluate(Token* tokens) {
+     Token* output = parse(tokens);
+
+     double result = output->value;
+
+-    for (int i = 0; i < 100; i++) {
++    for (int i = 0; i < 10; i++) {  // Fixed loop condition
+         if (output[i].type == NUMBER || output[i].type == UNARY_MINUS) {
+             continue;
+         } else {

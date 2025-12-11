@@ -1,0 +1,47 @@
+--- before.ts
++++ before.ts
+@@ -135,7 +135,7 @@ class ExpressionEvaluator {
+     return output;
+   }
+ 
+-  private parse(tokens: Token[]): number[] {
++  private parse(tokens: Token[]): number[] {
+     const output: number[] = [];
+     let currentNumber = '';
+     for (const token of tokens) {
+@@ -141,7 +141,7 @@ class ExpressionEvaluator {
+       if (token.type === 'NUMBER') {
+         currentNumber += token.value.toString();
+       } else {
+-        if (currentNumber !== '') {
++        if (currentNumber !== '') {
+           output.push(parseInt(currentNumber));
+           currentNumber = '';
+         }
+@@ -148,7 +148,7 @@ class ExpressionEvaluator {
+     return output;
+   }
+ 
+-  private evaluate(expression: number[]): number {
++  private evaluate(expression: number[]): number {
+     const stack: number[] = [];
+     for (const token of expression) {
+       switch (token) {
+@@ -156,7 +156,7 @@ class ExpressionEvaluator {
+         break;
+       case -1:
+         // -
+-        break;
++        break;
+       case 2:
+         // *
+         break;
+@@ -164,7 +164,7 @@ class ExpressionEvaluator {
+         break;
+       default:
+         stack.push(token);
+-      }
++      }
+     }
+ 
+     let result = stack.pop() as number;

@@ -1,0 +1,16 @@
+--- before.java	2019-10-07 14:38:56.000000000 -0700
++++ after.java	2019-10-07 14:38:56.000000000 -0700
+@@ -14,7 +14,7 @@
+                        tokens.add(new Token(currentToken.toString(), Token.Type.SPACE));
++                type = TokenType.SPACE; // Added this line to define the variable Type before its use
+-                    tokens.add(new Token(new Token(currentToken.toString(), Token.Type.OPERATOR)));
++                    tokens.add(new Token(String.valueOf(c), new TokenType().MINUS)); // Changed this line to define the variable Type before its use and corrected the token type for operators
+@@ -34,7 +34,7 @@
+                        tokens.add(new Token(currentToken.toString(), Token.Type.OPERATOR));
++                type = TokenType.OPERATOR; // Added this line to define the variable Type before its use
+-                    tokens.add(new Token(String.valueOf(c), Token.Type.OPERATOR));
++                    tokens.add(new Token(String.valueOf(c), new TokenType().MINUS)); // Changed this line to define the variable Type before its use and corrected the token type for operators
+@@ -50,7 +50,7 @@
+                if (token.type == Token.Type.OPERATOR) {
+-                    tokens.add(new Token(currentToken.toString(), new TokenType().TYPE)); // Removed this line as it's not needed and the variable Type is already defined above
++                    tokens.add(new Token(token.value, type)); // Changed to use the previously added token value instead of a string literal for operator types

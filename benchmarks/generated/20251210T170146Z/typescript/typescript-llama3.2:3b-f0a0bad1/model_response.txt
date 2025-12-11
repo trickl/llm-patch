@@ -1,0 +1,135 @@
+```typescript
+// expression_evaluator.ts
+
+class ExpressionEvaluator {
+  private precedence: { [operator: string]: number } = {
+    '+': 1,
+    '-': 1,
+    '*': 2,
+    '/': 2,
+  };
+
+  public evaluateExpression(input: string): number {
+    const tokens = this.tokenize(input);
+    return this.parse(tokens).value;
+  }
+
+  private tokenize(input: string): Token[] {
+    const output = [];
+    let currentToken = '';
+
+    for (const char of input) {
+      if (char.match(/[\d\+\-\*\/\(\)\s]/)) {
+        currentToken += char;
+      } else if (currentToken && !this.isWhitespace(char)) {
+        output.push(new Token(currentToken, this.getOperator(char)));
+        currentToken = '';
+      }
+    }
+
+    if (currentToken) {
+      output.push(new Token(currentToken, null));
+    }
+
+    return output.filter((token) => token.value !== '');
+  }
+
+  private isWhitespace(char: string): boolean {
+    return char === ' ' || char === '\t' || char === '\n';
+  }
+
+  private getOperator(char: string): string | null {
+    if (char === '(') return char;
+    if (this.isWhitespace(char)) return null;
+    const operator = this.precedence[char];
+    return operator ? operator : null;
+  }
+
+  private parse(tokens: Token[]): ParseResult {
+    const outputQueue: number[] = [];
+    const operatorStack: string[] = [];
+
+    for (const token of tokens) {
+      if (token.type === 'number') {
+        outputQueue.push(parseInt(token.value));
+      } else if (token.type === 'operator' && token.operator) {
+        while (
+          operatorStack.length &&
+          this.getPrecedence(operatorStack[operatorStack.length - 1]) >=
+            this.getPrecedence(token.operator)
+        ) {
+          const rightOperand = outputQueue.pop();
+          const leftOperand = outputQueue.pop();
+          const newOperator = operatorStack.pop() as string;
+          const result = this.evaluateExpression(
+            `${leftOperand} ${newOperator} ${rightOperand}`
+          );
+          outputQueue.push(result);
+        }
+        operatorStack.push(token.operator);
+      } else if (token.type === 'operator' && token.operator === '(') {
+        operatorStack.push(token.operator);
+      } else if (token.type === 'operator' && token.operator === ')') {
+        while (
+          operatorStack.length &&
+          operatorStack[operatorStack.length - 1] !== '('
+        ) {
+          const rightOperand = outputQueue.pop();
+          const leftOperand = outputQueue.pop();
+          const newOperator = operatorStack.pop() as string;
+          const result = this.evaluateExpression(
+            `${leftOperand} ${newOperator} ${rightOperand}`
+          );
+          outputQueue.push(result);
+        }
+        if (operatorStack.length === 0 || operatorStack[operatorStack.length - 1] !== '(') {
+          throw new Error('Unbalanced parentheses');
+        }
+      } else if (token.type === 'number' && token.value === '-') {
+        const rightOperand = outputQueue.pop();
+        const leftOperand = outputQueue.pop();
+        const result = this.evaluateExpression(
+          `${leftOperand} - ${rightOperand}`
+        );
+        outputQueue.push(result);
+      }
+    }
+
+    while (operatorStack.length) {
+      const rightOperand = outputQueue.pop();
+      const leftOperand = outputQueue.pop();
+      const newOperator = operatorStack.pop() as string;
+      const result = this.evaluateExpression(
+        `${leftOperand} ${newOperator} ${rightOperand}`
+      );
+      outputQueue.push(result);
+    }
+
+    return { value: outputQueue[0] };
+  }
+
+  private getPrecedence(operator: string): number {
+    return this.precedence[operator];
+  }
+}
+
+class Token {
+  public type: 'number' | 'operator';
+  public operator?: string;
+  public value: string;
+
+  constructor(value: string, operator?: string) {
+    this.type = 'number' || 'operator';
+    this.operator = operator;
+    this.value = value;
+  }
+}
+
+class ParseResult {
+  public value: number;
+}
+
+export function evaluateExpression(input: string): number {
+  return new ExpressionEvaluator().evaluateExpression(input);
+}
+```

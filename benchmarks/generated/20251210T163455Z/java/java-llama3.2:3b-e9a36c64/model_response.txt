@@ -1,0 +1,168 @@
+```java
+import java.util.*;
+
+public class ExpressionEvaluator {
+
+    public static void main(String[] args) {
+        System.out.println(evaluate("1 + 2"));
+        System.out.println(evaluate("2 * 3 + 4"));
+        System.out.println(evaluate("2 * (3 + 4)"));
+        System.out.println(evaluate("8 / 2 * (2 + 2)"));
+    }
+
+    public static int evaluate(String expression) {
+        return new ExpressionEvaluator().evaluate(expression);
+    }
+
+    private static class Token {
+        String type;
+        Double value;
+
+        Token(String type, Double value) {
+            this.type = type;
+            this.value = value;
+        }
+    }
+
+    private static class Lexer {
+        List<Token> tokens;
+
+        Lexer(String expression) {
+            tokens = new ArrayList<>();
+            tokenize(expression);
+        }
+
+        void tokenize(String expression) {
+            StringBuilder currentToken = new StringBuilder();
+            for (char c : expression.toCharArray()) {
+                if (Character.isWhitespace(c)) {
+                    if (currentToken.length() > 0) {
+                        addToken(currentToken.toString());
+                        currentToken.setLength(0);
+                    }
+                } else if (c == '(' || c == ')') {
+                    if (currentToken.length() > 0) {
+                        addToken(currentToken.toString());
+                        currentToken.setLength(0);
+                    }
+                    tokens.add(new Token(String.valueOf(c), null));
+                } else if (Character.isDigit(c)) {
+                    currentToken.append(c);
+                } else if (c == '+' || c == '-' || c == '*' || c == '/') {
+                    if (currentToken.length() > 0) {
+                        addToken(currentToken.toString());
+                        currentToken.setLength(0);
+                    }
+                    tokens.add(new Token(String.valueOf(c), null));
+                }
+            }
+            if (currentToken.length() > 0) {
+                addToken(currentToken.toString());
+            }
+        }
+
+        void addToken(String token) {
+            try {
+                Double value = Double.parseDouble(token);
+                tokens.add(new Token("NUMBER", value));
+            } catch (NumberFormatException e) {
+                // Ignore
+            }
+        }
+    }
+
+    private static class Parser {
+        List<Token> tokens;
+
+        Parser(List<Token> tokens) {
+            this.tokens = tokens;
+        }
+
+        int parse() {
+            return parseExpression();
+        }
+
+        int parseExpression() {
+            int left = parseTerm();
+            while (true) {
+                if (tokens.get(0).type.equals("ADD")) {
+                    tokens.remove(0);
+                    int right = parseTerm();
+                    if (right == Integer.MIN_VALUE) {
+                        throw new RuntimeException("Malformed expression");
+                    }
+                    return left + right;
+                } else if (tokens.get(0).type.equals("SUB")) {
+                    tokens.remove(0);
+                    int right = parseTerm();
+                    if (right == Integer.MIN_VALUE) {
+                        throw new RuntimeException("Malformed expression");
+                    }
+                    return left - right;
+                } else {
+                    break;
+                }
+            }
+            return left;
+        }
+
+        int parseTerm() {
+            int left = parseFactor();
+            while (true) {
+                if (tokens.get(0).type.equals("MUL")) {
+                    tokens.remove(0);
+                    int right = parseFactor();
+                    if (right == Integer.MIN_VALUE) {
+                        throw new RuntimeException("Malformed expression");
+                    }
+                    return left * right;
+                } else if (tokens.get(0).type.equals("DIV")) {
+                    tokens.remove(0);
+                    int right = parseFactor();
+                    if (right == Integer.MIN_VALUE) {
+                        throw new RuntimeException("Malformed expression");
+                    }
+                    if (right == 0) {
+                        return Integer.MIN_VALUE;
+                    }
+                    return left / right;
+                } else {
+                    break;
+                }
+            }
+            return left;
+        }
+
+        int parseFactor() {
+            if (tokens.get(0).type.equals("NUMBER")) {
+                tokens.remove(0);
+                return (int) tokens.get(0).value;
+            } else if (tokens.get(0).type.equals("UNARY_MINUS")) {
+                tokens.remove(0);
+                return -parseFactor();
+            } else if (tokens.get(0).type.equals("(")) {
+                tokens.remove(0);
+                int result = parseExpression();
+                tokens.add(new Token("(", null));
+                return result;
+            } else {
+                throw new RuntimeException("Malformed expression");
+            }
+        }
+    }
+
+    private static class Evaluator {
+        public int evaluate(List<Token> tokens) {
+            Parser parser = new Parser(tokens);
+            return parser.parse();
+        }
+    }
+
+    public int evaluate(String expression) {
+        Lexer lexer = new Lexer(expression);
+        List<Token> tokens = lexer.tokens;
+        Evaluator evaluator = new Evaluator();
+        return evaluator.evaluate(tokens);
+    }
+}
+```

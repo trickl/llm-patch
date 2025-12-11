@@ -1,0 +1,5 @@
+--- before.ts
++++ patched.ts
+@@ -1 +1 @@
+-Your task, I amend your answer key=instruction:
++Your task, I amend your answer

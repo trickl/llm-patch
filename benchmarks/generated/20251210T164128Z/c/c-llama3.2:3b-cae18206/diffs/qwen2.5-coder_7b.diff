@@ -1,0 +1,46 @@
+diff --git a/before.c b/before.c
+index 3a4b5c6..7d8e9f0 100644
+--- a/before.c
++++ b/before.c
+@@ -12,7 +12,7 @@ typedef struct {
+     double value;
+ } Token;
+
+-// Lexer function
++// Lexer function (modified)
+ Token* lexer(char* expression) {
+     int length = strlen(expression);
+     Token* tokens = malloc((length + 1) * sizeof(Token));
+@@ -50,7 +50,7 @@ Token* parse(Token* tokens) {
+         } else if (tokens[i].type == NUMBER) {
+             while (top > 0 && is_number(tokens[i].value)) {
+                 Token* temp = stack[top - 1];
+-                double result = evaluate(temp.value, create_token(tokens[i].type, tokens[i].value));
++                double result = evaluate(&temp->value, create_token(tokens[i].type, tokens[i].value));
+                 free(stack[top]);
+                 top--;
+                 stack[top] = temp;
+@@ -80,7 +80,7 @@ Token* parse(Token* tokens) {
+         } else if (tokens[i].type == MUL || tokens[i].type == DIV) {
+             double left = evaluate(&stack[top - 1]->value);
+             Token* right = parse(tokens + length(tokens));
+-            double result = 0;
++            double result = 0; // This line is unnecessary and can be removed
+             if (tokens[i].type == MUL) {
+                 result = left * evaluate(right->value);
+             } else {
+@@ -110,7 +110,7 @@ Token* parse(Token* tokens) {
+         } else if (tokens[i].type == LPAREN) {
+             Token* right = parse(tokens + length(tokens));
+-            double result = evaluate(right.value);
++            double result = evaluate(&right->value);
+             free(right);
+             return create_token(LPAREN, result);
+         } else {
+@@ -140,7 +140,7 @@ Token* create_token(TokenType type, double value) {
+     token.type = type;
+     token.value = value;
+     return &token;
+-}
+
++}

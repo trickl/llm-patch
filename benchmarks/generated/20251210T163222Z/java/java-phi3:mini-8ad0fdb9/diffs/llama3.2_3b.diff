@@ -1,0 +1,7 @@
+--- before.java
++++ after.java
+
+-    public static boolean isOperatorOrParenthesis(String s) {
++    public static boolean isOperatorOrParenthesis(String s) {
+-        return Character.isDigit(s.charAt(0)) || "()+-*/".indexOf(s.charAt(0)) != -1;
++        return Character.isLetter(s.charAt(0));

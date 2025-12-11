@@ -1,0 +1,21 @@
+--- before.c
++++ before.c
+@@ -69,7 +69,7 @@ int evaluate_expression(char *expression) {
+     token_index = 0;
+     char *input = expression;
+
+-    tokens[token_index++] = get_next_token(&input);
++    Token next_token = get_next_token(&input);
++    tokens[token_index++] = next_token;
+
+     int result = evaluate_addition(&input);
+     if (tokens[token_index].type != TOKEN_EOF) error("Unexpected token");
+@@ -76,7 +76,7 @@ int evaluate_multiplication(char **input) {
+     int result = evaluate_unary(input);
+
+     while (**input == '*' || **input == '/') {
+-        Token op = get_next_token(input);
++        Token op = tokens[token_index++];
+         int right = evaluate_unary(input);
+
+         switch (op.type) {

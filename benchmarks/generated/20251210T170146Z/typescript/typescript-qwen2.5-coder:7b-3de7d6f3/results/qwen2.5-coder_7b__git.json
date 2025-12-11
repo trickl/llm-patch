@@ -1,0 +1,19 @@
+{
+  "case_id": "typescript-qwen2.5-coder:7b-3de7d6f3",
+  "language": "typescript",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "git",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "patch_applied": false,
+  "patch_diagnostics": "error: corrupt patch at line 9",
+  "compile_returncode": null,
+  "errors_before": 4,
+  "errors_after": null,
+  "first_error_removed": false,
+  "added_lines": 2,
+  "removed_lines": 0,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": ""
+}

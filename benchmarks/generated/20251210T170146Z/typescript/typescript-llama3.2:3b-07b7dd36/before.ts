@@ -1,0 +1,106 @@
+// expression_evaluator.ts
+
+class ExpressionEvaluator {
+  private precedence: { [operator: string]: number };
+
+  constructor() {
+    this.precedence = {
+      '+': 1,
+      '-': 1,
+      '*': 2,
+      '/': 2,
+    };
+  }
+
+  public evaluateExpression(input: string): number {
+    const tokens = this.tokenize(input);
+    return this.parse(tokens).value;
+  }
+
+  private tokenize(input: string): Token[] {
+    const output: Token[] = [];
+    let currentToken = '';
+    for (const char of input) {
+      if (char.match(/[\d+*/()-]/)) {
+        if (currentToken) {
+          output.push({ type: 'number', value: parseInt(currentToken, 10) });
+          currentToken = '';
+        }
+        output.push({ type: 'operator', value: char });
+      } else {
+        currentToken += char;
+      }
+    }
+    if (currentToken) {
+      output.push({ type: 'number', value: parseInt(currentToken, 10) });
+    }
+    return output;
+  }
+
+  private parse(tokens: Token[]): ParseTree {
+    const operatorStack = [];
+    let outputQueue: number[] = [];
+
+    for (const token of tokens) {
+      if (token.type === 'operator') {
+        while (
+          operatorStack.length &&
+          this.precedence[operatorStack[operatorStack.length - 1].value] >=
+            this.precedence[token.value]
+        ) {
+          outputQueue.push(operatorStack.pop()!);
+        }
+        operatorStack.push(token);
+      } else if (token.type === 'number') {
+        outputQueue.push(token.value);
+      } else if (token.type === 'leftParenthesis') {
+        operatorStack.push(token);
+      } else if (token.type === 'rightParenthesis' || token.type === 'minus') {
+        while (operatorStack.length && operatorStack[operatorStack.length - 1].type !== 'leftParenthesis') {
+          outputQueue.push(operatorStack.pop()!);
+        }
+        if (operatorStack.length) {
+          operatorStack.pop();
+        } else {
+          throw new Error('Unbalanced parentheses');
+        }
+      }
+    }
+
+    while (operatorStack.length) {
+      outputQueue.push(operatorStack.pop()!);
+    }
+
+    return this.evaluate(outputQueue);
+  }
+
+  private evaluate(tokens: number[]): number {
+    const stack = [];
+    for (const token of tokens) {
+      if (typeof token === 'number') {
+        stack.push(token);
+      } else if (token === '+') {
+        const rightOperand = stack.pop()!;
+        const leftOperand = stack.pop()!;
+        stack.push(leftOperand + rightOperand);
+      } else if (token === '-') {
+        const operand = stack.pop()! as number;
+        stack.push(-operand);
+      } else if (token === '*') {
+        const rightOperand = stack.pop()!;
+        const leftOperand = stack.pop()!;
+        stack.push(leftOperand * rightOperand);
+      } else if (token === '/') {
+        const rightOperand = stack.pop()!;
+        const leftOperand = stack.pop()!;
+        stack.push(Math.floor(leftOperand / rightOperand));
+      }
+    }
+
+    return stack[0];
+  }
+}
+
+export function evaluateExpression(input: string): number {
+  return new ExpressionEvaluator().evaluateExpression(input);
+}

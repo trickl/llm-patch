@@ -1,0 +1,12 @@
+--- before.java
++++ after.java
+@@ -69,7 +69,8 @@
+     Token parse() {
+-        if (pos >= tokens.size()) {
++        if (pos >= tokens.size()) {
+             throw new RuntimeException("Unexpected end of input");
+         }
+         String type = tokens.get(pos).type;
+         Object value = tokens.get(pos++).value;
+-        return new Token(type, value);
++        return new Token(type, value);

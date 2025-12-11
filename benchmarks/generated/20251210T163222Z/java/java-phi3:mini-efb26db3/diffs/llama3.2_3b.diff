@@ -1,0 +1,8 @@
+--- before.java
++++ after.java
+@@ -75,7 +75,8 @@
+ } else {
+-  // do nothing
++  if (true) {
++
+     }

@@ -1,0 +1,99 @@
+ExpressionEvaluator.java:96: error: method parse() is already defined in class Parser
+        private int parse() throws Exception {
+                    ^
+ExpressionEvaluator.java:6: error: cannot find symbol
+        return new Tokenizer().tokenize(expression).parse().evaluate();
+                                                   ^
+  symbol:   method parse()
+  location: interface List<Token>
+ExpressionEvaluator.java:10: error: cannot find symbol
+        private List<Token> tokens = tokenize(expression);
+                                              ^
+  symbol:   variable expression
+  location: class Tokenizer
+ExpressionEvaluator.java:20: error: incompatible types: char cannot be converted to String
+                    output.add(new Token(c, Token.Type.PAREN));
+                                         ^
+ExpressionEvaluator.java:22: error: incompatible types: char cannot be converted to String
+                    output.add(new Token(c, Token.Type.OPERATOR));
+                                         ^
+ExpressionEvaluator.java:41: error: type has private access in Token
+                switch (token.type) {
+                             ^
+ExpressionEvaluator.java:43: error: value has private access in Token
+                        evaluateNumber(token.value);
+                                            ^
+ExpressionEvaluator.java:46: error: value has private access in Token
+                        if (token.value.equals("+") || token.value.equals("-")) {
+                                 ^
+ExpressionEvaluator.java:46: error: value has private access in Token
+                        if (token.value.equals("+") || token.value.equals("-")) {
+                                                            ^
+ExpressionEvaluator.java:48: error: value has private access in Token
+                        } else if (token.value.equals("*") || token.value.equals("/")) {
+                                        ^
+ExpressionEvaluator.java:48: error: value has private access in Token
+                        } else if (token.value.equals("*") || token.value.equals("/")) {
+                                                                   ^
+ExpressionEvaluator.java:67: error: incompatible types: void cannot be converted to int
+            int rightOperand = parse();
+                                    ^
+ExpressionEvaluator.java:68: error: incompatible types: void cannot be converted to int
+            int leftOperand = parse();
+                                   ^
+ExpressionEvaluator.java:70: error: value has private access in Token
+            if (operator.value.equals("+")) {
+                        ^
+ExpressionEvaluator.java:72: error: value has private access in Token
+            } else if (operator.value.equals("-")) {
+                               ^
+ExpressionEvaluator.java:80: error: incompatible types: void cannot be converted to int
+            int rightOperand = parse();
+                                    ^
+ExpressionEvaluator.java:81: error: incompatible types: void cannot be converted to int
+            int leftOperand = parse();
+                                   ^
+ExpressionEvaluator.java:83: error: value has private access in Token
+            if (operator.value.equals("*")) {
+                        ^
+ExpressionEvaluator.java:85: error: value has private access in Token
+            } else if (operator.value.equals("/")) {
+                               ^
+ExpressionEvaluator.java:92: error: incompatible types: void cannot be converted to int
+            int result = parse();
+                              ^
+ExpressionEvaluator.java:105: error: type has private access in Token
+                switch (token.type) {
+                             ^
+ExpressionEvaluator.java:107: error: value has private access in Token
+                        if (token.value.equals("+") || token.value.equals("-")) {
+                                 ^
+ExpressionEvaluator.java:107: error: value has private access in Token
+                        if (token.value.equals("+") || token.value.equals("-")) {
+                                                            ^
+ExpressionEvaluator.java:109: error: value has private access in Token
+                        } else if (token.value.equals("*") || token.value.equals("/")) {
+                                        ^
+ExpressionEvaluator.java:109: error: value has private access in Token
+                        } else if (token.value.equals("*") || token.value.equals("/")) {
+                                                                   ^
+ExpressionEvaluator.java:125: error: type has private access in Token
+                switch (token.type) {
+                             ^
+ExpressionEvaluator.java:127: error: value has private access in Token
+                        if (token.value.equals("*") || token.value.equals("/")) {
+                                 ^
+ExpressionEvaluator.java:127: error: value has private access in Token
+                        if (token.value.equals("*") || token.value.equals("/")) {
+                                                            ^
+ExpressionEvaluator.java:140: error: type has private access in Token
+            switch (token.type) {
+                         ^
+ExpressionEvaluator.java:143: error: value has private access in Token
+                    return Integer.parseInt(token.value);
+                                                 ^
+ExpressionEvaluator.java:146: error: incompatible types: void cannot be converted to int
+                    int result = parse();
+                                      ^
+Note: Some messages have been simplified; recompile with -Xdiags:verbose to get full output
+31 errors

@@ -1,0 +1,23 @@
+--- before.ts
++++ before.ts
+@@ -58,7 +58,7 @@ class ExpressionEvaluator {
+     const operatorStack = [];
+     let outputQueue: number[] = [];
+
+-    for (const token of tokens) {
++    for (const token of tokens.filter(t => t !== undefined)) {
+       if (!this.isOperator(token)) {
+         outputQueue.push(parseInt(token));
+       } else if (token === '(') {
+@@ -80,7 +80,7 @@ class ExpressionEvaluator {
+     while (operatorStack.length) {
+       const op = operatorStack.pop();
+       const rightOperand = outputQueue.pop();
+-      const leftOperand = outputQueue.pop();
++      const leftOperand = outputQueue[outputQueue.length - 1];
+       this.applyOperator(op, leftOperand, rightOperand);
+     }
+
+@@ -89,7 +89,7 @@ export function evaluateExpression(input: string): number {
+   return new ExpressionEvaluator().evaluateExpression(input);
+ }

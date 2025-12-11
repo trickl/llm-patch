@@ -1,0 +1,13 @@
+{
+  "case_id": "java-llama3.2:3b-778c9107",
+  "language": "java",
+  "problem_id": "expr_eval_v1",
+  "model": "llama3.2:3b",
+  "provider": "ollama",
+  "timestamp_utc": "2025-12-10T16:33:24.068963+00:00",
+  "compile_command": [
+    "javac",
+    "ExpressionEvaluator.java"
+  ],
+  "return_code": 1
+}

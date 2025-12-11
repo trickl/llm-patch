@@ -1,0 +1,45 @@
+--- before.ts
++++ patched_before_ts
+@@ -75,85 +75,85 @@
+     while (this.pos  this.input.length && /\+\-*/\s/.test(this.input[this.pos])) {
+-        const tokenType = this.input[this.pos];
++        const tokenType = this.tokens[this.pos].type;
+         switch (tokenType) {
+             case '+':
+                 if (this.tokens[this.pos + 1].type === TokenType.NUMBER) {
+                     this.parseAddition();
+                 } else {
+                     throw new Error(`Expected operand at position ${this.pos}`);
+                 }
+-                break;
++                break;
+             case '-':
+                 if (this.tokens[this.pos + 1].type === TokenType.NUMBER) {
+                     this.parseSubtraction();
+                 } else {
+                     throw new Error(`Expected operand at position ${this.pos}`);
+                 }
+-                break;
++                break;
+             case '*':
+                 if (this.tokens[this.pos + 1].type === TokenType.NUMBER) {
+                     this.parseMultiplication();
+                 } else {
+                     throw new Error(`Expected operand at position ${this.pos}`);
+                 }
+-                break;
++                break;
+             case '/':
+                 if (this.tokens[this.pos + 1].type === TokenType.NUMBER) {
+                     this.parseDivision();
+                 } else {
+                     throw new Error(`Expected operand at position ${this.pos}`);
+                 }
+-                break;
++                break;
+         }
+
+-        while (this.pos  this.input.length && /\s/.test(this.input[this.pos])) {
++        while (this.pos  this.tokens.length && /\s/.test(this.tokens[this.pos].value)) {
+             this.advance();
+         }

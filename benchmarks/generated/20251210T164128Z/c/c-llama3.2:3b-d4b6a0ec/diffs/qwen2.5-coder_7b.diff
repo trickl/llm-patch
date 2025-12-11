@@ -1,0 +1,19 @@
+--- before.c
++++ before.c
+@@ -3,6 +3,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+
++#include <ctype.h>
+ // Token types
+ typedef enum {
+     NUMBER,
+@@ -149,7 +150,7 @@ void main() {
+     char* expressions[] = {"3 + 4 * (2 - 1)", "2 * 3 + 4", "2 * (3 + 4)", "8 / 2 * (2 + 2)"};
+     for (int i = 0; i < sizeof(expressions) / sizeof(expressions[0]); i++) {
+         Token* tokens = lexer(expressions[i]);
+-        Token* parsed = parse(tokens);
++        Token* parsed = parse(tokens); // Fix: Corrected the function call
+         double result = evaluate(parsed);
+         printf("%s => %f\n", expressions[i], result);
+         free(tokens);

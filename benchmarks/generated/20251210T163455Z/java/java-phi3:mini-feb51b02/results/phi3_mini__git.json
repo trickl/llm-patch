@@ -1,0 +1,19 @@
+{
+  "case_id": "java-phi3:mini-feb51b02",
+  "language": "java",
+  "model_slug": "phi3_mini",
+  "algorithm": "git",
+  "diff_path": "diffs/phi3_mini.diff",
+  "patch_applied": true,
+  "patch_diagnostics": "applied",
+  "compile_returncode": 1,
+  "errors_before": 80,
+  "errors_after": 80,
+  "first_error_removed": false,
+  "added_lines": 0,
+  "removed_lines": 2,
+  "hunks": 0,
+  "delete_only": true,
+  "success": false,
+  "notes": "diff only deletes lines"
+}

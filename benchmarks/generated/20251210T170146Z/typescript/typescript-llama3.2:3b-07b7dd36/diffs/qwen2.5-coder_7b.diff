@@ -1,0 +1,21 @@
+--- before.ts
++++ before.ts
+@@ -19,6 +19,8 @@
+ import { Token } from './token';
+ import { ParseTree } from './parsetree';
+
++type Token = { type: 'number' | 'operator' | 'leftParenthesis' | 'rightParenthesis', value: number | string };
++type ParseTree = any;
+
+ class ExpressionEvaluator {
+   private precedence: { [operator: string]: number };
+
+@@ -82,7 +84,7 @@ class ExpressionEvaluator {
+       } else if (token.type === 'number') {
+         outputQueue.push(token.value);
+       } else if (token.type === 'leftParenthesis') {
+-        operatorStack.push(token);
++        operatorStack.push({ type: 'leftParenthesis', value: '(' });
+       } else if (token.type === 'rightParenthesis' || token.type === 'minus') {
+         while (operatorStack.length && operatorStack[operatorStack.length - 1].type !== 'leftParenthesis') {
+           outputQueue.push(operatorStack.pop()!);

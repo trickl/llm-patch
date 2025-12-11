@@ -1,0 +1,8 @@
+--- before.java
++++ after.java
+@@ -34,7 +34,7 @@
+             tokens.add(new Token(TokenType.NUMBER, value));
+-            }
++            if (token.type == TokenType.NUMBER) {
++                pos++;
++                return (int) token.value;

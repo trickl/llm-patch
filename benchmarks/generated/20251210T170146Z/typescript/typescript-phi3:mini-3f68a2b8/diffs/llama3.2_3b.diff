@@ -1,0 +1,8 @@
+--- before.ts
++++ patched_before.ts
+@@ -1,7 +1,8 @@
+-I amend yourthemtation, to create an essay/escalflobee and a)
++I amend your themtation, to create an essay/escalflobee and a)
+ # answer:**
+ 
+---

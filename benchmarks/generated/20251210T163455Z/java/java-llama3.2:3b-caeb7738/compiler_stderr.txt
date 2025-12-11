@@ -1,0 +1,89 @@
+ExpressionEvaluator.java:166: error: class ExpressionEvaluator is already defined in package unnamed package
+    private static class ExpressionEvaluator {
+                   ^
+ExpressionEvaluator.java:56: error: cannot find symbol
+        public Expression parseExpression() {
+               ^
+  symbol:   class Expression
+  location: class Parser
+ExpressionEvaluator.java:60: error: cannot find symbol
+        private Expression parseTerm() {
+                ^
+  symbol:   class Expression
+  location: class Parser
+ExpressionEvaluator.java:75: error: cannot find symbol
+        private Expression parseFactor() {
+                ^
+  symbol:   class Expression
+  location: class Parser
+ExpressionEvaluator.java:96: error: cannot find symbol
+        private class BinaryOperator implements Expression {
+                                                ^
+  symbol:   class Expression
+  location: class Parser
+ExpressionEvaluator.java:97: error: cannot find symbol
+            public final Expression left;
+                         ^
+  symbol:   class Expression
+  location: class Parser.BinaryOperator
+ExpressionEvaluator.java:99: error: cannot find symbol
+            public final Expression right;
+                         ^
+  symbol:   class Expression
+  location: class Parser.BinaryOperator
+ExpressionEvaluator.java:101: error: cannot find symbol
+            public BinaryOperator(Expression left, String operator, Expression right) {
+                                  ^
+  symbol:   class Expression
+  location: class Parser.BinaryOperator
+ExpressionEvaluator.java:101: error: cannot find symbol
+            public BinaryOperator(Expression left, String operator, Expression right) {
+                                                                    ^
+  symbol:   class Expression
+  location: class Parser.BinaryOperator
+ExpressionEvaluator.java:129: error: cannot find symbol
+        private class UnaryOperator implements Expression {
+                                               ^
+  symbol:   class Expression
+  location: class Parser
+ExpressionEvaluator.java:147: error: cannot find symbol
+        private class NumberLiteral implements Expression {
+                                               ^
+  symbol:   class Expression
+  location: class Parser
+ExpressionEvaluator.java:167: error: cannot find symbol
+        public final Expression parseExpression(String expression) {
+                     ^
+  symbol:   class Expression
+  location: class ExpressionEvaluator
+ExpressionEvaluator.java:52: error: cannot assign a value to final variable tokens
+            this.tokens = tokens;
+                ^
+ExpressionEvaluator.java:61: error: cannot find symbol
+            Expression left = parseFactor();
+            ^
+  symbol:   class Expression
+  location: class Parser
+ExpressionEvaluator.java:66: error: cannot find symbol
+                    Expression right = parseFactor();
+                    ^
+  symbol:   class Expression
+  location: class Parser
+ExpressionEvaluator.java:88: error: cannot find symbol
+                Expression expression = parseExpression();
+                ^
+  symbol:   class Expression
+  location: class Parser
+ExpressionEvaluator.java:107: error: method does not override or implement a method from a supertype
+            @Override
+            ^
+ExpressionEvaluator.java:136: error: method does not override or implement a method from a supertype
+            @Override
+            ^
+ExpressionEvaluator.java:154: error: method does not override or implement a method from a supertype
+            @Override
+            ^
+ExpressionEvaluator.java:174: error: method does not override or implement a method from a supertype
+        @Override
+        ^
+20 errors

@@ -1,0 +1,19 @@
+{
+  "case_id": "java-qwen2.5-coder:7b-6149e2db",
+  "language": "java",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "aider",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 6 hunks",
+  "compile_returncode": 1,
+  "errors_before": 19,
+  "errors_after": 2,
+  "first_error_removed": true,
+  "added_lines": 6,
+  "removed_lines": 6,
+  "hunks": 6,
+  "delete_only": false,
+  "success": true,
+  "notes": ""
+}

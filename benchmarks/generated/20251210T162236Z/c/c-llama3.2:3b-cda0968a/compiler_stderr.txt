@@ -1,0 +1,133 @@
+In file included from expression_evaluator.c:1:
+expression_evaluator.c:14:5: error: expected identifier before ‘(’ token
+   14 |     EOF
+      |     ^~~
+expression_evaluator.c: In function ‘lexer’:
+expression_evaluator.c:29:13: error: implicit declaration of function ‘isdigit’ [-Wimplicit-function-declaration]
+   29 |         if (isdigit(expression[i])) {
+      |             ^~~~~~~
+expression_evaluator.c:4:1: note: include ‘<ctype.h>’ or provide a declaration of ‘isdigit’
+    3 | #include <string.h>
+  +++ |+#include <ctype.h>
+    4 | 
+expression_evaluator.c:38:27: error: implicit declaration of function ‘strdup’; did you mean ‘strcmp’? [-Wimplicit-function-declaration]
+   38 |             token->text = strdup(expression + start);
+      |                           ^~~~~~
+      |                           strcmp
+expression_evaluator.c:38:25: error: assignment to ‘char *’ from ‘int’ makes pointer from integer without a cast [-Wint-conversion]
+   38 |             token->text = strdup(expression + start);
+      |                         ^
+expression_evaluator.c:48:25: error: assignment to ‘char *’ from ‘int’ makes pointer from integer without a cast [-Wint-conversion]
+   48 |             token->text = strdup(expression + start);
+      |                         ^
+expression_evaluator.c:58:25: error: assignment to ‘char *’ from ‘int’ makes pointer from integer without a cast [-Wint-conversion]
+   58 |             token->text = strdup(expression + start);
+      |                         ^
+expression_evaluator.c:68:25: error: assignment to ‘char *’ from ‘int’ makes pointer from integer without a cast [-Wint-conversion]
+   68 |             token->text = strdup(expression + start);
+      |                         ^
+expression_evaluator.c:78:25: error: assignment to ‘char *’ from ‘int’ makes pointer from integer without a cast [-Wint-conversion]
+   78 |             token->text = strdup(expression + start);
+      |                         ^
+expression_evaluator.c:88:25: error: assignment to ‘char *’ from ‘int’ makes pointer from integer without a cast [-Wint-conversion]
+   88 |             token->text = strdup(expression + start);
+      |                         ^
+expression_evaluator.c:98:25: error: assignment to ‘char *’ from ‘int’ makes pointer from integer without a cast [-Wint-conversion]
+   98 |             token->text = strdup(expression + start);
+      |                         ^
+expression_evaluator.c:104:26: error: expected expression before ‘{’ token
+  104 |     tokens[length / 2] = {EOF, 0.0, NULL};
+      |                          ^
+expression_evaluator.c: In function ‘parser’:
+expression_evaluator.c:111:32: warning: comparison of integer expressions of different signedness: ‘TokenType’ and ‘int’ [-Wsign-compare]
+  111 |     while (current_token->type != EOF) {
+      |                                ^~
+expression_evaluator.c:116:57: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+  116 |             while (subexpression[i].type != RPAREN && i < strlen(subexpression[0].text)) {
+      |                                                         ^
+expression_evaluator.c:119:28: error: passing argument 1 of ‘strlen’ from incompatible pointer type [-Wincompatible-pointer-types]
+  119 |             tokens[(strlen(tokens) - i) * 2] = *subexpression + i;
+      |                            ^~~~~~
+      |                            |
+      |                            Token *
+In file included from expression_evaluator.c:3:
+/usr/include/string.h:407:35: note: expected ‘const char *’ but argument is of type ‘Token *’
+  407 | extern size_t strlen (const char *__s)
+      |                       ~~~~~~~~~~~~^~~
+expression_evaluator.c:119:63: error: invalid operands to binary + (have ‘Token’ and ‘int’)
+  119 |             tokens[(strlen(tokens) - i) * 2] = *subexpression + i;
+      |                                                ~~~~~~~~~~~~~~ ^
+      |                                                |
+      |                                                Token
+expression_evaluator.c:123:34: warning: comparison of integer expressions of different signedness: ‘TokenType’ and ‘int’ [-Wsign-compare]
+  123 |             while (operand->type != EOF && operand->type != current_token->type) {
+      |                                  ^~
+expression_evaluator.c:135:39: warning: comparison of integer expressions of different signedness: ‘TokenType’ and ‘int’ [-Wsign-compare]
+  135 |                 while (operator->type != EOF && operator->type != current_token->type) {
+      |                                       ^~
+expression_evaluator.c:140:37: error: implicit declaration of function ‘evaluate’ [-Wimplicit-function-declaration]
+  140 |                     double result = evaluate(operator + 1, operand - 1);
+      |                                     ^~~~~~~~
+expression_evaluator.c:141:36: error: passing argument 1 of ‘strlen’ from incompatible pointer type [-Wincompatible-pointer-types]
+  141 |                     tokens[(strlen(tokens) - i) * 2] = {current_token->type, result, NULL};
+      |                                    ^~~~~~
+      |                                    |
+      |                                    Token *
+/usr/include/string.h:407:35: note: expected ‘const char *’ but argument is of type ‘Token *’
+  407 | extern size_t strlen (const char *__s)
+      |                       ~~~~~~~~~~~~^~~
+expression_evaluator.c:141:46: error: ‘i’ undeclared (first use in this function)
+  141 |                     tokens[(strlen(tokens) - i) * 2] = {current_token->type, result, NULL};
+      |                                              ^
+expression_evaluator.c:141:46: note: each undeclared identifier is reported only once for each function it appears in
+expression_evaluator.c:141:56: error: expected expression before ‘{’ token
+  141 |                     tokens[(strlen(tokens) - i) * 2] = {current_token->type, result, NULL};
+      |                                                        ^
+expression_evaluator.c:140:28: warning: unused variable ‘result’ [-Wunused-variable]
+  140 |                     double result = evaluate(operator + 1, operand - 1);
+      |                            ^~~~~~
+expression_evaluator.c:128:21: warning: variable ‘precedence’ set but not used [-Wunused-but-set-variable]
+  128 |                 int precedence = 0;
+      |                     ^~~~~~~~~~
+expression_evaluator.c:146:55: error: ‘operator’ undeclared (first use in this function)
+  146 |                 double result = evaluate(operand + 1, operator - 1);
+      |                                                       ^~~~~~~~
+expression_evaluator.c:147:32: error: passing argument 1 of ‘strlen’ from incompatible pointer type [-Wincompatible-pointer-types]
+  147 |                 tokens[(strlen(tokens) - i) * 2] = {current_token->type, result, NULL};
+      |                                ^~~~~~
+      |                                |
+      |                                Token *
+/usr/include/string.h:407:35: note: expected ‘const char *’ but argument is of type ‘Token *’
+  407 | extern size_t strlen (const char *__s)
+      |                       ~~~~~~~~~~~~^~~
+expression_evaluator.c:147:52: error: expected expression before ‘{’ token
+  147 |                 tokens[(strlen(tokens) - i) * 2] = {current_token->type, result, NULL};
+      |                                                    ^
+expression_evaluator.c:146:24: warning: unused variable ‘result’ [-Wunused-variable]
+  146 |                 double result = evaluate(operand + 1, operator - 1);
+      |                        ^~~~~~
+expression_evaluator.c:150:40: warning: comparison of integer expressions of different signedness: ‘TokenType’ and ‘int’ [-Wsign-compare]
+  150 |         } else if (current_token->type == EOF) {
+      |                                        ^~
+expression_evaluator.c: At top level:
+expression_evaluator.c:159:8: error: conflicting types for ‘evaluate’; have ‘double(Token *, int)’
+  159 | double evaluate(Token* tokens, int start_index) {
+      |        ^~~~~~~~
+expression_evaluator.c:140:37: note: previous implicit declaration of ‘evaluate’ with type ‘int()’
+  140 |                     double result = evaluate(operator + 1, operand - 1);
+      |                                     ^~~~~~~~
+expression_evaluator.c: In function ‘evaluate’:
+expression_evaluator.c:161:33: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+  161 |     for (int i = start_index; i < strlen(tokens[0].text); ++i) {
+      |                                 ^
+expression_evaluator.c: In function ‘main’:
+expression_evaluator.c:192:33: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘:’ token
+  192 |     for (const char* expression : expressions) {
+      |                                 ^
+expression_evaluator.c:193:31: error: ‘expression’ undeclared (first use in this function); did you mean ‘expressions’?
+  193 |         Token* tokens = lexer(expression);
+      |                               ^~~~~~~~~~
+      |                               expressions
+expression_evaluator.c:191:17: warning: unused variable ‘expressions’ [-Wunused-variable]
+  191 |     const char* expressions[] = {"1 + 2", "2 * 3 + 4", "2 * (3 + 4)", "8 / 2 * (2 + 2)"};
+      |                 ^~~~~~~~~~~

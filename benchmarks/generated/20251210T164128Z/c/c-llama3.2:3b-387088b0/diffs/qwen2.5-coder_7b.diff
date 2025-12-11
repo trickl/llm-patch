@@ -1,0 +1,18 @@
+--- before.c
++++ before.c
+@@ -3,6 +3,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+
++#include <ctype.h>  // Added to include ctype functions
+
+// Token types
+typedef enum {
+    NUMBER,
+    PLUS,
+@@ -140,7 +141,7 @@ while (tokens[0].type != EOF) {
+     if (expr->type == EOF) {
+         printf("Error: unbalanced parentheses\n");
+         exit(1);
+-    }
++    } else break;  // Added to avoid infinite loop

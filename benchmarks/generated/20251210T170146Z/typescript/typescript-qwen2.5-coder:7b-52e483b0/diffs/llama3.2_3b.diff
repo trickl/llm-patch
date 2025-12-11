@@ -1,0 +1,7 @@
+--- before.ts
++++ patched_expression_evaluator.ts
+@@ -99,7 +99,7 @@
+     if (/\s/.test(input[i])) {
+         i++;
+-        continue;
++        continue;

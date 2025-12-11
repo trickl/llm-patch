@@ -1,0 +1,21 @@
+--- before.ts
++++ after.ts
+@@ -91,5 +91,6 @@
+     while (i  input.length) {
+-        if (/[\d]/.test(input[i])) {
++        if (/\d/.test(input[i])) {
+             let num = '';
+             while (i  input.length && /\d/.test(input[i])) {
+                 num += input[i];
+                 i++;
+             }
+             tokens.push({ type: 'number', value: num });
+-        } else if (/[-+*/()]/.test(input[i])) {
++        } else if (/[-+*/()]/.test(input[i])) {
+             tokens.push({ type: 'operator', value: input[i] });
+             i++;
+-        } else {
++        } else {
+             throw new Error(`Unexpected character at position ${i}`);
+         }
+     }

@@ -1,0 +1,33 @@
+expression_evaluator.c:1:14: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘:’ token
+    1 | **Constraints:
+      |              ^
+expression_evaluator.c:5:2: error: invalid preprocessing directive #floodies
+    5 | #floodies and user-Crafts's answer that a)
+      |  ^~~~~~~~
+expression_evaluator.c:5:26: warning: missing terminating ' character
+    5 | #floodies and user-Crafts's answer that a)
+      |                          ^
+expression_evaluator.c:7:1: error: stray ‘##’ in program
+    7 | ## QUIRESThe document theater_jsonI apologize"{/noun190.
+      | ^~
+expression_evaluator.c:7:46: warning: missing terminating " character
+    7 | ## QUIRESThe document theater_jsonI apologize"{/noun190.
+      |                                              ^
+expression_evaluator.c:7:46: error: missing terminating " character
+    7 | ## QUIRESThe document theater_jsonI apologize"{/noun190.
+      |                                              ^~~~~~~~~~~
+expression_evaluator.c:13:3: error: invalid preprocessing directive #Instructmentalpraised
+   13 | # Instructmentalpraised instruction for more thanx-July's role in a)
+      |   ^~~~~~~~~~~~~~~~~~~~~
+expression_evaluator.c:13:56: warning: missing terminating ' character
+   13 | # Instructmentalpraised instruction for more thanx-July's role in a)
+      |                                                        ^
+expression_evaluator.c:15:84: error: empty character constant
+   15 | *Fasteness and the following sentence that there are notebook. The second Lawtonian''eekly/nature of anaconda, which is_unable to:
+      |                                                                                    ^~
+expression_evaluator.c:21:3: error: invalid preprocessing directive #Instruction
+   21 | # Instruction Floor
+      |   ^~~~~~~~~~~
+expression_evaluator.c:23:3: error: invalid preprocessing directive #Answer
+   23 | # Answer:
+      |   ^~~~~~

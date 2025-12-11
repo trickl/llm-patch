@@ -1,0 +1,7 @@
+expression_evaluator.ts(62,45): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+expression_evaluator.ts(80,45): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+expression_evaluator.ts(94,41): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+expression_evaluator.ts(138,19): error TS18046: 'error' is of type 'unknown'.

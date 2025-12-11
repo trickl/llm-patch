@@ -1,0 +1,56 @@
+--- before.java	2023-04-10 12:34:56.000000000 +0800
++++ after.java	2023-04-10 12:35:07.000000000 +0800
+@@ -12,7 +12,7 @@
+     public static int evaluate(String expression) {
+         return new Parser(new Tokenizer(expression).tokenize()).parse();
+     }
+-
++    private List<Token> tokenize() { return new Tokenizer(this.expression).tokenize(); }
+ 
+     private static class Tokenizer {
+         private final String input;
+@@ -34,7 +34,7 @@
+                 } else if (ch == '+' || ch == '-' || ch == '*' || ch == '/') {
+                     tokens.add(new Token(TokenType.OPERATOR, ch));
+                     pos++;
+-                } else if (ch == '(') {
++                } else if (ch == '(' && token.type != TokenType.OPERATOR) {
+                     tokens.add(new Token(TokenType.LPAREN, null));
+                     pos++;
+                 } else if (ch == ')') {
+@@ -71,7 +71,7 @@
+             if (token.type == TokenType.OPERATOR && (token.value == '+' || token.value == '-')) {
+                 pos++;
+                 int nextTerm = term();
+-                if (token.value == '+') {
++                if ((char) token.value == '+') {
+                     result += nextTerm;
+                 } else {
+                     result -= nextTerm;
+@@ -90,7 +90,7 @@
+             if (token.type == TokenType.OPERATOR && (token.value == '*' || token.value == '/')) {
+                 pos++;
+                 int nextFactor = factor();
+-                if (token.value == '*') {
++                if ((char) token.value == '*') {
+                     result *= nextFactor;
+                 } else {
+                     result /= nextFactor;
+@@ -107,7 +107,7 @@
+             if (token.type == TokenType.LPAREN) {
+                 pos++;
+                 int result = expression();
+-                if (pos < tokens.size() && tokens.get(pos).type == TokenType.RPAREN) {
++                if (pos < tokens.size() && ((Token) tokens.get(pos)).type == TokenType.RPAREN) {
+                     pos++;
+                 } else {
+                     throw new IllegalArgumentException("Expected ')'");
+@@ -116,7 +116,7 @@
+             } else if (token.type == TokenType.OPERATOR && token.value == '-') {
+                 pos++;
+                 return -factor();
+-            } else if (token.type == TokenType.NUMBER) {
++            } else if (token.type == TokenType.NUMBER && token.value instanceof Integer) {
+                 pos++;
+                 return (int) token.value;
+             } else {

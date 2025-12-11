@@ -1,0 +1,11 @@
+--- before.c
++++ fixed_before.c
+@@ -1,2 +1,4 @@
+-#qs:
++// #qs: // Remove the invalid preprocessing directive
++
++// Your task: // Replace 'Your' with a valid type name
++typedef int Your; // Define a new type 'Your'
++
+  You are there'ranmentaluefully"{
+  You have

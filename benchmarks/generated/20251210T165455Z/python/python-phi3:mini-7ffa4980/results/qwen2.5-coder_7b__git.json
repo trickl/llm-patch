@@ -1,0 +1,19 @@
+{
+  "case_id": "python-phi3:mini-7ffa4980",
+  "language": "python",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "git",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "patch_applied": false,
+  "patch_diagnostics": "error: corrupt patch at line 6",
+  "compile_returncode": null,
+  "errors_before": 1,
+  "errors_after": null,
+  "first_error_removed": false,
+  "added_lines": 0,
+  "removed_lines": 2,
+  "hunks": 1,
+  "delete_only": true,
+  "success": false,
+  "notes": "diff only deletes lines"
+}

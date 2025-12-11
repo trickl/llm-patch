@@ -1,0 +1,19 @@
+{
+  "case_id": "c-llama3.2:3b-93954956",
+  "language": "c",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "git",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "patch_applied": false,
+  "patch_diagnostics": "error: patch failed: expression_evaluator.c:1\nerror: expression_evaluator.c: patch does not apply",
+  "compile_returncode": null,
+  "errors_before": 423,
+  "errors_after": null,
+  "first_error_removed": false,
+  "added_lines": 2,
+  "removed_lines": 2,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": ""
+}

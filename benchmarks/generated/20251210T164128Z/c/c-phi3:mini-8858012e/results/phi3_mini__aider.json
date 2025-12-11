@@ -1,0 +1,19 @@
+{
+  "case_id": "c-phi3:mini-8858012e",
+  "language": "c",
+  "model_slug": "phi3_mini",
+  "algorithm": "aider",
+  "diff_path": "diffs/phi3_mini.diff",
+  "patch_applied": true,
+  "patch_diagnostics": "no hunks",
+  "compile_returncode": 1,
+  "errors_before": 4,
+  "errors_after": 4,
+  "first_error_removed": false,
+  "added_lines": 0,
+  "removed_lines": 0,
+  "hunks": 0,
+  "delete_only": false,
+  "success": false,
+  "notes": ""
+}

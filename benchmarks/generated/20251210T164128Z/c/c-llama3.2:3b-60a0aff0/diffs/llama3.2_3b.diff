@@ -1,0 +1,204 @@
+--- before.c
++++ patched_before.c
+@@ -4,6 +4,7 @@
+ #include  string.h>
++#include ctype.h>
+
+ // Token type enum
+ typedef enum {
+     NUMBER,
+     PLUS,
+     MINUS,
+     MUL,
+     DIV,
+     LPAREN,
+     RPAREN,
+     UNARY_MINUS,
+     END_OF_EXPRESSION
+ } TokenType;
+
+-// Token structure
++// Token structure
+ typedef struct {
+     TokenType type;
+     double value;
+     char* text;
+ } Token;
+
+ // Lexer function to tokenize the input string
+ Token* lexer(const char* expression) {
+     int length = strlen(expression);
+     Token* tokens = malloc((length + 1) * sizeof(Token));
+     for (int i = 0; i  length; ++i) {
+-        if (isdigit(expression[i])) {
++        if (isdigit(expression[i])) {
+             int start = i;
+             while (i  length && isdigit(expression[i])) {
+                 ++i;
+             }
+             tokens[i - start] = {NUMBER, atof(expression + start), expression + start};
+         } else if (expression[i] == '+') {
+             tokens[i] = {PLUS, 0, ""};
+-        } else if (expression[i] == '-') {
++        } else if (expression[i] == '-') {
+             tokens[i] = {MINUS, 0, ""};
+-        } else if (expression[i] == '*') {
++        } else if (expression[i] == '*') {
+             tokens[i] = {MUL, 0, ""};
+-        } else if (expression[i] == '/') {
++        } else if (expression[i] == '/') {
+             tokens[i] = {DIV, 0, ""};
+-        } else if (expression[i] == '(') {
++        } else if (expression[i] == '(') {
+             tokens[i] = {LPAREN, 0, ""};
+-        } else if (expression[i] == ')') {
++        } else if (expression[i] == ')') {
+             tokens[i] = {RPAREN, 0, ""};
+-        } else if (expression[i] == '-') {
++        } else if (expression[i] == '-') {
+             tokens[i] = {UNARY_MINUS, 0, ""};
+     }
+     tokens[length] = {END_OF_EXPRESSION, 0, NULL};
+     return tokens;
+ }
+
+ // Parser function to parse the tokenized expression
+ Token* parser(Token* tokens) {
+-    Token* current_token = tokens;
++    Token* current_token = tokens;
+     while (current_token->type != END_OF_EXPRESSION && current_token->text[0]) {
+         if (current_token->type == LPAREN) {
+             // Recursively parse the subexpression inside the parentheses
+             Token* subexpression_tokens = parser(current_token + 1);
+             Token* result = parser(subexpression_tokens);
+             free(subexpression_tokens);
+             current_token = result;
+-        } else if (current_token->type == UNARY_MINUS) {
++        } else if (current_token->type == UNARY_MINUS) {
+             // Handle unary minus
+             double value = -current_token->value;
+             Token* next_token = current_token + 1;
+             while (next_token->type != LPAREN && next_token->text[0]) {
+                 ++next_token;
+             }
+-            if (next_token->type == LPAREN) {
++            } else if (next_token->type == LPAREN) {
+                 // Recursively parse the subexpression inside the parentheses
+                 Token* subexpression_tokens = parser(next_token);
+                 Token* result = parser(subexpression_tokens);
+                 free(subexpression_tokens);
+                 value += current_token->value;
+                 current_token = result;
+-            } else {
++            } else {
+                 value -= current_token->value;
+                 current_token = next_token;
+             }
+         } else if (current_token->type == PLUS || current_token->type == MINUS) {
+             // Handle binary operators
+             double left_value = current_token->value;
+             Token* right_token = current_token + 1;
+             while (right_token->type != LPAREN && right_token->text[0]) {
+                 ++right_token;
+             }
+-            if (right_token->type == LPAREN) {
++            } else if (right_token->type == LPAREN) {
+                 // Recursively parse the subexpression inside the parentheses
+                 Token* subexpression_tokens = parser(right_token);
+                 Token* result = parser(subexpression_tokens);
+                 free(subexpression_tokens);
+                 left_value += right_token->value;
+                 current_token = result;
+-            } else {
++            } else {
+                 double right_value = right_token->value;
+                 if (current_token->type == PLUS) {
+                     left_value += right_value;
+                 } else {
+                     left_value -= right_value;
+                 }
+                 free(right_token);
+                 current_token = right_token;
+             }
+         } else if (current_token->type == MUL || current_token->type == DIV) {
+             // Handle binary operators
+             double left_value = current_token->value;
+             Token* right_token = current_token + 1;
+             while (right_token->type != LPAREN && right_token->text[0]) {
+                 ++right_token;
+             }
+-            if (right_token->type == LPAREN) {
++            } else if (right_token->type == LPAREN) {
+                 // Recursively parse the subexpression inside the parentheses
+                 Token* subexpression_tokens = parser(right_token);
+                 Token* result = parser(subexpression_tokens);
+                 free(subexpression_tokens);
+                 left_value *= right_token->value;
+                 current_token = result;
+-            } else {
++            } else {
+                 double right_value = right_token->value;
+                 if (current_token->type == MUL) {
+                     left_value *= right_value;
+                 } else {
+                     left_value /= right_value;
+                 }
+                 free(right_token);
+                 current_token = right_token;
+             }
+     }
+     return current_token;
+ }
+
+ // Evaluator function to evaluate the parsed expression
+ double evaluator(Token* token) {
+-    if (token->type == NUMBER) {
++    if (token->type == NUMBER) {
+         return token->value;
+     } else if (token->type == PLUS || token->type == MINUS) {
+-        double left_value = evaluator(token + 1);
++        double left_value = evaluator(token + 1);
+         double right_value = evaluator(token + 2);
+         if (token->type == PLUS) {
+             return left_value + right_value;
+         } else {
+             return left_value - right_value;
+         }
+     } else if (token->type == MUL || token->type == DIV) {
+-        double left_value = evaluator(token + 1);
++        double left_value = evaluator(token + 1);
+         double right_value = evaluator(token + 2);
+         if (token->type == MUL) {
+             return left_value * right_value;
+         } else {
+             return left_value / right_value;
+         }
+     } else if (token->type == LPAREN) {
+-        // Recursively evaluate the subexpression inside the parentheses
++        // Recursively evaluate the subexpression inside the parentheses
+         Token* result = evaluator(token + 1);
+         free(token + 1);
+         return result;
+     } else if (token->type == UNARY_MINUS) {
+-            double value = -evaluator(token + 1);
++            double value = -evaluator(token + 1);
+             free(token + 1);
+             return value;
+     }
+ }
+
+ int main() {
+     const char* expressions[] = {"3 + 4 * (2 - 1)", "2 * 3 + 4", "2 * (3 + 4)", "8 / 2 * (2 + 2)"};
+     int num_expressions = sizeof(expressions) / sizeof(expressions[0]);
+     for (int i = 0; i  num_expressions; ++i) {
+-        Token* tokens = lexer(expressions[i]);
++        Token* tokens = lexer(expressions[i]);
+         Token* parsed_expression = parser(tokens);
+         double result = evaluator(parsed_expression);
+         printf("%s => %f\n", expressions[i], result);
+-        free(tokens);
++        free(tokens);
+         free(parsed_expression);
+     }
+     return 0;
+ }

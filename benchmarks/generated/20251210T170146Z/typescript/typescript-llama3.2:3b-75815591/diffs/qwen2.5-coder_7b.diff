@@ -1,0 +1,27 @@
+--- before.ts
++++ before.ts
+@@ -89,7 +89,7 @@ class ExpressionEvaluator {
+     const operatorStack = [];
+-    let outputQueue: number[] = [];
++    let outputQueue: number[] = [];
+
+     for (const token of tokens) {
+       if (!this.isOperator(token)) {
+@@ -112,7 +112,7 @@ export function evaluateExpression(input: string): number {
+   }
+
+   private applyOperator(operator: string, leftOperand: number, rightOperand: number): void {
+-    switch (operator) {
++    switch (operator) {
+       case '+':
+         outputQueue.push(leftOperand + rightOperand);
+         break;
+@@ -115,7 +115,7 @@ export function evaluateExpression(input: string): number {
+       case '-':
+         outputQueue.push(leftOperand - rightOperand);
+         break;
+-      case '*':
++      case '*':
+         outputQueue.push(leftOperand * rightOperand);
+         break;
+       case '/':

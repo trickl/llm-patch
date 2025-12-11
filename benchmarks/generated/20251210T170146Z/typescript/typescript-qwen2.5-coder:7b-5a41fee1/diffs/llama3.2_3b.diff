@@ -1,0 +1,15 @@
+--- expression_evaluator.ts
++++ expression_evaluator.ts
+@@ -126,1 +126,2 @@
+   } else if (token.type === 'operator') {
+     while (
+       operators.length > 0 &&
+-       precedence(token.value) <= precedence(operators[operators.length - 1])
++       precedence(token.value) >= precedence(operators[operators.length - 1])
+     ) {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperator(a, b, operator));
+     }
+     operators.push(token.value);

@@ -1,0 +1,11 @@
+--- before.c
++++ before.c
+@@ -114,7 +114,7 @@ int parse_and_evaluate(const char *expression) {
+     tokenize(expression);
+     return evaluate(0, token_count - 1);
+ }
+-
++
+ int main() {
+     printf("%d\n", parse_and_evaluate("1 + 2")); // Output: 3
+     printf("%d\n", parse_and_evaluate("2 * 3 + 4")); // Output: 10

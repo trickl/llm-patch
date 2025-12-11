@@ -1,0 +1,91 @@
+ExpressionEvaluator.java:81: error: cannot find symbol
+    private final List<Token> tokens;
+                       ^
+  symbol:   class Token
+  location: class Parser
+ExpressionEvaluator.java:84: error: cannot find symbol
+    public Parser(List<Token> tokens) {
+                       ^
+  symbol:   class Token
+  location: class Parser
+ExpressionEvaluator.java:145: error: cannot find symbol
+    static class OperatorToken extends Token {
+                                       ^
+  symbol:   class Token
+  location: class Parser
+ExpressionEvaluator.java:154: error: cannot find symbol
+    static class ParenthesisToken extends Token {
+                                          ^
+  symbol:   class Token
+  location: class Parser
+ExpressionEvaluator.java:160: error: cannot find symbol
+    static class NumberToken extends Token {
+                                     ^
+  symbol:   class Token
+  location: class Parser
+ExpressionEvaluator.java:95: error: cannot find symbol
+            Token token = tokens.get(pos);
+            ^
+  symbol:   class Token
+  location: class Parser
+ExpressionEvaluator.java:96: error: cannot find symbol
+            if (token.type != TokenType.OPERATOR || ((OperatorToken) token).precedence <= precedence) {
+                              ^
+  symbol:   variable TokenType
+  location: class Parser
+ExpressionEvaluator.java:107: error: cannot find symbol
+        if (tokens.get(pos).type == TokenType.PARENTHESIS && ((ParenthesisToken) tokens.get(pos)).value == '(') {
+                                    ^
+  symbol:   variable TokenType
+  location: class Parser
+ExpressionEvaluator.java:107: error: cannot find symbol
+        if (tokens.get(pos).type == TokenType.PARENTHESIS && ((ParenthesisToken) tokens.get(pos)).value == '(') {
+                                                                                                 ^
+  symbol:   variable value
+  location: class ParenthesisToken
+ExpressionEvaluator.java:110: error: cannot find symbol
+            if (pos < tokens.size() && tokens.get(pos).type == TokenType.PARENTHESIS && ((ParenthesisToken) tokens.get(pos)).value == ')') {
+                                                               ^
+  symbol:   variable TokenType
+  location: class Parser
+ExpressionEvaluator.java:110: error: cannot find symbol
+            if (pos < tokens.size() && tokens.get(pos).type == TokenType.PARENTHESIS && ((ParenthesisToken) tokens.get(pos)).value == ')') {
+                                                                                                                            ^
+  symbol:   variable value
+  location: class ParenthesisToken
+ExpressionEvaluator.java:116: error: cannot find symbol
+        } else if (tokens.get(pos).type == TokenType.OPERATOR && ((OperatorToken) tokens.get(pos)).value == '-') {
+                                           ^
+  symbol:   variable TokenType
+  location: class Parser
+ExpressionEvaluator.java:116: error: cannot find symbol
+        } else if (tokens.get(pos).type == TokenType.OPERATOR && ((OperatorToken) tokens.get(pos)).value == '-') {
+                                                                                                  ^
+  symbol:   variable value
+  location: class OperatorToken
+ExpressionEvaluator.java:120: error: cannot find symbol
+        } else if (tokens.get(pos).type == TokenType.NUMBER) {
+                                           ^
+  symbol:   variable TokenType
+  location: class Parser
+ExpressionEvaluator.java:121: error: cannot find symbol
+            int value = (int) ((NumberToken) tokens.get(pos)).value;
+                                                             ^
+  symbol:   variable value
+  location: class NumberToken
+ExpressionEvaluator.java:149: error: cannot find symbol
+            super(TokenType.OPERATOR, value);
+                  ^
+  symbol:   variable TokenType
+  location: class OperatorToken
+ExpressionEvaluator.java:156: error: cannot find symbol
+            super(TokenType.PARENTHESIS, value);
+                  ^
+  symbol:   variable TokenType
+  location: class ParenthesisToken
+ExpressionEvaluator.java:162: error: cannot find symbol
+            super(TokenType.NUMBER, value);
+                  ^
+  symbol:   variable TokenType
+  location: class NumberToken
+18 errors

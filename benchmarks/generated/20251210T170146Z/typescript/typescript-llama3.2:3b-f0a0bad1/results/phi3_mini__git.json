@@ -1,0 +1,19 @@
+{
+  "case_id": "typescript-llama3.2:3b-f0a0bad1",
+  "language": "typescript",
+  "model_slug": "phi3_mini",
+  "algorithm": "git",
+  "diff_path": "diffs/phi3_mini.diff",
+  "patch_applied": true,
+  "patch_diagnostics": "applied",
+  "compile_returncode": 2,
+  "errors_before": 6,
+  "errors_after": 6,
+  "first_error_removed": false,
+  "added_lines": 0,
+  "removed_lines": 0,
+  "hunks": 0,
+  "delete_only": false,
+  "success": false,
+  "notes": ""
+}

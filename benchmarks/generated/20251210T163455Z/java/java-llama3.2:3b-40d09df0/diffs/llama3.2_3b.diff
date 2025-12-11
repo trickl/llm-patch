@@ -1,0 +1,25 @@
+--- before.java
++++ after.java
+@@ -32,7 +32,8 @@
+     @Override
+     public Iterator<String> iterator() {
+-        while (pos  expression.length()) {
++        while (pos = expression.length()) {
+           if (Character.isDigit(expression.charAt(pos))) {
+             StringBuilder sb = new StringBuilder();
+-            while (pos < expression.length() && Character.isDigit(expression.charAt(pos))) {
++            while (pos <= expression.length() && Character.isDigit(expression.charAt(pos))) {
+               sb.append(expression.charAt(pos));
+               pos++;
+             }
+             yield sb.toString();
+           } else if (expression.charAt(pos) == '(' || expression.charAt(pos) == ')') {
+-            yield String.valueOf(expression.charAt(pos));
++            yield String.valueOf(expression.charAt(pos));
+             pos++;
+           } else if (expression.charAt(pos) == '+' || expression.charAt(pos) == '-' || expression.charAt(pos) == '*' || expression.charAt(pos) == '/') {
+-            yield String.valueOf(expression.charAt(pos));
++            yield String.valueOf(expression.charAt(pos));
+             pos++;
+           }
+         }

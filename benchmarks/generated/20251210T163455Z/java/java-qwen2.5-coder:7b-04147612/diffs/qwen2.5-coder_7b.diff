@@ -1,0 +1,8 @@
+--- before.java	2023-04-10 12:34:56.000000000 +0800
++++ after.java	2023-04-10 12:35:07.000000000 +0800
+@@ -1,4 +1,5 @@
+ import java.util.*;
++import Token;
+ import java.util.regex.*;
+ 
+ public class ExpressionEvaluator {

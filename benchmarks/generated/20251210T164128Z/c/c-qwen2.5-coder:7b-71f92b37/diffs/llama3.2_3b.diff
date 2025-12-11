@@ -1,0 +1,15 @@
+--- before.c
++++ after.c
+@@ -139,7 +139,7 @@
+         TokenIndex = 0;
+      |         ^~~~~~~~~~
+      |         tokenIndex
+ expression_evaluator.c:140:38: error: passing argument 1 of ‘parseExpression’ from incompatible pointer type [-Wincompatible-pointer-types]
+  140 |         int result = parseExpression(&input, 0);
+      |                                      ^~~~~~
+      |                                      |
+      |                                      char (*)[256]
++      |         -> char **str
+ expression_evaluator.c:114:28: note: expected ‘char **’ but argument is of type ‘char (*)[256]’
+  114 | int parseExpression(char **str, int minPrecedence) {
+      |                     ~~~~~~~^~~

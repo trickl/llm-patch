@@ -1,0 +1,50 @@
+--- before.java
++++ after.java
+@@ -15,6 +15,7 @@
+     private static class Tokenizer implements Iterable<Token> {
+         private final String expression;
+         private int pos = 0;
+
++        public Tokenizer(String expression) {
+             this.expression = expression;
+         }
+
+@@ -33,6 +34,7 @@
+                 yield(new Token(TokenType.NUMBER, expression.substring(pos, endPos)));
+                 pos = endPos;
+             } else if (expression.charAt(pos) == '(' || expression.charAt(pos) == ')') {
++                int endPos = pos + 1;
+                 while (endPos < expression.length() && (expression.charAt(endPos) != '(' && expression.charAt(endPos) != ')'))
+                     ++endPos;
+                 yield(new Token(TokenType.PAREN, String.valueOf(expression.charAt(pos))));
+@@ -52,6 +54,7 @@
+                 yield(new Token(TokenType.MINUS, String.valueOf(expression.charAt(pos))));
+             }
+         }
+
++        private enum TokenType {
+             NUMBER,
+             OPERATOR,
+             PAREN,
+@@ -83,6 +86,7 @@
+     public static int evaluate(String expression) {
+         List<Token> tokens = new ArrayList<>(new Tokenizer(expression).iterator());
+         return parse(tokens);
+     }
+
+@@ -102,6 +106,7 @@
+                 yield(new Operand(TokenType.NUMBER, tokens.get(pos).value));
+                 ++pos;
+             } else if (tokens.get(pos).type == TokenType.OPERATOR) {
++                int endPos = pos + 1;
+                 while (endPos < tokens.size() && (tokens.get(endPos).type != TokenType.OPERATOR || precedence(tokens.get(endPos).type) > precedence(tokens.get(pos).type)))
+                     ++endPos;
+                 yield(new Operand(TokenType.OPERATOR, String.valueOf(tokens.get(pos).value)));
+@@ -124,6 +129,7 @@
+     private static int parse(List<Token> tokens) {
+         List<Operand> operands = new ArrayList<>();
+         while (tokens.iterator().hasNext()) {
++            if (tokens.get(0).type == TokenType.NUMBER || tokens.get(0).type == TokenType.MINUS)
+                 operands.add(new Operand(tokens.get(0).type, tokens.get(0).value));
+             else
+                 break;

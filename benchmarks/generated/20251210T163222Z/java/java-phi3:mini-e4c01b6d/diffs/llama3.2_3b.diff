@@ -1,0 +1,9 @@
+--- before.java
++++ after.java
+@@ -83,7 +83,7 @@
+             while (!tokens.peek().equals("(")) {
+                 String token = tokens.pop();
+-                System.out.print(token + " "); // For demonstration purposes, print the tokens as they are parsed
++                System.out.println(token); // Print the token without spaces
+             }
+         }

@@ -1,0 +1,7 @@
+--- before.ts
++++ patched_before.ts
+@@ -1,7 +1,7 @@
+-I understands
++I understand
+-Given your assistant, I'trophytee to solve this timeframe|json)</p>
++Given your assistant, I 'trophytee to solve this timeframe|json</p>

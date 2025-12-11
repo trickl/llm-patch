@@ -1,0 +1,32 @@
+ExpressionEvaluator.java:142: error: method parse(List<Token>,int) is already defined in class ExpressionEvaluator
+    private static Evaluator parse(List<Token> tokens, int index) {
+                             ^
+ExpressionEvaluator.java:14: error: cannot find symbol
+        return parse(tokens).evaluate();
+                            ^
+  symbol:   method evaluate()
+  location: class ParseResult
+ExpressionEvaluator.java:111: error: cannot find symbol
+                tokens.get(index).value = result.value;
+                                                ^
+  symbol:   variable value
+  location: variable result of type ParseResult
+ExpressionEvaluator.java:120: error: cannot find symbol
+                tokens.get(index).value = result.value;
+                                                ^
+  symbol:   variable value
+  location: variable result of type ParseResult
+ExpressionEvaluator.java:157: error: cannot find symbol
+            return new Evaluator(-(int) leftResult.value);
+                                                  ^
+  symbol:   variable value
+  location: variable leftResult of type ParseResult
+ExpressionEvaluator.java:161: error: cannot find symbol
+                tokens.get(index).value = result.value;
+                                                ^
+  symbol:   variable value
+  location: variable result of type ParseResult
+ExpressionEvaluator.java:162: error: incompatible types: ParseResult cannot be converted to Evaluator
+                return result;
+                       ^
+7 errors

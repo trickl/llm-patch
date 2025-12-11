@@ -1,0 +1,4 @@
+--- before.ts
++++ after.ts
+@@(94,66)-(94,67)
++import * as process from 'process';

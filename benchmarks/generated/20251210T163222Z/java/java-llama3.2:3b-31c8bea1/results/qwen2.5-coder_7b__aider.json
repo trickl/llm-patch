@@ -1,0 +1,19 @@
+{
+  "case_id": "java-llama3.2:3b-31c8bea1",
+  "language": "java",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "aider",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 6 hunks",
+  "compile_returncode": 1,
+  "errors_before": 13,
+  "errors_after": 7,
+  "first_error_removed": true,
+  "added_lines": 8,
+  "removed_lines": 8,
+  "hunks": 6,
+  "delete_only": false,
+  "success": true,
+  "notes": ""
+}

@@ -1,0 +1,7 @@
+ExpressionEvaluator.java:101: error: not a statement
+   0x5B: '}'
+   ^
+ExpressionEvaluator.java:101: error: ';' expected
+   0x5B: '}'
+       ^
+2 errors

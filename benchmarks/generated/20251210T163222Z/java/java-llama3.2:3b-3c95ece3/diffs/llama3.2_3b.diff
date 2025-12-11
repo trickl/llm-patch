@@ -1,0 +1,7 @@
+--- before.java
++++ after.java
+@@ -70,7 +70,8 @@
+             nodes.add(stack.pop());
+         }
+-        return new ParseTree(nodes);
++        return new ParseTree(new ArrayList<>(nodes));

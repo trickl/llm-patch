@@ -1,0 +1,25 @@
+ExpressionEvaluator.java:47: error: incompatible types: Token cannot be converted to ParseNode
+                while (!stack.isEmpty() && getPrecedence(stack.peek()) >= getPrecedence(token)) {
+                                                                                        ^
+ExpressionEvaluator.java:70: error: cannot find symbol
+            switch (node.value.charAt(0)) {
+                        ^
+  symbol:   variable value
+  location: variable node of type ParseNode
+ExpressionEvaluator.java:90: error: cannot find symbol
+                stack.push(Integer.parseInt(node.value));
+                                                ^
+  symbol:   variable value
+  location: variable node of type ParseNode
+ExpressionEvaluator.java:94: error: cannot find symbol
+                switch (node.value.charAt(0)) {
+                            ^
+  symbol:   variable value
+  location: variable node of type ParseNode
+ExpressionEvaluator.java:112: error: cannot find symbol
+                int result = evaluator(parseTree.children.get(node.index));
+                                                ^
+  symbol:   variable children
+  location: variable parseTree of type ParseTree
+Note: Some messages have been simplified; recompile with -Xdiags:verbose to get full output
+5 errors

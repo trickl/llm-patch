@@ -1,0 +1,195 @@
+```typescript
+// Token types
+enum TokenType {
+    NUMBER,
+    PLUS,
+    MINUS,
+    MUL,
+    DIV,
+    LPAREN,
+    RPAREN,
+    UNARY_MINUS,
+}
+
+// Token class
+class Token {
+    type: TokenType;
+    value: string | number;
+
+    constructor(type: TokenType, value: string | number) {
+        this.type = type;
+        this.value = value;
+    }
+}
+
+// Lexer class
+class Lexer {
+    private input: string;
+    private pos: number;
+    private tokens: Token[];
+
+    constructor(input: string) {
+        this.input = input;
+        this.pos = 0;
+        this.tokens = [];
+    }
+
+    public nextToken(): Token {
+        while (this.pos < this.input.length) {
+            const c = this.input[this.pos];
+            if (c >= '0' && c <= '9') {
+                return this.numberToken();
+            } else if (c === '+' || c === '-') {
+                return this.binaryOperatorToken(c);
+            } else if (c === '*' || c === '/') {
+                return this.binaryOperatorToken(c);
+            } else if (c === '(') {
+                return this.parenthesisToken();
+            } else if (c === ')') {
+                return this.parenthesisToken();
+            } else if (c === '-') {
+                return this.unaryMinusToken();
+            }
+            this.pos++;
+        }
+        throw new Error('Unexpected end of input');
+    }
+
+    private numberToken(): Token {
+        let num = '';
+        while (this.pos < this.input.length && this.input[this.pos] >= '0' && this.input[this.pos] <= '9') {
+            num += this.input[this.pos++];
+        }
+        return new Token(TokenType.NUMBER, parseInt(num));
+    }
+
+    private binaryOperatorToken(c: string): Token {
+        if (c === '+') {
+            return new Token(TokenType.PLUS, c);
+        } else if (c === '-') {
+            return new Token(TokenType.MINUS, c);
+        } else if (c === '*') {
+            return new Token(TokenType.MUL, c);
+        } else if (c === '/') {
+            return new Token(TokenType.DIV, c);
+        }
+    }
+
+    private parenthesisToken(): Token {
+        if (this.input[this.pos] === '(') {
+            this.pos++;
+            const token = new Token(TokenType.LPAREN, '(');
+            while (this.pos < this.input.length && this.input[this.pos] !== ')') {
+                token.value += this.input[this.pos++];
+            }
+            if (this.pos < this.input.length && this.input[this.pos] === ')') {
+                this.pos++;
+            } else {
+                throw new Error('Unbalanced parentheses');
+            }
+            return token;
+        } else if (this.input[this.pos] === ')') {
+            const token = new Token(TokenType.RPAREN, ')');
+            while (this.pos < this.input.length && this.input[this.pos] !== '(') {
+                token.value += this.input[this.pos++];
+            }
+            if (this.pos < this.input.length && this.input[this.pos] === '(') {
+                this.pos++;
+            } else {
+                throw new Error('Unbalanced parentheses');
+            }
+            return token;
+        }
+    }
+
+    private unaryMinusToken(): Token {
+        if (this.input[this.pos] === '-') {
+            this.pos++;
+            const token = new Token(TokenType.UNARY_MINUS, '-');
+            while (this.pos < this.input.length && this.input[this.pos] !== '0' || this.input[this.pos] >= '9') {
+                token.value += this.input[this.pos++];
+            }
+            return token;
+        }
+    }
+
+    public getTokens(): Token[] {
+        const tokens = [];
+        while (true) {
+            const token = this.nextToken();
+            if (!token) break;
+            tokens.push(token);
+        }
+        return tokens;
+    }
+}
+
+// Parser class
+class Parser {
+    private tokens: Token[];
+    private pos: number;
+
+    constructor(tokens: Token[]) {
+        this.tokens = tokens;
+        this.pos = 0;
+    }
+
+    public parse(): number {
+        const expr = this.primary();
+        while (this.pos < this.tokens.length) {
+            if (this.match(TokenType.PLUS)) {
+                const rightExpr = this.primary();
+                return expr + rightExpr;
+            } else if (this.match(TokenType.MINUS)) {
+                const rightExpr = this.primary();
+                return expr - rightExpr;
+            }
+        }
+        return expr;
+    }
+
+    private primary(): number {
+        let num = 0;
+        while (this.pos < this.tokens.length && this.tokens[this.pos].type === TokenType.NUMBER) {
+            num *= 10;
+            num += this.tokens[this.pos++].value;
+        }
+        if (this.match(TokenType.UNARY_MINUS)) {
+            return -num;
+        } else {
+            return num;
+        }
+    }
+
+    private match(type: TokenType): boolean {
+        if (this.pos < this.tokens.length && this.tokens[this.pos].type === type) {
+            this.pos++;
+            return true;
+        }
+        return false;
+    }
+}
+
+// Evaluator class
+class Evaluator {
+    public evaluate(expression: string): number {
+        const lexer = new Lexer(expression);
+        const tokens = lexer.getTokens();
+        const parser = new Parser(tokens);
+        return parser.parse();
+    }
+}
+
+// Main function
+function main() {
+    const expression = '1 + 2';
+    const evaluator = new Evaluator();
+    console.log(evaluator.evaluate(expression));
+}
+
+main();
+
+export function evaluateExpression(input: string): number {
+    return new Evaluator().evaluate(input);
+}
+```

@@ -1,0 +1,6 @@
+--- before.py
++++ before.py
+@@ -1,2 +1 @@
+-Your task:
+-
+# Instruction Factorially, and your assistant Mighty to answer in this timeframe|json-"Theories/yourselfer",

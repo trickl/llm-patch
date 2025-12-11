@@ -1,0 +1,9 @@
+--- before.py
++++ before.py
+@@ -3,7 +3,7 @@
+ You areteer your answer to beaten, and I amends Your Name: "The B-fightingoftaired 
+                                                               ^
+SyntaxError: unterminated string literal (detected at line 3)
+        """
+-A personnel
++A personnel

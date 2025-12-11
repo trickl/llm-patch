@@ -1,0 +1,104 @@
+```typescript
+// expression_evaluator.ts
+
+class ExpressionEvaluator {
+  private precedence: { [operator: string]: number };
+
+  constructor() {
+    this.precedence = {
+      '+': 1,
+      '-': 1,
+      '*': 2,
+      '/': 2,
+    };
+  }
+
+  public evaluateExpression(input: string): number | null {
+    const tokens = this.tokenize(input);
+    if (!tokens) return null;
+
+    const ast = this.parse(tokens);
+    if (!ast) return null;
+
+    return this.evaluate(ast);
+  }
+
+  private tokenize(expression: string): string[] | null {
+    const operators = ['+', '-', '*', '/'];
+    const precedenceMap = { '+': 1, '-': 1, '*': 2, '/': 2 };
+    let tokens: string[] = [];
+    let currentToken = '';
+    let operator = '';
+
+    for (let i = 0; i < expression.length; i++) {
+      const char = expression[i];
+
+      if (!isNaN(parseInt(char))) {
+        currentToken += char;
+      } else if (operators.includes(char)) {
+        if (currentToken) tokens.push(currentToken);
+        currentToken = '';
+        operator = char;
+      }
+
+      if (i === expression.length - 1 && currentToken) tokens.push(currentToken);
+
+      if (operator && precedenceMap[operator] > precedenceMap['(']) {
+        const rightOperand = this.tokenize(expression.substring(i + 1));
+        if (!rightOperand) return null;
+
+        const leftOperand = this.parse(tokens);
+        if (!leftOperand) return null;
+
+        const ast = { type: 'Binary', operator, left: leftOperand, right: rightOperand[0] };
+        tokens = [ast];
+      }
+    }
+
+    return tokens;
+  }
+
+  private parse(tokens: string[]): any | null {
+    if (tokens.length === 1 && typeof tokens[0] === 'number') return tokens[0];
+
+    const operator = tokens.shift();
+    const leftOperand = this.parse(tokens);
+    if (!leftOperand) return null;
+
+    const rightOperand = tokens.shift();
+    if (rightOperand && typeof rightOperand === 'number') {
+      return { type: 'Binary', operator, left: leftOperand, right: rightOperand };
+    }
+
+    return leftOperand;
+  }
+
+  private evaluate(node: any): number | null {
+    if (node.type === 'Number') return node.value;
+
+    const left = this.evaluate(node.left);
+    if (!left) return null;
+
+    const right = this.evaluate(node.right);
+    if (!right) return null;
+
+    switch (node.operator) {
+      case '+':
+        return left + right;
+      case '-':
+        return left - right;
+      case '*':
+        return left * right;
+      case '/':
+        return left / right;
+      default:
+        return null;
+    }
+  }
+}
+
+export function evaluateExpression(input: string): number | null {
+  const evaluator = new ExpressionEvaluator();
+  return evaluator.evaluateExpression(input);
+}
+```

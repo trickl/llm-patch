@@ -1,0 +1,30 @@
+--- before.ts
++++ after.ts
+@@(20,36)-(20,36)
++  from Token import Token;
+@@(21,19)-(21,19)
++  from Token import Token;
+@@(40,25)-(40,25)
+-  from ParseTree import ParseTree;
++  from ParseTree import ParseTree;
+@@(40,35)-(40,35)
+-  from ParseTree import ParseTree;
++  from ParseTree import ParseTree;
+@@(83,15)-(83,15)
+-  'rightOperand' implicitly has type 'any' because it does not have a type annotation and is referenced directly or indirectly in its own initializer.
++  'rightOperand': number;
+@@(84,15)-(84,15)
+-  'leftOperand' implicitly has type 'any' because it does not have a type annotation and is referenced directly or indirectly in its own initializer.
++  'leftOperand': number;
+@@(90,15)-(90,15)
+-  'rightOperand' implicitly has type 'any' because it does not have a type annotation and is referenced directly or indirectly in its own initializer.
++  'rightOperand': number;
+@@(91,15)-(91,15)
+-  'leftOperand' implicitly has type 'any' because it does not have a type annotation and is referenced directly or indirectly in its own initializer.
++  'leftOperand': number;
+@@(94,15)-(94,15)
+-  'rightOperand' implicitly has type 'any' because it does not have a type annotation and is referenced directly or indirectly in its own initializer.
++  'rightOperand': number;
+@@(95,15)-(95,15)
+-  'leftOperand' implicitly has type 'any' because it does not have a type annotation and is referenced directly or indirectly in its own initializer.
++  'leftOperand': number;

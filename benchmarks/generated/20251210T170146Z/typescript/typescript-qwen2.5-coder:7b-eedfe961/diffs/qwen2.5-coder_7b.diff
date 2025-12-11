@@ -1,0 +1,8 @@
+--- before.ts
++++ before.ts
+@@ -1,4 +1,6 @@
++import * as process from 'process';
++import * as module from 'module';
+ import * as require from 'require';
+
+ type Token = { type: 'number' | 'operator' | 'parenthesis'; value: string };

@@ -1,0 +1,7 @@
+--- before.java
++++ after.java
+@@ -1,3 +1,4 @@
+-You are there'de
++You are there'de
+ # Theory of the user:
+  ^

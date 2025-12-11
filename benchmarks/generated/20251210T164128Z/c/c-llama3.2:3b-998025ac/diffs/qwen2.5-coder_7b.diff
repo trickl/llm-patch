@@ -1,0 +1,21 @@
+--- before.c
++++ before.c
+@@ -3,6 +3,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+
++#include <ctype.h>  // Added to include ctype.h for isdigit function
+
+// Token types
+typedef enum {
+    NUMBER,
+@@ -158,7 +159,7 @@ int main() {
+     char* expressions[] = {"3 + 4 * (2 - 1)", "2 * 3 + 4", "2 * (3 + 4)", "8 / 2 * (2 + 2)"};
+     for (char* expression : expressions) {  // Fixed the range of the loop
+         Token* tokens = lexer(expression);
+         double* stack = parser(tokens);
+-        printf("%s => %f\n", expression, evaluator(stack, strlen(stack)));
++        printf("%s => %f\n", expression, evaluator(stack, (int)strlen(stack)));  // Cast to int for strlen return type
+         free(stack);
+         free(tokens->literal);
+         for (int i = 0; i < tokens.length - 1; ++i) {

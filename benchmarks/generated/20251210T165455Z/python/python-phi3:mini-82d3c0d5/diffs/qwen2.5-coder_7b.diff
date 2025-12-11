@@ -1,0 +1,5 @@
+--- before.py
++++ before.py
+@@ -1,1 +1 @@
+-I's name_difference=instruction:
++name_difference = instruction

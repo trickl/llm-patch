@@ -1,0 +1,19 @@
+{
+  "case_id": "java-phi3:mini-150d4c49",
+  "language": "java",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "aider",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 2 hunks",
+  "compile_returncode": 1,
+  "errors_before": 4,
+  "errors_after": 3,
+  "first_error_removed": false,
+  "added_lines": 6,
+  "removed_lines": 6,
+  "hunks": 2,
+  "delete_only": false,
+  "success": false,
+  "notes": ""
+}

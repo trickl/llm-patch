@@ -1,0 +1,202 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Token types
+typedef enum {
+    NUMBER,
+    PLUS,
+    MINUS,
+    MUL,
+    DIV,
+    LPAREN,
+    RPAREN,
+    EOF
+} TokenType;
+
+// Token structure
+typedef struct {
+    TokenType type;
+    double value;
+} Token;
+
+// Lexer function
+Token* lexer(char* expression) {
+    int length = strlen(expression);
+    Token* tokens = malloc((length + 1) * sizeof(Token));
+    char* token = strtok(expression, "+-*/() ");
+    int index = 0;
+    while (token != NULL) {
+        if (strcmp(token, "+") == 0 || strcmp(token, "-") == 0 ||
+            strcmp(token, "*") == 0 || strcmp(token, "/") == 0) {
+            tokens[index].type = get_token_type(token);
+            tokens[index].value = get_value(token);
+            index++;
+        }
+        token = strtok(NULL, "+-*/() ");
+    }
+    return tokens;
+}
+
+// Parser function
+Token* parse(Token* tokens) {
+    Token* stack = malloc(sizeof(Token));
+    int top = 0;
+    for (int i = 0; i < length(tokens); i++) {
+        if (tokens[i].type == LPAREN) {
+            stack[top] = tokens[i];
+            top++;
+        } else if (tokens[i].type == RPAREN) {
+            while (stack[top].type != LPAREN) {
+                Token* temp = stack[top--].value;
+                if (top > 0 && stack[top - 1].type == MUL || stack[top - 1].type == DIV) {
+                    Token* op = stack[top - 1];
+                    double result = evaluate(temp, op);
+                    free(stack[top]);
+                    top--;
+                    stack[top] = create_token(op.type, result);
+                } else if (top > 0 && stack[top - 1].type == PLUS || stack[top - 1].type == MINUS) {
+                    Token* op = stack[top - 1];
+                    double result = evaluate(temp, op);
+                    free(stack[top]);
+                    top--;
+                    stack[top] = create_token(op.type, result);
+                } else {
+                    break;
+                }
+            }
+        } else if (tokens[i].type == NUMBER) {
+            while (top > 0 && is_number(tokens[i].value)) {
+                Token* temp = stack[top - 1];
+                double result = evaluate(temp.value, create_token(tokens[i].type, tokens[i].value));
+                free(stack[top]);
+                top--;
+                stack[top] = temp;
+            }
+            stack[top] = create_token(NUMBER, tokens[i].value);
+            top++;
+        } else {
+            while (top > 0 && get_precedence(get_token_type(tokens[i])) <= get_precedence(get_token_type(stack[top]))) {
+                Token* op = stack[top--].value;
+                double result = evaluate(op.value, create_token(tokens[i].type, tokens[i].value));
+                free(stack[top]);
+                top--;
+            }
+            stack[top] = create_token(tokens[i].type, tokens[i].value);
+            top++;
+        }
+    }
+    while (top > 0) {
+        Token* op = stack[top - 1];
+        double result = evaluate(op.value, create_token(LPAREN, NULL));
+        free(stack[top]);
+        top--;
+        stack[top] = op;
+    }
+    return stack[0];
+}
+
+// Evaluator function
+double evaluate(Token* token) {
+    if (token->type == NUMBER) {
+        return token->value;
+    } else if (token->type == PLUS || token->type == MINUS) {
+        double left = evaluate(token->value);
+        Token* right = parse(tokens + length(tokens));
+        double result = 0;
+        if (token->type == PLUS) {
+            result = left + evaluate(right.value);
+        } else {
+            result = left - evaluate(right.value);
+        }
+        free(right);
+        return result;
+    } else if (token->type == MUL || token->type == DIV) {
+        double left = evaluate(token->value);
+        Token* right = parse(tokens + length(tokens));
+        double result = 0;
+        if (token->type == MUL) {
+            result = left * evaluate(right.value);
+        } else {
+            result = left / evaluate(right.value);
+        }
+        free(right);
+        return result;
+    } else if (token->type == LPAREN) {
+        Token* right = parse(tokens + length(tokens));
+        double result = evaluate(right.value);
+        free(right);
+        return result;
+    } else {
+        printf("Error: Invalid token type\n");
+        exit(1);
+    }
+}
+
+// Helper functions
+TokenType get_token_type(char* token) {
+    if (strcmp(token, "+") == 0) {
+        return PLUS;
+    } else if (strcmp(token, "-") == 0) {
+        return MINUS;
+    } else if (strcmp(token, "*") == 0) {
+        return MUL;
+    } else if (strcmp(token, "/") == 0) {
+        return DIV;
+    } else if (strcmp(token, "(") == 0) {
+        return LPAREN;
+    } else if (strcmp(token, ")") == 0) {
+        return RPAREN;
+    }
+    return NUMBER;
+}
+
+double get_value(char* token) {
+    double result = atof(token);
+    return result;
+}
+
+int length(Token* tokens) {
+    int count = 0;
+    while (tokens[count].type != EOF) {
+        count++;
+    }
+    return count;
+}
+
+int is_number(double value) {
+    if (value == (long double)value) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+int get_precedence(TokenType type) {
+    if (type == MUL || type == DIV) {
+        return 2;
+    } else if (type == PLUS || type == MINUS) {
+        return 1;
+    }
+    return 0;
+}
+
+Token* create_token(TokenType type, double value) {
+    Token token;
+    token.type = type;
+    token.value = value;
+    return &token;
+}
+
+int main() {
+    char expressions[][100] = {"3 + 4 * (2 - 1)", "2 * 3 + 4", "2 * (3 + 4)", "8 / 2 * (2 + 2)"};
+    for (int i = 0; i < length(expressions); i++) {
+        Token* tokens = lexer(expressions[i]);
+        Token* result = parse(tokens);
+        double value = evaluate(result->value);
+        printf("%s => %f\n", expressions[i], value);
+        free(result);
+        free(tokens);
+    }
+    return 0;
+}

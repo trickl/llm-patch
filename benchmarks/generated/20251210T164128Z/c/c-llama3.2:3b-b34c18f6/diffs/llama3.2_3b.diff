@@ -1,0 +1,16 @@
+--- before.c
++++ after.c
+@@ -123,7 +123,7 @@
+             Token* next_token = current_token->next;
+             double result = evaluate(current_token->value, next_token->value);
+             free(next_token->text);
+             free(next_token);
+             current_token = tokens + current_token->index - 1;
+-            if (current_token->type == PLUS || current_token->type == MINUS) {
++            } else if (current_token->type == PLUS || current_token->type == MINUS) {
+                 // Handle addition and subtraction
+                 Token* next_token = current_token->next;
+                 double result = evaluate(current_token->value, next_token->value);
+                 free(next_token->text);
+                 free(next_token);
+                 current_token = tokens + current_token->index - 1;

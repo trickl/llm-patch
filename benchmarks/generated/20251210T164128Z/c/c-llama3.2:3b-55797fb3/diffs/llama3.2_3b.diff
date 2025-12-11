@@ -1,0 +1,197 @@
+--- before.c
++++ after.c
+@@ -1,7 +1,7 @@
+ #include  "before.h"
+ #include  "lexer.h"
+ #include  "parser.h"
+ #include  "evaluator.h"
+
+ // Token type enum
+ typedef enum {
+     NUMBER,
+     PLUS,
+     MINUS,
+     MUL,
+     DIV,
+     LPAREN,
+     RPAREN,
+     UNARY_MINUS,
+     END_OF_EXPRESSION
+ } TokenType;
+
+ // Token structure
+ typedef struct {
+     TokenType type;
+     double value; // for numbers and unary minus
+     char* str; // for strings (not used in this implementation)
+ } Token;
+
+ // Lexer function to tokenize the input string
+ Token* lexer(const char* expression) {
+     int length = strlen(expression);
+     Token* tokens = malloc((length + 1) * sizeof(Token));
+     int tokenIndex = 0;
+     char currentChar = '\0';
+
+     for (int i = 0; i < length; ++i) {
+         if (isdigit(expression[i])) {
+             // Found a number
+             double numValue = 0.0;
+             while (i  length && isdigit(expression[i])) {
+                 numValue = numValue * 10 + expression[i++] - '0';
+             }
+             tokens[tokenIndex].type = NUMBER;
+             tokens[tokenIndex].value = numValue;
+             tokens[tokenIndex].str = NULL; // Not used in this implementation
+             tokenIndex++;
+         } else if (expression[i] == '+') {
+             // Found a plus operator
+             tokens[tokenIndex].type = PLUS;
+             tokens[tokenIndex].value = 0.0;
+             tokens[tokenIndex].str = "+";
+             tokenIndex++;
+         } else if (expression[i] == '-') {
+             // Found a minus operator
+             tokens[tokenIndex].type = MINUS;
+             tokens[tokenIndex].value = 0.0;
+             tokens[tokenIndex].str = "-";
+             tokenIndex++;
+         } else if (expression[i] == '*') {
+             // Found a multiplication operator
+             tokens[tokenIndex].type = MUL;
+             tokens[tokenIndex].value = 0.0;
+             tokens[tokenIndex].str = "*";
+             tokenIndex++;
+         } else if (expression[i] == '/') {
+             // Found a division operator
+             tokens[tokenIndex].type = DIV;
+             tokens[tokenIndex].value = 0.0;
+             tokens[tokenIndex].str = "/";
+             tokenIndex++;
+         } else if (expression[i] == '(') {
+             // Found an opening parenthesis
+             tokens[tokenIndex].type = LPAREN;
+             tokens[tokenIndex].value = 0.0;
+             tokens[tokenIndex].str = "(";
+             tokenIndex++;
+         } else if (expression[i] == ')') {
+             // Found a closing parenthesis
+             tokens[tokenIndex].type = RPAREN;
+             tokens[tokenIndex].value = 0.0;
+             tokens[tokenIndex].str = ")";
+             tokenIndex++;
+         } else if (expression[i] == '-') {
+             // Found an unary minus operator
+             tokens[tokenIndex].type = UNARY_MINUS;
+             tokens[tokenIndex].value = 0.0;
+             tokens[tokenIndex].str = "-";
+             tokenIndex++;
+         }
+     }
+
+     tokens[tokenIndex].type = END_OF_EXPRESSION;
+     tokens[tokenIndex].value = 0.0;
+     tokens[tokenIndex].str = NULL; // Not used in this implementation
+
+     return tokens;
+}
+
+// Parser function to parse the tokens into an abstract syntax tree
+struct Node* parser(Token* tokens) {
+    struct Node* nodes = malloc(1 * sizeof(struct Node));
+    nodes->type = END_OF_EXPRESSION;
+    nodes->left = NULL;
+    nodes->right = NULL;
+
+    for (int i = 0; i  tokenIndex; ++i) {
+        if (tokens[i].type == NUMBER) {
+            // Found a number
+            struct Node* node = malloc(1 * sizeof(struct Node));
+            node->type = NUMBER;
+            node->value = tokens[i].value;
+            node->left = NULL;
+            node->right = NULL;
+            nodes->left = node;
+        } else if (tokens[i].type == PLUS || tokens[i].type == MINUS) {
+            // Found an operator
+            struct Node* leftNode = nodes;
+            while (leftNode->right != NULL && leftNode->right->type != END_OF_EXPRESSION) {
+                leftNode = leftNode->right;
+            }
+            if (tokens[i].type == PLUS) {
+                // Found a plus operator
+                struct Node* node = malloc(1 * sizeof(struct Node));
+                node->type = NUMBER;
+                node->value = 0.0;
+                node->left = NULL;
+                node->right = leftNode;
+                leftNode->right = node;
+            } else {
+                // Found a minus operator
+                struct Node* node = malloc(1 * sizeof(struct Node));
+                node->type = NUMBER;
+                node->value = 0.0;
+                node->left = NULL;
+                node->right = leftNode;
+                leftNode->right = node;
+            }
+        } else if (tokens[i].type == MUL || tokens[i].type == DIV) {
+            // Found an operator
+            struct Node* leftNode = nodes;
+            while (leftNode->right != NULL && leftNode->right->type != END_OF_EXPRESSION) {
+                leftNode = leftNode->right;
+            }
+            if (tokens[i].type == MUL) {
+                // Found a multiplication operator
+                struct Node* node = malloc(1 * sizeof(struct Node));
+                node->type = NUMBER;
+                node->value = 0.0;
+                node->left = NULL;
+                node->right = leftNode;
+                leftNode->right = node;
+            } else {
+                // Found a division operator
+                struct Node* node = malloc(1 * sizeof(struct Node));
+                node->type = NUMBER;
+                node->value = 0.0;
+                node->left = NULL;
+                node->right = leftNode;
+                leftNode->right = node;
+            }
+        } else if (tokens[i].type == LPAREN) {
+            // Found an opening parenthesis
+            struct Node* node = parser(tokens + i + 1);
+            nodes->left = node;
+        } else if (tokens[i].type == RPAREN) {
+            // Found a closing parenthesis
+            return nodes;
+        }
+    }
+
+    return nodes;
+}
+
+// Evaluator function to evaluate the abstract syntax tree
+double evaluator(struct Node* node) {
+    if (node->type == NUMBER) {
+        return node->value;
+    } else if (node->type == PLUS || node->type == MINUS) {
+        double leftValue = evaluator(node->left);
+        double rightValue = evaluator(node->right);
+        if (node->type == PLUS) {
+            return leftValue + rightValue;
+        } else {
+            return leftValue - rightValue;
+        }
+    } else if (node->type == MUL || node->type == DIV) {
+        double leftValue = evaluator(node->left);
+        double rightValue = evaluator(node->right);
+        if (node->type == MUL) {
+            return leftValue * rightValue;
+        } else {
+            return leftValue / rightValue;
+        }
+    } else if (node->type == UNARY_MINUS) {
+        return -evaluator(node->left);
+    }
+}

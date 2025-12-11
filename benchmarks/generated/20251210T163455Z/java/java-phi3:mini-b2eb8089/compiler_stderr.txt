@@ -1,0 +1,13 @@
+ExpressionEvaluator.java:1: error: class, interface, enum, or record expected
+**Note:
+^
+ExpressionEvaluator.java:3: error: unclosed character literal
+You'dea_means to answer a list that I amphora-like, and then you are in an individual with your ownerside=instruction:  
+   ^
+ExpressionEvaluator.java:5: error: unclosed character literal
+*Please write mealowing the same as 'The Hinduism. Your task: 
+                                    ^
+ExpressionEvaluator.java:7: error: illegal character: '#'
+# Solution: Write a brief summary of this instruction:
+^
+4 errors

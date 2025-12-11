@@ -1,0 +1,9 @@
+--- before.ts
++++ patched_before_ts
+@@ -101,5 +101,6 @@
+         const char = input[i];
+
+-        if (isNumberChar(char)) {
++        // Add require statement to import Node.js types
++        const { module } = require('module');
+         currentToken += char;

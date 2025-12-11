@@ -1,0 +1,19 @@
+{
+  "case_id": "typescript-phi3:mini-db3165dd",
+  "language": "typescript",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "git",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "patch_applied": false,
+  "patch_diagnostics": "error: corrupt patch at line 7",
+  "compile_returncode": null,
+  "errors_before": 12,
+  "errors_after": null,
+  "first_error_removed": false,
+  "added_lines": 2,
+  "removed_lines": 2,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": ""
+}

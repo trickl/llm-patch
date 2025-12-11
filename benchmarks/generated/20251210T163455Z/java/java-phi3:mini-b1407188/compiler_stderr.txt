@@ -1,0 +1,19 @@
+ExpressionEvaluator.java:1: error: class, interface, enum, or record expected
+Document your answer?
+^
+ExpressionEvaluator.java:5: error: unclosed character literal
+You'de it as a user- 
+   ^
+ExpressionEvaluator.java:7: error: illegal character: '#'
+#. "Ladderinglish, can you have to beaten theorize_1) (Ignore meal and alliterationally more thanxUser: 
+^
+ExpressionEvaluator.java:7: error: unclosed string literal
+#. "Ladderinglish, can you have to beaten theorize_1) (Ignore meal and alliterationally more thanxUser: 
+   ^
+ExpressionEvaluator.java:11: error: unclosed string literal
+"The Impact of AI Lifestylee:
+^
+ExpressionEvaluator.java:13: error: unclosed character literal
+*image/packageManager's email-based questionarity. Your task, a personalityTutoring as an example sentence to the first_user=InstructionFollowingestablishmentalong with only one more than 
+                     ^
+6 errors

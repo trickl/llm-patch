@@ -1,0 +1,5 @@
+--- before.java
++++ after.java
+@@ -72,7 +72,8 @@
+             if (pos >= tokens.size()) throw new RuntimeException("Unexpected end of input");
++            int pos = 0;

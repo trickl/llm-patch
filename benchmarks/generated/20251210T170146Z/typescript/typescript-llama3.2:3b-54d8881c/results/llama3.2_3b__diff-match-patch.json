@@ -1,0 +1,19 @@
+{
+  "case_id": "typescript-llama3.2:3b-54d8881c",
+  "language": "typescript",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "diff-match-patch",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "patch_applied": false,
+  "patch_diagnostics": "statuses=[True, False, False, False, False, True, True, True, True, True, True, False, True]",
+  "compile_returncode": null,
+  "errors_before": 6,
+  "errors_after": null,
+  "first_error_removed": false,
+  "added_lines": 6,
+  "removed_lines": 6,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": ""
+}

@@ -1,0 +1,19 @@
+{
+  "case_id": "typescript-phi3:mini-b8e14fab",
+  "language": "typescript",
+  "problem_id": "expr_eval_v1",
+  "model": "phi3:mini",
+  "provider": "ollama",
+  "timestamp_utc": "2025-12-10T17:05:37.279793+00:00",
+  "compile_command": [
+    "tsc",
+    "--strict",
+    "--target",
+    "ES2020",
+    "--module",
+    "commonjs",
+    "--noEmit",
+    "expression_evaluator.ts"
+  ],
+  "return_code": 2
+}

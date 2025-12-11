@@ -1,0 +1,5 @@
+--- before.py
++++ after.py
+@@ -1 +1 @@
+- Your task:
++ Your task:

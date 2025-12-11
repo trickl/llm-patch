@@ -1,0 +1,19 @@
+{
+  "case_id": "c-llama3.2:3b-ed5a6712",
+  "language": "c",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "git",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "patch_applied": false,
+  "patch_diagnostics": "error: corrupt patch at line 171",
+  "compile_returncode": null,
+  "errors_before": 17,
+  "errors_after": null,
+  "first_error_removed": false,
+  "added_lines": 20,
+  "removed_lines": 19,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": ""
+}

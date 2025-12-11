@@ -1,0 +1,8 @@
+--- before.ts
++++ after.ts
+@@(54,30)-(54,31)
+-  const operatorStack: string[] = [];
++  const operatorStack: string[] = [];
+@@(65,30)-(65,31)
+-  let outputQueue: number[] = [];
++  let outputQueue: number[] = [];

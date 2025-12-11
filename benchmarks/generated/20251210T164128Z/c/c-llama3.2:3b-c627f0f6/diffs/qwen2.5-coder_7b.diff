@@ -1,0 +1,12 @@
+--- before.c
++++ before.c
+@@ -3,6 +3,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+
++#include <ctype.h> // Added line to include ctype.h for isdigit function
+
+// Token type enumeration
+typedef enum {
+    NUMBER,
+    PLUS,

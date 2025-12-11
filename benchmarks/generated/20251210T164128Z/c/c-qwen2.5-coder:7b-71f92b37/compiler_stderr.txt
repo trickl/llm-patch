@@ -1,0 +1,26 @@
+expression_evaluator.c: In function ‘main’:
+expression_evaluator.c:139:9: error: ‘TokenIndex’ undeclared (first use in this function); did you mean ‘tokenIndex’?
+  139 |         TokenIndex = 0;
+      |         ^~~~~~~~~~
+      |         tokenIndex
+expression_evaluator.c:139:9: note: each undeclared identifier is reported only once for each function it appears in
+expression_evaluator.c:140:38: error: passing argument 1 of ‘parseExpression’ from incompatible pointer type [-Wincompatible-pointer-types]
+  140 |         int result = parseExpression(&input, 0);
+      |                                      ^~~~~~
+      |                                      |
+      |                                      char (*)[256]
+expression_evaluator.c:114:28: note: expected ‘char **’ but argument is of type ‘char (*)[256]’
+  114 | int parseExpression(char **str, int minPrecedence) {
+      |                     ~~~~~~~^~~
+expression_evaluator.c: In function ‘getNextToken’:
+expression_evaluator.c:59:1: warning: control reaches end of non-void function [-Wreturn-type]
+   59 | }
+      | ^
+expression_evaluator.c: In function ‘evaluate’:
+expression_evaluator.c:79:1: warning: control reaches end of non-void function [-Wreturn-type]
+   79 | }
+      | ^
+expression_evaluator.c: In function ‘parseFactor’:
+expression_evaluator.c:112:1: warning: control reaches end of non-void function [-Wreturn-type]
+  112 | }
+      | ^

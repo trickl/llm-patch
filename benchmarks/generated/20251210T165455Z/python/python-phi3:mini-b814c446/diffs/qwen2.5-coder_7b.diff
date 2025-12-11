@@ -1,0 +1,6 @@
+--- before.py
++++ before.py
+@@ -1,2 +1 @@
+-**user:
+You are thereofor user:
++print("Hello, World!")

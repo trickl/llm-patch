@@ -1,0 +1,10 @@
+--- before.ts
++++ after.ts
+@@ -121,5 +121,6 @@
+   return outputQueue[0];
+ }
+ 
+ private calculate(operand1: number, operator: string, operand2: number): number {
+-  switch (operator) {
++  import * as Node from 'node';
++  const require = Node.require;

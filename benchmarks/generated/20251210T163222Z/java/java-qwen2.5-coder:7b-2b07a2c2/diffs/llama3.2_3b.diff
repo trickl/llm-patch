@@ -1,0 +1,9 @@
+--- before.java
++++ patched_before.java
+@@ -70,7 +70,7 @@
+             if (token.type == TokenType.OPERATOR && (token.value == '+' || token.value == '-')) {
+-            if (token.value == '+') {
++            if ((int) token.value == '+') {
+                 result += nextTerm;
+             } else {
+                 result -= nextTerm;

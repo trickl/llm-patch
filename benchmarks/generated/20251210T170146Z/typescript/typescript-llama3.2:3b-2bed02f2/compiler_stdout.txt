@@ -1,0 +1,2 @@
+expression_evaluator.ts(38,79): error TS1109: Expression expected.
+expression_evaluator.ts(38,87): error TS1005: ';' expected.

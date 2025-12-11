@@ -1,0 +1,6 @@
+expression_evaluator.c:1:4: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘)’ token
+    1 | **A)
+      |    ^
+expression_evaluator.c:9:2: error: invalid preprocessing directive #q
+    9 | #q.
+      |  ^

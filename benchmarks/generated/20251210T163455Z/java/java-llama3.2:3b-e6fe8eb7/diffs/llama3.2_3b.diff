@@ -1,0 +1,10 @@
+--- before.java
++++ after.java
+
+-ExpressionEvaluator.java:134: error: constructor Expression in class Expression cannot be applied to given types;
++ExpressionEvaluator.java:134: error: constructor Expression in class Expression cannot be applied to given types;
+     public UnaryOp(Expression expr, Operator op) {
+-         this.expr = expr;
+-         this.op = op;
++         this.expr = expr;
++         this.op = op;

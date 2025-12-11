@@ -1,0 +1,28 @@
+--- before.ts
++++ before.ts
+@@ -1,6 +1,7 @@
+ // expression_evaluator.ts
+
++import { evaluateExpression } from './expression_evaluator';
+ class ExpressionEvaluator {
+   private precedence: { [operator: string]: number };
+
+   constructor() {
+     this.precedence = {
+       '+': 1,
+@@ -84,7 +85,7 @@ class ExpressionEvaluator {
+     return this.evaluate(outputQueue);
+   }
+
+-  private isUnaryMinus(token: string): boolean {
++  private isUnaryMinus(token: string): boolean {
+     return token === '-' && (token.length === 1 || !this.isOperator(token.slice(1)));
+   }
+ 
+@@ -124,7 +125,7 @@ class ExpressionEvaluator {
+     throw new Error('Invalid expression');
+   }
+ }
+
+-export function evaluateExpression(input: string): number {
++export { evaluateExpression };

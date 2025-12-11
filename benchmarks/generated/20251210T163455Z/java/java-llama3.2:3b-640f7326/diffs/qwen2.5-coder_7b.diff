@@ -1,0 +1,105 @@
+--- before.java	2023-04-10 12:34:56.000000000 +0800
++++ after.java	2023-04-10 12:35:07.000000000 +0800
+@@ -1,4 +1,5 @@
+ import java.util.*;
++import ExpressionEvaluator.Expression;
+ 
+ public class ExpressionEvaluator {
+ 
+@@ -69,7 +70,7 @@ public class ExpressionEvaluator {
+         }
+     }
+ 
+-    private static class Parser {
++    private static class Parser implements Expression {
+         private final List<String> tokens;
+ 
+         public Parser(List<String> tokens) {
+@@ -125,7 +126,7 @@ public class ExpressionEvaluator {
+             return left;
+         }
+ 
+-        private Expression parseFactor(int index) {
++        private Expression parseFactor(int index) implements Expression {
+             if (!Character.isDigit(tokens.get(index).charAt(0))) {
+                 throw new RuntimeException("Invalid token: " + tokens.get(index));
+             }
+@@ -182,7 +183,7 @@ public class ExpressionEvaluator {
+         }
+     }
+ 
+-    private static class Evaluator {
++    private static class Evaluator implements Expression {
+         public int evaluate(Expression expression) {
+             return evaluate(expression, 0);
+         }
+@@ -208,7 +209,7 @@ public class ExpressionEvaluator {
+             throw new RuntimeException("Invalid expression");
+         }
+     }
+ 
+-    private static class Literal implements Expression {
++    private static class Literal implements Expression {
+         private final int value;
+ 
+         public Literal(int value) {
+@@ -213,7 +214,7 @@ public class ExpressionEvaluator {
+             return value;
+         }
+ 
+-        @Override
++        @Override
+         public Object getRight() {
+             return null;
+         }
+@@ -220,7 +221,7 @@ public class ExpressionEvaluator {
+     }
+ 
+-    private static class BinaryOp implements Expression {
++    private static class BinaryOp implements Expression {
+         private final Expression left;
+         private final char operator;
+         private final Expression right;
+ 
+         public BinaryOp(Expression left, char operator, Expression right) {
+             this.left = left;
+             this.operator = operator;
+             this.right = right;
+         }
+ 
+-        @Override
++        @Override
+         public Object getLeft() {
+             return left;
+         }
+ 
+-        @Override
++        @Override
+         public Object getRight() {
+             return right;
+         }
+     }
+ 
+-    private static class UnaryOp implements Expression {
++    private static class UnaryOp implements Expression {
+         private final char operator;
+         private final Expression right;
+ 
+         public UnaryOp(char operator, Expression right) {
+             this.operator = operator;
+             this.right = right;
+         }
+ 
+-        @Override
++        @Override
+         public Object getLeft() {
+             return null;
+         }
+ 
+-        @Override
++        @Override
+         public Object getRight() {
+             return right;
+         }
+     }
+ }

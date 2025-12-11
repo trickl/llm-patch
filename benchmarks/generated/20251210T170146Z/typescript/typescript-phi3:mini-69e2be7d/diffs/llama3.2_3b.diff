@@ -1,0 +1,5 @@
+--- before.ts
++++ patched_before_ts
+@@ -1 +1 @@
+- Write an* [Theodore Role in Python'in#.
++ Write an * [Theodore Role in Python]in#

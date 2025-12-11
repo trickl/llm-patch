@@ -1,0 +1,19 @@
+{
+  "case_id": "c-llama3.2:3b-b1605230",
+  "language": "c",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "diff-match-patch",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "patch_applied": false,
+  "patch_diagnostics": "DMP parse error: Invalid patch string: @@ -129,7 +130,7 @@ Token* parse(Token* tokens) {",
+  "compile_returncode": null,
+  "errors_before": 24,
+  "errors_after": null,
+  "first_error_removed": false,
+  "added_lines": 7,
+  "removed_lines": 6,
+  "hunks": 4,
+  "delete_only": false,
+  "success": false,
+  "notes": ""
+}

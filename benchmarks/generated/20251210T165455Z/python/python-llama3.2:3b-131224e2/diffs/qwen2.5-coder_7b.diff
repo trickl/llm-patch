@@ -1,0 +1,10 @@
+--- before.py
++++ before.py
+@@ -34,7 +34,7 @@ class Parser:
+     def __init__(self):
+         self.precedence = {'+': 1, '-': 1, '*': 2, '/': 2}
+ 
+-    def parse(self, tokens):
++    def parse(self, tokens):
+         output_queue = []
+         operator_stack = []

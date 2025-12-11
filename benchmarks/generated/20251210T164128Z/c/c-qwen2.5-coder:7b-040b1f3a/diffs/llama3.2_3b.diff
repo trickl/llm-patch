@@ -1,0 +1,26 @@
+--- before.c
++++ after.c
+@@ -94,31 +94,32 @@
+   int evaluate(int *start, int *end) {
+-    if (*start > *end) {
++    if (*start >= *end) {
+       return 0;
+     }
+
+     int value = tokens[*start].value;
+     TokenType operator = TOKEN_PLUS;
+
+     for (int i = *start + 1; i <= *end; i++) {
+-      if (tokens[i].type == TOKEN_NUMBER) {
++      if (tokens[i].type == TOKEN_NUMBER) {
+       value = apply_operator(value, tokens[i].value, operator);
+     } else if (tokens[i].type == TOKEN_PLUS || tokens[i].type == TOKEN_MINUS ||
+                tokens[i].type == TOKEN_MULTIPLY || tokens[i].type == TOKEN_DIVIDE) {
+-      operator = tokens[i].type;
++      operator = tokens[i].type;
+     }
+   }
+
+-    *start = *end + 1;
++    *start = *end;
+     return value;

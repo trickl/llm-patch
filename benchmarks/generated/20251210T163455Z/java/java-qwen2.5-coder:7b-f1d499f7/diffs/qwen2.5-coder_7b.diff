@@ -1,0 +1,11 @@
+--- before.java	2023-04-10 12:34:56.000000000 +0800
++++ after.java	2023-04-10 12:35:07.000000000 +0800
+@@ -95,7 +95,7 @@
+     private static class Node {
+         abstract int evaluate();
+     }
+-
++    abstract int evaluate();
+ 
+     private static class NumberNode extends Node {
+         final int value;

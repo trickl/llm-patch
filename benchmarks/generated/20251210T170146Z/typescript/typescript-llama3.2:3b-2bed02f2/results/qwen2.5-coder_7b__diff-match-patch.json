@@ -1,0 +1,19 @@
+{
+  "case_id": "typescript-llama3.2:3b-2bed02f2",
+  "language": "typescript",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "diff-match-patch",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "patch_applied": false,
+  "patch_diagnostics": "statuses=[False, False, False, False, False, False, True, False]",
+  "compile_returncode": null,
+  "errors_before": 2,
+  "errors_after": null,
+  "first_error_removed": false,
+  "added_lines": 3,
+  "removed_lines": 3,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": ""
+}

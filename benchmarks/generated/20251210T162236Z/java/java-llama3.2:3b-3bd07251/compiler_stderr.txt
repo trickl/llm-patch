@@ -1,0 +1,19 @@
+ExpressionEvaluator.java:171: error: <identifier> expected
+    private Expression new BinaryOperator(Expression left, String operator, Expression right) {
+                      ^
+ExpressionEvaluator.java:171: error: invalid method declaration; return type required
+    private Expression new BinaryOperator(Expression left, String operator, Expression right) {
+                           ^
+ExpressionEvaluator.java:175: error: <identifier> expected
+    private Expression new Parenthetical(Expression expression) {
+                      ^
+ExpressionEvaluator.java:175: error: invalid method declaration; return type required
+    private Expression new Parenthetical(Expression expression) {
+                           ^
+ExpressionEvaluator.java:179: error: <identifier> expected
+    private Expression new UnaryOperator(String operator, Expression operand) {
+                      ^
+ExpressionEvaluator.java:179: error: invalid method declaration; return type required
+    private Expression new UnaryOperator(String operator, Expression operand) {
+                           ^
+6 errors

@@ -1,0 +1,8 @@
+--- before.ts
++++ after.ts
+@@ -100,7 +100,7 @@
+   } else if (c === '*') {
+     // *
+-    this.tokens.push(new Token(TokenType.MUL, '*'));
++    this.tokens.push(new Token(TokenType.MUL, '*', 0));
+       return this.nextToken();

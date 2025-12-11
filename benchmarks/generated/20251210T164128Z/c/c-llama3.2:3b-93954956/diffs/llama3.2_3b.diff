@@ -1,0 +1,13 @@
+--- before.c
++++ after.c
+@@ -1 +1 @@
+-#include "stdio.h"
++#include "stdio.h"
+-#include "stdlib.h"
++ #include "stdlib.h"
+
+ int main() {
+     int num = 10;
+     printf("%d\n", num);
+     return 0;
+ }

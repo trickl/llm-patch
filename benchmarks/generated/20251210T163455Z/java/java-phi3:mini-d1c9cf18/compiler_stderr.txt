@@ -1,0 +1,31 @@
+ExpressionEvaluator.java:25: error: cannot find symbol
+        Tokenizer tokenizer = new Tokenizer(expression);
+        ^
+  symbol:   class Tokenizer
+  location: class ExpressionEvaluator
+ExpressionEvaluator.java:25: error: cannot find symbol
+        Tokenizer tokenizer = new Tokenizer(expression);
+                                  ^
+  symbol:   class Tokenizer
+  location: class ExpressionEvaluator
+ExpressionEvaluator.java:27: error: cannot find symbol
+        Queue<Token> tokens = tokenizer.tokenize();
+              ^
+  symbol:   class Token
+  location: class ExpressionEvaluator
+ExpressionEvaluator.java:29: error: cannot find symbol
+        Parser parser = new Parser(tokens);
+        ^
+  symbol:   class Parser
+  location: class ExpressionEvaluator
+ExpressionEvaluator.java:29: error: cannot find symbol
+        Parser parser = new Parser(tokens);
+                            ^
+  symbol:   class Parser
+  location: class ExpressionEvaluator
+ExpressionEvaluator.java:31: error: cannot find symbol
+        return evaluator.evaluate(parser.parse());
+               ^
+  symbol:   variable evaluator
+  location: class ExpressionEvaluator
+6 errors

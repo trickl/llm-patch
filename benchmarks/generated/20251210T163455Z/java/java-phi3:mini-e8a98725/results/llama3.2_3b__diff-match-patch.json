@@ -1,0 +1,19 @@
+{
+  "case_id": "java-phi3:mini-e8a98725",
+  "language": "java",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "diff-match-patch",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "patch_applied": false,
+  "patch_diagnostics": "statuses=[True, True, False, False, False, False, False, False, False, False, False, False]",
+  "compile_returncode": null,
+  "errors_before": 61,
+  "errors_after": null,
+  "first_error_removed": false,
+  "added_lines": 15,
+  "removed_lines": 27,
+  "hunks": 12,
+  "delete_only": false,
+  "success": false,
+  "notes": ""
+}

@@ -1,0 +1,9 @@
+expression_evaluator.c:1:10: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘/’ token
+    1 | **Rewrite/document your answer key, you are there'inq.
+      |          ^
+expression_evaluator.c:1:50: warning: missing terminating ' character
+    1 | **Rewrite/document your answer key, you are there'inq.
+      |                                                  ^
+expression_evaluator.c:1:50: error: missing terminating ' character
+    1 | **Rewrite/document your answer key, you are there'inq.
+      |                                                  ^~~~~

@@ -1,0 +1,4 @@
+  File "expression_evaluator.py", line 79
+    ["3", "+", "4", "*", "(", "2", "-", "1")],
+                                           ^
+SyntaxError: closing parenthesis ')' does not match opening parenthesis '['

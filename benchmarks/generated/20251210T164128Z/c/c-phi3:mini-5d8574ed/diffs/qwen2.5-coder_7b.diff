@@ -1,0 +1,10 @@
+--- before.c
++++ before.c
+@@ -1,2 +1 @@
+-**Rewrite:
+-You are there'deans to answer key, and your response as an assistant functionaries in the Chambersion]
++#include <stdio.h>
+ 
+ # Installs a)
+ 
+ Documentation/stay''

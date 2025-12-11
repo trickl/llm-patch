@@ -1,0 +1,19 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-146f484d",
+  "language": "c",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "git",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "patch_applied": false,
+  "patch_diagnostics": "error: patch failed: expression_evaluator.c:107\nerror: expression_evaluator.c: patch does not apply",
+  "compile_returncode": null,
+  "errors_before": 2,
+  "errors_after": null,
+  "first_error_removed": false,
+  "added_lines": 3,
+  "removed_lines": 2,
+  "hunks": 3,
+  "delete_only": false,
+  "success": false,
+  "notes": ""
+}

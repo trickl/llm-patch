@@ -1,0 +1,11 @@
+--- before.py
++++ before.py
+@@ -1,1 +1 @@
+-A personally, I amendmentally to answer "Because you knowled bypassinglish:
+I'deek-Craft a)tics/st. The document theater_sales and Your task:
+
+**Instructor
+
+
+# Instruction:
++print("A personally, I amendmentally to answer \"Because you knowled bypassinglish:\\nI'deek-Craft a)tics/st. The document theater_sales and Your task:\\n\n**Instructor\\n")

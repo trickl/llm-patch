@@ -1,0 +1,201 @@
+--- before.c
++++ after.c
+@@ -4,7 +4,8 @@
+ #include  string.h>
+ #include  ctype.h>
+ #include  stdlib.h>
+
+-#include  <string.h>
++#include  string.h>
++#include  ctype.h>
+
+ // Token type enum
+ typedef enum {
+     NUMBER,
+     PLUS,
+     MINUS,
+     MUL,
+     DIV,
+     LPAREN,
+     RPAREN,
+     UNARY_MINUS,
+     END_OF_EXPRESSION
+ } TokenType;
+
+ // Token structure
+ typedef struct {
+     TokenType type;
+     double value;
+     char* str;
+ } Token;
+
+ // Tokenizer function
+ Token* tokenize(const char* expression) {
+     int length = 0;
+     for (int i = 0; expression[i]; i++) {
+         if (expression[i] == ' ') continue;
+         length++;
+     }
+     char* buffer = malloc((length + 1) * sizeof(char));
+     strcpy(buffer, expression);
+     Token* tokens = malloc(100 * sizeof(Token)); // Assume max 100 tokens
+     int tokenIndex = 0;
+     for (int i = 0; i  length; i++) {
+-         if (isdigit(expression[i]) || expression[i] == '.') {
++         if (isdigit(expression[i]) || expression[i] == '.') {
+             char num[10];
+             int j = i;
+             while (expression[j] != ' ' && expression[j] != '\n' && expression[j] != '\t') {
+                 num[j - i] = expression[j++];
+             }
+             tokens[tokenIndex].type = NUMBER;
+             tokens[tokenIndex].value = atof(num);
+             tokens[tokenIndex].str = strdup(num);
+             tokenIndex++;
+-         } else if (expression[i] == '+') {
++         } else if (expression[i] == '+') {
+             tokens[tokenIndex].type = PLUS;
+             tokens[tokenIndex].value = 1.0;
+             tokens[tokenIndex].str = "";
+             tokenIndex++;
+-         } else if (expression[i] == '-') {
++         } else if (expression[i] == '-') {
+             tokens[tokenIndex].type = MINUS;
+             tokens[tokenIndex].value = -1.0;
+             tokens[tokenIndex].str = "";
+             tokenIndex++;
+-         } else if (expression[i] == '*') {
++         } else if (expression[i] == '*') {
+             tokens[tokenIndex].type = MUL;
+             tokens[tokenIndex].value = 1.0;
+             tokens[tokenIndex].str = "";
+             tokenIndex++;
+-         } else if (expression[i] == '/') {
++         } else if (expression[i] == '/') {
+             tokens[tokenIndex].type = DIV;
+             tokens[tokenIndex].value = 1.0;
+             tokens[tokenIndex].str = "";
+             tokenIndex++;
+-         } else if (expression[i] == '(') {
++         } else if (expression[i] == '(') {
+             tokens[tokenIndex].type = LPAREN;
+             tokens[tokenIndex].value = 0.0;
+             tokens[tokenIndex].str = "";
+             tokenIndex++;
+-         } else if (expression[i] == ')') {
++         } else if (expression[i] == ')') {
+             tokens[tokenIndex].type = RPAREN;
+             tokens[tokenIndex].value = 0.0;
+             tokens[tokenIndex].str = "";
+             tokenIndex++;
+-         } else if (expression[i] == '-') {
++         } else if (expression[i] == '-') {
+             tokens[tokenIndex].type = UNARY_MINUS;
+             tokens[tokenIndex].value = -1.0;
+             tokens[tokenIndex].str = "";
+             tokenIndex++;
+     }
+     tokens[tokenIndex].type = END_OF_EXPRESSION;
+     return tokens;
+ }
+
+ // Parser function
+ Token* parse(Token* tokens) {
+     Token* stack = malloc(100 * sizeof(Token));
+     int top = -1;
+     for (int i = 0; tokens[i].type != END_OF_EXPRESSION; i++) {
+-         if (tokens[i].type == LPAREN) {
++         if (tokens[i].type == LPAREN) {
+             stack[++top] = tokens[i];
+         } else if (tokens[i].type == RPAREN) {
+-                 while (stack[top].type != LPAREN) {
++                 while (stack[top].type != LPAREN) {
+                     Token* token = stack[top--].str;
+                     // Evaluate the expression
+                     double result = evaluate(stack, top);
+                     free(token->str);
+                     stack[top--].value = result;
+                 }
+                 top--;
+         } else if (tokens[i].type == NUMBER || tokens[i].type == PLUS ||
+                   tokens[i].type == MINUS ||
+                   tokens[i].type == MUL ||
+                   tokens[i].type == DIV) {
+-                 Token* token = malloc(sizeof(Token));
++                 Token* token = malloc(sizeof(Token));
+             token->type = tokens[i].type;
+             token->value = 0.0;
+             token->str = "";
+             if (top >= 0 && stack[top].type != LPAREN) {
+-                     // Apply operator precedence
++                     // Apply operator precedence
+                 if (stack[top].type == MUL || stack[top].type == DIV) {
+                     Token* operand2 = stack[top--].str;
+                     double result = evaluate(stack, top);
+                     free(operand2->str);
+                     token->value = result / operand2->value;
+                 } else {
+-                         Token* operand1 = stack[top--].str;
++                         Token* operand1 = stack[top--].str;
+                     double result = evaluate(stack, top);
+                     free(operand1->str);
+                     token->value = operand1->value + result;
+                 }
+             } else {
+-                     token->value = tokens[i].value;
++                     token->value = tokens[i].value;
+             }
+             stack[++top] = token;
+         } else if (tokens[i].type == UNARY_MINUS) {
+-                 Token* token = malloc(sizeof(Token));
++                 Token* token = malloc(sizeof(Token));
+             token->type = tokens[i].type;
+             token->value = 0.0;
+             token->str = "";
+             if (top >= 0 && stack[top].type != LPAREN) {
+-                         // Apply operator precedence
++                         // Apply operator precedence
+                 double result = evaluate(stack, top);
+                     free(token->str);
+                     token->value = -result;
+             } else {
+-                     token->value = tokens[i].value;
++                     token->value = tokens[i].value;
+             }
+             stack[++top] = token;
+     }
+     return stack[0];
+ }
+
+ // Evaluator function
+ double evaluate(Token* stack, int top) {
+-         if (stack[top].type == NUMBER || stack[top].type == PLUS ||
++         if (stack[top].type == NUMBER || stack[top].type == PLUS ||
+             stack[top].type == MINUS ||
+             stack[top].type == MUL ||
+             stack[top].type == DIV) {
+-                 return stack[top].value;
++                 return stack[top].value;
+     } else {
+-         Token* left = parse(stack);
++         Token* left = parse(stack);
+         double result = evaluate(stack, top - 1);
+         free(left->str);
+         return result + left->value;
+     }
+ }
+
+ // Main function
+ int main() {
+     const char* expressions[] = {"3 + 4 * (2 - 1)", "2 * 3 + 4", "2 * (3 + 4)", "8 / 2 * (2 + 2)"};
+     for (const char* expression : expressions) {
+-         Token* tokens = tokenize(expression);
++         Token* tokens = tokenize(expression);
+         Token* parsed = parse(tokens);
+         double result = evaluate(parsed, top - 1);
+         free(parsed->str);
+         free(tokens);
+         printf("%s => %f\n", expression, result);
+     }
+     return 0;
+ }

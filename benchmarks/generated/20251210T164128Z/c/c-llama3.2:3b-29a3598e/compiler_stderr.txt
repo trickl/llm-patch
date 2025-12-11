@@ -1,0 +1,103 @@
+In file included from expression_evaluator.c:1:
+expression_evaluator.c:14:5: error: expected identifier before ‘(’ token
+   14 |     EOF
+      |     ^~~
+expression_evaluator.c: In function ‘lexer’:
+expression_evaluator.c:29:13: error: implicit declaration of function ‘isdigit’ [-Wimplicit-function-declaration]
+   29 |         if (isdigit(expression[i])) {
+      |             ^~~~~~~
+expression_evaluator.c:4:1: note: include ‘<ctype.h>’ or provide a declaration of ‘isdigit’
+    3 | #include <string.h>
+  +++ |+#include <ctype.h>
+    4 | 
+expression_evaluator.c:36:29: error: implicit declaration of function ‘strdup’; did you mean ‘strcmp’? [-Wimplicit-function-declaration]
+   36 |             tokens[i].str = strdup(start);
+      |                             ^~~~~~
+      |                             strcmp
+expression_evaluator.c:36:27: error: assignment to ‘char *’ from ‘int’ makes pointer from integer without a cast [-Wint-conversion]
+   36 |             tokens[i].str = strdup(start);
+      |                           ^
+expression_evaluator.c: In function ‘parse’:
+expression_evaluator.c:72:37: error: ‘Token’ has no member named ‘len’
+   72 |     Token* stack = malloc((tokens[0].len + 1) * sizeof(Token));
+      |                                     ^
+expression_evaluator.c:74:34: error: ‘Token’ has no member named ‘len’
+   74 |     for (int i = 0; i < tokens[0].len; i++) {
+      |                                  ^
+expression_evaluator.c:80:24: error: passing argument 1 of ‘strcpy’ from incompatible pointer type [-Wincompatible-pointer-types]
+   80 |                 strcpy(token, stack[top].str);
+      |                        ^~~~~
+      |                        |
+      |                        Token *
+In file included from expression_evaluator.c:3:
+/usr/include/string.h:141:39: note: expected ‘char * restrict’ but argument is of type ‘Token *’
+  141 | extern char *strcpy (char *__restrict __dest, const char *__restrict __src)
+      |                      ~~~~~~~~~~~~~~~~~^~~~~~
+expression_evaluator.c:81:38: error: implicit declaration of function ‘evaluate’ [-Wimplicit-function-declaration]
+   81 |                 stack[top--].value = evaluate(token);
+      |                                      ^~~~~~~~
+expression_evaluator.c:85:35: warning: comparison of integer expressions of different signedness: ‘TokenType’ and ‘int’ [-Wsign-compare]
+   85 |         } else if (tokens[i].type == EOF) {
+      |                                   ^~
+expression_evaluator.c:89:20: error: passing argument 1 of ‘strcpy’ from incompatible pointer type [-Wincompatible-pointer-types]
+   89 |             strcpy(token, tokens[i].str);
+      |                    ^~~~~
+      |                    |
+      |                    Token *
+/usr/include/string.h:141:39: note: expected ‘char * restrict’ but argument is of type ‘Token *’
+  141 | extern char *strcpy (char *__restrict __dest, const char *__restrict __src)
+      |                      ~~~~~~~~~~~~~~~~~^~~~~~
+expression_evaluator.c:90:32: error: implicit declaration of function ‘getPrecedence’ [-Wimplicit-function-declaration]
+   90 |             while (top >= 0 && getPrecedence(stack[top].type) >= getPrecedence(tokens[i].type)) {
+      |                                ^~~~~~~~~~~~~
+expression_evaluator.c:91:31: error: incompatible types when initializing type ‘Token *’ using type ‘double’
+   91 |                 Token* temp = stack[top--].value;
+      |                               ^~~~~
+expression_evaluator.c:93:36: error: implicit declaration of function ‘divide’ [-Wimplicit-function-declaration]
+   93 |                     token->value = divide(token->value, temp);
+      |                                    ^~~~~~
+expression_evaluator.c:95:36: error: implicit declaration of function ‘add’ [-Wimplicit-function-declaration]
+   95 |                     token->value = add(token->value, temp);
+      |                                    ^~~
+expression_evaluator.c:103:23: error: incompatible types when initializing type ‘Token *’ using type ‘double’
+  103 |         Token* temp = stack[top--].value;
+      |                       ^~~~~
+expression_evaluator.c:105:13: error: ‘token’ undeclared (first use in this function); did you mean ‘Token’?
+  105 |             token->value = divide(token->value, temp);
+      |             ^~~~~
+      |             Token
+expression_evaluator.c:105:13: note: each undeclared identifier is reported only once for each function it appears in
+expression_evaluator.c:111:17: error: incompatible types when returning type ‘Token’ but ‘Token *’ was expected
+  111 |     return stack[0];
+      |            ~~~~~^~~
+expression_evaluator.c: At top level:
+expression_evaluator.c:115:8: error: conflicting types for ‘evaluate’; have ‘double(Token *)’
+  115 | double evaluate(Token* token) {
+      |        ^~~~~~~~
+expression_evaluator.c:81:38: note: previous implicit declaration of ‘evaluate’ with type ‘int()’
+   81 |                 stack[top--].value = evaluate(token);
+      |                                      ^~~~~~~~
+expression_evaluator.c:126:8: error: conflicting types for ‘add’; have ‘double(double,  double)’
+  126 | double add(double a, double b) {
+      |        ^~~
+expression_evaluator.c:95:36: note: previous implicit declaration of ‘add’ with type ‘int()’
+   95 |                     token->value = add(token->value, temp);
+      |                                    ^~~
+expression_evaluator.c:138:8: error: conflicting types for ‘divide’; have ‘double(double,  double)’
+  138 | double divide(double a, double b) {
+      |        ^~~~~~
+expression_evaluator.c:93:36: note: previous implicit declaration of ‘divide’ with type ‘int()’
+   93 |                     token->value = divide(token->value, temp);
+      |                                    ^~~~~~
+expression_evaluator.c: In function ‘main’:
+expression_evaluator.c:162:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘long unsigned int’ [-Wsign-compare]
+  162 |     for (int i = 0; i < sizeof(expressions) / sizeof(expressions[0]); i++) {
+      |                       ^
+expression_evaluator.c: In function ‘parse’:
+expression_evaluator.c:112:1: warning: control reaches end of non-void function [-Wreturn-type]
+  112 | }
+      | ^
+expression_evaluator.c: In function ‘evaluate’:
+expression_evaluator.c:123:1: warning: control reaches end of non-void function [-Wreturn-type]
+  123 | }
+      | ^

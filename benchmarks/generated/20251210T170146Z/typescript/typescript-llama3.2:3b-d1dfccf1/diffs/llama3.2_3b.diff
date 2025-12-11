@@ -1,0 +1,10 @@
+--- expression_evaluator.ts
++++ expression_evaluator.ts
+@@ -29,7 +29,7 @@
+   if (!currentToken || !this.isOperator(char)) {
+     currentToken = { type: 'NUMBER', value: parseInt(char, 10) };
+   } else {
+-    if (currentToken) tokens.push(currentToken);
++    if (currentToken) tokens.push({ type: char, value: null });
+     currentToken = { type: char };
+   }

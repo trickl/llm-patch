@@ -1,0 +1,53 @@
+--- before.java	2023-04-10 12:34:56.000000000 +0800
++++ after.java	2023-04-10 12:35:07.000000000 +0800
+@@ -1,4 +1,4 @@
+-import java.util.*;
++import java.util.List;
+ 
+ public class ExpressionEvaluator {
+     public static void main(String[] args) {
+@@ -109,7 +109,7 @@ public class Parser {
+             consumeToken();
+             if (!tokens.isEmpty()) {
+                 Operator op = getOperator(tokens.get(0).getType());
+-                Token right = tokens.remove(0);
++                Expression rightExpr = parseExpression();
+                 return new BinaryOp(left, op, rightExpr);
+             }
+             break;
+@@ -121,7 +121,7 @@ public class Parser {
+             consumeToken();
+             if (!tokens.isEmpty()) {
+                 Operator op = getOperator(tokens.get(0).getType());
+-                Token right = tokens.remove(0);
++                Expression rightExpr = parseExpression();
+                 return new BinaryOp(left, op, rightExpr);
+             }
+             break;
+@@ -132,7 +132,7 @@ public class Parser {
+         if (tokens.isEmpty()) {
+             throw new RuntimeException("Unexpected end of input");
+         }
+-        Token token = tokens.get(0);
++        Expression expr = parseFactor();
+         consumeToken(); // -
+         return new UnaryOp(expr, Operator.MINUS);
+     }
+@@ -185,7 +185,7 @@ public class Expression {
+             case ADD:
+                 return left.evaluate() + right.evaluate();
+             case SUBTRACT:
+-                return left.evaluate() - right.evaluate();
++                return left.evaluate() - right.evaluate();
+             case MULTIPLY:
+                 return left.evaluate() * right.evaluate();
+             case DIVIDE:
+@@ -201,7 +201,7 @@ public class Expression {
+         switch (op) {
+             case MINUS:
+                 return -expr.evaluate();
+-            default:
++            default:
+                 throw new RuntimeException("Unexpected operator: " + op);
+         }
+     }

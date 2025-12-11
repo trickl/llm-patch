@@ -1,0 +1,9 @@
+--- before.ts
++++ after.ts
+@@ -111,5 +111,6 @@
+         case '/':
+            if (b === 0) throw new Error('Division by zero');
+            return Math.trunc(a / b);
+-        default:
++        // Add this line to import the 'require' function from the 'node' module
++        const require = require;

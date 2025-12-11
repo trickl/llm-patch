@@ -1,0 +1,149 @@
+```typescript
+// expression_evaluator.ts
+
+interface Token {
+  type: 'NUMBER' | 'PLUS' | 'MINUS' | 'MUL' | 'DIV' | 'LPAREN' | 'RPAREN';
+  value?: number;
+}
+
+class Evaluator {
+  private precedence: { [operator: string]: number };
+
+  constructor() {
+    this.precedence = {
+      '+': 1,
+      '-': 1,
+      '*': 2,
+      '/': 2
+    };
+  }
+
+  public evaluateExpression(input: string): number {
+    const tokens = this.tokenize(input);
+    return this.parse(tokens);
+  }
+
+  private tokenize(input: string): Token[] {
+    const output: Token[] = [];
+    let currentToken = '';
+    for (const char of input) {
+      if (char.match(/[\d\+\-\*\/\(\)\s]/)) {
+        if (currentToken) {
+          output.push({ type: 'NUMBER', value: parseInt(currentToken) });
+          currentToken = '';
+        }
+        output.push({
+          type: this.getOperatorType(char),
+          value: char === '(' ? 1 : undefined
+        });
+      } else {
+        currentToken += char;
+      }
+    }
+    if (currentToken) {
+      output.push({ type: 'NUMBER', value: parseInt(currentToken) });
+    }
+
+    return output;
+  }
+
+  private getOperatorType(char: string): string {
+    switch (char) {
+      case '+':
+      case '-':
+        return 'PLUS';
+      case '*':
+      case '/':
+        return 'MUL' | 'DIV';
+      case '(':
+        return 'LPAREN';
+      case ')':
+        return 'RPAREN';
+      default:
+        throw new Error(`Invalid character: ${char}`);
+    }
+  }
+
+  private parse(tokens: Token[]): number {
+    const outputQueue = [];
+    const operatorStack: string[] = [];
+
+    for (const token of tokens) {
+      if (token.type === 'NUMBER') {
+        outputQueue.push(token.value);
+      } else if (['PLUS', 'MINUS'].includes(token.type)) {
+        while (
+          operatorStack.length &&
+          this.getPrecedence(operatorStack[operatorStack.length - 1]) >=
+            this.getPrecedence(token.type)
+        ) {
+          const op = operatorStack.pop();
+          outputQueue.push({ type: op, value: outputQueue.pop() });
+        }
+        operatorStack.push(token.type);
+      } else if (['MUL', 'DIV'].includes(token.type)) {
+        while (
+          operatorStack.length &&
+          this.getPrecedence(operatorStack[operatorStack.length - 1]) >=
+            this.getPrecedence(token.type)
+        ) {
+          const op = operatorStack.pop();
+          outputQueue.push({ type: op, value: outputQueue.pop() });
+        }
+        operatorStack.push(token.type);
+      } else if (token.type === 'LPAREN') {
+        operatorStack.push(token.type);
+      } else if (token.type === 'RPAREN') {
+        while (operatorStack[operatorStack.length - 1] !== 'LPAREN') {
+          const op = operatorStack.pop();
+          outputQueue.push({ type: op, value: outputQueue.pop() });
+        }
+        operatorStack.pop(); // Remove LPAREN
+      } else if (token.type === 'PLUS' || token.type === 'MINUS') {
+        while (
+          operatorStack.length &&
+          this.getPrecedence(operatorStack[operatorStack.length - 1]) >=
+            this.getPrecedence(token.type)
+        ) {
+          const op = operatorStack.pop();
+          outputQueue.push({ type: op, value: outputQueue.pop() });
+        }
+        operatorStack.push(token.type);
+      } else if (token.type === 'MUL' || token.type === 'DIV') {
+        while (
+          operatorStack.length &&
+          this.getPrecedence(operatorStack[operatorStack.length - 1]) >=
+            this.getPrecedence(token.type)
+        ) {
+          const op = operatorStack.pop();
+          outputQueue.push({ type: op, value: outputQueue.pop() });
+        }
+        operatorStack.push(token.type);
+      } else {
+        throw new Error(`Invalid token: ${token}`);
+      }
+    }
+
+    while (operatorStack.length) {
+      const op = operatorStack.pop();
+      outputQueue.push({ type: op, value: outputQueue.pop() });
+    }
+
+    return outputQueue[0].value as number;
+  }
+
+  private getPrecedence(operator: string): number {
+    return this.precedence[operator] || -1;
+  }
+}
+
+export function evaluateExpression(input: string): number {
+  const evaluator = new Evaluator();
+  try {
+    return evaluator.evaluateExpression(input);
+  } catch (error) {
+    console.error(`Error evaluating expression: ${error.message}`);
+    return NaN;
+  }
+}
+```

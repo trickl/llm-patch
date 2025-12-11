@@ -1,0 +1,10 @@
+--- before.ts
++++ after.ts
+@@ -82,6 +82,7 @@ class ExpressionEvaluator {
+     return outputQueue[0];
+   }
+ 
++  private calculate(left: number, op: string, right: number): number {
+     if (op === '+') {
+       return left + right;
+     } else if (op === '-') {

@@ -1,0 +1,17 @@
+--- before.java	2023-04-10 12:34:56.000000000 +0800
++++ after.java	2023-04-10 12:35:07.000000000 +0800
+@@ -1,4 +1,5 @@
+ import java.util.*;
++import java.util.List;
+ 
+ public class ExpressionEvaluator {
+     public static void main(String[] args) {
+@@ -96,7 +97,7 @@ public class Parser {
+         }
+         return left;
+     }
+-    private Expression parseFactor() {
++    public Expression parseFactor() {
+         if (tokens.get(index).getType() == TokenType.MINUS) {
+             index++;
+             return parseFactor();

@@ -1,0 +1,88 @@
+ExpressionEvaluator.java:196: error: method evaluate(String) is already defined in class ExpressionEvaluator
+    public static int evaluate(String expression) {
+                      ^
+ExpressionEvaluator.java:58: error: <anonymous ExpressionEvaluator$Parser$1> is not abstract and does not override abstract method next() in Iterator
+            return new Iterator<>() {
+                                    ^
+ExpressionEvaluator.java:62: error: cannot find symbol
+                        String token = tokenizer.next();
+                                                ^
+  symbol:   method next()
+  location: variable tokenizer of type Tokenizer
+ExpressionEvaluator.java:67: error: yield outside of switch expression
+                            yield -1;
+                            ^
+ExpressionEvaluator.java:69: error: yield outside of switch expression
+                            yield Integer.parseInt(token);
+                            ^
+ExpressionEvaluator.java:71: error: yield outside of switch expression
+                            yield getPrecedence(token);
+                            ^
+ExpressionEvaluator.java:102: error: <anonymous ExpressionEvaluator$Evaluator$1> is not abstract and does not override abstract method next() in Iterator
+            return new Iterator<>() {
+                                    ^
+ExpressionEvaluator.java:107: error: cannot find symbol
+                    while (pos < parser.iterator().iterator().next()) {
+                                                  ^
+  symbol:   method iterator()
+  location: interface Iterator<Integer>
+ExpressionEvaluator.java:108: error: cannot find symbol
+                        if (parser.iterator().iterator().hasNext()) {
+                                             ^
+  symbol:   method iterator()
+  location: interface Iterator<Integer>
+ExpressionEvaluator.java:109: error: incompatible types: Integer cannot be converted to String
+                            String token = parser.iterator().next();
+                                                                 ^
+ExpressionEvaluator.java:111: error: yield outside of switch expression
+                                yield evaluateExpression();
+                                ^
+ExpressionEvaluator.java:113: error: yield outside of switch expression
+                                yield -1;
+                                ^
+ExpressionEvaluator.java:115: error: yield outside of switch expression
+                                yield Integer.parseInt(token);
+                                ^
+ExpressionEvaluator.java:117: error: yield outside of switch expression
+                                yield getPrecedence(token);
+                                ^
+ExpressionEvaluator.java:126: error: cannot find symbol
+                    while (parser.iterator().iterator().hasNext()) {
+                                            ^
+  symbol:   method iterator()
+  location: interface Iterator<Integer>
+ExpressionEvaluator.java:127: error: incompatible types: Integer cannot be converted to String
+                        String token = parser.iterator().next();
+                                                             ^
+ExpressionEvaluator.java:135: error: incompatible types: Integer cannot be converted to String
+                    int operator = getPrecedence(parser.iterator().next());
+                                                                       ^
+ExpressionEvaluator.java:136: error: cannot find symbol
+                    while (parser.iterator().iterator().hasNext()) {
+                                            ^
+  symbol:   method iterator()
+  location: interface Iterator<Integer>
+ExpressionEvaluator.java:137: error: incompatible types: Integer cannot be converted to String
+                        String token = parser.iterator().next();
+                                                             ^
+ExpressionEvaluator.java:146: error: cannot find symbol
+                    while (parser.iterator().iterator().hasNext()) {
+                                            ^
+  symbol:   method iterator()
+  location: interface Iterator<Integer>
+ExpressionEvaluator.java:147: error: incompatible types: Integer cannot be converted to String
+                        String token = parser.iterator().next();
+                                                             ^
+ExpressionEvaluator.java:149: error: yield outside of switch expression
+                            yield getPrecedence(token);
+                            ^
+ExpressionEvaluator.java:151: error: yield outside of switch expression
+                            yield -1;
+                            ^
+ExpressionEvaluator.java:203: error: cannot find symbol
+            result.add(evaluator.next());
+                                ^
+  symbol:   method next()
+  location: variable evaluator of type Evaluator
+Note: Some messages have been simplified; recompile with -Xdiags:verbose to get full output
+24 errors

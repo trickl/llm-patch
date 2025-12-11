@@ -1,0 +1,19 @@
+{
+  "case_id": "typescript-llama3.2:3b-19dda91a",
+  "language": "typescript",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "git",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "patch_applied": false,
+  "patch_diagnostics": "error: patch fragment without header at line 33: @@ -86,9 +86,9 @@ export function evaluateExpression(input: string): number {",
+  "compile_returncode": null,
+  "errors_before": 13,
+  "errors_after": null,
+  "first_error_removed": false,
+  "added_lines": 8,
+  "removed_lines": 8,
+  "hunks": 3,
+  "delete_only": false,
+  "success": false,
+  "notes": ""
+}

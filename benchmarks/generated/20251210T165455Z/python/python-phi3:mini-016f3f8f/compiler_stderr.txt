@@ -1,0 +1,4 @@
+  File "expression_evaluator.py", line 7
+    **The role of the user'de
+                          ^
+SyntaxError: unterminated string literal (detected at line 7)

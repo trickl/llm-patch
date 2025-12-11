@@ -1,0 +1,38 @@
+--- before.ts
++++ before.ts
+@@ -75,10 +75,10 @@ class Lexer {
+     private parseExpression(): void {
+         const leftParenPos = this.input.indexOf('(');
+         if (leftParenPos !== -1) {
+-            const rightParenPos = this.input.indexOf(')');
++            const rightParenPos = this.input.indexOf(')', leftParenPos + 1);
+             if (rightParenPos === -1) {
+                 throw new Error(`Unbalanced parentheses at position ${leftParenPos}`);
+             }
+@@ -197,10 +197,10 @@ class Parser {
+     private parseExpression(): void {
+         const leftParenPos = this.tokens[this.pos].value === '(' ? this.pos : -1;
+         if (leftParenPos !== -1) {
+-            this.parseLeftParenExpression();
++            this.parseLeftParenExpression(leftParenPos);
+         } else {
+-            this.parseRightParenExpression();
++            this.parseRightParenExpression(leftParenPos);
+         }
+     }
+
+@@ -207,6 +207,7 @@ class Parser {
+     private parseLeftParenExpression(): void {
+         this.pos++;
+         const rightParenPos = this.tokens[this.pos].value === ')' ? this.pos : -1;
++        if (rightParenPos === -1) throw new Error(`Unbalanced parentheses`);
+         if (rightParenPos !== -1) {
+             this.parseMiddleExpression();
+             this.pos = rightParenPos + 1;
+@@ -217,6 +218,7 @@ class Parser {
+     private parseRightParenExpression(): void {
+         const leftParenPos = this.tokens[this.pos].value === '(' ? this.pos : -1;
++        if (leftParenPos === -1) throw new Error('Expected expression');
+         if (leftParenPos !== -1) {
+             this.parseMiddleExpression();
+         } else {

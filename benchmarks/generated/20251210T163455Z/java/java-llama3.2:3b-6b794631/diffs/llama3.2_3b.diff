@@ -1,0 +1,15 @@
+--- before.java
++++ after.java
+@@ -80,7 +80,8 @@
+ while (pos  tokenizer.iterator().iterator().next().length()) {
+-    if (Character.isDigit(tokenizer.expression.charAt(pos))) {
++    if (Character.isDigit(expression.charAt(pos))) {
+       pos++;
+       return true;
+     }
+     if (tokenizer.expression.charAt(pos) == '(' || tokenizer.expression.charAt(pos) == ')') {
+-        pos++;
++        if (expression.charAt(pos) == '(' || expression.charAt(pos) == ')') {
+           pos++;
+           return true;
+         }

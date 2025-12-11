@@ -1,0 +1,8 @@
+--- before.py
++++ patched_before.py
+@@ -34,7 +34,8 @@
+             left = left * right
+         elif operator.type == 'DIVIDE':
+             left = left / right
+-        return left
++        return self.parse_factor()

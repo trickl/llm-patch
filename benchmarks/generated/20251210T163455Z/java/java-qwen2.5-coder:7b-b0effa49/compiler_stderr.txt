@@ -1,0 +1,14 @@
+ExpressionEvaluator.java:128: error: cannot find symbol
+        private final BiFunction<Integer, Integer, Integer> operation;
+                      ^
+  symbol:   class BiFunction
+  location: class BinaryNode
+ExpressionEvaluator.java:130: error: cannot find symbol
+        public BinaryNode(Node left, Node right, BiFunction<Integer, Integer, Integer> operation) {
+                                                 ^
+  symbol:   class BiFunction
+  location: class BinaryNode
+ExpressionEvaluator.java:108: error: Node is not abstract and does not override abstract method evaluate() in Node
+    private static class Node {
+                   ^
+3 errors

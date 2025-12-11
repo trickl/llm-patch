@@ -1,0 +1,13 @@
+diff --git a/before.c b/before.c
+index 1234567..89abcde 100644
+--- a/before.c
++++ b/before.c
+@@ -10,7 +10,7 @@ int main() {
+     for (int i = 0; i < length; i++) {
+         if (expression[i] == '\x08' || expression[i] == '\x0b' || expression[i] == '\f' || expression[i] == '\v') {
+             int start = i;
+-            while (i < length && expression[i] != ' ') {
++            while (i < length && (expression[i] != ' ' && expression[i] != '\n' && expression[i] != '\t' && expression[i] != '\r')) {
+                 ++i;
+             }
+             double value = 0; // default value for other special characters

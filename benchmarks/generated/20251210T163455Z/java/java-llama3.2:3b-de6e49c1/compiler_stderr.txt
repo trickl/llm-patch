@@ -1,0 +1,23 @@
+ExpressionEvaluator.java:89: error: cannot find symbol
+                    return new ExpressionEvaluator().BinaryOp(left, op, right);
+                                                    ^
+  symbol:   method BinaryOp(Object,String,Object)
+  location: class ExpressionEvaluator
+ExpressionEvaluator.java:94: error: cannot find symbol
+                    return new ExpressionEvaluator().BinaryOp(left, op, right);
+                                                    ^
+  symbol:   method BinaryOp(Object,String,Object)
+  location: class ExpressionEvaluator
+ExpressionEvaluator.java:118: error: cannot find symbol
+                    return new ExpressionEvaluator().BinaryOp(left, op, right);
+                                                    ^
+  symbol:   method BinaryOp(Object,String,Object)
+  location: class ExpressionEvaluator
+ExpressionEvaluator.java:139: error: cannot find symbol
+                    return new ExpressionEvaluator().UnaryOp(-1, parseTerm());
+                                                    ^
+  symbol:   method UnaryOp(int,Object)
+  location: class ExpressionEvaluator
+Note: ExpressionEvaluator.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+4 errors

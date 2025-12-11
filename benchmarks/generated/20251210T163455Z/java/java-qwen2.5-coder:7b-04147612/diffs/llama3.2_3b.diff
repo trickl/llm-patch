@@ -1,0 +1,7 @@
+--- before.java
++++ after.java
+@@ -83,7 +83,7 @@
+ public Parser(List<Token> tokens) {
+-    this.tokens = tokens;
++    this.tokens = new ArrayList<>(tokens); // Add a new list to avoid the error
+     }

@@ -1,0 +1,19 @@
+{
+  "case_id": "java-phi3:mini-fd1c7b81",
+  "language": "java",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "diff-match-patch",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "patch_applied": false,
+  "patch_diagnostics": "Diff does not contain any hunks",
+  "compile_returncode": null,
+  "errors_before": 35,
+  "errors_after": null,
+  "first_error_removed": false,
+  "added_lines": 17,
+  "removed_lines": 17,
+  "hunks": 0,
+  "delete_only": false,
+  "success": false,
+  "notes": ""
+}

@@ -1,0 +1,10 @@
+--- before.ts
++++ before.ts
+@@ -90,6 +90,7 @@
+     const input = process.argv[2] || '3 + 4 * (2 - 1)';
+     try {
+         console.log(`Result of '${input}': ${evaluateExpression(input)}`);
++    } catch (error: unknown) {
+         console.error(error.message);
+     }
+ }

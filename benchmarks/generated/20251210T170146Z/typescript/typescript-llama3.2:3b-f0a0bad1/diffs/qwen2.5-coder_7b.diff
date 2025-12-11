@@ -1,0 +1,38 @@
+--- before.ts
++++ after.ts
+@@ -24,7 +24,7 @@ class ExpressionEvaluator {
+     return outputQueue[0];
+   }
+ 
+-  private getPrecedence(operator: string): number {
++  private getPrecedence(operator: string | null): number {
+     return this.precedence[operator as string];
+   }
+ }
+@@ -30,7 +30,7 @@ class ExpressionEvaluator {
+     currentToken = '';
+   }
+ 
+-  private getOperator(char: string): string | null {
++  private getOperator(char: string): string | undefined {
+     if (char === '(') return char;
+     if (this.isWhitespace(char)) return null;
+     const operator = this.precedence[char];
+@@ -44,7 +44,7 @@ class ExpressionEvaluator {
+   }
+ 
+   private parse(tokens: Token[]): ParseResult {
+-    const outputQueue: number[] = [];
++    const outputQueue: number | undefined = undefined;
+     const operatorStack: string[] = [];
+ 
+     for (const token of tokens) {
+@@ -128,7 +128,7 @@ class ExpressionEvaluator {
+   }
+ }
+ 
+-class Token {
++class Token {
+   public type: 'number' | 'operator';
+   public operator?: string;
+   public value: string;

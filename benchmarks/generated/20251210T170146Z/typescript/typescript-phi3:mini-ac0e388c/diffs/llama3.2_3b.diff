@@ -1,0 +1,13 @@
+@@ -1,7 +1,7 @@
+-# Instance, a) to answer in Python's workoutlooking as an assistant name=
++// Instance, a) to answer in Python's workout looking as an assistant name=
+
+**Instruction:**
+
+Document theater-
+ 
+--- before.ts
++++ patched_before_ts
+@@ -1,7 +1,7 @@
+-# Instance, a) to answer in Python's workoutlooking as an assistant name=
++// Instance, a) to answer in Python's workout looking as an assistant name=

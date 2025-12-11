@@ -1,0 +1,19 @@
+{
+  "case_id": "typescript-llama3.2:3b-5c7a4078",
+  "language": "typescript",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "aider",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "patch_applied": false,
+  "patch_diagnostics": "aider matcher could not locate context",
+  "compile_returncode": null,
+  "errors_before": 9,
+  "errors_after": null,
+  "first_error_removed": false,
+  "added_lines": 4,
+  "removed_lines": 4,
+  "hunks": 4,
+  "delete_only": false,
+  "success": false,
+  "notes": ""
+}

@@ -1,0 +1,48 @@
+--- before.c
++++ before.c
+@@ -3,6 +3,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+
++#include <ctype.h> // Added to include ctype.h for isdigit function
+
+// Token type enum
+typedef enum {
+    NUMBER,
+    PLUS,
+@@ -129,7 +130,7 @@ Token* parser(Token* tokens) {
+                 ast->children = malloc(2 * sizeof(Token*));
+                 ast->children[0] = left;
+                 ast->children[1] = NULL;
+-                ast->children[2] = NULL; // Added to initialize the third child
++                ast->children[1] = NULL; // Corrected the index for the second child
+             }
+         } else {
+             break;
+@@ -148,7 +149,7 @@ double evaluate(Token* ast) {
+                 return left + right;
+             } else {
+                 return left - right;
+-            }
++        }
+     } else if (ast->type == MUL || ast->type == DIV) {
+         double left = evaluate(ast->children[0]);
+         double right = evaluate(ast->children[1]);
+@@ -156,7 +157,7 @@ double evaluate(Token* ast) {
+                 return left * right;
+             } else {
+                 return left / right;
+-            }
++        }
+     } else if (ast->type == UNARY_MINUS) {
+         double value = evaluate(ast->children[0]);
+         return -value;
+@@ -164,7 +165,7 @@ double evaluate(Token* ast) {
+                 return left;
+             } else {
+                 return right;
+-            }
++        }
+     } else if (ast->type == LPAREN) {
+         Token* left = ast->children[0];
+         return evaluate(left);

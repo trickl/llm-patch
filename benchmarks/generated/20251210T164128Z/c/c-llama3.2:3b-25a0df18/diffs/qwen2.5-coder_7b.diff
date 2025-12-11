@@ -1,0 +1,54 @@
+--- before.c
++++ before.c
+@@ -3,6 +3,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+
++#include <ctype.h>
+ // Token type enum
+ typedef enum {
+     NUMBER,
+@@ -140,24 +141,24 @@ double evaluator(void* tree) {
+             if (op_token->type != EOF) {
+                 op_value = atof(op_token->str);
+             }
+-            switch (op_value) {
++            switch ((int)op_value) {
+                 case '+':
+                     result += operand_value;
+                     break;
+                 case '-':
+                     result -= operand_value;
+                     break;
+                 case '*':
+                     result *= operand_value;
+                     break;
+                 case '/':
+                     result /= operand_value;
+                     break;
+             }
+-            void** pop_operand = *(void**)(operand_stack);
++            void*** pop_operand = *(void***)(operand_stack);
+             operand_stack_size--;
+-            operand_stack = *(void**)(pop_operand);
++            operand_stack = *(void***)(pop_operand);
+
+             if (operand_stack_size > 0) {
+                 operand_node = *(void***)(operand_stack);
+             }
+         } else {
+-            void*** operand_node = malloc(sizeof(void***));
++            Token* operand_token = lexer(tokens[i].str);
++            void*** operand_node = malloc(sizeof(void***));
+             operand_node->type = NUMBER;
+             operand_node->value = 0.0;
+             operand_node->str = strdup("1");
+@@ -204,7 +205,7 @@ double evaluator(void* tree) {
+             operand_stack_size++;
+-            operand_stack = *(void***)(operand_node);
++            operand_stack = *(void***)(operand_node);
+         }
+     }
+
+     return result;
+ }

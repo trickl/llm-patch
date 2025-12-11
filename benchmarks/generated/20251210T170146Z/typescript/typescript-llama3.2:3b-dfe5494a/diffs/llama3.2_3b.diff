@@ -1,0 +1,24 @@
+--- before.ts
++++ after.ts
+@@ -139,7 +139,8 @@
+   return this.evaluate(outputQueue);
+ }
+ 
+ private isOperator(token: string): boolean {
+-  return token in this.precedence;
++  return typeof token === 'string' && token in this.precedence;
+ }
+ 
+ private isUnaryMinus(token: string): boolean {
+-  return token === '-' && (token.length === 1 || !this.isOperator(token.slice(1)));
++  return token === '-' && (token.length === 1 || typeof token !== 'number');
+ }
+ 
+ private parseNumber(token: string): number {
+   if (!isNaN(Number(token))) {
+     return Number(token);
+   } else {
+-    throw new Error(`Invalid input: ${token}`);
++    throw new Error(`Invalid input: ${typeof token}`);
+   }
+ }

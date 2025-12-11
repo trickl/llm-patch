@@ -1,0 +1,46 @@
+--- before.java	2023-04-10 12:34:56.000000000 +0800
++++ after.java	2023-04-10 12:35:07.000000000 +0800
+@@ -10,7 +10,6 @@
+ public class ExpressionEvaluator {
+ 
+     public static void main(String[] args) {
+-        System.out.println(evaluate("1 + 2")); // 3
+-        System.out.println(evaluate("2 * 3 + 4")); // 10
+-        System.out.println(evaluate("2 * (3 + 4)")); // 14
+-        System.out.println(evaluate("8 / 2 * (2 + 2)")); // 16
+     }
+ 
+     public static int evaluate(String expression) {
+@@ -57,7 +56,6 @@
+                 if (Character.isDigit(expression.charAt(pos))) {
+                     buildToken();
+                 }
+-                pos++;
+             }
+             return Collections.emptyIterator();
+         }
+@@ -84,7 +82,6 @@
+                 String token = tokenizer.next();
+                 if (token.equals("+") || token.equals("-")) {
+                     char op = token.charAt(0);
+-                    int right = parseTerm();
+                     if (op == '+') {
+                         return left + right;
+                     } else {
+@@ -101,7 +98,6 @@
+                 String token = tokenizer.next();
+                 if (token.equals("*") || token.equals("/")) {
+                     char op = token.charAt(0);
+-                    int right = parseFactor();
+                     if (op == '*') {
+                         return left * right;
+                     } else {
+@@ -117,7 +113,6 @@
+             }
+         }
+ 
+-        public static class ExpressionEvaluator {
+-
+             public int evaluate(String expression) {
+                 try {
+                     Tokenizer tokenizer = new Tokenizer(expression);

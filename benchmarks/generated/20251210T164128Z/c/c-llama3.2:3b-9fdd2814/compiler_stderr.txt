@@ -1,0 +1,96 @@
+expression_evaluator.c: In function ‘lexer’:
+expression_evaluator.c:29:13: error: implicit declaration of function ‘isdigit’ [-Wimplicit-function-declaration]
+   29 |         if (isdigit(expression[i])) {
+      |             ^~~~~~~
+expression_evaluator.c:4:1: note: include ‘<ctype.h>’ or provide a declaration of ‘isdigit’
+    3 | #include <string.h>
+  +++ |+#include <ctype.h>
+    4 | 
+expression_evaluator.c:35:33: error: expected expression before ‘{’ token
+   35 |             tokens[i - start] = {NUMBER, value, NULL};
+      |                                 ^
+expression_evaluator.c:34:20: warning: unused variable ‘value’ [-Wunused-variable]
+   34 |             double value = atof(expression + start);
+      |                    ^~~~~
+expression_evaluator.c:37:25: error: expected expression before ‘{’ token
+   37 |             tokens[i] = {PLUS, 0, "+"};
+      |                         ^
+expression_evaluator.c:39:25: error: expected expression before ‘{’ token
+   39 |             tokens[i] = {MINUS, 0, "-"};
+      |                         ^
+expression_evaluator.c:41:25: error: expected expression before ‘{’ token
+   41 |             tokens[i] = {MUL, 0, "*"};
+      |                         ^
+expression_evaluator.c:43:25: error: expected expression before ‘{’ token
+   43 |             tokens[i] = {DIV, 0, "/"};
+      |                         ^
+expression_evaluator.c:45:25: error: expected expression before ‘{’ token
+   45 |             tokens[i] = {LPAREN, 0, "("};
+      |                         ^
+expression_evaluator.c:47:25: error: expected expression before ‘{’ token
+   47 |             tokens[i] = {RPAREN, 0, ")"};
+      |                         ^
+expression_evaluator.c:49:25: error: expected expression before ‘{’ token
+   49 |             tokens[i] = {UNARY_MINUS, 0, "-"};
+      |                         ^
+expression_evaluator.c:52:22: error: expected expression before ‘{’ token
+   52 |     tokens[length] = {NULL, 0, NULL}; // sentinel token
+      |                      ^
+expression_evaluator.c: In function ‘parser’:
+expression_evaluator.c:89:13: warning: dereferencing ‘void *’ pointer
+   89 |         if (*leftChild == NULL) {
+      |             ^~~~~~~~~~
+expression_evaluator.c:89:13: error: void value not ignored as it ought to be
+expression_evaluator.c:93:13: warning: dereferencing ‘void *’ pointer
+   93 |         if (*rightChild == NULL) {
+      |             ^~~~~~~~~~~
+expression_evaluator.c:93:13: error: void value not ignored as it ought to be
+expression_evaluator.c:99:42: error: ‘Node’ undeclared (first use in this function); did you mean ‘newNode’?
+   99 |         *(void**)newNode = malloc(sizeof(Node));
+      |                                          ^~~~
+      |                                          newNode
+expression_evaluator.c:99:42: note: each undeclared identifier is reported only once for each function it appears in
+expression_evaluator.c:100:16: error: expected expression before ‘)’ token
+  100 |         ((Node*)*newNode)->left = leftChild;
+      |                ^
+expression_evaluator.c:101:16: error: expected expression before ‘)’ token
+  101 |         ((Node*)*newNode)->right = rightChild;
+      |                ^
+expression_evaluator.c: In function ‘evaluator’:
+expression_evaluator.c:117:46: warning: dereferencing ‘void *’ pointer
+  117 |         double value = *(Token*)*(void**)root->left;
+      |                                              ^~
+expression_evaluator.c:117:46: error: request for member ‘left’ in something not a structure or union
+expression_evaluator.c:118:28: warning: dereferencing ‘void *’ pointer
+  118 |         if ((*(void**)root)->right != NULL) {
+      |                            ^~
+expression_evaluator.c:118:28: error: request for member ‘right’ in something not a structure or union
+expression_evaluator.c:119:55: warning: dereferencing ‘void *’ pointer
+  119 |             Token* rightChild = *(Token*)*(void**)root->right;
+      |                                                       ^~
+expression_evaluator.c:119:55: error: request for member ‘right’ in something not a structure or union
+expression_evaluator.c:138:42: warning: dereferencing ‘void *’ pointer
+  138 |     double value = *(Token*)*(void**)root->left;
+      |                                          ^~
+expression_evaluator.c:138:42: error: request for member ‘left’ in something not a structure or union
+expression_evaluator.c:139:24: warning: dereferencing ‘void *’ pointer
+  139 |     if ((*(void**)root)->right != NULL && (*(void**)root)->right->type == UNARY_MINUS) {
+      |                        ^~
+expression_evaluator.c:139:24: error: request for member ‘right’ in something not a structure or union
+expression_evaluator.c:139:58: warning: dereferencing ‘void *’ pointer
+  139 |     if ((*(void**)root)->right != NULL && (*(void**)root)->right->type == UNARY_MINUS) {
+      |                                                          ^~
+expression_evaluator.c:139:58: error: request for member ‘right’ in something not a structure or union
+expression_evaluator.c: In function ‘printTree’:
+expression_evaluator.c:157:32: warning: dereferencing ‘void *’ pointer
+  157 |         printTree(*(void**)root->left, indent + 1);
+      |                                ^~
+expression_evaluator.c:157:32: error: request for member ‘left’ in something not a structure or union
+expression_evaluator.c:158:32: warning: dereferencing ‘void *’ pointer
+  158 |         printTree(*(void**)root->right, indent + 1);
+      |                                ^~
+expression_evaluator.c:158:32: error: request for member ‘right’ in something not a structure or union
+expression_evaluator.c: In function ‘evaluator’:
+expression_evaluator.c:144:1: warning: control reaches end of non-void function [-Wreturn-type]
+  144 | }
+      | ^

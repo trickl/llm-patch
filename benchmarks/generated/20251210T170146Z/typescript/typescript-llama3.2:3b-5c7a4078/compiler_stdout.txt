@@ -1,0 +1,9 @@
+expression_evaluator.ts(60,26): error TS18048: 'token.value' is possibly 'undefined'.
+expression_evaluator.ts(103,16): error TS2678: Type 'string' is not comparable to type 'number'.
+expression_evaluator.ts(106,16): error TS2678: Type 'string' is not comparable to type 'number'.
+expression_evaluator.ts(109,16): error TS2678: Type 'string' is not comparable to type 'number'.
+expression_evaluator.ts(112,16): error TS2678: Type 'string' is not comparable to type 'number'.
+expression_evaluator.ts(132,23): error TS2554: Expected 1 arguments, but got 0.
+expression_evaluator.ts(135,24): error TS2554: Expected 1 arguments, but got 0.
+expression_evaluator.ts(138,24): error TS2554: Expected 1 arguments, but got 0.
+expression_evaluator.ts(141,24): error TS2554: Expected 1 arguments, but got 0.

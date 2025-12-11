@@ -1,0 +1,18 @@
+expression_evaluator.ts(1,1): error TS1434: Unexpected keyword or identifier.
+expression_evaluator.ts(1,4): error TS1434: Unexpected keyword or identifier.
+expression_evaluator.ts(1,7): error TS1434: Unexpected keyword or identifier.
+expression_evaluator.ts(1,16): error TS1434: Unexpected keyword or identifier.
+expression_evaluator.ts(1,25): error TS1434: Unexpected keyword or identifier.
+expression_evaluator.ts(1,42): error TS1002: Unterminated string literal.
+expression_evaluator.ts(3,1): error TS1127: Invalid character.
+expression_evaluator.ts(3,3): error TS1005: ';' expected.
+expression_evaluator.ts(4,1): error TS1434: Unexpected keyword or identifier.
+expression_evaluator.ts(4,5): error TS1434: Unexpected keyword or identifier.
+expression_evaluator.ts(4,12): error TS1434: Unexpected keyword or identifier.
+expression_evaluator.ts(4,22): error TS1434: Unexpected keyword or identifier.
+expression_evaluator.ts(4,23): error TS1128: Declaration or statement expected.
+expression_evaluator.ts(4,25): error TS1434: Unexpected keyword or identifier.
+expression_evaluator.ts(4,28): error TS1434: Unexpected keyword or identifier.
+expression_evaluator.ts(4,54): error TS1005: ';' expected.
+expression_evaluator.ts(4,71): error TS1005: ';' expected.
+expression_evaluator.ts(8,9): error TS1005: ';' expected.

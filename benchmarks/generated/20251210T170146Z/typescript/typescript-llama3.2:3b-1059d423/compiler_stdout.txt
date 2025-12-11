@@ -1,0 +1,13 @@
+expression_evaluator.ts(48,30): error TS2345: Argument of type 'string | number' is not assignable to parameter of type 'string'.
+  Type 'number' is not assignable to type 'string'.
+expression_evaluator.ts(52,40): error TS2345: Argument of type 'string | number' is not assignable to parameter of type 'string'.
+  Type 'number' is not assignable to type 'string'.
+expression_evaluator.ts(62,47): error TS18048: 'right' is possibly 'undefined'.
+expression_evaluator.ts(80,11): error TS2367: This comparison appears to be unintentional because the types 'number' and 'string' have no overlap.
+expression_evaluator.ts(81,16): error TS2367: This comparison appears to be unintentional because the types 'number' and 'string' have no overlap.
+expression_evaluator.ts(82,16): error TS2367: This comparison appears to be unintentional because the types 'number' and 'string' have no overlap.
+expression_evaluator.ts(83,16): error TS2367: This comparison appears to be unintentional because the types 'number' and 'string' have no overlap.
+expression_evaluator.ts(96,27): error TS2307: Cannot find module 'readline' or its corresponding type declarations.
+expression_evaluator.ts(99,10): error TS2580: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.
+expression_evaluator.ts(100,11): error TS2580: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.
+expression_evaluator.ts(103,39): error TS7006: Parameter 'input' implicitly has an 'any' type.

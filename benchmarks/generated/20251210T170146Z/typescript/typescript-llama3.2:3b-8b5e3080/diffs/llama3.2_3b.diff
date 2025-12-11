@@ -1,0 +1,22 @@
+--- before.ts
++++ after.ts
+@@ -77,26 +77,27 @@
+   const output = [];
+   let currentToken = '';
+   for (const char of input) {
+     if (char.match(/[\d+*/()-]/)) {
+       currentToken += char;
+     } else if (currentToken && !this.isWhitespace(char)) {
+-        output.push(currentToken);
++        output.push(parseInt(currentToken));
+         currentToken = '';
+       }
+     if (!char.match(/[\d+*/()-]/)) {
+       throw new Error(`Invalid character: ${char}`);
+     }
+   }
+   if (currentToken) {
+-    output.push(currentToken);
++    output.push(parseInt(currentToken));
+   }
+   return output;

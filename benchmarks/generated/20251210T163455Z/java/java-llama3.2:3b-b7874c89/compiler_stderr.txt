@@ -1,0 +1,28 @@
+ExpressionEvaluator.java:143: error: method evaluate(String) is already defined in class ExpressionEvaluator
+    public static double evaluate(String expression) {
+                         ^
+ExpressionEvaluator.java:60: error: bad operand types for binary operator '<'
+            while (start < tokens.get(0).type.equals("NUMBER") ? tokens.get(0).value : '0') {
+                         ^
+  first type:  int
+  second type: boolean
+ExpressionEvaluator.java:60: error: incompatible types: double cannot be converted to boolean
+            while (start < tokens.get(0).type.equals("NUMBER") ? tokens.get(0).value : '0') {
+                                                               ^
+ExpressionEvaluator.java:68: error: no suitable method found for isDigit(double)
+            while (end < tokens.size() - 1 && Character.isDigit(tokens.get(end + 1).type.equals("NUMBER") ? tokens.get(end + 1).value : '0')) {
+                                                       ^
+    method Character.isDigit(char) is not applicable
+      (argument mismatch; bad type in conditional expression
+          possible lossy conversion from double to char)
+    method Character.isDigit(int) is not applicable
+      (argument mismatch; bad type in conditional expression
+          possible lossy conversion from double to int)
+ExpressionEvaluator.java:114: error: incompatible types: possible lossy conversion from double to char
+                    while (!tokens.isEmpty() && getPrecedence(token.value) <= getPrecedence(tokens.get(0).value)) {
+                                                                   ^
+ExpressionEvaluator.java:114: error: incompatible types: possible lossy conversion from double to char
+                    while (!tokens.isEmpty() && getPrecedence(token.value) <= getPrecedence(tokens.get(0).value)) {
+                                                                                                         ^
+Note: Some messages have been simplified; recompile with -Xdiags:verbose to get full output
+6 errors

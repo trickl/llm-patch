@@ -1,0 +1,109 @@
+```typescript
+// expression_evaluator.ts
+
+interface Token {
+  type: 'NUMBER' | 'PLUS' | 'MINUS' | 'MUL' | 'DIV' | 'LPAREN' | 'RPAREN';
+  value: number | string;
+}
+
+class ExpressionEvaluator {
+  private tokens: Token[];
+
+  constructor(input: string) {
+    this.tokens = this.tokenize(input);
+  }
+
+  private tokenize(input: string): Token[] {
+    const output: Token[] = [];
+    let currentNumber = '';
+    for (const char of input) {
+      if (char === ' ') continue;
+      if (!isNaN(parseInt(char))) {
+        currentNumber += char;
+      } else if (['+', '-', '*', '/'].includes(char)) {
+        if (currentNumber !== '') output.push({ type: 'NUMBER', value: parseInt(currentNumber) });
+        output.push({ type: 'PLUS', value: '+' });
+        output.push({ type: 'MINUS', value: '-' });
+        output.push({ type: 'MUL', value: '*' });
+        output.push({ type: 'DIV', value: '/' });
+        currentNumber = '';
+      } else if (char === '(') {
+        output.push({ type: 'LPAREN', value: char });
+      } else if (char === ')') {
+        output.push({ type: 'RPAREN', value: char });
+      }
+    }
+    if (currentNumber !== '') output.push({ type: 'NUMBER', value: parseInt(currentNumber) });
+
+    return output;
+  }
+
+  private parse(tokens: Token[]): number[] {
+    const output: number[] = [];
+    let currentNumber = '';
+    for (const token of tokens) {
+      if (token.type === 'NUMBER') {
+        currentNumber += token.value.toString();
+      } else if (['PLUS', 'MINUS'].includes(token.type)) {
+        if (currentNumber !== '') output.push(parseInt(currentNumber));
+        output.push(parseInt(token.value));
+        currentNumber = '';
+      } else if (['MUL', 'DIV'].includes(token.type)) {
+        if (currentNumber !== '') output.push(parseInt(currentNumber));
+        const operatorValue = parseInt(token.value);
+        let left: number | null = null;
+        for (let i = output.length - 1; i >= 0; i--) {
+          if (output[i] === operatorValue) break;
+          if (output[i] !== operatorValue && output[i] !== null) {
+            left = output[i];
+            break;
+          }
+        }
+        const right = output.pop();
+        if (left !== null) output.push(left * right);
+      } else if (token.type === 'LPAREN') {
+        currentNumber += token.value;
+      } else if (token.type === 'RPAREN') {
+        if (currentNumber !== '') output.push(parseInt(currentNumber));
+        return output;
+      }
+    }
+
+    if (currentNumber !== '') output.push(parseInt(currentNumber));
+
+    return output;
+  }
+
+  private evaluate(numbers: number[]): number {
+    let result = numbers[0];
+    for (let i = 1; i < numbers.length; i += 2) {
+      const operatorValue = numbers[i + 1];
+      if (operatorValue === '+') result += numbers[i];
+      else if (operatorValue === '-') result -= numbers[i];
+      else if (operatorValue === '*') result *= numbers[i];
+      else if (operatorValue === '/') result /= numbers[i];
+    }
+    return result;
+  }
+
+  public evaluateExpression(input: string): number {
+    const tokens = this.tokenize(input);
+    const parsedNumbers = this.parse(tokens);
+    return this.evaluate(parsedNumbers);
+  }
+}
+
+// CLI example
+import * as readline from 'readline';
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
+
+rl.question('Enter an expression: ', (input) => {
+  const evaluator = new ExpressionEvaluator(input);
+  console.log(evaluator.evaluateExpression(input));
+  rl.close();
+});
+```

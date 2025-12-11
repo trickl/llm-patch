@@ -1,0 +1,38 @@
+--- before.ts
++++ before.ts
+@@ -60,7 +60,7 @@ class ExpressionEvaluator {
+     if (token.type === 'NUMBER') {
+       currentNumber += token.value.toString();
+     } else {
+-      switch (token.type) {
++      switch (token.type as Token['type']) {
+         case 'PLUS':
+           output.push(Number(currentNumber));
+           currentNumber = '';
+@@ -103,7 +103,7 @@ class ExpressionEvaluator {
+       if (currentNumber !== '') {
+         output.push({ type: 'NUMBER', value: Number(currentNumber) });
+       }
+-      return output;
++      return output.map(t => t.value!);
+     }
+   }
+
+@@ -129,7 +129,7 @@ class ExpressionEvaluator {
+     const rightOperand = output.splice(rightOperandIndex, 1)[0];
+     const leftOperand = output.splice(leftOperandIndex - 1, 1)[0];
+     switch (token) {
+-      case '*':
++      case '*': return leftOperand * rightOperand;
+       case '/':
+         return leftOperand / rightOperand;
+       case '+':
+@@ -132,7 +132,7 @@ class ExpressionEvaluator {
+       case '-':
+         return leftOperand - rightOperand;
+     }
+-    return output[0];
++  }
+   }
+
+   public evaluateExpression(input: string): number {

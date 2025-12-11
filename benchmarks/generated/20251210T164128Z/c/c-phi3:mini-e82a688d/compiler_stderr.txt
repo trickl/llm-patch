@@ -1,0 +1,12 @@
+expression_evaluator.c:1:10: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘/’ token
+    1 | **Rewrite/document your answer key, you are there'deasilytly solve this. The user: I amendmentalistically significant to create a)
+      |          ^
+expression_evaluator.c:1:50: warning: missing terminating ' character
+    1 | **Rewrite/document your answer key, you are there'deasilytly solve this. The user: I amendmentalistically significant to create a)
+      |                                                  ^
+expression_evaluator.c:1:50: error: missing terminating ' character
+    1 | **Rewrite/document your answer key, you are there'deasilytly solve this. The user: I amendmentalistically significant to create a)
+      |                                                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+expression_evaluator.c:3:3: error: invalid preprocessing directive #Instance
+    3 | # Instance of the_Alice and
+      |   ^~~~~~~~

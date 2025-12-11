@@ -1,0 +1,121 @@
+// expression_evaluator.ts
+
+class Token {
+    type: 'NUMBER' | 'PLUS' | 'MINUS' | 'MUL' | 'DIV';
+    value: number;
+}
+
+function tokenize(expression: string): Token[] {
+    const tokens: Token[] = [];
+    let currentToken: Token | null = null;
+
+    for (const char of expression) {
+        if (char === '(' || char === ')') {
+            currentToken = { type: 'PAREN', value: char };
+        } else if (char >= '0' && char <= '9') {
+            if (!currentToken) {
+                currentToken = { type: 'NUMBER', value: 0 };
+            }
+            currentToken.value = currentToken.value * 10 + (char.charCodeAt(0) - '0'.charCodeAt(0));
+        } else if (['+', '-', '*', '/'].includes(char)) {
+            if (currentToken && currentToken.type !== 'NUMBER') {
+                tokens.push(currentToken);
+                currentToken = { type: char, value: 0 };
+            }
+        }
+
+        if (char === ' ') {
+            continue;
+        }
+
+        if (currentToken) {
+            tokens.push(currentToken);
+            currentToken = null;
+        }
+    }
+
+    if (currentToken) {
+        tokens.push(currentToken);
+    }
+
+    return tokens;
+}
+
+function parse(tokens: Token[]): number[] {
+    const outputQueue: number[] = [];
+    const operatorStack: string[] = [];
+
+    for (const token of tokens) {
+        if (token.type === 'NUMBER') {
+            outputQueue.push(token.value);
+        } else if (['+', '-', '*', '/'].includes(token.type)) {
+            while (
+                operatorStack.length > 0 &&
+                getPrecedence(operatorStack[operatorStack.length - 1]) >=
+                getPrecedence(token.type)
+            ) {
+                const op = operatorStack.pop() as string;
+                outputQueue.push(
+                    calculate(op, outputQueue.pop() as number, outputQueue.pop() as number)
+                );
+            }
+            operatorStack.push(token.type);
+        } else if (token.type === 'PAREN') {
+            if (token.value === '(') {
+                operatorStack.push(token.type);
+            } else {
+                while (operatorStack[operatorStack.length - 1] !== token.value) {
+                    outputQueue.push(
+                        calculate(operatorStack.pop() as string, outputQueue.pop() as number,
+                            outputQueue.pop() as number)
+                    );
+                }
+                operatorStack.pop();
+            }
+        }
+    }
+
+    while (operatorStack.length > 0) {
+        const op = operatorStack.pop() as string;
+        outputQueue.push(
+            calculate(op, outputQueue.pop() as number, outputQueue.pop() as number)
+        );
+    }
+
+    return outputQueue[outputQueue.length - 1];
+}
+
+function getPrecedence(operator: string): number {
+    switch (operator) {
+        case '+':
+        case '-':
+            return 1;
+        case '*':
+        case '/':
+            return 2;
+        default:
+            throw new Error(`Unknown operator: ${operator}`);
+    }
+}
+
+function calculate(op: string, a: number, b: number): number {
+    switch (op) {
+        case '+':
+            return a + b;
+        case '-':
+            return -a + b;
+        case '*':
+            return a * b;
+        case '/':
+            return Math.floor(a / b);
+        default:
+            throw new Error(`Unknown operator: ${op}`);
+    }
+}
+
+function evaluateExpression(input: string): number {
+    const tokens = tokenize(input);
+    return parse(tokens);
+}
+
+export { evaluateExpression };

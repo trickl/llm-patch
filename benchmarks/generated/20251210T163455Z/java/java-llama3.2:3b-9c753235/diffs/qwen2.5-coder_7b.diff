@@ -1,0 +1,17 @@
+--- before.java	2023-04-10 12:34:56.000000000 +0800
++++ after.java	2023-04-10 12:35:07.000000000 +0800
+@@ -111,7 +111,7 @@
+                 tokens.get(index).value = result.value;
+                                 ^
+@@ -120,7 +120,7 @@
+                 tokens.get(index).value = result.value;
+                                 ^
+@@ -157,7 +157,7 @@
+             return new Evaluator(-(int) leftResult.value);
+                                       ^
+@@ -161,7 +161,7 @@
+                 tokens.get(index).value = result.value;
+                                 ^
+@@ -162,7 +162,7 @@
+                 return result;
+                        ^

@@ -1,0 +1,5 @@
+--- before.py
++++ before.py
+@@ -1,2 +1 @@
+-Your task: "The answer toasting 
++Your task: "The answer toasting"

@@ -1,0 +1,19 @@
+{
+  "case_id": "java-llama3.2:3b-c3e45d74",
+  "language": "java",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "aider",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "patch_applied": false,
+  "patch_diagnostics": "aider matcher could not locate context",
+  "compile_returncode": null,
+  "errors_before": 27,
+  "errors_after": null,
+  "first_error_removed": false,
+  "added_lines": 15,
+  "removed_lines": 15,
+  "hunks": 4,
+  "delete_only": false,
+  "success": false,
+  "notes": ""
+}

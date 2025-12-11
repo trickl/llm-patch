@@ -1,0 +1,9 @@
+--- before.java
++++ after.java
+@@ -88,7 +88,8 @@
+             if (token.type == Tokenizer.TokenType.OPERATOR && (token.value == '+' || token.value == '-')) {
+-                pos++;
++                pos = tokens.get(pos).pos;
+                 int nextTerm = term();
+                 if (token.value == '+') {
+                     result += nextTerm;

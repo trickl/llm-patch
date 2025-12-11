@@ -1,0 +1,40 @@
+ExpressionEvaluator.java:1: error: illegal character: '#'
+# Instructerication
+^
+ExpressionEvaluator.java:4: error: class, interface, enum, or record expected
+The user: "Alice and a) to answer. I amendmentalize"
+^
+ExpressionEvaluator.java:6: error: illegal character: '#'
+## QUISEQuipped in the characterizedaI apologeticies, butterfed your owners are there'de
+^
+ExpressionEvaluator.java:6: error: illegal character: '#'
+## QUISEQuipped in the characterizedaI apologeticies, butterfed your owners are there'de
+ ^
+ExpressionEvaluator.java:6: error: unclosed character literal
+## QUISEQuipped in the characterizedaI apologeticies, butterfed your owners are there'de
+                                                                                     ^
+ExpressionEvaluator.java:10: error: illegal character: '#'
+# Instruction:
+^
+ExpressionEvaluator.java:20: error: unclosed string literal
+"You have a)
+^
+ExpressionEvaluator.java:23: error: class, interface, enum, or record expected
+n; however, and 
+   ^
+ExpressionEvaluator.java:25: error: illegal character: '#'
+#flood's workshop]::
+^
+ExpressionEvaluator.java:25: error: unclosed character literal
+#flood's workshop]::
+      ^
+ExpressionEvaluator.java:30: error: unclosed string literal
+**Instruction: "Alice_Craftingulate. The FBI/alice and more thanxinstructions:
+               ^
+ExpressionEvaluator.java:32: error: illegal character: '#'
+##
+^
+ExpressionEvaluator.java:32: error: illegal character: '#'
+##
+ ^
+13 errors

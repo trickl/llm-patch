@@ -1,0 +1,49 @@
+ExpressionEvaluator.java:103: error: cannot find symbol
+                return new BinaryOp(left, op, rightExpr);
+                           ^
+  symbol:   class BinaryOp
+  location: class Parser
+ExpressionEvaluator.java:117: error: cannot find symbol
+                return new BinaryOp(left, op, rightExpr);
+                           ^
+  symbol:   class BinaryOp
+  location: class Parser
+ExpressionEvaluator.java:129: error: cannot find symbol
+            return new Literal(token.getValue());
+                       ^
+  symbol:   class Literal
+  location: class Parser
+ExpressionEvaluator.java:134: error: cannot find symbol
+            return new UnaryOp(expr, Operator.MINUS);
+                       ^
+  symbol:   class UnaryOp
+  location: class Parser
+ExpressionEvaluator.java:134: error: cannot find symbol
+            return new UnaryOp(expr, Operator.MINUS);
+                                             ^
+  symbol:   variable MINUS
+  location: class Operator
+ExpressionEvaluator.java:189: error: constructor Expression in class Expression cannot be applied to given types;
+        public Literal(String value) {
+                                     ^
+  required: Expression,Operator,Expression
+  found:    no arguments
+  reason: actual and formal argument lists differ in length
+ExpressionEvaluator.java:203: error: constructor Expression in class Expression cannot be applied to given types;
+        public UnaryOp(Expression expr, Operator op) {
+                                                     ^
+  required: Expression,Operator,Expression
+  found:    no arguments
+  reason: actual and formal argument lists differ in length
+ExpressionEvaluator.java:211: error: cannot find symbol
+                case MINUS:
+                     ^
+  symbol:   variable MINUS
+  location: class UnaryOp
+ExpressionEvaluator.java:224: error: constructor Expression in class Expression cannot be applied to given types;
+        public BinaryOp(Expression left, Operator op, Expression right) {
+                                                                        ^
+  required: Expression,Operator,Expression
+  found:    no arguments
+  reason: actual and formal argument lists differ in length
+9 errors

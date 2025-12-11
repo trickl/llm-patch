@@ -1,0 +1,95 @@
+--- expression_evaluator.ts
++++ expression_evaluator.ts
+@@ -103,16 +103,17 @@
+   case 'PLUS':
+     output.push(Number(currentNumber));
+     currentNumber = '';
+-    break;
++    if (token.type === 'NUMBER') {
++      currentNumber += token.value.toString();
++    } else {
++      switch (token.type) {
++        case 'MINUS':
++          output.push(-Number(currentNumber));
++          currentNumber = '';
++          break;
++        case 'MUL':
++          output.push(Number(currentNumber) * Number(currentNumber));
++          currentNumber = '';
++          break;
++        case 'DIV':
++          output.push(Number(currentNumber) / Number(currentNumber));
++          currentNumber = '';
++          break;
++      }
++    }
+     break;
+   case 'MINUS':
+     output.push(-Number(currentNumber));
+     currentNumber = '';
+-    break;
++    if (token.type === 'NUMBER') {
++      currentNumber += token.value.toString();
++    } else {
++      switch (token.type) {
++        case 'PLUS':
++          output.push(Number(currentNumber));
++          currentNumber = '';
++          break;
++        case 'MUL':
++          output.push(Number(currentNumber) * Number(currentNumber));
++          currentNumber = '';
++          break;
++        case 'DIV':
++          output.push(Number(currentNumber) / Number(currentNumber));
++          currentNumber = '';
++          break;
++      }
++    }
+     break;
+   case 'MUL':
+     output.push(Number(currentNumber) * Number(currentNumber));
+     currentNumber = '';
+-    break;
++    if (token.type === 'NUMBER') {
++      currentNumber += token.value.toString();
++    } else {
++      switch (token.type) {
++        case 'PLUS':
++          output.push(Number(currentNumber));
++          currentNumber = '';
++          break;
++        case 'MINUS':
++          output.push(-Number(currentNumber));
++          currentNumber = '';
++          break;
++        case 'DIV':
++          output.push(Number(currentNumber) / Number(currentNumber));
++          currentNumber = '';
++          break;
++      }
++    }
+     break;
+   case 'DIV':
+     output.push(Number(currentNumber) / Number(currentNumber));
+     currentNumber = '';
+-    break;
++    if (token.type === 'NUMBER') {
++      currentNumber += token.value.toString();
++    } else {
++      switch (token.type) {
++        case 'PLUS':
++          output.push(Number(currentNumber));
++          currentNumber = '';
++          break;
++        case 'MINUS':
++          output.push(-Number(currentNumber));
++          currentNumber = '';
++          break;
++        case 'MUL':
++          output.push(Number(currentNumber) * Number(currentNumber));
++          currentNumber = '';
++          break;
++      }
++    }
+     break;

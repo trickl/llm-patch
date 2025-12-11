@@ -1,0 +1,30 @@
+expression_evaluator.c: In function ‘evaluate_expression’:
+expression_evaluator.c:115:53: error: passing argument 3 of ‘apply_operator’ makes integer from pointer without a cast [-Wint-conversion]
+  115 |                 stack[++top] = apply_operator(a, b, *input);
+      |                                                     ^~~~~~
+      |                                                     |
+      |                                                     char *
+expression_evaluator.c:82:39: note: expected ‘char’ but argument is of type ‘char *’
+   82 | int apply_operator(int a, int b, char operator) {
+      |                                  ~~~~~^~~~~~~~
+expression_evaluator.c: In function ‘main’:
+expression_evaluator.c:144:44: error: passing argument 1 of ‘get_next_token’ from incompatible pointer type [-Wincompatible-pointer-types]
+  144 |     tokens[token_index++] = get_next_token(&input);
+      |                                            ^~~~~~
+      |                                            |
+      |                                            char (*)[256]
+expression_evaluator.c:38:29: note: expected ‘char **’ but argument is of type ‘char (*)[256]’
+   38 | Token get_next_token(char **input) {
+      |                      ~~~~~~~^~~~~
+expression_evaluator.c:145:38: error: passing argument 1 of ‘evaluate_expression’ from incompatible pointer type [-Wincompatible-pointer-types]
+  145 |     int result = evaluate_expression(&input);
+      |                                      ^~~~~~
+      |                                      |
+      |                                      char (*)[256]
+expression_evaluator.c:98:32: note: expected ‘char **’ but argument is of type ‘char (*)[256]’
+   98 | int evaluate_expression(char **input) {
+      |                         ~~~~~~~^~~~~
+expression_evaluator.c: In function ‘apply_operator’:
+expression_evaluator.c:96:1: warning: control reaches end of non-void function [-Wreturn-type]
+   96 | }
+      | ^

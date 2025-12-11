@@ -1,0 +1,55 @@
+ExpressionEvaluator.java:35: error: yield outside of switch expression
+                            yield(expression.substring(pos, endPos));
+                            ^
+  (to invoke a method called yield, qualify the yield with a receiver or type name)
+ExpressionEvaluator.java:43: error: yield outside of switch expression
+                            yield(expression.substring(pos, endPos));
+                            ^
+  (to invoke a method called yield, qualify the yield with a receiver or type name)
+ExpressionEvaluator.java:51: error: yield outside of switch expression
+                            yield(expression.substring(pos, endPos));
+                            ^
+  (to invoke a method called yield, qualify the yield with a receiver or type name)
+ExpressionEvaluator.java:82: error: cannot find symbol
+                    while (pos < tokenizer.iterator().iterator().hasNext()) {
+                                                     ^
+  symbol:   method iterator()
+  location: interface Iterator<String>
+ExpressionEvaluator.java:83: error: incompatible types: String cannot be converted to Token
+                        Token token = tokenizer.iterator().next();
+                                                               ^
+ExpressionEvaluator.java:92: error: yield outside of switch expression
+                        yield(token);
+                        ^
+  (to invoke a method called yield, qualify the yield with a receiver or type name)
+ExpressionEvaluator.java:118: error: cannot find symbol
+                Token token = parser.next();
+                                    ^
+  symbol:   method next()
+  location: variable parser of type Parser
+ExpressionEvaluator.java:120: error: cannot find symbol
+                    stack.push(Integer.parseInt(token.value()));
+                                                     ^
+  symbol:   method value()
+  location: variable token of type Token
+ExpressionEvaluator.java:124: error: cannot find symbol
+                    switch (token.value()) {
+                                 ^
+  symbol:   method value()
+  location: variable token of type Token
+ExpressionEvaluator.java:142: error: cannot find symbol
+                    Parser subParser = new Parser(tokenizer);
+                                                  ^
+  symbol:   variable tokenizer
+  location: class Evaluator
+ExpressionEvaluator.java:143: error: cannot find symbol
+                    Token resultToken = subParser.next();
+                                                 ^
+  symbol:   method next()
+  location: variable subParser of type Parser
+ExpressionEvaluator.java:149: error: cannot find symbol
+                    switch (resultToken.value()) {
+                                       ^
+  symbol:   method value()
+  location: variable resultToken of type Token
+12 errors

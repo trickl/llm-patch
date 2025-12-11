@@ -1,0 +1,10 @@
+--- before.java 2023-04-15 15:37:19.862229 +0000
++++ ExpressionEvaluator_fixed.java 2023-04-15 15:37:19.862230 +0000
+@@ -171,6 +171,15 @@
+ private BinaryOperator new BinaryOperator(Expression left, String operator, Expression right) {
++private final int result; // Added return type for the method declaration
+     public int result() {
+         switch (operator) {
+-            case "+":
++             default:
+                 throw new RuntimeException("Invalid operator");

@@ -1,0 +1,7 @@
+expression_evaluator.ts(89,9): error TS2304: Cannot find name 'outputQueue'.
+expression_evaluator.ts(92,9): error TS2304: Cannot find name 'outputQueue'.
+expression_evaluator.ts(95,9): error TS2304: Cannot find name 'outputQueue'.
+expression_evaluator.ts(98,9): error TS2304: Cannot find name 'outputQueue'.
+expression_evaluator.ts(112,1): error TS2588: Cannot assign to 'input' because it is a constant.
+expression_evaluator.ts(115,1): error TS2588: Cannot assign to 'input' because it is a constant.
+expression_evaluator.ts(118,1): error TS2588: Cannot assign to 'input' because it is a constant.

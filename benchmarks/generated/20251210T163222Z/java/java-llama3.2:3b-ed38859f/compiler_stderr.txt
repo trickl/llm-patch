@@ -1,0 +1,17 @@
+ExpressionEvaluator.java:116: error: method evaluate(String) is already defined in class ExpressionEvaluator
+    public static int evaluate(String expression) {
+                      ^
+ExpressionEvaluator.java:69: error: method parse() is already defined in class Parser
+        Token parse() {
+              ^
+ExpressionEvaluator.java:108: error: cannot find symbol
+            return new Parser(tokens).parseTerm();
+                              ^
+  symbol:   variable tokens
+  location: class Evaluator
+ExpressionEvaluator.java:112: error: cannot find symbol
+            return new Parser(tokens).parseExpr();
+                              ^
+  symbol:   variable tokens
+  location: class Evaluator
+4 errors

@@ -1,0 +1,10 @@
+--- before.java
++++ after.java
+@@ -155,7 +155,8 @@
+     return new ExpressionEvaluator().evaluate(expression);
+-}
++private int evaluate(String expression) {
++    Lexer lexer = new Lexer(expression);
++    Parser parser = new Parser(lexer.tokens);
++    Evaluator evaluator = new Evaluator();
++    return parser.parse();

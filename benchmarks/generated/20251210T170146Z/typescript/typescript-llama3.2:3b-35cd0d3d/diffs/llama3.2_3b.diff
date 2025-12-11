@@ -1,0 +1,30 @@
+--- before.ts
++++ after.ts
+@@ -99,7 +99,8 @@
+   } else if (token === '(') {
+     operatorStack.push(token);
+   } else if (token === ')') {
+-    while (operatorStack[operatorStack.length - 1] !== '(') {
++    while (operatorStack.length && operatorStack[operatorStack.length - 1] !== '(') {
+       const op = operatorStack.pop() as string;
+       outputQueue.push(this.getPrecedence(op));
+     }
+
+     operatorStack.pop(); // Remove the '('
+   } else {
+-    while (
+-      operatorStack.length &&
+-      this.getPrecedence(operatorStack[operatorStack.length - 1]) >=
+-        this.getPrecedence(token)
+-    ) {
++    while (
++      operatorStack.length &&
++      this.getPrecedence(operatorStack[operatorStack.length - 1]) > 
++        this.getPrecedence(token)
++    ) {
+       const op = operatorStack.pop() as string;
+       outputQueue.push(this.getPrecedence(op));
+     }
+
+     operatorStack.push(token);
+   }

@@ -1,0 +1,5 @@
+expression_evaluator.ts(115,5): error TS2580: Cannot find name 'require'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.
+expression_evaluator.ts(115,22): error TS2580: Cannot find name 'module'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.
+expression_evaluator.ts(116,19): error TS2580: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.
+expression_evaluator.ts(119,9): error TS2580: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.
+expression_evaluator.ts(126,23): error TS18046: 'error' is of type 'unknown'.

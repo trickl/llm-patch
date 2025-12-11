@@ -1,0 +1,2 @@
+expression_evaluator.ts(1,1): error TS1434: Unexpected keyword or identifier.
+expression_evaluator.ts(1,30): error TS1002: Unterminated string literal.

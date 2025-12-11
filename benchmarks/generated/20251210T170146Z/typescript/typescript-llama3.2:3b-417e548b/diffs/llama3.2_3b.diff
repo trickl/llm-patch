@@ -1,0 +1,13 @@
+--- before.ts
++++ patched_before.ts
+@@ -1,5 +1,6 @@
+ export function evaluateExpression(input: string): number {
+-  const evaluator = new ExpressionEvaluator();
++  const evaluator = new ExpressionEvaluator() || {};
+   try {
+     return evaluator.evaluateExpression(input);
+   } catch (error) {
+     console.error(error.message);
+     return NaN;
+   }
+ }

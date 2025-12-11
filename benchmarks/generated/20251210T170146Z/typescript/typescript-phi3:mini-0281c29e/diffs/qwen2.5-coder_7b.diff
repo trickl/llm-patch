@@ -1,0 +1,5 @@
+--- before.ts
++++ before.ts
+@@ -1,1 +1 @@
+-Your task, can you'in#instruction:
++Your task: Can you please provide a valid unified diff (GNU format) that patches `before.ts`?

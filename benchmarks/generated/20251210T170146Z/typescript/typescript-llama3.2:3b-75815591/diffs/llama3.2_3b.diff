@@ -1,0 +1,23 @@
+--- expression_evaluator.ts
++++ expression_evaluator.ts
+@@ -96,7 +96,8 @@
+   operatorStack.push(token);
+ } else if (token === ')') {
+-  while (operatorStack[operatorStack.length - 1] !== '(') {
++  while (operatorStack.length && operatorStack[operatorStack.length - 1] !== '(') {
+     const op = operatorStack.pop() as string;
+     const rightOperand = outputQueue.pop() as number;
+     const leftOperand = outputQueue.pop() as number;
+     this.applyOperator(op, leftOperand, rightOperand);
+   }
+-  operatorStack.pop(); // Remove the '('
++  operatorStack.pop();
+   }
+
+-  while (operatorStack.length) {
++  while (operatorStack.length) {
+     const op = operatorStack.pop() as string;
+     const rightOperand = outputQueue.pop() as number;
+     const leftOperand = outputQueue.pop() as number;
+     this.applyOperator(op, leftOperand, rightOperand);
+   }

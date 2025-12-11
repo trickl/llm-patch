@@ -1,0 +1,6 @@
+--- before.java    2019-03-27 15:04:00      
++++ after.java                    (context line)
+@@ -6,8 +6,10 @@
+         public class Main {
+            private static final int[] array = new String[1]; // Added this to ensure the method is present in before and after diffs for context
+        }

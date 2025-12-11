@@ -1,0 +1,9 @@
+expression_evaluator.ts(62,41): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+expression_evaluator.ts(77,41): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+expression_evaluator.ts(91,37): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+expression_evaluator.ts(125,1): error TS2588: Cannot assign to 'input' because it is a constant.
+expression_evaluator.ts(128,1): error TS2588: Cannot assign to 'input' because it is a constant.
+expression_evaluator.ts(131,1): error TS2588: Cannot assign to 'input' because it is a constant.

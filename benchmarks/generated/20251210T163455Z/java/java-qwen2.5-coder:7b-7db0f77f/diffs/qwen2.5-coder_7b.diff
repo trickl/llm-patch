@@ -1,0 +1,43 @@
+--- before.java	2023-04-10 12:34:56.000000000 +0800
++++ after.java	2023-04-10 12:35:07.000000000 +0800
+@@ -68,7 +68,7 @@
+             if (token == '+') {
+                     pos++;
+                     result += term();
+-            } else if (token == '-') {
++            } else if (token.equals('-')) {
+                             pos++;
+                             result -= term();
+             } else {
+@@ -71,7 +71,7 @@
+             } else if (token == '-') {
+                              ^
+  first type:  Object
+  second type: char
+ExpressionEvaluator.java:85: error: bad operand types for binary operator '=='
+            if (token == '*') {
+                      ^
+  first type:  Object
+  second type: char
+ExpressionEvaluator.java:88: error: bad operand types for binary operator '=='
+            } else if (token == '/') {
+                             ^
+  first type:  Object
+  second type: char
+ExpressionEvaluator.java:104: error: bad operand types for binary operator '=='
+            } else if (token == '(') {
+                             ^
+  first type:  Object
+  second type: char
+ExpressionEvaluator.java:107: error: bad operand types for binary operator '=='
+                if (pos < tokens.size() && tokens.get(pos) == ')') {
+                                                           ^
+  first type:  Object
+  second type: char
+ExpressionEvaluator.java:111: error: bad operand types for binary operator '=='
+            } else if (token == '-') {
+                             ^
+  first type:  Object
+  second type: char
+Note: Some messages have been simplified; recompile with -Xdiags:verbose to get full output
+8 errors

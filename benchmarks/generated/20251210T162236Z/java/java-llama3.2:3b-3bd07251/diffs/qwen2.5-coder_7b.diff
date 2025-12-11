@@ -1,0 +1,20 @@
+--- before.java	2023-04-10 12:34:56.000000000 +0800
++++ after.java	2023-04-10 12:35:00.000000000 +0800
+@@ -171,7 +171,7 @@
+     private Expression new BinaryOperator(Expression left, String operator, Expression right) {
+         return new BinaryOperator(left, operator, right);
+     }
+-
++    public
+@@ -175,7 +175,7 @@
+     private Expression new Parenthetical(Expression expression) {
+         return new Parenthetical(expression);
+     }
+-
++    public
+@@ -179,7 +179,7 @@
+     private Expression new UnaryOperator(String operator, Expression operand) {
+         return new UnaryOperator(operator, operand);
+     }
+-
++    public

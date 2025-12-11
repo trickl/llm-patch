@@ -1,0 +1,83 @@
+expression_evaluator.c: In function ‘lexer’:
+expression_evaluator.c:31:13: error: implicit declaration of function ‘isdigit’ [-Wimplicit-function-declaration]
+   31 |         if (isdigit(expression[i])) {
+      |             ^~~~~~~
+expression_evaluator.c:4:1: note: include ‘<ctype.h>’ or provide a declaration of ‘isdigit’
+    3 | #include <string.h>
+  +++ |+#include <ctype.h>
+    4 | 
+expression_evaluator.c:68:12: warning: function returns address of local variable [-Wreturn-local-addr]
+   68 |     return &tokens[0];
+      |            ^~~~~~~~~~
+expression_evaluator.c: In function ‘parser’:
+expression_evaluator.c:74:25: error: ‘tokenIndex’ undeclared (first use in this function)
+   74 |     for (int i = 0; i < tokenIndex; ++i) {
+      |                         ^~~~~~~~~~
+expression_evaluator.c:74:25: note: each undeclared identifier is reported only once for each function it appears in
+expression_evaluator.c:82:35: error: ‘Node’ undeclared (first use in this function); did you mean ‘astNode’?
+   82 |     void* astNode = malloc(sizeof(Node));
+      |                                   ^~~~
+      |                                   astNode
+expression_evaluator.c:83:11: error: ‘currentNode’ undeclared (first use in this function)
+   83 |     Node* currentNode = (Node*)astNode;
+      |           ^~~~~~~~~~~
+expression_evaluator.c:83:31: error: expected expression before ‘)’ token
+   83 |     Node* currentNode = (Node*)astNode;
+      |                               ^
+expression_evaluator.c:92:19: error: ‘leftChild’ undeclared (first use in this function)
+   92 |             Node* leftChild = currentNode;
+      |                   ^~~~~~~~~
+expression_evaluator.c:100:40: error: expected expression before ‘)’ token
+  100 |             currentNode->right = (Node*)rightChild;
+      |                                        ^
+expression_evaluator.c:99:19: warning: unused variable ‘rightChild’ [-Wunused-variable]
+   99 |             void* rightChild = parser(tokens + i + 1);
+      |                   ^~~~~~~~~~
+expression_evaluator.c:110:40: error: expected expression before ‘)’ token
+  110 |             currentNode->right = (Node*)rightChild;
+      |                                        ^
+expression_evaluator.c:109:19: warning: unused variable ‘rightChild’ [-Wunused-variable]
+  109 |             void* rightChild = parser(tokens + i + 1);
+      |                   ^~~~~~~~~~
+expression_evaluator.c:120:40: error: expected expression before ‘)’ token
+  120 |             currentNode->right = (Node*)rightChild;
+      |                                        ^
+expression_evaluator.c:119:19: warning: unused variable ‘rightChild’ [-Wunused-variable]
+  119 |             void* rightChild = parser(tokens + i + 1);
+      |                   ^~~~~~~~~~
+expression_evaluator.c:132:40: error: expected expression before ‘)’ token
+  132 |             currentNode->right = (Node*)rightChild;
+      |                                        ^
+expression_evaluator.c:131:19: warning: unused variable ‘rightChild’ [-Wunused-variable]
+  131 |             void* rightChild = parser(tokens + i + 1);
+      |                   ^~~~~~~~~~
+expression_evaluator.c: At top level:
+expression_evaluator.c:140:18: error: unknown type name ‘Node’
+  140 | double evaluator(Node* node) {
+      |                  ^~~~
+expression_evaluator.c:165:15: error: unknown type name ‘Node’
+  165 | void printAST(Node* node, int indentLevel) {
+      |               ^~~~
+expression_evaluator.c: In function ‘main’:
+expression_evaluator.c:193:25: error: implicit declaration of function ‘evaluator’ [-Wimplicit-function-declaration]
+  193 |         double result = evaluator(astNode);
+      |                         ^~~~~~~~~
+expression_evaluator.c:196:9: error: implicit declaration of function ‘printAST’; did you mean ‘printf’? [-Wimplicit-function-declaration]
+  196 |         printAST((Node*)astNode, 0);
+      |         ^~~~~~~~
+      |         printf
+expression_evaluator.c:196:19: error: ‘Node’ undeclared (first use in this function); did you mean ‘astNode’?
+  196 |         printAST((Node*)astNode, 0);
+      |                   ^~~~
+      |                   astNode
+expression_evaluator.c:196:24: error: expected expression before ‘)’ token
+  196 |         printAST((Node*)astNode, 0);
+      |                        ^
+expression_evaluator.c:197:26: warning: format ‘%f’ expects a matching ‘double’ argument [-Wformat=]
+  197 |         printf("Result: %f\n\n");
+      |                         ~^
+      |                          |
+      |                          double
+expression_evaluator.c:193:16: warning: unused variable ‘result’ [-Wunused-variable]
+  193 |         double result = evaluator(astNode);
+      |                ^~~~~~

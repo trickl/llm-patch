@@ -1,0 +1,18 @@
+ExpressionEvaluator.java:20: error: cannot find symbol
+                .flatMap(token -> token.matches("-?\\d+") ? Stream.of(token) : Stream.of(token.split("(?<=[-+*/()])|(?=[-+*/()])")))
+                                                            ^
+  symbol:   variable Stream
+  location: class ExpressionEvaluator
+ExpressionEvaluator.java:20: error: cannot find symbol
+                .flatMap(token -> token.matches("-?\\d+") ? Stream.of(token) : Stream.of(token.split("(?<=[-+*/()])|(?=[-+*/()])")))
+                                                                               ^
+  symbol:   variable Stream
+  location: class ExpressionEvaluator
+ExpressionEvaluator.java:21: error: incompatible types: inference variable T has incompatible bounds
+                .collect(Collectors.toList());
+                        ^
+    equality constraints: String
+    lower bounds: Object
+  where T is a type-variable:
+    T extends Object declared in method <T>toList()
+3 errors

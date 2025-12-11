@@ -1,0 +1,19 @@
+{
+  "case_id": "typescript-qwen2.5-coder:7b-8393dc0b",
+  "language": "typescript",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "aider",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 2 hunks",
+  "compile_returncode": 2,
+  "errors_before": 6,
+  "errors_after": 1,
+  "first_error_removed": true,
+  "added_lines": 2,
+  "removed_lines": 2,
+  "hunks": 2,
+  "delete_only": false,
+  "success": true,
+  "notes": ""
+}

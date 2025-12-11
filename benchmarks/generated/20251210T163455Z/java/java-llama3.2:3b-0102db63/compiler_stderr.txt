@@ -1,0 +1,63 @@
+ExpressionEvaluator.java:6: error: void cannot be dereferenced
+        return new Tokenizer().tokenize(expression).parse().evaluate();
+                                                   ^
+ExpressionEvaluator.java:25: error: constructor RightParenthesisToken in class RightParenthesisToken cannot be applied to given types;
+                        tokens.add(new RightParenthesisToken());
+                                   ^
+  required: String
+  found:    no arguments
+  reason: actual and formal argument lists differ in length
+ExpressionEvaluator.java:52: error: cannot find symbol
+            switch (token.type()) {
+                         ^
+  symbol:   method type()
+  location: variable token of type Token
+ExpressionEvaluator.java:54: error: cannot find symbol
+                    return (int) token.value();
+                                      ^
+  symbol:   method value()
+  location: variable token of type Token
+ExpressionEvaluator.java:58: error: cannot find symbol
+                    if (tokens.get(start).type() != RIGHT_PAREN) {
+                                         ^
+  symbol:   method type()
+  location: class Token
+ExpressionEvaluator.java:58: error: cannot find symbol
+                    if (tokens.get(start).type() != RIGHT_PAREN) {
+                                                    ^
+  symbol:   variable RIGHT_PAREN
+  location: class Parser
+ExpressionEvaluator.java:68: error: cannot find symbol
+                    switch (operatorToken.type()) {
+                                         ^
+  symbol:   method type()
+  location: variable operatorToken of type Token
+ExpressionEvaluator.java:107: error: no suitable constructor found for Token(Type,Type,Type)
+            super(Type.PLUS, Type.MINUS, Type.TIMES);
+            ^
+    constructor Token.Token(Type) is not applicable
+      (actual and formal argument lists differ in length)
+    constructor Token.Token(Number) is not applicable
+      (actual and formal argument lists differ in length)
+    constructor Token.Token() is not applicable
+      (actual and formal argument lists differ in length)
+    constructor Token.Token(String) is not applicable
+      (actual and formal argument lists differ in length)
+ExpressionEvaluator.java:108: error: value has private access in Token
+            this.value = operator;
+                ^
+ExpressionEvaluator.java:115: error: value has private access in Token
+            this.value = number;
+                ^
+ExpressionEvaluator.java:127: error: no suitable constructor found for Token(Type,String)
+            super(Type.RIGHT_PAREN, s);
+            ^
+    constructor Token.Token(Type) is not applicable
+      (actual and formal argument lists differ in length)
+    constructor Token.Token(Number) is not applicable
+      (actual and formal argument lists differ in length)
+    constructor Token.Token() is not applicable
+      (actual and formal argument lists differ in length)
+    constructor Token.Token(String) is not applicable
+      (actual and formal argument lists differ in length)
+11 errors

@@ -1,0 +1,5 @@
+--- before.ts
++++ after.ts
+@@(74,3)-(75,4)
+-  tokens.push({ type: 'number', value: match[0] });
++  tokens.push(parseInt(match[0], 10));

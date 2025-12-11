@@ -1,0 +1,67 @@
+--- before.ts
++++ before.ts
+@@ -38,79 +38,79 @@
+   private pos: number;
+
+   constructor(tokens: Token[]) {
+     this.tokens = tokens;
+     this.pos = 0;
+   }
+
+   public evaluate(): number | null {
+-    if (this.pos >= tokens.length) return null;
++    if (this.pos >= this.tokens.length) return null;
+
+     const leftOperand = this.parseExpression();
+     if (leftOperand === null) return null;
+
+     while (true) {
+       const token = this.tokens[this.pos];
+       switch (token.type) {
+         case TokenType.PLUS:
+           this.pos++;
+           const rightOperand = this.parseExpression();
+           if (rightOperand === null) return null;
+           break;
+         default:
+-          return leftOperand + rightOperand;
++          return leftOperand;
+       }
+     }
+   }
+
+   private parseExpression(): number | null {
+     let result: number | null = null;
+
+     while (true) {
+       const token = this.tokens[this.pos];
+       switch (token.type) {
+         case TokenType.NUMBER:
+           if (result === null) result = token.value;
+           else return result + token.value;
+           break;
+         case TokenType.MINUS:
+           this.pos++;
+           result = -result;
+           break;
+         default:
+-          return result;
++          return result;
+       }
+     }
+   }
+ }
+
+ // Expression Evaluator
+ function evaluateExpression(input: string): number {
+   const tokens = new Lexer(input).tokens;
+   const parser = new Parser(tokens);
+   const evaluator = new Evaluator(tokens);
+
+   const result = parser.parse();
+   if (result === null) return null;
+
+   return evaluator.evaluate();
+ }
+
+ export default evaluateExpression;

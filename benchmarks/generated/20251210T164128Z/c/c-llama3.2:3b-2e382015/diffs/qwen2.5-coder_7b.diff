@@ -1,0 +1,13 @@
+diff --git a/before.c b/before.c
+index 1234567..89abcde 100644
+--- a/before.c
++++ b/before.c
+@@ -10,7 +10,7 @@
+     if (*expression == '*') {
+         // Handle multiplication
+         char* operator = malloc(3);
+-        strcpy(operator, "*");
++        snprintf(operator, 4, "%c", *expression);
+         ++expression;
+         result *= evaluator(expression);
+         free(operator);

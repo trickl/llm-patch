@@ -1,0 +1,163 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Token types
+typedef enum {
+    NUMBER,
+    PLUS,
+    MINUS,
+    MUL,
+    DIV,
+    LPAREN,
+    RPAREN,
+    UNARY_MINUS,
+    END_OF_EXPRESSION
+} TokenType;
+
+// Token structure
+typedef struct {
+    TokenType type;
+    double value;
+    char* text;
+} Token;
+
+// Lexer function to tokenize the input string
+Token* lexer(const char* expression) {
+    int length = strlen(expression);
+    Token* tokens = malloc((length + 1) * sizeof(Token));
+    for (int i = 0; i < length; ++i) {
+        if (isdigit(expression[i])) {
+            int start = i;
+            while (i < length && isdigit(expression[i])) {
+                ++i;
+            }
+            double value = atof(expression + start);
+            tokens[i - start] = {NUMBER, value, expression + start};
+        } else if (expression[i] == '+' || expression[i] == '-') {
+            int start = i;
+            while (i < length && (expression[i] == '+' || expression[i] == '-' || expression[i] == '(')) {
+                ++i;
+            }
+            tokens[i - start] = {PLUS, 0, expression + start};
+        } else if (expression[i] == '*' || expression[i] == '/') {
+            int start = i;
+            while (i < length && (expression[i] == '*' || expression[i] == '/' || expression[i] == ')')) {
+                ++i;
+            }
+            tokens[i - start] = {MUL, 0, expression + start};
+        } else if (expression[i] == '(') {
+            int start = i;
+            while (i < length && expression[i] != ')') {
+                ++i;
+            }
+            tokens[i - start] = {LPAREN, 0, expression + start};
+        } else if (expression[i] == ')') {
+            int start = i;
+            while (i < length && expression[i] != ')') {
+                ++i;
+            }
+            tokens[i - start] = {RPAREN, 0, expression + start};
+        } else if (expression[i] == '-') {
+            int start = i;
+            while (i < length && expression[i] == '-') {
+                ++i;
+            }
+            tokens[i - start] = {UNARY_MINUS, 0, expression + start};
+        } else {
+            int start = i;
+            while (i < length && !isspace(expression[i])) {
+                ++i;
+            }
+            char* text = malloc(i - start + 1);
+            strncpy(text, expression + start, i - start);
+            text[i - start] = '\0';
+            tokens[i - start] = {END_OF_EXPRESSION, 0, text};
+        }
+    }
+    tokens[length] = {END_OF_EXPRESSION, 0, NULL};
+    return tokens;
+}
+
+// Parser function to parse the tokenized expression
+Token* parser(Token* tokens) {
+    Token* current_token = tokens;
+    while (current_token->type != END_OF_EXPRESSION) {
+        if (current_token->type == NUMBER || current_token->type == PLUS || current_token->type == MINUS ||
+            current_token->type == MUL || current_token->type == DIV || current_token->type == LPAREN ||
+            current_token->type == RPAREN || current_token->type == UNARY_MINUS) {
+            if (current_token->type != END_OF_EXPRESSION && current_token->type != LPAREN &&
+                current_token->type != RPAREN && current_token->type != UNARY_MINUS) {
+                return current_token;
+            }
+            ++current_token;
+        } else if (current_token->type == LPAREN) {
+            Token* sub_expression = parser(current_token + 1);
+            if (sub_expression->type == END_OF_EXPRESSION) {
+                return current_token;
+            }
+            while (current_token->type != RPAREN) {
+                if (current_token->type == PLUS || current_token->type == MINUS ||
+                    current_token->type == MUL || current_token->type == DIV) {
+                    Token* operator = parser(current_token + 1);
+                    if (operator->type == END_OF_EXPRESSION) {
+                        return current_token;
+                    }
+                    while (current_token->type != RPAREN && current_token->type != UNARY_MINUS) {
+                        ++current_token;
+                    }
+                } else {
+                    ++current_token;
+                }
+            }
+            --current_token;
+        } else if (current_token->type == END_OF_EXPRESSION) {
+            return NULL;
+        }
+    }
+    return NULL;
+}
+
+// Evaluator function to evaluate the parsed expression
+double evaluator(Token* token) {
+    double result = 0.0;
+    while (token->type != END_OF_EXPRESSION) {
+        switch (token->type) {
+            case NUMBER:
+                result += token->value;
+                break;
+            case PLUS:
+                result += evaluator(token + 1);
+                break;
+            case MINUS:
+                result -= evaluator(token + 1);
+                break;
+            case MUL:
+                result *= evaluator(token + 1);
+                break;
+            case DIV:
+                result /= evaluator(token + 1);
+                break;
+        }
+        token = token + 1;
+    }
+    return result;
+}
+
+int main() {
+    const char* expressions[] = {"3 + 4 * (2 - 1)", "1 + 2", "2 * 3 + 4", "2 * (3 + 4)", "8 / 2 * (2 + 2)"};
+    for (const char* expression : expressions) {
+        Token* tokens = lexer(expression);
+        if (!tokens) {
+            printf("Error: Malformed expression '%s'\n", expression);
+            return 1;
+        }
+        Token* parsed_expression = parser(tokens);
+        double result = evaluator(parsed_expression);
+        free(tokens);
+        printf("%s => %f\n", expression, result);
+    }
+    return 0;
+}
+```

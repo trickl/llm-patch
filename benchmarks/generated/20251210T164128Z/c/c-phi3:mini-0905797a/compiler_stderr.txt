@@ -1,0 +1,18 @@
+expression_evaluator.c:1:14: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘:’ token
+    1 | **Constraints:
+      |              ^
+expression_evaluator.c:10:3: error: invalid preprocessing directive #answer
+   10 | # answer:*
+      |   ^~~~~~
+expression_evaluator.c:12:1: warning: missing terminating " character
+   12 | "The Hinduismos's workshop_Assistant
+      | ^
+expression_evaluator.c:12:1: error: missing terminating " character
+   12 | "The Hinduismos's workshop_Assistant
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+expression_evaluator.c:14:1: error: stray ‘##’ in program
+   14 | ### Instruction:
+      | ^~
+expression_evaluator.c:14:3: error: stray ‘#’ in program
+   14 | ### Instruction:
+      |   ^

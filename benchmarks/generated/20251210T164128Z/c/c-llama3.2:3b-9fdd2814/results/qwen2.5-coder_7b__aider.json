@@ -1,0 +1,19 @@
+{
+  "case_id": "c-llama3.2:3b-9fdd2814",
+  "language": "c",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "aider",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 2 hunks",
+  "compile_returncode": 1,
+  "errors_before": 23,
+  "errors_after": 56,
+  "first_error_removed": false,
+  "added_lines": 2,
+  "removed_lines": 1,
+  "hunks": 2,
+  "delete_only": false,
+  "success": false,
+  "notes": ""
+}

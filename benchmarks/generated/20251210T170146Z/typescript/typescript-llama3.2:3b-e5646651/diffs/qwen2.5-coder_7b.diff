@@ -1,0 +1,75 @@
+--- before.ts
++++ before.ts
+@@ -39,15 +39,15 @@ class Evaluator {
+     return result;
+   }
+ 
+-  private evaluateExpression(expression: string): number {
++  public evaluateExpression(expression: string): number {
+     const tokens = this.tokenize(expression);
+     return this.parse(tokens);
+   }
+ 
+   private tokenize(expression: string): Token[] {
+     const tokens: Token[] = [];
+     let currentToken = '';
+ 
+@@ -41,7 +41,7 @@ class Evaluator {
+       if (char.match(/[0-9]/)) {
+         currentToken += char;
+       } else if (['+', '-', '*', '/'].includes(char)) {
+-        if (currentToken !== '') {
++        if (currentToken) {
+           tokens.push({ type: 'NUMBER', value: parseInt(currentToken) });
+           currentToken = '';
+         }
+@@ -42,7 +42,7 @@ class Evaluator {
+       } else if (char === '(') {
+         tokens.push({ type: 'LPAREN', value: char });
+       } else if (char === ')') {
+-        tokens.push({ type: 'RPAREN', value: char });
++        tokens.push({ type: 'RPAREN', value: char });
+       }
+     }
+ 
+@@ -73,15 +73,15 @@ class Evaluator {
+     return this.evaluate(outputQueue);
+   }
+ 
+-  private evaluate(tokens: number[]): number {
++  public evaluate(tokens: number[]): number {
+     let result = tokens[0];
+ 
+     for (let i = 1; i < tokens.length; i++) {
+       const op = tokens[i];
+       switch (op) {
+         case '+':
+           result += tokens[i + 1];
+           break;
+         case '-':
+           result -= tokens[i + 1];
+           break;
+         case '*':
+           result *= tokens[i + 1];
+           break;
+         case '/':
+           result /= tokens[i + 1];
+           break;
+       }
+       i++;
+     }
+ 
+     return result;
+   }
+ }
+
+ export function evaluateExpression(input: string): number {
+   const evaluator = new Evaluator();
+   try {
+     return evaluator.evaluateExpression(input);
+   } catch (error) {
+-    console.error(error.message);
++    console.error((error as Error).message);
+     return NaN; // Return Not a Number
+   }
+ }

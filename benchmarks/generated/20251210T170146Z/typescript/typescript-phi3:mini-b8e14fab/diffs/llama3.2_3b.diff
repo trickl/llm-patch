@@ -1,0 +1,4 @@
+--- before.ts
++++ fixed_before.ts
+- I amend your answer to understands that|json json format, I'in#
++ I amend your answer to understands that |json json format, I'in#

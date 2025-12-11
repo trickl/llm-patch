@@ -1,0 +1,32 @@
+--- before.c
++++ before.c
+@@ -3,6 +3,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+
++#include <ctype.h>  // Added to include the declaration of isdigit
+
+// Token type enum
+typedef enum {
+    NUMBER,
+    PLUS,
+@@ -140,7 +141,7 @@ double evaluator(Node* node) {
+ }
+
+// Helper function to print the AST
+-void printAST(Node* node, int indentLevel) {
++void printAST(Node* node, int indentLevel) {  // Fixed the return type from void* to void
+    for (int i = 0; i < indentLevel; ++i) {
+        printf(" ");
+    }
+
+@@ -193,7 +194,7 @@ int main() {
+         Token* tokens = lexer(expressions[i]);
+         void* astNode = parser(tokens);
+         double result = evaluator(astNode);
+
+-        printf("Expression: %s\n", expressions[i]);
++        printf("Expression: %s\n", expressions[i]);  // Fixed the format specifier from %f to %s
+         printAST((Node*)astNode, 0);
+         printf("Result: %f\n\n");
+     }

@@ -1,0 +1,231 @@
+--- before.c
++++ patched_before.c
+@@ -4,6 +4,7 @@
+ #include  string.h>
++#include ctype.h>
+
+ // Token types
+ typedef enum {
+     NUMBER,
+     PLUS,
+     MINUS,
+     MUL,
+     DIV,
+     LPAREN,
+     RPAREN,
+     EOF
+ } TokenType;
+
+-// Token structure
++// Token structure
+ typedef struct {
+     TokenType type;
+     double value;
+     char* str;
+ } Token;
+
+ // Lexer function to tokenize the input string
+ Token* lexer(const char* expression) {
+     int len = strlen(expression);
+     Token* tokens = malloc(len * sizeof(Token));
+     int tokenIndex = 0;
+     char currentChar = '\0';
+
+-    for (int i = 0; i  len; i++) {
++    for (int i = 0; i  len; i++) {
+         if (isspace(currentChar)) {
+             // Skip whitespace
+             continue;
+         }
+
+-        if (isdigit(currentChar) || currentChar == '.') {
++        if (isdigit(currentChar) || currentChar == '.' || isspace(currentChar)) {
+             // Parse number token
+             int start = i;
+             while (i  len && (isdigit(currentChar) || currentChar == '.' || isspace(currentChar))) {
+                 i++;
+                 currentChar = expression[i];
+             }
+-            tokens[tokenIndex].type = NUMBER;
++            tokens[tokenIndex].type = NUMBER;
+             tokens[tokenIndex].value = atof(expression + start);
+             tokens[tokenIndex].str = malloc(strlen(expression + start) + 1);
+             strcpy(tokens[tokenIndex].str, expression + start);
+             tokenIndex++;
+
+-        } else if (currentChar == '+') {
++        } else if (currentChar == '+' || currentChar == '-') {
+             // Parse '+' operator
+             int start = i;
+             while (i  len && currentChar != ' ') {
+                 i++;
+                 currentChar = expression[i];
+             }
+-            tokens[tokenIndex].type = PLUS;
++            tokens[tokenIndex].type = PLUS;
+             tokens[tokenIndex].value = 1.0;
+             tokens[tokenIndex].str = malloc(strlen(expression + start) + 2);
+             strcpy(tokens[tokenIndex].str, "+");
+             tokenIndex++;
+
+-        } else if (currentChar == '-') {
++        } else if (currentChar == '+' || currentChar == '-') {
+             // Parse '-' operator
+             int start = i;
+             while (i  len && currentChar != ' ') {
+                 i++;
+                 currentChar = expression[i];
+             }
+-            tokens[tokenIndex].type = MINUS;
++            tokens[tokenIndex].type = MINUS;
+             tokens[tokenIndex].value = -1.0;
+             tokens[tokenIndex].str = malloc(strlen(expression + start) + 2);
+             strcpy(tokens[tokenIndex].str, "-");
+             tokenIndex++;
+
+-        } else if (currentChar == '*') {
++        } else if (currentChar == '*' || currentChar == '/') {
+             // Parse '*' operator
+             int start = i;
+             while (i  len && currentChar != ' ') {
+                 i++;
+                 currentChar = expression[i];
+             }
+-            tokens[tokenIndex].type = MUL;
++            tokens[tokenIndex].type = MUL;
+             tokens[tokenIndex].value = 1.0;
+             tokens[tokenIndex].str = malloc(strlen(expression + start) + 2);
+             strcpy(tokens[tokenIndex].str, "*");
+             tokenIndex++;
+
+-        } else if (currentChar == '/') {
++        } else if (currentChar == '*' || currentChar == '/') {
+             // Parse '/' operator
+             int start = i;
+             while (i  len && currentChar != ' ') {
+                 i++;
+                 currentChar = expression[i];
+             }
+-            tokens[tokenIndex].type = DIV;
++            tokens[tokenIndex].type = DIV;
+             tokens[tokenIndex].value = 1.0;
+             tokens[tokenIndex].str = malloc(strlen(expression + start) + 2);
+             strcpy(tokens[tokenIndex].str, "/");
+             tokenIndex++;
+
+-        } else if (currentChar == '(') {
++        } else if (currentChar == '(' || currentChar == ')') {
+             // Parse '(' operator
+             int start = i;
+             while (i  len && currentChar != ')' ) {
+                 i++;
+                 currentChar = expression[i];
+             }
+-            tokens[tokenIndex].type = LPAREN;
++            tokens[tokenIndex].type = LPAREN;
+             tokens[tokenIndex].value = 0.0;
+             tokens[tokenIndex].str = malloc(strlen(expression + start) + 2);
+             strcpy(tokens[tokenIndex].str, "(");
+             tokenIndex++;
+
+-        } else if (currentChar == ')') {
++        } else if (currentChar == '(' || currentChar == ')') {
+             // Parse ')' operator
+             int start = i;
+             while (i  len && currentChar != ' ') {
+                 i++;
+                 currentChar = expression[i];
+             }
+-            tokens[tokenIndex].type = RPAREN;
++            tokens[tokenIndex].type = RPAREN;
+             tokens[tokenIndex].value = 0.0;
+             tokens[tokenIndex].str = malloc(strlen(expression + start) + 2);
+             strcpy(tokens[tokenIndex].str, ")");
+             tokenIndex++;
+
+-        } else {
++        } else if (currentChar != ' ') {
+             // Error: unknown character
+             printf("Error: unknown character '%c'\n", currentChar);
+             exit(1);
+         }
+     }
+
+-    tokens[tokenIndex].type = EOF;
++    tokens[tokenIndex].type = EOF;
+     return tokens;
+ }
+
+ // Parser function to parse the tokens into an abstract syntax tree (AST)
+ Token* parser(Token* tokens) {
+     Token* ast = NULL;
+
+-    while (tokens[0].type != EOF) {
++    while (tokens[0].type != EOF && isspace(tokens[0].str[0])) {
+         if (tokens[0].type == LPAREN) {
+             // Parse expression inside parentheses
+             Token* expr = parser(tokens + 1);
+-            if (expr->type == EOF) {
++            if (expr->type == EOF || !isspace(expr->str[0])) {
+                 printf("Error: unbalanced parentheses\n");
+                 exit(1);
+             }
+             ast = malloc(sizeof(Token));
+             ast->type = NUMBER;
+             ast->value = expr->value;
+             ast->str = malloc(strlen(expr->str) + 2);
+             strcpy(ast->str, "(");
+         } else if (tokens[0].type == RPAREN) {
+-            if (expr->type == EOF) {
++            if (expr->type == EOF || !isspace(expr->str[0])) {
+                 printf("Error: unbalanced parentheses\n");
+                 exit(1);
+             }
+             free(expr->str);
+             free(expr);
+             ast = malloc(sizeof(Token));
+             ast->type = NUMBER;
+             ast->value = expr->value;
+             ast->str = malloc(strlen(expr->str) + 2);
+             strcpy(ast->str, ")");
+         } else if (tokens[0].type == MINUS) {
+-            if (expr->type == EOF) {
++            if (expr->type == EOF || !isspace(expr->str[0])) {
+                 printf("Error: unbalanced parentheses\n");
+                 exit(1);
+             }
+             Token* num = parser(tokens + 1);
+-            free(num->str);
++            free(num->str);
+             free(num);
+             ast = malloc(sizeof(Token));
+             ast->type = NUMBER;
+             ast->value = -expr->value;
+             ast->str = malloc(strlen(expr->str) + 2);
+             strcpy(ast->str, "-");
+         } else if (tokens[0].type == PLUS || tokens[0].type == MUL || tokens[0].type == DIV) {
+-            if (expr->type == EOF) {
++            if (expr->type == EOF || !isspace(expr->str[0])) {
+                 printf("Error: unbalanced parentheses\n");
+                 exit(1);
+             }
+             Token* left = parser(tokens + 1);
+             Token* right = parser(tokens + 2);
+-            if (ast->type == PLUS) {
++            if (tokens[0].type == PLUS) {
+                 return left;
+             } else {
+-                return left - right;
++                return left + right;
+             }
+         }
+
+-    } else if (tokens[0].type != EOF && isspace(tokens[0].str[0])) {
++    } else if (tokens[0].type != EOF && !isspace(tokens[0].str[0])) {
+         printf("Error: unexpected token\n");
+         exit(1);
+     }
+
+-    return ast;
++    return ast;
+ }

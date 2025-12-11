@@ -1,0 +1,19 @@
+{
+  "case_id": "typescript-qwen2.5-coder:7b-a73f67c5",
+  "language": "typescript",
+  "model_slug": "phi3_mini",
+  "algorithm": "aider",
+  "diff_path": "diffs/phi3_mini.diff",
+  "patch_applied": true,
+  "patch_diagnostics": "no hunks",
+  "compile_returncode": 2,
+  "errors_before": 7,
+  "errors_after": 7,
+  "first_error_removed": false,
+  "added_lines": 0,
+  "removed_lines": 0,
+  "hunks": 0,
+  "delete_only": false,
+  "success": false,
+  "notes": ""
+}

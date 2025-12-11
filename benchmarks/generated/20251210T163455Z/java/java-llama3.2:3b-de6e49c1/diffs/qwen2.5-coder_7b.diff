@@ -1,0 +1,38 @@
+--- before.java	2023-04-10 12:34:56.000000000 +0800
++++ after.java	2023-04-10 12:35:07.000000000 +0800
+@@ -89,7 +89,7 @@
+                     return new ExpressionEvaluator().BinaryOp(left, op, right);
+             }
+         } catch (Exception e) {
+-            throw new RuntimeException(e);
++            throw new RuntimeException("Error evaluating expression: " + e.getMessage());
+         }
+     }
+
+@@ -94,7 +94,7 @@
+                     return new ExpressionEvaluator().BinaryOp(left, op, right);
+             }
+         } catch (Exception e) {
+-            throw new RuntimeException(e);
++            throw new RuntimeException("Error evaluating expression: " + e.getMessage());
+         }
+     }
+
+@@ -118,7 +118,7 @@
+                     return new ExpressionEvaluator().BinaryOp(left, op, right);
+             }
+         } catch (Exception e) {
+-            throw new RuntimeException(e);
++            throw new RuntimeException("Error evaluating expression: " + e.getMessage());
+         }
+     }
+
+@@ -139,7 +139,7 @@
+                 try {
+                     return new ExpressionEvaluator().UnaryOp(-1, parseTerm());
+                 } catch (Exception e) {
+-                    throw new RuntimeException(e);
++                    throw new RuntimeException("Error evaluating expression: " + e.getMessage());
+                 }
+             default:
+                 throw new RuntimeException("Unexpected token: " + token.type);

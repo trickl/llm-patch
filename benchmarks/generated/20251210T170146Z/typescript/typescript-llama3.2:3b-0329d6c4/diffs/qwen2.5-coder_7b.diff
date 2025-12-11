@@ -1,0 +1,48 @@
+--- before.ts
++++ before.ts
+@@ -65,7 +65,7 @@ class ExpressionEvaluator {
+     while (depth > 0 && currentTokenIndex < tokens.length) {
+       switch (tokens[currentTokenIndex].type) {
+         case 'RPAREN':
+-          depth--;
++          depth -= 1;
+           break;
+         case 'NUMBER':
+           tempOutput.push(tokens[currentTokenIndex].value);
+@@ -76,7 +76,7 @@ class ExpressionEvaluator {
+             output.push(operand + tokens[currentTokenIndex].value);
+             break;
+           case 'MINUS':
+-            output.push(-operand + tokens[currentTokenIndex].value);
++            output.push(operand - tokens[currentTokenIndex].value);
+             break;
+           case 'MUL':
+             output.push(operand * tokens[currentTokenIndex].value);
+@@ -87,7 +87,7 @@ class ExpressionEvaluator {
+             output.push(operand / tokens[currentTokenIndex].value);
+             break;
+       }
+-      currentTokenIndex++;
++      currentTokenIndex += 1;
+     }
+
+     if (tempOutput.length > 0) {
+@@ -98,7 +98,7 @@ class ExpressionEvaluator {
+   private evaluate(output: number[]): number {
+     if (output.length === 1) {
+       return output[0];
+-    } else {
++    } else {
+       throw new Error('Malformed expression');
+     }
+   }
+
+@@ -143,7 +143,7 @@ class ExpressionEvaluator {
+     try {
+       const parsedOutput = this.parse(tokens);
+       return this.evaluate(parsedOutput);
+-    } catch (error) {
++    } catch (error: unknown) {
+       console.error((error as Error).message);
+       return NaN;
+     }

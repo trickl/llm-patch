@@ -1,0 +1,71 @@
+--- before.c
++++ before.c
+@@ -3,6 +3,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+
++#include <ctype.h>
+ // Token types
+ typedef enum {
+     NUMBER,
+@@ -120,6 +121,7 @@ Token* parser(Token* tokens) {
+     while (tokens[tokenIndex].type != END_OF_EXPRESSION) {
+         if (tokens[tokenIndex].type == NUMBER) {
+             // Parse number
++            int tokenIndex = 0; // Declare and initialize tokenIndex here
+             value += tokens[tokenIndex].value;
+             tokenIndex++;
+         } else if (tokens[tokenIndex].type == PLUS || tokens[tokenIndex].type == MINUS) {
+@@ -133,7 +135,7 @@ Token* parser(Token* tokens) {
+                 outputTokens[outputTokenIndex].value = value;
+                 outputTokens[outputTokenIndex].str = tokens[tokenIndex].str;
+
+-                if (tokens[tokenIndex].type == PLUS) {
++                if (tokens[tokenIndex].type == PLUS && rightOperand != NULL) { // Check for NULL pointer
+                     value += rightOperand->value; // Use -> operator
+                 } else {
+                     value -= rightOperand->value;
+@@ -148,7 +150,7 @@ Token* parser(Token* tokens) {
+                 outputTokens[outputTokenIndex].value = value;
+                 outputTokens[outputTokenIndex].str = tokens[tokenIndex].str;
+
+-                if (tokens[tokenIndex].type == MUL) {
++                if (tokens[tokenIndex].type == MUL && rightOperand != NULL) { // Check for NULL pointer
+                     value *= rightOperand->value; // Use -> operator
+                 } else {
+                     value /= rightOperand->value;
+@@ -150,7 +152,7 @@ Token* parser(Token* tokens) {
+                 outputTokens[outputTokenIndex].value = value;
+                 outputTokens[outputTokenIndex].str = tokens[tokenIndex].str;
+
+-                if (tokens[tokenIndex].type == MUL) {
++                if (tokens[tokenIndex].type == MUL && rightOperand != NULL) { // Check for NULL pointer
+                     value *= rightOperand->value; // Use -> operator
+                 } else {
+                     value /= rightOperand->value;
+@@ -171,7 +173,7 @@ Token* parser(Token* tokens) {
+             outputTokens[outputTokenIndex].value = -operand->value; // Use -> operator
+             outputTokens[outputTokenIndex].str = tokens[tokenIndex].str;
+
+-            free(operand);
++            if (operand != NULL) { // Check for NULL pointer
+                 free(operand);
+             }
+             tokenIndex++;
+@@ -190,6 +192,7 @@ double evaluator(Token* tokens) {
+     double result = 0.0;
+
+     for (int i = 0; i < tokenIndex; i++) {
++        int tokenIndex = 0; // Declare and initialize tokenIndex here
+         if (tokens[i].type == NUMBER) {
+             result += tokens[i].value;
+         }
+@@ -200,7 +203,7 @@ void main() {
+     const char* expressions[] = {"1 + 2", "2 * 3 + 4", "2 * (3 + 4)", "8 / 2 * (2 + 2)"};
+     int numExpressions = sizeof(expressions) / sizeof(expressions[0]);
+
+-    void main() {
++    int main() { // Change return type to int
+         for (int i = 0; i < numExpressions; i++) {
+             Token* tokens = lexer(expressions[i]);
+             if (tokens == NULL) {

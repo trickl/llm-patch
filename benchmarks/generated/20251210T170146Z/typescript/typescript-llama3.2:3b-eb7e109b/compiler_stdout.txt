@@ -1,0 +1,7 @@
+expression_evaluator.ts(34,21): error TS2345: Argument of type '{ type: string; value: string; }' is not assignable to parameter of type 'Token'.
+  Types of property 'type' are incompatible.
+    Type 'string' is not assignable to type '"NUMBER" | "PLUS" | "MINUS" | "MUL" | "DIV" | "LPAREN" | "RPAREN"'.
+expression_evaluator.ts(51,26): error TS2345: Argument of type 'string | number' is not assignable to parameter of type 'number'.
+  Type 'string' is not assignable to type 'number'.
+expression_evaluator.ts(81,49): error TS2366: Function lacks ending return statement and return type does not include 'undefined'.
+expression_evaluator.ts(103,29): error TS2345: Argument of type 'number' is not assignable to parameter of type 'string'.

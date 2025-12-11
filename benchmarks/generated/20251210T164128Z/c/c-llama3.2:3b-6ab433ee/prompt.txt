@@ -1,0 +1,25 @@
+You are a professional software engineer. Write a complete c program.
+
+        Problem: Expression Evaluator
+        Description: Implement a mini calculator that tokenizes, parses, and evaluates infix arithmetic expressions with parentheses, unary minus, and integer semantics.
+
+        Functional requirements:
+        - Accept strings such as "3 + 4 * (2 - 1)" and return an integer result.
+- Respect operator precedence (* and / before + and -).
+- Support parentheses and nested expressions.
+- Handle unary minus (e.g., -3 + 5).
+- Split responsibilities across tokenizer, parser, and evaluator utilities.
+- Provide minimal error handling for malformed expressions.
+
+        Sample evaluations (write automated tests or a CLI snippet that demonstrates these):
+        1 + 2 => 3
+2 * 3 + 4 => 10
+2 * (3 + 4) => 14
+8 / 2 * (2 + 2) => 16
+
+        Language-specific guidance:
+        - Produce a single C17 source file named expression_evaluator.c.
+- Include tokenizer, parser, and evaluator helpers as separate functions.
+- Provide a simple CLI in main that runs a few sample expressions.
+
+        Output only the final source code for expression_evaluator.c. Avoid commentary outside of code blocks.

@@ -1,0 +1,8 @@
+--- before.c
++++ before.c
+@@ -1,2 +1 @@
+-**Constraints:
+-
+ # Solution:
+ 
+ I amendmentalong with the task:

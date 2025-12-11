@@ -1,0 +1,19 @@
+{
+  "case_id": "java-phi3:mini-fd1c7b81",
+  "language": "java",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "diff-match-patch",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "patch_applied": false,
+  "patch_diagnostics": "statuses=[True, False, False, False, False, False, False]",
+  "compile_returncode": null,
+  "errors_before": 35,
+  "errors_after": null,
+  "first_error_removed": false,
+  "added_lines": 0,
+  "removed_lines": 17,
+  "hunks": 1,
+  "delete_only": true,
+  "success": false,
+  "notes": "diff only deletes lines"
+}

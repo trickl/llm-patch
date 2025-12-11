@@ -1,0 +1,9 @@
+expression_evaluator.ts(1,1): error TS1434: Unexpected keyword or identifier.
+expression_evaluator.ts(1,8): error TS1434: Unexpected keyword or identifier.
+expression_evaluator.ts(3,1): error TS1127: Invalid character.
+expression_evaluator.ts(3,3): error TS1005: ';' expected.
+expression_evaluator.ts(3,12): error TS1434: Unexpected keyword or identifier.
+expression_evaluator.ts(3,29): error TS1002: Unterminated string literal.
+expression_evaluator.ts(5,14): error TS1005: ';' expected.
+expression_evaluator.ts(7,4): error TS1005: '>' expected.
+expression_evaluator.ts(7,15): error TS1005: ';' expected.

@@ -1,0 +1,98 @@
+In file included from expression_evaluator.c:1:
+expression_evaluator.c:14:5: error: expected identifier before ‘(’ token
+   14 |     EOF
+      |     ^~~
+expression_evaluator.c: In function ‘lexer’:
+expression_evaluator.c:29:13: error: implicit declaration of function ‘isdigit’ [-Wimplicit-function-declaration]
+   29 |         if (isdigit(expression[i])) {
+      |             ^~~~~~~
+expression_evaluator.c:4:1: note: include ‘<ctype.h>’ or provide a declaration of ‘isdigit’
+    3 | #include <string.h>
+  +++ |+#include <ctype.h>
+    4 | 
+expression_evaluator.c:33:22: warning: operation on ‘j’ may be undefined [-Wsequence-point]
+   33 |                 num[j++] = expression[i + j];
+      |                     ~^~
+expression_evaluator.c:37:29: error: implicit declaration of function ‘strdup’; did you mean ‘strcmp’? [-Wimplicit-function-declaration]
+   37 |             tokens[i].str = strdup(num);
+      |                             ^~~~~~
+      |                             strcmp
+expression_evaluator.c:37:27: error: assignment to ‘char *’ from ‘int’ makes pointer from integer without a cast [-Wint-conversion]
+   37 |             tokens[i].str = strdup(num);
+      |                           ^
+expression_evaluator.c: In function ‘parser’:
+expression_evaluator.c:74:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+   74 |     for (int i = 0; i < strlen(tokens[0].str); i++) {
+      |                       ^
+expression_evaluator.c:84:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+   84 |     for (int i = 0; i < strlen(tokens[0].str); i++) {
+      |                       ^
+expression_evaluator.c:91:46: warning: comparison of integer expressions of different signedness: ‘TokenType’ and ‘int’ [-Wsign-compare]
+   91 |         if (stack_size > 0 && tokens[i].type != EOF) {
+      |                                              ^~
+expression_evaluator.c:95:50: warning: allocation of insufficient size ‘1’ for type ‘void *’ with size ‘8’ [-Walloc-size]
+   95 |             *(void***)(*(void**)(*(void**)node)) = malloc(sizeof(void));
+      |                                                  ^
+expression_evaluator.c:100:54: error: assignment to ‘void **’ from incompatible pointer type ‘Token *’ [-Wincompatible-pointer-types]
+  100 |                 *(void***)(*(void**)(*(void**)node)) = op_token;
+      |                                                      ^
+expression_evaluator.c:104:54: error: assignment to ‘void **’ from incompatible pointer type ‘Token *’ [-Wincompatible-pointer-types]
+  104 |                 *(void***)(*(void**)(*(void**)node)) = operand_token;
+      |                                                      ^
+expression_evaluator.c:110:38: error: initialization of ‘void ***’ from incompatible pointer type ‘void **’ [-Wincompatible-pointer-types]
+  110 |                 void*** child_node = *(void***)(parent_node);
+      |                                      ^
+expression_evaluator.c: In function ‘evaluator’:
+expression_evaluator.c:133:25: error: request for member ‘type’ in something not a structure or union
+  133 |             if (op_token->type != EOF) {
+      |                         ^~
+expression_evaluator.c:134:41: error: request for member ‘str’ in something not a structure or union
+  134 |                 op_value = atof(op_token->str);
+      |                                         ^~
+expression_evaluator.c:138:17: error: ‘operand_stack_size’ undeclared (first use in this function); did you mean ‘operator_stack_size’?
+  138 |             if (operand_stack_size > 0) {
+      |                 ^~~~~~~~~~~~~~~~~~
+      |                 operator_stack_size
+expression_evaluator.c:138:17: note: each undeclared identifier is reported only once for each function it appears in
+expression_evaluator.c:139:40: error: initialization of ‘void ***’ from incompatible pointer type ‘void **’ [-Wincompatible-pointer-types]
+  139 |                 void*** operand_node = *(void***)(operand_stack);
+      |                                        ^
+expression_evaluator.c:141:33: error: request for member ‘type’ in something not a structure or union
+  141 |                 if (operand_node->type != EOF) {
+      |                                 ^~
+expression_evaluator.c:142:54: error: request for member ‘str’ in something not a structure or union
+  142 |                     operand_value = atof(operand_node->str);
+      |                                                      ^~
+expression_evaluator.c:146:25: error: switch quantity not an integer
+  146 |                 switch (op_value) {
+      |                         ^~~~~~~~
+expression_evaluator.c:164:31: error: assignment to ‘void ***’ from incompatible pointer type ‘void **’ [-Wincompatible-pointer-types]
+  164 |                 operand_stack = *(void***)(pop_operand);
+      |                               ^
+expression_evaluator.c:167:34: error: assignment to ‘void ***’ from incompatible pointer type ‘void **’ [-Wincompatible-pointer-types]
+  167 |                     operand_node = *(void***)(operand_stack);
+      |                                  ^
+expression_evaluator.c:173:29: error: request for member ‘type’ in something not a structure or union
+  173 |                 if (op_token->type != EOF) {
+      |                             ^~
+expression_evaluator.c:174:45: error: request for member ‘str’ in something not a structure or union
+  174 |                     op_value = atof(op_token->str);
+      |                                             ^~
+expression_evaluator.c:178:25: error: switch quantity not an integer
+  178 |                 switch (op_value) {
+      |                         ^~~~~~~~
+expression_evaluator.c:200:25: error: request for member ‘type’ in something not a structure or union
+  200 |             operand_node->type = NUMBER;
+      |                         ^~
+expression_evaluator.c:201:25: error: request for member ‘value’ in something not a structure or union
+  201 |             operand_node->value = 0.0;
+      |                         ^~
+expression_evaluator.c:202:25: error: request for member ‘str’ in something not a structure or union
+  202 |             operand_node->str = strdup("1");
+      |                         ^~
+expression_evaluator.c:204:27: error: assignment to ‘void ***’ from incompatible pointer type ‘void **’ [-Wincompatible-pointer-types]
+  204 |             operand_stack = *(void***)(operand_node);
+      |                           ^
+expression_evaluator.c:120:24: warning: unused parameter ‘tree’ [-Wunused-parameter]
+  120 | double evaluator(void* tree) {
+      |                  ~~~~~~^~~~

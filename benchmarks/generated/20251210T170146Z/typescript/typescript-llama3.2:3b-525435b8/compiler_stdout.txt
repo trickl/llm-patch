@@ -1,0 +1,10 @@
+expression_evaluator.ts(63,30): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+expression_evaluator.ts(77,30): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+expression_evaluator.ts(89,26): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+expression_evaluator.ts(98,9): error TS2304: Cannot find name 'outputQueue'.
+expression_evaluator.ts(101,9): error TS2304: Cannot find name 'outputQueue'.
+expression_evaluator.ts(104,9): error TS2304: Cannot find name 'outputQueue'.
+expression_evaluator.ts(107,9): error TS2304: Cannot find name 'outputQueue'.

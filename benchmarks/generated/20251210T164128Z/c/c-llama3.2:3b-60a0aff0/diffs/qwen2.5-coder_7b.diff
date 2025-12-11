@@ -1,0 +1,32 @@
+--- before.c
++++ before.c
+@@ -3,6 +3,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+
++#include <ctype.h>  // Added to include the declaration of isdigit
+
+// Token type enum
+typedef enum {
+    NUMBER,
+    PLUS,
+@@ -159,8 +160,8 @@ double evaluator(Token* token) {
+     if (token->type == NUMBER) {
+         return token->value;
+     } else if (token->type == PLUS || token->type == MINUS) {
+-        double left_value = evaluator(token + 1);
+-        double right_value = evaluator(token + 2);
++        Token* result = evaluator(token + 1);  // Changed to Token* for compatibility
++        double right_value = evaluator(result);  // Dereference the result
+         if (token->type == PLUS) {
+             return left_value + right_value;
+         } else {
+@@ -167,7 +168,7 @@ double evaluator(Token* token) {
+     }
+ }
+
+-int main() {
++double main() {  // Changed return type to double for compatibility
+     const char* expressions[] = {"3 + 4 * (2 - 1)", "2 * 3 + 4", "2 * (3 + 4)", "8 / 2 * (2 + 2)"};
+     int num_expressions = sizeof(expressions) / sizeof(expressions[0]);
+     for (int i = 0; i < num_expressions; ++i) {

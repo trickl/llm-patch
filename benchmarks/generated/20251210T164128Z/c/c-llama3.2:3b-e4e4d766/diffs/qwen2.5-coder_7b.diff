@@ -1,0 +1,19 @@
+--- before.c
++++ before.c
+@@ -3,6 +3,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+
++#include <ctype.h>  // Added to include ctype.h for isdigit and strdup
+
+ // Token type enum
+ typedef enum {
+     NUMBER,
+@@ -124,6 +125,7 @@ Token* parser(Token* tokens) {
+     return stack[0];
+ }
+
++// Evaluator function to evaluate the parsed expression
+ double evaluator(Token* token) {
+     double result = token->value;
+     if (token->type == NUMBER) {

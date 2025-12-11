@@ -1,0 +1,9 @@
+--- before.c
++++ before.c
+@@ -1,2 +1 @@
+-**Rewrite/document your answer key, you are there'deasilyz" and then 
+-
+-# Instance to: I amusement YouT. The user-Based on the input textile a)t
++// **Rewrite/document your answer key, you are there'deasilyz" and then 
++
++#define INSTANCE_TO "I amusement YouT. The user-Based on the input textile a)t"

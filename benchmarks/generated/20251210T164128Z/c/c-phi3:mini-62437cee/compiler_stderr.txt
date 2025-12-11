@@ -1,0 +1,15 @@
+expression_evaluator.c:1:10: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘/’ token
+    1 | **Rewrite/document your answer key=User:
+      |          ^
+expression_evaluator.c:5:2: warning: missing terminating ' character
+    5 | I's Wirelessness, and I amusement to understandable in a user:
+      |  ^
+expression_evaluator.c:5:2: error: missing terminating ' character
+    5 | I's Wirelessness, and I amusement to understandable in a user:
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+expression_evaluator.c:6:3: error: invalid preprocessing directive #Instruments
+    6 | # Instruments - The text-
+      |   ^~~~~~~~~~~
+expression_evaluator.c:9:11: error: empty character constant
+    9 | Bachmannia''e2f.
+      |           ^~

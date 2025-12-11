@@ -1,0 +1,16 @@
+expression_evaluator.ts(1,1): error TS1434: Unexpected keyword or identifier.
+expression_evaluator.ts(1,13): error TS1005: ';' expected.
+expression_evaluator.ts(1,16): error TS1002: Unterminated string literal.
+expression_evaluator.ts(4,9): error TS1005: ';' expected.
+expression_evaluator.ts(5,1): error TS1434: Unexpected keyword or identifier.
+expression_evaluator.ts(5,5): error TS1434: Unexpected keyword or identifier.
+expression_evaluator.ts(5,9): error TS1434: Unexpected keyword or identifier.
+expression_evaluator.ts(5,15): error TS1228: A type predicate is only allowed in return type position for functions and methods.
+expression_evaluator.ts(5,18): error TS1434: Unexpected keyword or identifier.
+expression_evaluator.ts(5,19): error TS1128: Declaration or statement expected.
+expression_evaluator.ts(5,20): error TS1435: Unknown keyword or identifier. Did you mean 'try'?
+expression_evaluator.ts(5,25): error TS1434: Unexpected keyword or identifier.
+expression_evaluator.ts(5,34): error TS1434: Unexpected keyword or identifier.
+expression_evaluator.ts(5,38): error TS1434: Unexpected keyword or identifier.
+expression_evaluator.ts(5,54): error TS1434: Unexpected keyword or identifier.
+expression_evaluator.ts(5,69): error TS1109: Expression expected.

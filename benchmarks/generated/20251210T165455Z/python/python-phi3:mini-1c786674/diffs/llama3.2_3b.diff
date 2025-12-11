@@ -1,0 +1,7 @@
+--- before.py
++++ after.py
+@@ -1,2 +1,3 @@
+-customer:
++customer: 
+You are theref
+# Instance, and your answer to generate an[Assume that-

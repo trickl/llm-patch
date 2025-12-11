@@ -1,0 +1,11 @@
+--- before.ts
++++ before.ts
+@@ -98,7 +98,7 @@ export function evaluateExpression(input: string): number {
+     if (require.main === module) {
+         const input = process.argv[2] || '3 + 4 * (2 - 1)';
+         try {
+-            const result = evaluateExpression(input);
++            const result = evaluateExpression(input);
+             console.log(`Result: ${result}`);
+         } catch (error) {
+             console.error('Invalid expression');

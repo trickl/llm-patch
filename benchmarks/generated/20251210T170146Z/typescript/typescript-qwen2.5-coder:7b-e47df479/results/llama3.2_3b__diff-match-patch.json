@@ -1,0 +1,19 @@
+{
+  "case_id": "typescript-qwen2.5-coder:7b-e47df479",
+  "language": "typescript",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "diff-match-patch",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "patch_applied": false,
+  "patch_diagnostics": "DMP parse error: Invalid patch string: @@(87,55)-(87,56)",
+  "compile_returncode": null,
+  "errors_before": 5,
+  "errors_after": null,
+  "first_error_removed": false,
+  "added_lines": 5,
+  "removed_lines": 5,
+  "hunks": 5,
+  "delete_only": false,
+  "success": false,
+  "notes": ""
+}

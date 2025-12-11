@@ -1,0 +1,36 @@
+In file included from expression_evaluator.c:1:
+expression_evaluator.c:15:5: error: expected identifier before ‘(’ token
+   15 |     EOF
+      |     ^~~
+expression_evaluator.c: In function ‘lexer’:
+expression_evaluator.c:32:13: error: implicit declaration of function ‘isdigit’ [-Wimplicit-function-declaration]
+   32 |         if (isdigit(expression[i])) {
+      |             ^~~~~~~
+expression_evaluator.c:4:1: note: include ‘<ctype.h>’ or provide a declaration of ‘isdigit’
+    3 | #include <string.h>
+  +++ |+#include <ctype.h>
+    4 | 
+expression_evaluator.c:38:31: warning: assignment discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+   38 |             tokens[index].str = expression + index;
+      |                               ^
+expression_evaluator.c: In function ‘parser’:
+expression_evaluator.c:97:35: error: implicit declaration of function ‘getPrecedence’ [-Wimplicit-function-declaration]
+   97 |     while (operatorIndex < end && getPrecedence(tokens[operatorIndex].type) >= getPrecedence(tokens[start].type)) {
+      |                                   ^~~~~~~~~~~~~
+expression_evaluator.c:117:16: error: implicit declaration of function ‘applyOperator’ [-Wimplicit-function-declaration]
+  117 |         return applyOperator(left, tokens[operatorIndex].value, right);
+      |                ^~~~~~~~~~~~~
+expression_evaluator.c: At top level:
+expression_evaluator.c:132:8: error: conflicting types for ‘applyOperator’; have ‘double(double,  double,  double)’
+  132 | double applyOperator(double a, double b, double c) {
+      |        ^~~~~~~~~~~~~
+expression_evaluator.c:117:16: note: previous implicit declaration of ‘applyOperator’ with type ‘int()’
+  117 |         return applyOperator(left, tokens[operatorIndex].value, right);
+      |                ^~~~~~~~~~~~~
+expression_evaluator.c: In function ‘applyOperator’:
+expression_evaluator.c:133:13: error: switch quantity not an integer
+  133 |     switch (c) {
+      |             ^
+expression_evaluator.c:145:1: warning: control reaches end of non-void function [-Wreturn-type]
+  145 | }
+      | ^

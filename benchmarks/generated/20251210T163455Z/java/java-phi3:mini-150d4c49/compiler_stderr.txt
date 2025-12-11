@@ -1,0 +1,10 @@
+ExpressionEvaluator.java:1: error: class, interface, enum, or record expected
+You are there'de
+^
+ExpressionEvaluator.java:1: error: unclosed character literal
+You are there'de
+             ^
+ExpressionEvaluator.java:4: error: illegal character: '#'
+*# Theory of your answer_Betty and then 
+ ^
+3 errors

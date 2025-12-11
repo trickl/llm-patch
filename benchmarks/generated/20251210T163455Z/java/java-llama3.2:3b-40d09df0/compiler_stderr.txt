@@ -1,0 +1,30 @@
+ExpressionEvaluator.java:130: error: method evaluate(String) is already defined in class ExpressionEvaluator
+    public static int evaluate(String expression) {
+                      ^
+ExpressionEvaluator.java:32: error: yield outside of switch expression
+                    yield sb.toString();
+                    ^
+ExpressionEvaluator.java:34: error: yield outside of switch expression
+                    yield String.valueOf(expression.charAt(pos));
+                    ^
+ExpressionEvaluator.java:37: error: yield outside of switch expression
+                    yield String.valueOf(expression.charAt(pos));
+                    ^
+ExpressionEvaluator.java:54: error: cannot find symbol
+            while (pos < tokenizer.iterator().iterator().next().length()) {
+                                             ^
+  symbol:   method iterator()
+  location: interface Iterator<String>
+ExpressionEvaluator.java:61: error: yield outside of switch expression
+                    yield Integer.parseInt(sb.toString());
+                    ^
+ExpressionEvaluator.java:63: error: yield outside of switch expression
+                    yield 1;
+                    ^
+ExpressionEvaluator.java:66: error: yield outside of switch expression
+                    yield -1;
+                    ^
+ExpressionEvaluator.java:69: error: yield outside of switch expression
+                    yield getPrecedence(tokenizer.iterator().next().charAt(pos));
+                    ^
+9 errors

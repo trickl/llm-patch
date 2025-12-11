@@ -1,0 +1,23 @@
+--- before.c
++++ patched_before.c
+@@ -4,6 +4,7 @@
+ #include  string.h>
+ #include  ctype.h>
+ 
+-#include  <stdio.h>
++#include  stdio.h>
+ #include  stdlib.h>
+ #include  stdarg.h>
+ 
+@@ -30,7 +31,8 @@
+   if (isdigit(expression[i])) {
+     char* start = &expression[i];
+     while (isdigit(expression[i])) {
+       ++i;
+     }
+-    double value = atof(start);
++    double value = atoi(start); // Changed to atoi
+     tokens[i].type = NUMBER;
+     tokens[i].value = value;
+     tokens[i].str = malloc(10 * sizeof(char));
+     sprintf(tokens[i].str, "%f", value);

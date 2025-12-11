@@ -1,0 +1,125 @@
+import java.util.*;
+
+public class ExpressionEvaluator {
+    public static void main(String[] args) {
+        System.out.println(evaluate("1 + 2")); // 3
+        System.out.println(evaluate("2 * 3 + 4")); // 10
+        System.out.println(evaluate("2 * (3 + 4)")); // 14
+        System.out.println(evaluate("8 / 2 * (2 + 2)")); // 16
+    }
+
+    public static int evaluate(String expression) {
+        return new ExpressionEvaluator().evaluate(expression);
+    }
+
+    private static class Tokenizer implements Iterable<String> {
+        private final String expression;
+        private int pos = 0;
+
+        public Tokenizer(String expression) {
+            this.expression = expression;
+        }
+
+        @Override
+        public Iterator<String> iterator() {
+            while (pos < expression.length()) {
+                if (Character.isDigit(expression.charAt(pos))) {
+                    StringBuilder sb = new StringBuilder();
+                    while (pos < expression.length() && Character.isDigit(expression.charAt(pos))) {
+                        sb.append(expression.charAt(pos++));
+                    }
+                    pos++;
+                    yield(sb.toString());
+                } else if (expression.charAt(pos) == '(') {
+                    pos++;
+                    yield("LPAREN");
+                } else if (expression.charAt(pos) == ')') {
+                    pos++;
+                    yield("RPAREN");
+                } else if (expression.charAt(pos) == '+' || expression.charAt(pos) == '-' ||
+                        expression.charAt(pos) == '*' || expression.charAt(pos) == '/') {
+                    pos++;
+                    yield(String.valueOf(expression.charAt(pos - 1)));
+                }
+            }
+        }
+
+        private void yield(String token) {
+            System.out.println(token);
+        }
+    }
+
+    private static class Parser implements Iterable<String> {
+        private final Tokenizer tokenizer;
+        private int pos = 0;
+
+        public Parser(Tokenizer tokenizer) {
+            this.tokenizer = tokenizer;
+        }
+
+        @Override
+        public Iterator<String> iterator() {
+            while (pos < tokenizer.iterator().iterator().next()) {
+                if (tokenizer.iterator().next().equals("LPAREN")) {
+                    pos++;
+                    yield("(");
+                } else if (tokenizer.iterator().next().equals("RPAREN")) {
+                    pos++;
+                    yield(")");
+                }
+            }
+        }
+
+        private void yield(String token) {
+            System.out.println(token);
+        }
+    }
+
+    private static class Evaluator implements Iterable<String> {
+        @Override
+        public Iterator<String> iterator() {
+            while (true) {
+                String token = nextToken();
+                if (token.equals("+") || token.equals("-") || token.equals("*") || token.equals("/")) {
+                    yield(token);
+                } else if (token.equals("LPAREN")) {
+                    pos++;
+                    yield("(");
+                } else if (token.equals("RPAREN")) {
+                    pos++;
+                    yield(")");
+                } else {
+                    break;
+                }
+            }
+
+            while (pos < nextToken().length()) {
+                yield(nextToken());
+            }
+
+            return iterator();
+        }
+
+        private String nextToken() {
+            int pos = this.pos;
+            if (this.pos >= this.tokenizer.iterator().iterator().next().length()) {
+                throw new RuntimeException("Unexpected end of input");
+            }
+            while (pos < this.tokenizer.iterator().iterator().next().length() && Character.isDigit(this.tokenizer.iterator().iterator().next().charAt(pos))) {
+                pos++;
+            }
+            return this.tokenizer.iterator().iterator().next().substring(pos);
+        }
+
+        private void yield(String token) {
+            System.out.println(token);
+        }
+    }
+
+    public static int evaluate(String expression) {
+        Tokenizer tokenizer = new Tokenizer(expression);
+        Parser parser = new Parser(tokenizer);
+        Evaluator evaluator = new Evaluator();
+        return Integer.parseInt(evaluator.iterator().next());
+    }
+}

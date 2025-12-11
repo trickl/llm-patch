@@ -1,0 +1,17 @@
+--- before.java
++++ after.java
+@@ -13,7 +13,7 @@
+     public class ExpressionEvaluator {
+-    public static void main(String[] args) {
++    public static void main(String[] args) {
+         System.out.println(evaluate("1 + 2"));
+         System.out.println(evaluate("2 * 3 + 4"));
+         System.out.println(evaluate("2 * (3 + 4)"));
+         System.out.println(evaluate("8 / 2 * (2 + 2)"));
+     }
+
+     public static int evaluate(String expression) {
+-        Tokenizer tokenizer = new Tokenizer(expression);
++        Parser parser = new Parser(tokenizer);
+         return parser.parse().evaluate();
+     }

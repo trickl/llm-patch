@@ -1,0 +1,21 @@
+--- before.c
++++ before.c
+@@ -3,6 +3,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+
++#include <ctype.h> // Added include for isdigit function
+
+// Token type enumeration
+typedef enum {
+    NUMBER,
+    PLUS,
+@@ -158,7 +159,7 @@ void printTree(void* root, int indent) {
+     if (root == NULL) {
+         return;
+     }
+-    printf("(");
++    printf(" ");
+     if (*(void**)root != NULL) {
+         printTree(*(void**)root->left, indent + 1);
+         printTree(*(void**)root->right, indent + 1);

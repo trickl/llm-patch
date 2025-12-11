@@ -1,0 +1,12 @@
+--- before.java
++++ after.java
+
+-enum TokenType {
++enum TokenType {
+     NUMBER,
+     OPERATOR,
+     PARENTHESIS
+-}
++    OPERATOR,
++    PARENTHESIS
+-}

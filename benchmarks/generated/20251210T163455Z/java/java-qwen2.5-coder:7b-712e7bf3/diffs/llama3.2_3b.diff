@@ -1,0 +1,8 @@
+--- before.java
++++ after.java
+@@ -36,7 +36,8 @@
+             tokens.add(new Token(TokenType.NUMBER, value));
+-        } else if (ch == '+' || ch == '-' || ch == '*' || ch == '/') {
++        } else if (ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '-') {
+             tokens.add(new Token(TokenType.OPERATOR, ch));
+             pos++;

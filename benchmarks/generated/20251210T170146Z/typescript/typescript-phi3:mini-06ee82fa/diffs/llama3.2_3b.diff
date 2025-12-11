@@ -1,0 +1,9 @@
+--- before.ts
++++ patched_before_ts
+@@ -1 +1 @@
+- You areasdynamics/business, I amendmentalize this time to ensure that:
++ You are dynamics/business, I amend this time to ensure that:
+ 
+**Instruction:
+-The user experience a) theft_instrudejr
++The user experiences a) theft_instruction

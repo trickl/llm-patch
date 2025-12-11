@@ -1,0 +1,19 @@
+{
+  "case_id": "c-phi3:mini-5d8574ed",
+  "language": "c",
+  "problem_id": "expr_eval_v1",
+  "model": "phi3:mini",
+  "provider": "ollama",
+  "timestamp_utc": "2025-12-10T16:41:35.838534+00:00",
+  "compile_command": [
+    "gcc",
+    "expression_evaluator.c",
+    "-std=c17",
+    "-Wall",
+    "-Wextra",
+    "-O0",
+    "-o",
+    "expr_eval.out"
+  ],
+  "return_code": 1
+}

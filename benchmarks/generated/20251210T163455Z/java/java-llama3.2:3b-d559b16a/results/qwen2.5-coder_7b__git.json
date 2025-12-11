@@ -1,0 +1,19 @@
+{
+  "case_id": "java-llama3.2:3b-d559b16a",
+  "language": "java",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "git",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "patch_applied": false,
+  "patch_diagnostics": "error: corrupt patch at line 4167",
+  "compile_returncode": null,
+  "errors_before": 7,
+  "errors_after": null,
+  "first_error_removed": false,
+  "added_lines": 463,
+  "removed_lines": 463,
+  "hunks": 463,
+  "delete_only": false,
+  "success": false,
+  "notes": ""
+}

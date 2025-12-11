@@ -1,0 +1,36 @@
+// Evaluator function
+double evaluate(Token* token) {
+    if (token->type == NUMBER) {
+        return token->value;
+    } else if (token->type == PLUS || token->type == MINUS) {
+        Token* temp = stack[top - 1].value;
+        double result = 0;
+        if (token->type == PLUS) {
+            result = temp + evaluate(token);
+        } else {
+            result = temp - evaluate(token);
+        }
+        free(stack[top]);
+        top--;
+        return result;
+    } else if (token->type == MUL || token->type == DIV) {
+        Token* temp = stack[top - 1].value;
+        double result = 0;
+        if (token->type == MUL) {
+            result = temp * evaluate(token);
+        } else {
+            result = temp / evaluate(token);
+        }
+        free(stack[top]);
+        top--;
+        return result;
+    } else if (token->type == LPAREN) {
+        Token* right = parse(tokens + length(tokens));
+        double result = evaluate(right.value);
+        free(right);
+        return result;
+    } else {
+        printf("Error: Invalid token type\n");
+        exit(1);
+    }
+}

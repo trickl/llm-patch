@@ -1,0 +1,31 @@
+ExpressionEvaluator.java:108: error: class ExpressionEvaluator is already defined in package unnamed package
+    public static class ExpressionEvaluator {
+                  ^
+ExpressionEvaluator.java:41: error: yield outside of switch expression
+            yield(expression.substring(pos, end));
+            ^
+  (to invoke a method called yield, qualify the yield with a receiver or type name)
+ExpressionEvaluator.java:45: error: method does not override or implement a method from a supertype
+        @Override
+        ^
+ExpressionEvaluator.java:66: error: cannot find symbol
+                String token = tokenizer.next();
+                                        ^
+  symbol:   method next()
+  location: variable tokenizer of type Tokenizer
+ExpressionEvaluator.java:83: error: cannot find symbol
+                String token = tokenizer.next();
+                                        ^
+  symbol:   method next()
+  location: variable tokenizer of type Tokenizer
+ExpressionEvaluator.java:99: error: cannot find symbol
+                String token = tokenizer.next();
+                                        ^
+  symbol:   method next()
+  location: variable tokenizer of type Tokenizer
+ExpressionEvaluator.java:104: error: cannot find symbol
+            return Integer.parseInt(tokenizer.next());
+                                             ^
+  symbol:   method next()
+  location: variable tokenizer of type Tokenizer
+7 errors

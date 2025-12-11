@@ -1,0 +1,185 @@
+expression_evaluator.c: In function ‘lexer’:
+expression_evaluator.c:33:13: error: implicit declaration of function ‘isdigit’ [-Wimplicit-function-declaration]
+   33 |         if (isdigit(expression[i])) {
+      |             ^~~~~~~
+expression_evaluator.c:4:1: note: include ‘<ctype.h>’ or provide a declaration of ‘isdigit’
+    3 | #include <string.h>
+  +++ |+#include <ctype.h>
+    4 | 
+expression_evaluator.c:30:10: warning: unused variable ‘currentChar’ [-Wunused-variable]
+   30 |     char currentChar = '\0';
+      |          ^~~~~~~~~~~
+expression_evaluator.c: In function ‘parser’:
+expression_evaluator.c:97:44: error: invalid application of ‘sizeof’ to incomplete type ‘struct Node’
+   97 |     struct Node* nodes = malloc(1 * sizeof(struct Node));
+      |                                            ^~~~~~
+expression_evaluator.c:98:10: error: invalid use of undefined type ‘struct Node’
+   98 |     nodes->type = END_OF_EXPRESSION;
+      |          ^~
+expression_evaluator.c:99:10: error: invalid use of undefined type ‘struct Node’
+   99 |     nodes->left = NULL;
+      |          ^~
+expression_evaluator.c:100:10: error: invalid use of undefined type ‘struct Node’
+  100 |     nodes->right = NULL;
+      |          ^~
+expression_evaluator.c:102:25: error: ‘tokenIndex’ undeclared (first use in this function)
+  102 |     for (int i = 0; i < tokenIndex; ++i) {
+      |                         ^~~~~~~~~~
+expression_evaluator.c:102:25: note: each undeclared identifier is reported only once for each function it appears in
+expression_evaluator.c:105:51: error: invalid application of ‘sizeof’ to incomplete type ‘struct Node’
+  105 |             struct Node* node = malloc(1 * sizeof(struct Node));
+      |                                                   ^~~~~~
+expression_evaluator.c:106:17: error: invalid use of undefined type ‘struct Node’
+  106 |             node->type = NUMBER;
+      |                 ^~
+expression_evaluator.c:107:17: error: invalid use of undefined type ‘struct Node’
+  107 |             node->value = tokens[i].value;
+      |                 ^~
+expression_evaluator.c:108:17: error: invalid use of undefined type ‘struct Node’
+  108 |             node->left = NULL;
+      |                 ^~
+expression_evaluator.c:109:17: error: invalid use of undefined type ‘struct Node’
+  109 |             node->right = NULL;
+      |                 ^~
+expression_evaluator.c:110:18: error: invalid use of undefined type ‘struct Node’
+  110 |             nodes->left = node;
+      |                  ^~
+expression_evaluator.c:114:28: error: invalid use of undefined type ‘struct Node’
+  114 |             while (leftNode->right != NULL && leftNode->right->type != END_OF_EXPRESSION) {
+      |                            ^~
+expression_evaluator.c:114:55: error: invalid use of undefined type ‘struct Node’
+  114 |             while (leftNode->right != NULL && leftNode->right->type != END_OF_EXPRESSION) {
+      |                                                       ^~
+expression_evaluator.c:115:36: error: invalid use of undefined type ‘struct Node’
+  115 |                 leftNode = leftNode->right;
+      |                                    ^~
+expression_evaluator.c:119:55: error: invalid application of ‘sizeof’ to incomplete type ‘struct Node’
+  119 |                 struct Node* node = malloc(1 * sizeof(struct Node));
+      |                                                       ^~~~~~
+expression_evaluator.c:120:21: error: invalid use of undefined type ‘struct Node’
+  120 |                 node->type = NUMBER;
+      |                     ^~
+expression_evaluator.c:121:21: error: invalid use of undefined type ‘struct Node’
+  121 |                 node->value = 0.0;
+      |                     ^~
+expression_evaluator.c:122:21: error: invalid use of undefined type ‘struct Node’
+  122 |                 node->left = NULL;
+      |                     ^~
+expression_evaluator.c:123:21: error: invalid use of undefined type ‘struct Node’
+  123 |                 node->right = leftNode;
+      |                     ^~
+expression_evaluator.c:124:25: error: invalid use of undefined type ‘struct Node’
+  124 |                 leftNode->right = node;
+      |                         ^~
+expression_evaluator.c:127:55: error: invalid application of ‘sizeof’ to incomplete type ‘struct Node’
+  127 |                 struct Node* node = malloc(1 * sizeof(struct Node));
+      |                                                       ^~~~~~
+expression_evaluator.c:128:21: error: invalid use of undefined type ‘struct Node’
+  128 |                 node->type = NUMBER;
+      |                     ^~
+expression_evaluator.c:129:21: error: invalid use of undefined type ‘struct Node’
+  129 |                 node->value = 0.0;
+      |                     ^~
+expression_evaluator.c:130:21: error: invalid use of undefined type ‘struct Node’
+  130 |                 node->left = NULL;
+      |                     ^~
+expression_evaluator.c:131:21: error: invalid use of undefined type ‘struct Node’
+  131 |                 node->right = leftNode;
+      |                     ^~
+expression_evaluator.c:132:25: error: invalid use of undefined type ‘struct Node’
+  132 |                 leftNode->right = node;
+      |                         ^~
+expression_evaluator.c:137:28: error: invalid use of undefined type ‘struct Node’
+  137 |             while (leftNode->right != NULL && leftNode->right->type != END_OF_EXPRESSION) {
+      |                            ^~
+expression_evaluator.c:137:55: error: invalid use of undefined type ‘struct Node’
+  137 |             while (leftNode->right != NULL && leftNode->right->type != END_OF_EXPRESSION) {
+      |                                                       ^~
+expression_evaluator.c:138:36: error: invalid use of undefined type ‘struct Node’
+  138 |                 leftNode = leftNode->right;
+      |                                    ^~
+expression_evaluator.c:142:55: error: invalid application of ‘sizeof’ to incomplete type ‘struct Node’
+  142 |                 struct Node* node = malloc(1 * sizeof(struct Node));
+      |                                                       ^~~~~~
+expression_evaluator.c:143:21: error: invalid use of undefined type ‘struct Node’
+  143 |                 node->type = NUMBER;
+      |                     ^~
+expression_evaluator.c:144:21: error: invalid use of undefined type ‘struct Node’
+  144 |                 node->value = 0.0;
+      |                     ^~
+expression_evaluator.c:145:21: error: invalid use of undefined type ‘struct Node’
+  145 |                 node->left = NULL;
+      |                     ^~
+expression_evaluator.c:146:21: error: invalid use of undefined type ‘struct Node’
+  146 |                 node->right = leftNode;
+      |                     ^~
+expression_evaluator.c:147:25: error: invalid use of undefined type ‘struct Node’
+  147 |                 leftNode->right = node;
+      |                         ^~
+expression_evaluator.c:150:55: error: invalid application of ‘sizeof’ to incomplete type ‘struct Node’
+  150 |                 struct Node* node = malloc(1 * sizeof(struct Node));
+      |                                                       ^~~~~~
+expression_evaluator.c:151:21: error: invalid use of undefined type ‘struct Node’
+  151 |                 node->type = NUMBER;
+      |                     ^~
+expression_evaluator.c:152:21: error: invalid use of undefined type ‘struct Node’
+  152 |                 node->value = 0.0;
+      |                     ^~
+expression_evaluator.c:153:21: error: invalid use of undefined type ‘struct Node’
+  153 |                 node->left = NULL;
+      |                     ^~
+expression_evaluator.c:154:21: error: invalid use of undefined type ‘struct Node’
+  154 |                 node->right = leftNode;
+      |                     ^~
+expression_evaluator.c:155:25: error: invalid use of undefined type ‘struct Node’
+  155 |                 leftNode->right = node;
+      |                         ^~
+expression_evaluator.c:160:18: error: invalid use of undefined type ‘struct Node’
+  160 |             nodes->left = node;
+      |                  ^~
+expression_evaluator.c: In function ‘evaluator’:
+expression_evaluator.c:172:13: error: invalid use of undefined type ‘struct Node’
+  172 |     if (node->type == NUMBER) {
+      |             ^~
+expression_evaluator.c:173:20: error: invalid use of undefined type ‘struct Node’
+  173 |         return node->value;
+      |                    ^~
+expression_evaluator.c:174:20: error: invalid use of undefined type ‘struct Node’
+  174 |     } else if (node->type == PLUS || node->type == MINUS) {
+      |                    ^~
+expression_evaluator.c:174:42: error: invalid use of undefined type ‘struct Node’
+  174 |     } else if (node->type == PLUS || node->type == MINUS) {
+      |                                          ^~
+expression_evaluator.c:175:42: error: invalid use of undefined type ‘struct Node’
+  175 |         double leftValue = evaluator(node->left);
+      |                                          ^~
+expression_evaluator.c:176:43: error: invalid use of undefined type ‘struct Node’
+  176 |         double rightValue = evaluator(node->right);
+      |                                           ^~
+expression_evaluator.c:177:17: error: invalid use of undefined type ‘struct Node’
+  177 |         if (node->type == PLUS) {
+      |                 ^~
+expression_evaluator.c:182:20: error: invalid use of undefined type ‘struct Node’
+  182 |     } else if (node->type == MUL || node->type == DIV) {
+      |                    ^~
+expression_evaluator.c:182:41: error: invalid use of undefined type ‘struct Node’
+  182 |     } else if (node->type == MUL || node->type == DIV) {
+      |                                         ^~
+expression_evaluator.c:183:42: error: invalid use of undefined type ‘struct Node’
+  183 |         double leftValue = evaluator(node->left);
+      |                                          ^~
+expression_evaluator.c:184:43: error: invalid use of undefined type ‘struct Node’
+  184 |         double rightValue = evaluator(node->right);
+      |                                           ^~
+expression_evaluator.c:185:17: error: invalid use of undefined type ‘struct Node’
+  185 |         if (node->type == MUL) {
+      |                 ^~
+expression_evaluator.c:190:20: error: invalid use of undefined type ‘struct Node’
+  190 |     } else if (node->type == UNARY_MINUS) {
+      |                    ^~
+expression_evaluator.c:191:31: error: invalid use of undefined type ‘struct Node’
+  191 |         return -evaluator(node->left);
+      |                               ^~
+expression_evaluator.c:193:1: warning: control reaches end of non-void function [-Wreturn-type]
+  193 | }
+      | ^

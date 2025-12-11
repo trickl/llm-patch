@@ -1,0 +1,8 @@
+ExpressionEvaluator.java:125: error: method evaluate(String) is already defined in class ExpressionEvaluator
+    public int evaluate(String expression) {
+               ^
+ExpressionEvaluator.java:119: error: incompatible types: double cannot be converted to String
+                return Double.parseDouble(tokens.remove(0).value);
+                                                          ^
+Note: Some messages have been simplified; recompile with -Xdiags:verbose to get full output
+2 errors

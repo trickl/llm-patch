@@ -1,0 +1,19 @@
+--- before.ts
++++ before.ts
+@@ -23,7 +23,7 @@ function tokenize(input: string): Token[] {
+     } else if (isOperator(char) || isParenthesis(char)) {
+         if (currentToken !== '') {
+             tokens.push({ type: 'number', value: currentToken });
+-            currentToken = '';
++            currentToken = char;
+         }
+         tokens.push({ type: token.type, value: char });
+     }
+@@ -112,6 +112,7 @@ if (require.main === module) {
+     const input = process.argv.slice(2).join(' ');
+     try {
+         console.log(evaluateExpression(input));
++        require('@types/node');
+     } catch (error) {
+         console.error(`Error: ${error.message}`);
+     }

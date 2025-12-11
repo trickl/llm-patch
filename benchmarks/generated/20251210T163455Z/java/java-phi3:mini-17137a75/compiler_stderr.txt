@@ -1,0 +1,302 @@
+ExpressionEvaluator.java:98: error: illegal start of expression
+   04 |> <|end_of_snippet|>
+       ^
+ExpressionEvaluator.java:98: error: illegal start of type
+   04 |> <|end_of_snippet|>
+          ^
+ExpressionEvaluator.java:98: error: illegal start of expression
+   04 |> <|end_of_snippet|>
+                          ^
+ExpressionEvaluator.java:102: error: illegal start of expression
+import java.util.*;
+^
+ExpressionEvaluator.java:98: error: not a statement
+   04 |> <|end_of_snippet|>
+                         ^
+ExpressionEvaluator.java:102: error: <identifier> expected
+import java.util.*;
+                 ^
+ExpressionEvaluator.java:102: error: illegal start of expression
+import java.util.*;
+                  ^
+ExpressionEvaluator.java:105: error: illegal start of expression
+public class ExpressionEvaluator {
+^
+ExpressionEvaluator.java:113: error: illegal start of expression
+        System.out04 |> <|end_of_snippet|>
+                      ^
+ExpressionEvaluator.java:113: error: illegal start of type
+        System.out04 |> <|end_of_snippet|>
+                         ^
+ExpressionEvaluator.java:113: error: illegal start of expression
+        System.out04 |> <|end_of_snippet|>
+                                         ^
+ExpressionEvaluator.java:117: error: illegal start of expression
+import java.util.*;
+^
+ExpressionEvaluator.java:113: error: not a statement
+        System.out04 |> <|end_of_snippet|>
+                                        ^
+ExpressionEvaluator.java:117: error: <identifier> expected
+import java.util.*;
+                 ^
+ExpressionEvaluator.java:117: error: illegal start of expression
+import java.util.*;
+                  ^
+ExpressionEvaluator.java:120: error: illegal start of expression
+public class ExpressionEvaluator {
+^
+ExpressionEvaluator.java:151: error: illegal start of type
+import java.util.*;
+^
+ExpressionEvaluator.java:151: error: <identifier> expected
+import java.util.*;
+                 ^
+ExpressionEvaluator.java:185: error: illegal start of type
+import java.util.*;
+^
+ExpressionEvaluator.java:185: error: <identifier> expected
+import java.util.*;
+                 ^
+ExpressionEvaluator.java:219: error: illegal start of type
+import java.util.*;
+^
+ExpressionEvaluator.java:219: error: <identifier> expected
+import java.util.*;
+                 ^
+ExpressionEvaluator.java:234: error: illegal start of expression
+        System.outin|> <|end_of_snippet|>
+                     ^
+ExpressionEvaluator.java:234: error: illegal start of type
+        System.outin|> <|end_of_snippet|>
+                        ^
+ExpressionEvaluator.java:234: error: illegal start of expression
+        System.outin|> <|end_of_snippet|>
+                                        ^
+ExpressionEvaluator.java:238: error: illegal start of expression
+import java.util.*;
+^
+ExpressionEvaluator.java:234: error: not a statement
+        System.outin|> <|end_of_snippet|>
+                                       ^
+ExpressionEvaluator.java:238: error: <identifier> expected
+import java.util.*;
+                 ^
+ExpressionEvaluator.java:238: error: illegal start of expression
+import java.util.*;
+                  ^
+ExpressionEvaluator.java:241: error: illegal start of expression
+public class ExpressionEvaluator {
+^
+ExpressionEvaluator.java:259: error: illegal start of type
+import java.util.*;
+^
+ExpressionEvaluator.java:259: error: <identifier> expected
+import java.util.*;
+                 ^
+ExpressionEvaluator.java:272: error: illegal start of expression
+        System0|> <|end_of_snippet|>
+                ^
+ExpressionEvaluator.java:272: error: illegal start of type
+        System0|> <|end_of_snippet|>
+                   ^
+ExpressionEvaluator.java:272: error: illegal start of expression
+        System0|> <|end_of_snippet|>
+                                   ^
+ExpressionEvaluator.java:276: error: illegal start of expression
+import java.util.*;
+^
+ExpressionEvaluator.java:272: error: not a statement
+        System0|> <|end_of_snippet|>
+                                  ^
+ExpressionEvaluator.java:276: error: <identifier> expected
+import java.util.*;
+                 ^
+ExpressionEvaluator.java:276: error: illegal start of expression
+import java.util.*;
+                  ^
+ExpressionEvaluator.java:279: error: illegal start of expression
+public class ExpressionEvaluator {
+^
+ExpressionEvaluator.java:295: error: illegal start of type
+import java.util.*;
+^
+ExpressionEvaluator.java:295: error: <identifier> expected
+import java.util.*;
+                 ^
+ExpressionEvaluator.java:306: error: ')' or ',' expected
+        System.out.println("2 * (3 + 4)) = " + evaluateExpression("2 * (3 + 4)"); // Missing closing parenthesis and operator for multiplication: incomplete expression, typo in the print statement with an extra bracket at the end of the last line that should be removed
+                                                                                ^
+ExpressionEvaluator.java:314: error: illegal start of type
+import java.util.*;
+^
+ExpressionEvaluator.java:314: error: <identifier> expected
+import java.util.*;
+                 ^
+ExpressionEvaluator.java:325: error: ')' or ',' expected
+        System.out.println("2 * (3 + )4/0 = " + evaluateExpression("2 * (3 + )4/0"); // Typo in the expression and division by zero, which should be handled: incomplete arithmetic operation missing closing parenthesis for addition inside multiplication operator before division occurs
+                                                                                   ^
+ExpressionEvaluator.java:333: error: illegal start of type
+import java.util.*;
+^
+ExpressionEvaluator.java:333: error: <identifier> expected
+import java.util.*;
+                 ^
+ExpressionEvaluator.java:344: error: ')' or ',' expected
+        System.out.println("2 * (3 + 4) / 0 = " + evaluateExpression("2 * (3 + 4) / 0"); // Division by zero, which should be handled with an exception or a specific return value indicating the error: incomplete expression and division operation missing operator
+                                                                                       ^
+ExpressionEvaluator.java:352: error: illegal start of type
+import java.util.*;
+^
+ExpressionEvaluator.java:352: error: <identifier> expected
+import java.util.*;
+                 ^
+ExpressionEvaluator.java:363: error: ')' or ',' expected
+        System.out.println("2 * (3 + )4/0 = " + evaluateExpression("2 * (3 + )4/0"); // Typo in the expression and division by zero, which should be handled: incomplete arithmetic operation missing closing parenthesis for addition inside multiplication operator before division occurs
+                                                                                   ^
+ExpressionEvaluator.java:371: error: illegal start of type
+import java.util.*;
+^
+ExpressionEvaluator.java:371: error: <identifier> expected
+import java.util.*;
+                 ^
+ExpressionEvaluator.java:382: error: ')' or ',' expected
+        System.out.println("2 * (3 + )4/0 = " + evaluateExpression("2 * (3 + )4/0"); // Typo in the expression and division by zero, which should be handled: incomplete arithmetic operation missing closing parenthesis for addition inside multiplication operator before division occurs
+                                                                                   ^
+ExpressionEvaluator.java:390: error: illegal start of type
+import java.util.*;
+^
+ExpressionEvaluator.java:390: error: <identifier> expected
+import java.util.*;
+                 ^
+ExpressionEvaluator.java:401: error: ')' or ',' expected
+        System.out.println("2 * (3 + )4/0 = " + evaluateExpression("2 * (3 + )4/0"); // Typo in the expression and division by zero, which should be handled: incomplete arithmetic operation missing closing parenthesis for addition inside multiplication operator before division occurs
+                                                                                   ^
+ExpressionEvaluator.java:409: error: illegal start of type
+import java.util.*;
+^
+ExpressionEvaluator.java:409: error: <identifier> expected
+import java.util.*;
+                 ^
+ExpressionEvaluator.java:420: error: ')' or ',' expected
+        System.out.println("2 * (3 + )4/0 = " + evaluateExpression("2 * (3 + )4/0"); // Typo in the expression and division by zero, which should be handled: incomplete arithmetic operation missing closing parenthesis for addition inside multiplication operator before division occurs
+                                                                                   ^
+ExpressionEvaluator.java:428: error: illegal start of type
+import java.util.*;
+^
+ExpressionEvaluator.java:428: error: <identifier> expected
+import java.util.*;
+                 ^
+ExpressionEvaluator.java:439: error: ')' or ',' expected
+        System.out.println("2 * (3 + )4/0 = " + evaluateExpression("2 * (3 + )4/0"); // Typo in the expression and division by zero, which should be handled: incomplete arithmetic operation missing closing parenthesis for addition inside multiplication operator before division occurs
+                                                                                   ^
+ExpressionEvaluator.java:447: error: illegal start of type
+import java.util.*;
+^
+ExpressionEvaluator.java:447: error: <identifier> expected
+import java.util.*;
+                 ^
+ExpressionEvaluator.java:458: error: ')' or ',' expected
+        System.out.println("2 * (3 + )4/0 = " + evaluateExpression("2 * (3 + )4/0"); // Typo in the expression and division by zero, which should be handled: incomplete arithmetic operation missing closing parenthesis for addition inside multiplication operator before division occurs
+                                                                                   ^
+ExpressionEvaluator.java:466: error: illegal start of type
+import java.util.*;
+^
+ExpressionEvaluator.java:466: error: <identifier> expected
+import java.util.*;
+                 ^
+ExpressionEvaluator.java:477: error: illegal start of expression
+        System.out0|> <|end_of_snippet|>
+                    ^
+ExpressionEvaluator.java:477: error: illegal start of type
+        System.out0|> <|end_of_snippet|>
+                       ^
+ExpressionEvaluator.java:477: error: illegal start of expression
+        System.out0|> <|end_of_snippet|>
+                                       ^
+ExpressionEvaluator.java:481: error: illegal start of expression
+import java.util.*;
+^
+ExpressionEvaluator.java:477: error: not a statement
+        System.out0|> <|end_of_snippet|>
+                                      ^
+ExpressionEvaluator.java:481: error: <identifier> expected
+import java.util.*;
+                 ^
+ExpressionEvaluator.java:481: error: illegal start of expression
+import java.util.*;
+                  ^
+ExpressionEvaluator.java:484: error: illegal start of expression
+public class ExpressionEvaluator {
+^
+ExpressionEvaluator.java:539: error: not a statement
+        end while
+        ^
+ExpressionEvaluator.java:539: error: ';' expected
+        end while
+           ^
+ExpressionEvaluator.java:539: error: '(' expected
+        end while
+                 ^
+ExpressionEvaluator.java:541: error: ')' expected
+        tokens.add('"' + tokenBuilder.toString() + '"'); // Add the complete number or operator as a string to handle negative numbers and decimal points correctly later on:
+                                                       ^
+ExpressionEvaluator.java:547: error: illegal start of expression
+public static double eval(List<String> tokens) {
+^
+ExpressionEvaluator.java:567: error: unclosed string literal
+                    System.out.println("Unsu0|> <|end_of_snippet|>
+                                       ^
+ExpressionEvaluator.java:568: error: ';' expected
+You have provided a Java code snippet that attempts to tokenize an arithmetic expression string into individual characters and numbers while ignoring whitespaces, but it has several issues which need addressing: 
+        ^
+ExpressionEvaluator.java:568: error: ';' expected
+You have provided a Java code snippet that attempts to tokenize an arithmetic expression string into individual characters and numbers while ignoring whitespaces, but it has several issues which need addressing: 
+                   ^
+ExpressionEvaluator.java:568: error: ';' expected
+You have provided a Java code snippet that attempts to tokenize an arithmetic expression string into individual characters and numbers while ignoring whitespaces, but it has several issues which need addressing: 
+                             ^
+ExpressionEvaluator.java:568: error: ';' expected
+You have provided a Java code snippet that attempts to tokenize an arithmetic expression string into individual characters and numbers while ignoring whitespaces, but it has several issues which need addressing: 
+                                          ^
+ExpressionEvaluator.java:568: error: ';' expected
+You have provided a Java code snippet that attempts to tokenize an arithmetic expression string into individual characters and numbers while ignoring whitespaces, but it has several issues which need addressing: 
+                                                      ^
+ExpressionEvaluator.java:568: error: ';' expected
+You have provided a Java code snippet that attempts to tokenize an arithmetic expression string into individual characters and numbers while ignoring whitespaces, but it has several issues which need addressing: 
+                                                                  ^
+ExpressionEvaluator.java:568: error: ';' expected
+You have provided a Java code snippet that attempts to tokenize an arithmetic expression string into individual characters and numbers while ignoring whitespaces, but it has several issues which need addressing: 
+                                                                                        ^
+ExpressionEvaluator.java:568: error: ';' expected
+You have provided a Java code snippet that attempts to tokenize an arithmetic expression string into individual characters and numbers while ignoring whitespaces, but it has several issues which need addressing: 
+                                                                                                    ^
+ExpressionEvaluator.java:568: error: ';' expected
+You have provided a Java code snippet that attempts to tokenize an arithmetic expression string into individual characters and numbers while ignoring whitespaces, but it has several issues which need addressing: 
+                                                                                                                          ^
+ExpressionEvaluator.java:568: error: ';' expected
+You have provided a Java code snippet that attempts to tokenize an arithmetic expression string into individual characters and numbers while ignoring whitespaces, but it has several issues which need addressing: 
+                                                                                                                                      ^
+ExpressionEvaluator.java:568: error: '(' expected
+You have provided a Java code snippet that attempts to tokenize an arithmetic expression string into individual characters and numbers while ignoring whitespaces, but it has several issues which need addressing: 
+                                                                                                                                            ^
+ExpressionEvaluator.java:568: error: ')' expected
+You have provided a Java code snippet that attempts to tokenize an arithmetic expression string into individual characters and numbers while ignoring whitespaces, but it has several issues which need addressing: 
+                                                                                                                                                     ^
+ExpressionEvaluator.java:568: error: not a statement
+You have provided a Java code snippet that attempts to tokenize an arithmetic expression string into individual characters and numbers while ignoring whitespaces, but it has several issues which need addressing: 
+                                                                                                                                                      ^
+ExpressionEvaluator.java:568: error: ';' expected
+You have provided a Java code snippet that attempts to tokenize an arithmetic expression string into individual characters and numbers while ignoring whitespaces, but it has several issues which need addressing: 
+                                                                                                                                                                 ^
+ExpressionEvaluator.java:568: error: ';' expected
+You have provided a Java code snippet that attempts to tokenize an arithmetic expression string into individual characters and numbers while ignoring whitespaces, but it has several issues which need addressing: 
+                                                                                                                                                                         ^
+ExpressionEvaluator.java:568: error: ';' expected
+You have provided a Java code snippet that attempts to tokenize an arithmetic expression string into individual characters and numbers while ignoring whitespaces, but it has several issues which need addressing: 
+                                                                                                                                                                                     ^
+ExpressionEvaluator.java:568: error: ';' expected
+You have provided a Java code snippet that attempts to tokenize an arithmetic expression string into individual characters and numbers while ignoring whitespaces, but it has several issues which need addressing: 
+                                                                                                                                                                                                  ^
+100 errors
+only showing the first 100 errors, of 565 total; use -Xmaxerrs if you would like to see more

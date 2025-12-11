@@ -1,0 +1,19 @@
+{
+  "case_id": "typescript-llama3.2:3b-bf0e900f",
+  "language": "typescript",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "git",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "patch_applied": true,
+  "patch_diagnostics": "applied",
+  "compile_returncode": 2,
+  "errors_before": 13,
+  "errors_after": 13,
+  "first_error_removed": false,
+  "added_lines": 12,
+  "removed_lines": 15,
+  "hunks": 6,
+  "delete_only": false,
+  "success": false,
+  "notes": ""
+}

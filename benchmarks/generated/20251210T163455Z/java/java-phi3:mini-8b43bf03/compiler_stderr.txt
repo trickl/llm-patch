@@ -1,0 +1,4 @@
+ExpressionEvaluator.java:93: error: reached end of file while parsing
+           0 - 2 + 3 * (4 - 1) =
+                                ^
+1 error

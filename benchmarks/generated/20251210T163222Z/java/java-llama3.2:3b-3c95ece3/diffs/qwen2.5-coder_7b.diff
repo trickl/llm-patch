@@ -1,0 +1,38 @@
+--- before.java	2023-04-10 12:34:56.000000000 +0800
++++ after.java	2023-04-10 12:35:07.000000000 +0800
+@@ -47,7 +47,7 @@
+                 while (!stack.isEmpty() && getPrecedence(stack.peek()) >= getPrecedence(token)) {
+                     nodes.add(stack.pop());
+                 }
+-                stack.push(new Node(token, nodes.size()));
++                stack.push(new Node(token.value, nodes.size()));
+             } else if (token.type == TokenType.LPAREN) {
+                 stack.push(new LParenNode(nodes.size()));
+             } else if (token.type == TokenType.RPAREN) {
+@@ -70,7 +70,7 @@
+         switch (node.value.charAt(0)) {
+             case '+':
+             case '-':
+-                return evaluator(parseTree.children.get(node.index));
++                return evaluator(parseTree.nodes.get(node.index));
+             case '*':
+                 return stack.pop() * stack.pop();
+             case '/':
+@@ -90,7 +90,7 @@
+         switch (node.value.charAt(0)) {
+             case '+':
+             case '-':
+-                stack.push(Integer.parseInt(node.value));
++                stack.push(Integer.parseInt(node.token.value));
+                 break;
+             case '*':
+                 stack.push(stack.pop() * Integer.parseInt(node.value));
+@@ -112,7 +112,7 @@
+         switch (node.value.charAt(0)) {
+             case '+':
+             case '-':
+-                return evaluator(parseTree.children.get(node.index));
++                return evaluator(parseTree.nodes.get(node.index));
+             case '*':
+                 return stack.pop() * stack.pop();
+             case '/':

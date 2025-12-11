@@ -1,0 +1,237 @@
+In file included from expression_evaluator.c:1:
+expression_evaluator.c:14:5: error: expected identifier before ‘(’ token
+   14 |     EOF
+      |     ^~~
+expression_evaluator.c: In function ‘lexer’:
+expression_evaluator.c:32:34: error: implicit declaration of function ‘get_token_type’ [-Wimplicit-function-declaration]
+   32 |             tokens[index].type = get_token_type(token);
+      |                                  ^~~~~~~~~~~~~~
+expression_evaluator.c:33:35: error: implicit declaration of function ‘get_value’ [-Wimplicit-function-declaration]
+   33 |             tokens[index].value = get_value(token);
+      |                                   ^~~~~~~~~
+expression_evaluator.c: In function ‘parse’:
+expression_evaluator.c:45:25: error: implicit declaration of function ‘length’ [-Wimplicit-function-declaration]
+   45 |     for (int i = 0; i < length(tokens); i++) {
+      |                         ^~~~~~
+expression_evaluator.c:51:31: error: incompatible types when initializing type ‘Token *’ using type ‘double’
+   51 |                 Token* temp = stack[top--].value;
+      |                               ^~~~~
+expression_evaluator.c:52:29: warning: suggest parentheses around ‘&&’ within ‘||’ [-Wparentheses]
+   52 |                 if (top > 0 && stack[top - 1].type == MUL || stack[top - 1].type == DIV) {
+      |                     ~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+expression_evaluator.c:53:33: error: incompatible types when initializing type ‘Token *’ using type ‘Token’
+   53 |                     Token* op = stack[top - 1];
+      |                                 ^~~~~
+expression_evaluator.c:54:37: error: implicit declaration of function ‘evaluate’ [-Wimplicit-function-declaration]
+   54 |                     double result = evaluate(temp, op);
+      |                                     ^~~~~~~~
+expression_evaluator.c:55:31: error: incompatible type for argument 1 of ‘free’
+   55 |                     free(stack[top]);
+      |                          ~~~~~^~~~~
+      |                               |
+      |                               Token
+In file included from expression_evaluator.c:2:
+/usr/include/stdlib.h:687:25: note: expected ‘void *’ but argument is of type ‘Token’
+  687 | extern void free (void *__ptr) __THROW;
+      |                   ~~~~~~^~~~~
+expression_evaluator.c:57:34: error: implicit declaration of function ‘create_token’ [-Wimplicit-function-declaration]
+   57 |                     stack[top] = create_token(op.type, result);
+      |                                  ^~~~~~~~~~~~
+expression_evaluator.c:57:49: error: ‘op’ is a pointer; did you mean to use ‘->’?
+   57 |                     stack[top] = create_token(op.type, result);
+      |                                                 ^
+      |                                                 ->
+expression_evaluator.c:58:36: warning: suggest parentheses around ‘&&’ within ‘||’ [-Wparentheses]
+   58 |                 } else if (top > 0 && stack[top - 1].type == PLUS || stack[top - 1].type == MINUS) {
+      |                            ~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+expression_evaluator.c:59:33: error: incompatible types when initializing type ‘Token *’ using type ‘Token’
+   59 |                     Token* op = stack[top - 1];
+      |                                 ^~~~~
+expression_evaluator.c:61:31: error: incompatible type for argument 1 of ‘free’
+   61 |                     free(stack[top]);
+      |                          ~~~~~^~~~~
+      |                               |
+      |                               Token
+/usr/include/stdlib.h:687:25: note: expected ‘void *’ but argument is of type ‘Token’
+  687 | extern void free (void *__ptr) __THROW;
+      |                   ~~~~~~^~~~~
+expression_evaluator.c:63:49: error: ‘op’ is a pointer; did you mean to use ‘->’?
+   63 |                     stack[top] = create_token(op.type, result);
+      |                                                 ^
+      |                                                 ->
+expression_evaluator.c:69:31: error: implicit declaration of function ‘is_number’ [-Wimplicit-function-declaration]
+   69 |             while (top > 0 && is_number(tokens[i].value)) {
+      |                               ^~~~~~~~~
+expression_evaluator.c:70:31: error: incompatible types when initializing type ‘Token *’ using type ‘Token’
+   70 |                 Token* temp = stack[top - 1];
+      |                               ^~~~~
+expression_evaluator.c:71:46: error: ‘temp’ is a pointer; did you mean to use ‘->’?
+   71 |                 double result = evaluate(temp.value, create_token(tokens[i].type, tokens[i].value));
+      |                                              ^
+      |                                              ->
+expression_evaluator.c:72:27: error: incompatible type for argument 1 of ‘free’
+   72 |                 free(stack[top]);
+      |                      ~~~~~^~~~~
+      |                           |
+      |                           Token
+/usr/include/stdlib.h:687:25: note: expected ‘void *’ but argument is of type ‘Token’
+  687 | extern void free (void *__ptr) __THROW;
+      |                   ~~~~~~^~~~~
+expression_evaluator.c:74:30: error: incompatible types when assigning to type ‘Token’ from type ‘Token *’
+   74 |                 stack[top] = temp;
+      |                              ^~~~
+expression_evaluator.c:71:24: warning: unused variable ‘result’ [-Wunused-variable]
+   71 |                 double result = evaluate(temp.value, create_token(tokens[i].type, tokens[i].value));
+      |                        ^~~~~~
+expression_evaluator.c:76:26: error: incompatible types when assigning to type ‘Token’ from type ‘int’
+   76 |             stack[top] = create_token(NUMBER, tokens[i].value);
+      |                          ^~~~~~~~~~~~
+expression_evaluator.c:79:31: error: implicit declaration of function ‘get_precedence’ [-Wimplicit-function-declaration]
+   79 |             while (top > 0 && get_precedence(get_token_type(tokens[i])) <= get_precedence(get_token_type(stack[top]))) {
+      |                               ^~~~~~~~~~~~~~
+expression_evaluator.c:80:29: error: incompatible types when initializing type ‘Token *’ using type ‘double’
+   80 |                 Token* op = stack[top--].value;
+      |                             ^~~~~
+expression_evaluator.c:81:44: error: ‘op’ is a pointer; did you mean to use ‘->’?
+   81 |                 double result = evaluate(op.value, create_token(tokens[i].type, tokens[i].value));
+      |                                            ^
+      |                                            ->
+expression_evaluator.c:82:27: error: incompatible type for argument 1 of ‘free’
+   82 |                 free(stack[top]);
+      |                      ~~~~~^~~~~
+      |                           |
+      |                           Token
+/usr/include/stdlib.h:687:25: note: expected ‘void *’ but argument is of type ‘Token’
+  687 | extern void free (void *__ptr) __THROW;
+      |                   ~~~~~~^~~~~
+expression_evaluator.c:81:24: warning: unused variable ‘result’ [-Wunused-variable]
+   81 |                 double result = evaluate(op.value, create_token(tokens[i].type, tokens[i].value));
+      |                        ^~~~~~
+expression_evaluator.c:80:24: warning: variable ‘op’ set but not used [-Wunused-but-set-variable]
+   80 |                 Token* op = stack[top--].value;
+      |                        ^~
+expression_evaluator.c:85:26: error: incompatible types when assigning to type ‘Token’ from type ‘int’
+   85 |             stack[top] = create_token(tokens[i].type, tokens[i].value);
+      |                          ^~~~~~~~~~~~
+expression_evaluator.c:90:21: error: incompatible types when initializing type ‘Token *’ using type ‘Token’
+   90 |         Token* op = stack[top - 1];
+      |                     ^~~~~
+expression_evaluator.c:91:36: error: ‘op’ is a pointer; did you mean to use ‘->’?
+   91 |         double result = evaluate(op.value, create_token(LPAREN, NULL));
+      |                                    ^
+      |                                    ->
+expression_evaluator.c:92:19: error: incompatible type for argument 1 of ‘free’
+   92 |         free(stack[top]);
+      |              ~~~~~^~~~~
+      |                   |
+      |                   Token
+/usr/include/stdlib.h:687:25: note: expected ‘void *’ but argument is of type ‘Token’
+  687 | extern void free (void *__ptr) __THROW;
+      |                   ~~~~~~^~~~~
+expression_evaluator.c:94:22: error: incompatible types when assigning to type ‘Token’ from type ‘Token *’
+   94 |         stack[top] = op;
+      |                      ^~
+expression_evaluator.c:91:16: warning: unused variable ‘result’ [-Wunused-variable]
+   91 |         double result = evaluate(op.value, create_token(LPAREN, NULL));
+      |                ^~~~~~
+expression_evaluator.c:96:17: error: incompatible types when returning type ‘Token’ but ‘Token *’ was expected
+   96 |     return stack[0];
+      |            ~~~~~^~~
+expression_evaluator.c: At top level:
+expression_evaluator.c:100:8: error: conflicting types for ‘evaluate’; have ‘double(Token *)’
+  100 | double evaluate(Token* token) {
+      |        ^~~~~~~~
+expression_evaluator.c:54:37: note: previous implicit declaration of ‘evaluate’ with type ‘int()’
+   54 |                     double result = evaluate(temp, op);
+      |                                     ^~~~~~~~
+expression_evaluator.c: In function ‘evaluate’:
+expression_evaluator.c:104:37: error: incompatible type for argument 1 of ‘evaluate’
+  104 |         double left = evaluate(token->value);
+      |                                ~~~~~^~~~~~~
+      |                                     |
+      |                                     double
+expression_evaluator.c:100:24: note: expected ‘Token *’ but argument is of type ‘double’
+  100 | double evaluate(Token* token) {
+      |                 ~~~~~~~^~~~~
+expression_evaluator.c:105:30: error: ‘tokens’ undeclared (first use in this function); did you mean ‘token’?
+  105 |         Token* right = parse(tokens + length(tokens));
+      |                              ^~~~~~
+      |                              token
+expression_evaluator.c:105:30: note: each undeclared identifier is reported only once for each function it appears in
+expression_evaluator.c:108:43: error: ‘right’ is a pointer; did you mean to use ‘->’?
+  108 |             result = left + evaluate(right.value);
+      |                                           ^
+      |                                           ->
+expression_evaluator.c:110:43: error: ‘right’ is a pointer; did you mean to use ‘->’?
+  110 |             result = left - evaluate(right.value);
+      |                                           ^
+      |                                           ->
+expression_evaluator.c:115:37: error: incompatible type for argument 1 of ‘evaluate’
+  115 |         double left = evaluate(token->value);
+      |                                ~~~~~^~~~~~~
+      |                                     |
+      |                                     double
+expression_evaluator.c:100:24: note: expected ‘Token *’ but argument is of type ‘double’
+  100 | double evaluate(Token* token) {
+      |                 ~~~~~~~^~~~~
+expression_evaluator.c:119:43: error: ‘right’ is a pointer; did you mean to use ‘->’?
+  119 |             result = left * evaluate(right.value);
+      |                                           ^
+      |                                           ->
+expression_evaluator.c:121:43: error: ‘right’ is a pointer; did you mean to use ‘->’?
+  121 |             result = left / evaluate(right.value);
+      |                                           ^
+      |                                           ->
+expression_evaluator.c:127:39: error: ‘right’ is a pointer; did you mean to use ‘->’?
+  127 |         double result = evaluate(right.value);
+      |                                       ^
+      |                                       ->
+expression_evaluator.c: At top level:
+expression_evaluator.c:137:11: error: conflicting types for ‘get_token_type’; have ‘TokenType(char *)’
+  137 | TokenType get_token_type(char* token) {
+      |           ^~~~~~~~~~~~~~
+expression_evaluator.c:32:34: note: previous implicit declaration of ‘get_token_type’ with type ‘int()’
+   32 |             tokens[index].type = get_token_type(token);
+      |                                  ^~~~~~~~~~~~~~
+expression_evaluator.c:154:8: error: conflicting types for ‘get_value’; have ‘double(char *)’
+  154 | double get_value(char* token) {
+      |        ^~~~~~~~~
+expression_evaluator.c:33:35: note: previous implicit declaration of ‘get_value’ with type ‘int()’
+   33 |             tokens[index].value = get_value(token);
+      |                                   ^~~~~~~~~
+expression_evaluator.c: In function ‘length’:
+expression_evaluator.c:161:31: warning: comparison of integer expressions of different signedness: ‘TokenType’ and ‘int’ [-Wsign-compare]
+  161 |     while (tokens[count].type != EOF) {
+      |                               ^~
+expression_evaluator.c: At top level:
+expression_evaluator.c:184:8: error: conflicting types for ‘create_token’; have ‘Token *(TokenType,  double)’
+  184 | Token* create_token(TokenType type, double value) {
+      |        ^~~~~~~~~~~~
+expression_evaluator.c:57:34: note: previous implicit declaration of ‘create_token’ with type ‘int()’
+   57 |                     stack[top] = create_token(op.type, result);
+      |                                  ^~~~~~~~~~~~
+expression_evaluator.c: In function ‘create_token’:
+expression_evaluator.c:188:12: warning: function returns address of local variable [-Wreturn-local-addr]
+  188 |     return &token;
+      |            ^~~~~~
+expression_evaluator.c: In function ‘main’:
+expression_evaluator.c:193:32: error: passing argument 1 of ‘length’ from incompatible pointer type [-Wincompatible-pointer-types]
+  193 |     for (int i = 0; i < length(expressions); i++) {
+      |                                ^~~~~~~~~~~
+      |                                |
+      |                                char (*)[100]
+expression_evaluator.c:159:19: note: expected ‘Token *’ but argument is of type ‘char (*)[100]’
+  159 | int length(Token* tokens) {
+      |            ~~~~~~~^~~~~~
+expression_evaluator.c:196:39: error: incompatible type for argument 1 of ‘evaluate’
+  196 |         double value = evaluate(result->value);
+      |                                 ~~~~~~^~~~~~~
+      |                                       |
+      |                                       double
+expression_evaluator.c:100:24: note: expected ‘Token *’ but argument is of type ‘double’
+  100 | double evaluate(Token* token) {
+      |                 ~~~~~~~^~~~~
+expression_evaluator.c: In function ‘parse’:
+expression_evaluator.c:97:1: warning: control reaches end of non-void function [-Wreturn-type]
+   97 | }
+      | ^

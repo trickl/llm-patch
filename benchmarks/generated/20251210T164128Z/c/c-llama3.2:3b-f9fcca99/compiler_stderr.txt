@@ -1,0 +1,69 @@
+In file included from expression_evaluator.c:1:
+expression_evaluator.c:15:5: error: expected identifier before ‘(’ token
+   15 |     EOF
+      |     ^~~
+expression_evaluator.c: In function ‘parse’:
+expression_evaluator.c:80:51: warning: comparison of integer expressions of different signedness: ‘TokenType’ and ‘int’ [-Wsign-compare]
+   80 |     Token* stack = (Token*)malloc((tokens[0].type == EOF ? 1 : tokens[0].type + 1) * sizeof(Token));
+      |                                                   ^~
+expression_evaluator.c:83:34: error: invalid operands to binary != (have ‘Token’ and ‘int’)
+   83 |     while (tokens[top = top + 1] != EOF && tokens[top].type != UNARY_MINUS) {
+      |            ~~~~~~~~~~~~~~~~~~~~~ ^~
+      |                  |
+      |                  Token
+expression_evaluator.c:96:24: error: expected expression before ‘{’ token
+   96 |         stack[++top] = { tokens[top].type, -operand.value };
+      |                        ^
+expression_evaluator.c:95:16: warning: unused variable ‘operand’ [-Wunused-variable]
+   95 |         Token* operand = parse(tokens + top + 1);
+      |                ^~~~~~~
+expression_evaluator.c:98:24: error: expected expression before ‘{’ token
+   98 |         stack[++top] = { tokens[top].type, 0.0 };
+      |                        ^
+expression_evaluator.c: In function ‘evaluate’:
+expression_evaluator.c:108:18: error: ‘top’ undeclared (first use in this function)
+  108 |     while (stack[top = top - 1].type != EOF && stack[top].type != NUMBER) {
+      |                  ^~~
+expression_evaluator.c:108:18: note: each undeclared identifier is reported only once for each function it appears in
+expression_evaluator.c:112:26: error: expected expression before ‘{’ token
+  112 |             stack[top] = { stack[top].type, operand1 + operand2 };
+      |                          ^
+expression_evaluator.c:111:20: warning: unused variable ‘operand1’ [-Wunused-variable]
+  111 |             double operand1 = stack[++top].value;
+      |                    ^~~~~~~~
+expression_evaluator.c:110:20: warning: unused variable ‘operand2’ [-Wunused-variable]
+  110 |             double operand2 = stack[++top].value;
+      |                    ^~~~~~~~
+expression_evaluator.c:116:26: error: expected expression before ‘{’ token
+  116 |             stack[top] = { stack[top].type, operand1 - operand2 };
+      |                          ^
+expression_evaluator.c:115:20: warning: unused variable ‘operand1’ [-Wunused-variable]
+  115 |             double operand1 = stack[++top].value;
+      |                    ^~~~~~~~
+expression_evaluator.c:114:20: warning: unused variable ‘operand2’ [-Wunused-variable]
+  114 |             double operand2 = stack[++top].value;
+      |                    ^~~~~~~~
+expression_evaluator.c:120:26: error: expected expression before ‘{’ token
+  120 |             stack[top] = { stack[top].type, operand1 * operand2 };
+      |                          ^
+expression_evaluator.c:119:20: warning: unused variable ‘operand1’ [-Wunused-variable]
+  119 |             double operand1 = stack[++top].value;
+      |                    ^~~~~~~~
+expression_evaluator.c:118:20: warning: unused variable ‘operand2’ [-Wunused-variable]
+  118 |             double operand2 = stack[++top].value;
+      |                    ^~~~~~~~
+expression_evaluator.c:124:26: error: expected expression before ‘{’ token
+  124 |             stack[top] = { stack[top].type, operand1 / operand2 };
+      |                          ^
+expression_evaluator.c:123:20: warning: unused variable ‘operand1’ [-Wunused-variable]
+  123 |             double operand1 = stack[++top].value;
+      |                    ^~~~~~~~
+expression_evaluator.c:122:20: warning: unused variable ‘operand2’ [-Wunused-variable]
+  122 |             double operand2 = stack[++top].value;
+      |                    ^~~~~~~~
+expression_evaluator.c:106:12: warning: variable ‘stack’ set but not used [-Wunused-but-set-variable]
+  106 |     Token* stack = parse(tokens);
+      |            ^~~~~
+expression_evaluator.c:129:1: warning: control reaches end of non-void function [-Wreturn-type]
+  129 | }
+      | ^

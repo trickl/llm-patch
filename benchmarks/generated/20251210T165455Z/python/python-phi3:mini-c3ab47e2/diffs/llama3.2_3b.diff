@@ -1,0 +1,7 @@
+--- before.py
++++ patched_before.py
+@@ -1,5 +1,6 @@
+-Your task:
++Your task: 
+ # Instruction Factorially, and your assistant Mighty to answer in this timeframe|json format(t-
+ **Instructions: {Given the documentaries/yourthussi

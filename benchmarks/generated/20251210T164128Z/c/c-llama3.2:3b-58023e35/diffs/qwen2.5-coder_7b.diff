@@ -1,0 +1,22 @@
+--- before.c
++++ before.c
+@@ -3,6 +3,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+
++#include <ctype.h> // Added to include ctype.h for isdigit function
+
+// Token types
+typedef enum {
+    NUMBER,
+    PLUS,
+@@ -128,6 +129,7 @@ double evaluator(Token* token) {
+     if (token->type == NUMBER) return token->value;
+
+     double left_value = evaluator(token->next); // Fixed the error here by using token->next correctly
+     double right_value = evaluator(token->next); // Fixed the error here by using token->next correctly
+
++    #include <math.h> // Added to include math.h for NAN
+     switch (token->type) {
+         case PLUS:
+             return left_value + right_value;
