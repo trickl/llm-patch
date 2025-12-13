@@ -215,6 +215,7 @@ class AttemptResult:
     model_slug: str
     algorithm: str
     diff_path: str
+    after_path: str | None
     patch_applied: bool
     patch_diagnostics: str | None
     compile_returncode: int | None
@@ -519,6 +520,9 @@ def evaluate_case(
             patched_code: str
             patch_applied: bool
             diagnostics: str
+            after_filename = f"after__{model_slug}__{algo_key}.{language_cfg.extension}"
+            after_abs_path = case_dir / after_filename
+            after_relative_path: str | None = None
             if algo_key == "git":
                 patched_code, patch_applied, diagnostics = apply_git_patch(before_code, diff_text, language_cfg.filename)
             elif algo_key in {"diff-match-patch", "dmp"}:
@@ -532,6 +536,8 @@ def evaluate_case(
             errors_after: int | None = None
             first_error_removed = False
             if patch_applied:
+                after_abs_path.write_text(patched_code, encoding="utf-8")
+                after_relative_path = str(after_abs_path.relative_to(case_dir))
                 compile_outcome = run_compile(patched_code, language_cfg, compile_cmd)
                 errors_after = count_error_lines(compile_outcome.stderr, compile_outcome.stdout)
                 if first_error:
@@ -539,6 +545,8 @@ def evaluate_case(
                     first_error_removed = first_error not in combined
                 else:
                     first_error_removed = True
+            else:
+                after_abs_path.unlink(missing_ok=True)
             notes = ""
             if stats.delete_only:
                 notes = "diff only deletes lines"
@@ -548,6 +556,7 @@ def evaluate_case(
                 model_slug=model_slug,
                 algorithm=algo_key,
                 diff_path=str(diff_path.relative_to(case_dir)),
+                after_path=after_relative_path,
                 patch_applied=patch_applied,
                 patch_diagnostics=diagnostics,
                 compile_returncode=None if compile_outcome is None else compile_outcome.returncode,
