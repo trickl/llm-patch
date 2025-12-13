@@ -2,8 +2,8 @@ export type QualityFlag = 'good' | 'poor'
 export type FinalOutcome = 'good' | 'bad' | 'pending'
 
 export interface CaseMetrics {
-  sourceQuality: QualityFlag
-  diffQuality: QualityFlag
+  sourceQuality: QualityFlag | null
+  diffQuality: QualityFlag | null
   finalOutcome: FinalOutcome
 }
 
@@ -44,16 +44,14 @@ export interface CaseDetail {
 }
 
 export interface AnnotationState extends CaseMetrics {
-  notes: string
   updatedAt: string | null
   updatedBy: string | null
 }
 
 export const defaultAnnotation: AnnotationState = {
-  sourceQuality: 'good',
-  diffQuality: 'good',
+  sourceQuality: null,
+  diffQuality: null,
   finalOutcome: 'pending',
-  notes: '',
   updatedAt: null,
   updatedBy: null,
 }

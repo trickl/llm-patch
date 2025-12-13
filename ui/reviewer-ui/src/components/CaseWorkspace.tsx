@@ -1,9 +1,11 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type MutableRefObject, type ReactNode } from 'react'
+import clsx from 'clsx'
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
 import { Editor } from '@monaco-editor/react'
 import type { editor as MonacoEditor } from 'monaco-editor'
-import type { AnnotationState, CaseDetail } from '../types'
-import { AnnotationPanel } from './AnnotationPanel'
+import type { AnnotationState, CaseDetail, FinalOutcome, QualityFlag } from '../types'
+import { useReviewStore } from '../store/useReviewStore'
+import { parseDiagnostics, type CompilerDiagnostic } from '../utils/diagnostics'
 
 type MonacoApi = typeof import('monaco-editor')
 
@@ -21,14 +23,9 @@ const languageMap: Record<string, string> = {
   cpp: 'cpp',
 }
 
-interface CompilerDiagnostic {
-  line: number
-  column: number
-  message: string
-}
-
 export function CaseWorkspace({ detail, annotation }: CaseWorkspaceProps) {
   const [activeDockTab, setActiveDockTab] = useState<'diff' | 'errors'>('diff')
+  const updateMetrics = useReviewStore((state) => state.updateMetrics)
   const [beforeEditor, setBeforeEditor] = useState<MonacoEditor.IStandaloneCodeEditor | null>(null)
   const [afterEditor, setAfterEditor] = useState<MonacoEditor.IStandaloneCodeEditor | null>(null)
   const scrollSyncGuard = useRef(false)
@@ -45,7 +42,10 @@ export function CaseWorkspace({ detail, annotation }: CaseWorkspaceProps) {
     }
   }, [detail.summary.id])
 
-  const diagnostics = useMemo(() => extractDiagnostics(detail.errors.stderr), [detail.errors.stderr])
+  const diagnostics = useMemo(
+    () => parseDiagnostics(detail.errors.stderr, detail.summary.language),
+    [detail.errors.stderr, detail.summary.language],
+  )
   const patchFailed = !detail.summary.patchApplied
   const afterMissing = detail.derived.afterSource === 'missing'
   const afterUnavailable = patchFailed || afterMissing
@@ -53,6 +53,28 @@ export function CaseWorkspace({ detail, annotation }: CaseWorkspaceProps) {
   const afterValue = afterUnavailable ? '' : detail.after
   const diffLineCount = detail.diff.split('\n').length
   const stderrLineCount = countNonEmptyLines(detail.errors.stderr)
+  const hasAfterFile = !afterUnavailable
+
+  const handleSourceReview = useCallback(
+    (value: QualityFlag | null) => {
+      updateMetrics(detail.summary.id, { sourceQuality: value ?? null })
+    },
+    [detail.summary.id, updateMetrics],
+  )
+
+  const handleDiffReview = useCallback(
+    (value: QualityFlag | null) => {
+      updateMetrics(detail.summary.id, { diffQuality: value ?? null })
+    },
+    [detail.summary.id, updateMetrics],
+  )
+
+  const handleFinalOutcome = useCallback(
+    (value: FinalOutcome) => {
+      updateMetrics(detail.summary.id, { finalOutcome: value })
+    },
+    [detail.summary.id, updateMetrics],
+  )
 
   const handleBeforeMount = useCallback((editor: MonacoEditor.IStandaloneCodeEditor) => {
     setBeforeEditor(editor)
@@ -104,7 +126,7 @@ export function CaseWorkspace({ detail, annotation }: CaseWorkspaceProps) {
       <PanelGroup className="workspace__panels" direction="vertical">
         <Panel minSize={40} defaultSize={65} order={1}>
           <PanelGroup direction="horizontal">
-            <Panel minSize={25} defaultSize={35}>
+            <Panel minSize={30} defaultSize={50}>
               <EditorSection
                 key={modelPaths.before}
                 title="Before"
@@ -113,10 +135,17 @@ export function CaseWorkspace({ detail, annotation }: CaseWorkspaceProps) {
                 modelPath={modelPaths.before}
                 diagnostics={diagnostics}
                 onEditorMount={handleBeforeMount}
+                headerActions={
+                  <QualityReviewButtons
+                    value={annotation.sourceQuality}
+                    onChange={handleSourceReview}
+                    ariaLabel="Review source quality"
+                  />
+                }
               />
             </Panel>
             <PanelResizeHandle className="resize-handle vertical" />
-            <Panel minSize={25} defaultSize={35}>
+            <Panel minSize={30} defaultSize={50}>
               <EditorSection
                 key={modelPaths.after}
                 title="After"
@@ -126,13 +155,15 @@ export function CaseWorkspace({ detail, annotation }: CaseWorkspaceProps) {
                 diagnostics={diagnostics}
                 placeholder={afterPlaceholder}
                 onEditorMount={handleAfterMount}
-              />
-            </Panel>
-            <PanelResizeHandle className="resize-handle vertical" />
-            <Panel minSize={20} defaultSize={30}>
-              <AnnotationPanel
-                caseId={detail.summary.id}
-                annotation={annotation}
+                headerActions={
+                  hasAfterFile ? (
+                    <FinalOutcomeButtons
+                      value={annotation.finalOutcome}
+                      onChange={handleFinalOutcome}
+                      ariaLabel="Final application review"
+                    />
+                  ) : undefined
+                }
               />
             </Panel>
           </PanelGroup>
@@ -141,36 +172,48 @@ export function CaseWorkspace({ detail, annotation }: CaseWorkspaceProps) {
         <Panel minSize={25} defaultSize={35} order={2}>
           <section className="dock-panel">
             <div className="dock-panel__header">
-              <div>
-                <h3>{activeDockTab === 'diff' ? 'Unified Diff' : 'Compiler Errors'}</h3>
-                <p>
-                  {activeDockTab === 'diff'
-                    ? `${diffLineCount} lines · ${detail.summary.diffName}`
-                    : `${stderrLineCount} stderr lines`}
-                </p>
+              <div className="dock-panel__header-left">
+                <div>
+                  <h3>{activeDockTab === 'diff' ? 'Unified Diff' : 'Compiler Errors'}</h3>
+                  <p>
+                    {activeDockTab === 'diff'
+                      ? `${diffLineCount} lines · ${detail.summary.diffName}`
+                      : `${stderrLineCount} stderr lines`}
+                  </p>
+                </div>
+                {activeDockTab === 'diff' && detail.derived.afterSource === 'missing' && (
+                  <span className="dock-panel__warning">After file unavailable; showing original</span>
+                )}
               </div>
-              {activeDockTab === 'diff' && detail.derived.afterSource === 'missing' && (
-                <span className="dock-panel__warning">After file unavailable; showing original</span>
-              )}
-              <div className="dock-panel__tabs" role="tablist" aria-label="Diff and errors toggle">
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={activeDockTab === 'diff'}
-                  className={activeDockTab === 'diff' ? 'dock-panel__tab dock-panel__tab--active' : 'dock-panel__tab'}
-                  onClick={() => setActiveDockTab('diff')}
-                >
-                  Diff
-                </button>
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={activeDockTab === 'errors'}
-                  className={activeDockTab === 'errors' ? 'dock-panel__tab dock-panel__tab--active' : 'dock-panel__tab'}
-                  onClick={() => setActiveDockTab('errors')}
-                >
-                  Errors
-                </button>
+              <div className="dock-panel__header-right">
+                {activeDockTab === 'diff' && (
+                  <QualityReviewButtons
+                    value={annotation.diffQuality}
+                    onChange={handleDiffReview}
+                    ariaLabel="Review diff quality"
+                    size="sm"
+                  />
+                )}
+                <div className="dock-panel__tabs" role="tablist" aria-label="Diff and errors toggle">
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={activeDockTab === 'diff'}
+                    className={activeDockTab === 'diff' ? 'dock-panel__tab dock-panel__tab--active' : 'dock-panel__tab'}
+                    onClick={() => setActiveDockTab('diff')}
+                  >
+                    Diff
+                  </button>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={activeDockTab === 'errors'}
+                    className={activeDockTab === 'errors' ? 'dock-panel__tab dock-panel__tab--active' : 'dock-panel__tab'}
+                    onClick={() => setActiveDockTab('errors')}
+                  >
+                    Errors
+                  </button>
+                </div>
               </div>
             </div>
             <div className="dock-panel__content">
@@ -197,7 +240,10 @@ interface EditorSectionProps {
   diagnostics: CompilerDiagnostic[]
   placeholder?: string
   onEditorMount?: (editor: MonacoEditor.IStandaloneCodeEditor) => void
+  headerActions?: ReactNode
 }
+
+type EditorDisposable = ReturnType<MonacoEditor.IStandaloneCodeEditor['onDidScrollChange']>
 
 function ErrorsPanel({ stderr, stdout }: { stderr: string; stdout: string }) {
   return (
@@ -213,25 +259,80 @@ function ErrorsPanel({ stderr, stdout }: { stderr: string; stdout: string }) {
   )
 }
 
-function EditorSection({ title, value, language, modelPath, diagnostics, placeholder, onEditorMount }: EditorSectionProps) {
+function EditorSection({ title, value, language, modelPath, diagnostics, placeholder, onEditorMount, headerActions }: EditorSectionProps) {
   const modelRef = useRef<MonacoEditor.ITextModel | null>(null)
   const monacoRef = useRef<MonacoApi | null>(null)
+  const editorRef = useRef<MonacoEditor.IStandaloneCodeEditor | null>(null)
+  const decorationsRef = useRef<string[]>([])
+  const badgeListenersRef = useRef<EditorDisposable[]>([])
+  const lineLeaderRef = useRef<CompilerDiagnostic[]>([])
+  const [badgePositions, setBadgePositions] = useState<InlineBadgePosition[]>([])
 
   useEffect(() => {
     if (!modelRef.current || !monacoRef.current) return
-    applyDiagnostics(monacoRef.current, modelRef.current, diagnostics)
+    syncDiagnostics(monacoRef.current, modelRef.current, editorRef.current, decorationsRef, diagnostics)
   }, [diagnostics])
 
   useEffect(() => () => {
     if (modelRef.current && monacoRef.current) {
       monacoRef.current.editor.setModelMarkers(modelRef.current, 'compiler', [])
     }
+    if (editorRef.current && decorationsRef.current.length) {
+      editorRef.current.deltaDecorations(decorationsRef.current, [])
+    }
+    decorationsRef.current = []
+    disposeBadgeListeners(badgeListenersRef)
+    editorRef.current = null
+    setBadgePositions([])
   }, [])
+
+  const updateBadgePositions = useCallback(() => {
+    const editor = editorRef.current
+    if (!editor) {
+      setBadgePositions([])
+      return
+    }
+    const editorDomNode = editor.getDomNode()
+    const parent = editorDomNode?.parentElement
+    if (!editorDomNode || !parent) {
+      setBadgePositions([])
+      return
+    }
+    const parentRect = parent.getBoundingClientRect()
+    const editorRect = editorDomNode.getBoundingClientRect()
+    const offsetTop = editorRect.top - parentRect.top
+    const offsetLeft = editorRect.left - parentRect.left
+    const leaders = lineLeaderRef.current
+    const badges: InlineBadgePosition[] = []
+    for (let index = 0; index < leaders.length; index += 1) {
+      const diag = leaders[index]
+      const visible = editor.getScrolledVisiblePosition({
+        lineNumber: Math.max(1, diag.line),
+        column: Math.max(1, diag.column),
+      })
+      if (!visible) continue
+      badges.push({
+        id: `${diag.line}-${diag.column}-${index}`,
+        severity: diag.severity,
+        message: diag.message,
+        top: visible.top + offsetTop - 6,
+        left: visible.left + offsetLeft + 8,
+      })
+    }
+    setBadgePositions(badges)
+  }, [])
+
+  useEffect(() => {
+    lineLeaderRef.current = selectLineLeaders(diagnostics)
+    updateBadgePositions()
+  }, [diagnostics, updateBadgePositions])
+
 
   return (
     <section className="editor-pane">
       <header className="editor-pane__header">
         <h3>{title}</h3>
+        {headerActions && <div className="editor-pane__header-actions">{headerActions}</div>}
       </header>
       <div className="editor-pane__body">
         <Editor
@@ -249,70 +350,262 @@ function EditorSection({ title, value, language, modelPath, diagnostics, placeho
             scrollBeyondLastLine: false,
             smoothScrolling: true,
             renderWhitespace: 'selection',
+            renderValidationDecorations: 'on',
+            glyphMargin: true,
           }}
           height="100%"
           onMount={(editorInstance, monaco) => {
             modelRef.current = editorInstance.getModel()
             monacoRef.current = monaco
+            editorRef.current = editorInstance
             if (modelRef.current) {
-              applyDiagnostics(monaco, modelRef.current, diagnostics)
+              syncDiagnostics(monaco, modelRef.current, editorRef.current, decorationsRef, diagnostics)
             }
+            disposeBadgeListeners(badgeListenersRef)
+            badgeListenersRef.current = [
+              editorInstance.onDidScrollChange(() => updateBadgePositions()),
+              editorInstance.onDidLayoutChange(() => updateBadgePositions()),
+              editorInstance.onDidContentSizeChange(() => updateBadgePositions()),
+            ]
+            updateBadgePositions()
+            editorInstance.onDidDispose(() => {
+              if (decorationsRef.current.length) {
+                editorInstance.deltaDecorations(decorationsRef.current, [])
+                decorationsRef.current = []
+              }
+              disposeBadgeListeners(badgeListenersRef)
+              editorRef.current = null
+              modelRef.current = null
+              setBadgePositions([])
+            })
             onEditorMount?.(editorInstance)
           }}
         />
         {placeholder && <div className="editor-pane__placeholder">{placeholder}</div>}
+        <div className="diagnostic-badge-layer" aria-hidden="true">
+          {badgePositions.map((badge) => (
+            <div
+              key={badge.id}
+              className={clsx('diagnostic-inline-badge', `diagnostic-inline-badge--${badge.severity}`)}
+              style={{ top: `${badge.top}px`, left: `${badge.left}px` }}
+            >
+              <span className="diagnostic-inline-badge__icon">{severityIcon(badge.severity)}</span>
+              <span className="diagnostic-inline-badge__text">{truncateMessage(badge.message, 90)}</span>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   )
 }
 
-function applyDiagnostics(monaco: MonacoApi, model: MonacoEditor.ITextModel, diagnostics: CompilerDiagnostic[]) {
+interface QualityReviewButtonsProps {
+  value: QualityFlag | null
+  onChange: (value: QualityFlag | null) => void
+  ariaLabel: string
+  size?: 'sm' | 'md'
+}
+
+function QualityReviewButtons({ value, onChange, ariaLabel, size = 'md' }: QualityReviewButtonsProps) {
+  return (
+    <div className={clsx('review-toggle', size === 'sm' && 'review-toggle--sm')} role="group" aria-label={ariaLabel}>
+      {QUALITY_OPTIONS.map((option) => {
+        const isActive = value === option.value
+        return (
+          <button
+            key={option.value}
+            type="button"
+            aria-pressed={isActive}
+            aria-label={option.label}
+            title={option.label}
+            className={clsx('review-toggle__button', `review-toggle__button--${option.value}`, isActive && 'is-active')}
+            onClick={() => onChange(isActive ? null : option.value)}
+          >
+            <span aria-hidden="true">{option.icon}</span>
+          </button>
+        )
+      })}
+    </div>
+  )
+}
+
+interface FinalOutcomeButtonsProps {
+  value: FinalOutcome
+  onChange: (value: FinalOutcome) => void
+  ariaLabel: string
+}
+
+function FinalOutcomeButtons({ value, onChange, ariaLabel }: FinalOutcomeButtonsProps) {
+  return (
+    <div className="review-toggle" role="group" aria-label={ariaLabel}>
+      {FINAL_OPTIONS.map((option) => {
+        const isActive = value === option.value
+        return (
+          <button
+            key={option.value}
+            type="button"
+            aria-pressed={isActive}
+            aria-label={option.label}
+            title={option.label}
+            className={clsx('review-toggle__button', `review-toggle__button--${option.tone}`, isActive && 'is-active')}
+            onClick={() => onChange(isActive ? 'pending' : option.value)}
+          >
+            <span aria-hidden="true">{option.icon}</span>
+          </button>
+        )
+      })}
+    </div>
+  )
+}
+
+const QUALITY_OPTIONS: { value: QualityFlag; label: string; icon: string }[] = [
+  { value: 'good', label: 'Mark as good', icon: '✔' },
+  { value: 'poor', label: 'Mark as bad', icon: '✖' },
+]
+
+const FINAL_OPTIONS: { value: Exclude<FinalOutcome, 'pending'>; label: string; icon: string; tone: 'good' | 'poor' }[] = [
+  { value: 'good', label: 'Approve patched file', icon: '✔', tone: 'good' },
+  { value: 'bad', label: 'Reject patched file', icon: '✖', tone: 'poor' },
+]
+
+function syncDiagnostics(
+  monaco: MonacoApi,
+  model: MonacoEditor.ITextModel,
+  editor: MonacoEditor.IStandaloneCodeEditor | null,
+  decorationsRef: MutableRefObject<string[]>,
+  diagnostics: CompilerDiagnostic[],
+) {
+  applyMarkers(monaco, model, diagnostics)
+  if (editor) {
+    applyDecorations(monaco, editor, decorationsRef, diagnostics)
+  }
+}
+
+function applyMarkers(monaco: MonacoApi, model: MonacoEditor.ITextModel, diagnostics: CompilerDiagnostic[]) {
   const markers = diagnostics.slice(0, 100).map((diag) => ({
-    startLineNumber: diag.line,
-    endLineNumber: diag.line,
-    startColumn: diag.column,
-    endColumn: diag.column + 1,
+    startLineNumber: Math.max(1, diag.line),
+    endLineNumber: Math.max(1, diag.line),
+    startColumn: Math.max(1, diag.column),
+    endColumn: Math.max(1, diag.column + 1),
     message: diag.message,
-    severity: monaco.MarkerSeverity.Error,
+    severity: mapSeverity(monaco, diag.severity),
   }))
   monaco.editor.setModelMarkers(model, 'compiler', markers)
 }
 
-function extractDiagnostics(stderr: string): CompilerDiagnostic[] {
-  if (!stderr) return []
-  const diagnostics: CompilerDiagnostic[] = []
-  for (const line of stderr.split('\n')) {
-    const parsed = parseDiagnosticLine(line)
-    if (parsed) {
-      diagnostics.push(parsed)
+function applyDecorations(
+  monaco: MonacoApi,
+  editor: MonacoEditor.IStandaloneCodeEditor,
+  decorationsRef: MutableRefObject<string[]>,
+  diagnostics: CompilerDiagnostic[],
+) {
+  const capped = diagnostics.slice(0, 100)
+  const lineLeaders = pickLineLeaders(capped)
+
+  const decorations = capped.map((diag) => {
+    const hoverMessage = createHoverMessage(diag.message)
+    const showLabel = lineLeaders.get(diag.line) === diag
+    return {
+      range: new monaco.Range(
+        Math.max(1, diag.line),
+        Math.max(1, diag.column),
+        Math.max(1, diag.line),
+        Math.max(1, diag.column + 1),
+      ),
+      options: {
+        inlineClassName: `diagnostic-inline diagnostic-inline--${diag.severity}`,
+        beforeContentClassName: `diagnostic-anchor diagnostic-anchor--${diag.severity}`,
+        glyphMarginClassName: `diagnostic-gutter diagnostic-gutter--${diag.severity}`,
+        linesDecorationsClassName: `diagnostic-line diagnostic-line--${diag.severity}`,
+        hoverMessage,
+        stickiness: monaco.editor.TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
+        renderOptions: showLabel
+          ? {
+              after: {
+                contentText: truncateMessage(diag.message),
+                inlineClassName: `diagnostic-tooltip diagnostic-tooltip--${diag.severity}`,
+              },
+            }
+          : undefined,
+      },
     }
-    if (diagnostics.length >= 100) {
-      break
-    }
-  }
-  return diagnostics
+  })
+  decorationsRef.current = editor.deltaDecorations(decorationsRef.current, decorations)
 }
 
-function parseDiagnosticLine(line: string): CompilerDiagnostic | null {
-  const trimmed = line.trim()
-  if (!trimmed) return null
-  const colonMatch = trimmed.match(/:(\d+)(?::(\d+))?/)
-  if (colonMatch) {
-    return {
-      line: Number.parseInt(colonMatch[1] ?? '1', 10) || 1,
-      column: Number.parseInt(colonMatch[2] ?? '1', 10) || 1,
-      message: trimmed,
+function pickLineLeaders(diagnostics: CompilerDiagnostic[]): Map<number, CompilerDiagnostic> {
+  const leaders = new Map<number, CompilerDiagnostic>()
+  for (const diag of diagnostics) {
+    const current = leaders.get(diag.line)
+    if (!current || severityRank(diag.severity) < severityRank(current.severity)) {
+      leaders.set(diag.line, diag)
     }
   }
-  const lineMatch = trimmed.match(/line\s+(\d+)/i)
-  if (lineMatch) {
-    return {
-      line: Number.parseInt(lineMatch[1] ?? '1', 10) || 1,
-      column: 1,
-      message: trimmed,
-    }
+  return leaders
+}
+
+function severityRank(severity: CompilerDiagnostic['severity']) {
+  switch (severity) {
+    case 'error':
+      return 0
+    case 'warning':
+      return 1
+    default:
+      return 2
   }
-  return null
+}
+
+function truncateMessage(message: string, limit = 120): string {
+  const singleLine = message.replace(/\s+/g, ' ').trim()
+  if (singleLine.length <= limit) return singleLine
+  return `${singleLine.slice(0, limit - 1)}…`
+}
+
+function createHoverMessage(message: string) {
+  const escapedTicks = message.replace(/`/g, '\\`')
+  const safe = escapedTicks.replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  return { value: `\`${safe}\`` }
+}
+
+function selectLineLeaders(diagnostics: CompilerDiagnostic[]): CompilerDiagnostic[] {
+  return Array.from(pickLineLeaders(diagnostics).values())
+}
+
+interface InlineBadgePosition {
+  id: string
+  severity: CompilerDiagnostic['severity']
+  message: string
+  top: number
+  left: number
+}
+
+function disposeBadgeListeners(ref: MutableRefObject<EditorDisposable[]>) {
+  for (const disposable of ref.current) {
+    disposable.dispose()
+  }
+  ref.current = []
+}
+
+function severityIcon(severity: CompilerDiagnostic['severity']) {
+  switch (severity) {
+    case 'warning':
+      return '⚠'
+    case 'info':
+      return 'ℹ'
+    default:
+      return '✖'
+  }
+}
+
+function mapSeverity(monaco: MonacoApi, severity: CompilerDiagnostic['severity']) {
+  switch (severity) {
+    case 'warning':
+      return monaco.MarkerSeverity.Warning
+    case 'info':
+      return monaco.MarkerSeverity.Info
+    default:
+      return monaco.MarkerSeverity.Error
+  }
 }
 
 function countNonEmptyLines(value: string): number {

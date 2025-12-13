@@ -46,7 +46,6 @@ interface ReviewActions {
   fetchCaseDetail: (caseId: string) => Promise<void>
   selectCase: (caseId: string | null) => void
   updateMetrics: (caseId: string, updates: Partial<CaseMetrics>) => void
-  updateNotes: (caseId: string, notes: string) => void
   markFinalOutcome: (caseId: string, outcome: FinalOutcome) => void
   setFilterValues: <K extends FilterKey>(key: K, values: FiltersState[K]) => void
   clearFilters: () => void
@@ -75,7 +74,6 @@ type ReviewAction =
   | { type: 'FETCH_CASE_DETAIL_FAILURE'; caseId: string; error: string }
   | { type: 'SELECT_CASE'; caseId: string | null }
   | { type: 'UPDATE_METRICS'; caseId: string; updates: Partial<CaseMetrics> }
-  | { type: 'UPDATE_NOTES'; caseId: string; notes: string }
   | { type: 'SET_FILTER_VALUES'; key: FilterKey; values: FiltersState[FilterKey] }
   | { type: 'CLEAR_FILTERS' }
 
@@ -121,14 +119,6 @@ function reviewReducer(state: ReviewDataState, action: ReviewAction): ReviewData
         annotations: {
           ...state.annotations,
           [action.caseId]: annotate(state.annotations[action.caseId], action.updates),
-        },
-      }
-    case 'UPDATE_NOTES':
-      return {
-        ...state,
-        annotations: {
-          ...state.annotations,
-          [action.caseId]: annotate(state.annotations[action.caseId], undefined, action.notes),
         },
       }
     case 'SET_FILTER_VALUES':
@@ -189,10 +179,6 @@ export function ReviewProvider({ children }: { children: ReactNode }) {
     dispatch({ type: 'UPDATE_METRICS', caseId, updates })
   }, [])
 
-  const updateNotes = useCallback((caseId: string, notes: string) => {
-    dispatch({ type: 'UPDATE_NOTES', caseId, notes })
-  }, [])
-
   const markFinalOutcome = useCallback(
     (caseId: string, outcome: FinalOutcome) => {
       updateMetrics(caseId, { finalOutcome: outcome })
@@ -218,12 +204,11 @@ export function ReviewProvider({ children }: { children: ReactNode }) {
       fetchCaseDetail: fetchCaseDetailAction,
       selectCase,
       updateMetrics,
-      updateNotes,
       markFinalOutcome,
       setFilterValues,
       clearFilters,
     }),
-    [state, fetchCases, fetchCaseDetailAction, selectCase, updateMetrics, updateNotes, markFinalOutcome, setFilterValues, clearFilters],
+    [state, fetchCases, fetchCaseDetailAction, selectCase, updateMetrics, markFinalOutcome, setFilterValues, clearFilters],
   )
 
   return createElement(ReviewContext.Provider, { value: contextValue, children })
@@ -242,20 +227,14 @@ export function useReviewStore<T>(selector: (state: ReviewContextValue) => T): T
   return selector(context)
 }
 
-function annotate(
-  existing: AnnotationState | undefined,
-  updates?: Partial<CaseMetrics>,
-  notes?: string,
-): AnnotationState {
+function annotate(existing: AnnotationState | undefined, updates?: Partial<CaseMetrics>): AnnotationState {
   const nextMetrics = {
     ...defaultAnnotation,
     ...existing,
     ...updates,
   }
-  const nextNotes = notes ?? existing?.notes ?? defaultAnnotation.notes
   return {
     ...nextMetrics,
-    notes: nextNotes,
     updatedAt: new Date().toISOString(),
     updatedBy: 'local-reviewer',
   }

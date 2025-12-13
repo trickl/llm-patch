@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import clsx from 'clsx'
 import {
   Autocomplete,
@@ -12,7 +12,7 @@ import {
 import type { AnnotationState, CaseSummary } from '../types'
 import { defaultAnnotation } from '../types'
 import type { FiltersState, FilterKey } from '../store/useReviewStore'
-import { CASE_STATUS_OPTIONS, deriveCaseStatus } from '../utils/caseFilters'
+import { CASE_STATUS_OPTIONS, deriveCaseStatus, type CaseStatusFilter } from '../utils/caseFilters'
 
 interface CaseSidebarProps {
   cases: CaseSummary[]
@@ -25,6 +25,34 @@ interface CaseSidebarProps {
   filters: FiltersState
   onSetFilterValues: (key: FilterKey, values: string[]) => void
   onClearFilters: () => void
+}
+
+interface AlgorithmGroup {
+  key: string
+  label: string
+  count: number
+  statuses: StatusGroup[]
+}
+
+interface StatusGroup {
+  key: CaseStatusFilter
+  label: string
+  count: number
+  models: ModelGroup[]
+}
+
+interface ModelGroup {
+  key: string
+  label: string
+  count: number
+  languages: LanguageGroup[]
+}
+
+interface LanguageGroup {
+  key: string
+  label: string
+  count: number
+  cases: CaseSummary[]
 }
 
 export function CaseSidebar({
@@ -58,6 +86,151 @@ export function CaseSidebar({
     [allCases],
   )
   const statusOptions = useMemo(() => buildStatusOptions(allCases), [allCases])
+  const [expandedNodes, setExpandedNodes] = useState<Record<string, boolean>>({})
+  const caseTree = useMemo(() => buildCaseTree(cases), [cases])
+  const isNodeExpanded = useCallback((nodeId: string) => expandedNodes[nodeId] ?? true, [expandedNodes])
+  const toggleNode = useCallback((nodeId: string) => {
+    setExpandedNodes((prev) => ({
+      ...prev,
+      [nodeId]: !(prev[nodeId] ?? true),
+    }))
+  }, [])
+
+  const renderCaseEntry = useCallback((testCase: CaseSummary) => {
+    const active = testCase.id === selectedId
+    const annotation = annotations[testCase.id] ?? defaultAnnotation
+    return (
+      <li key={testCase.id}>
+        <button
+          type="button"
+          className={clsx('sidebar__item', 'sidebar__item--compact', active && 'sidebar__item--active')}
+          onClick={() => onSelect(testCase.id)}
+        >
+          <div className="sidebar__item-main">
+            <div>
+              <span className="sidebar__item-title">{testCase.filePath}</span>
+              <span className="sidebar__item-subtitle">{testCase.modelSlug}</span>
+            </div>
+            <span className="sidebar__item-subtitle">{testCase.diffName}</span>
+          </div>
+          <div className="sidebar__chips">
+            <StatusChip label="Src" value={annotation.sourceQuality} />
+            <StatusChip label="Diff" value={annotation.diffQuality} />
+            <OutcomeChip value={annotation.finalOutcome} />
+            <PatchChip applied={testCase.patchApplied} success={testCase.success} />
+          </div>
+        </button>
+      </li>
+    )
+  }, [annotations, onSelect, selectedId])
+
+  const renderLanguageBranch = useCallback((language: LanguageGroup, prefix: string) => {
+    const nodeId = `${prefix}|lang:${language.key}`
+    const expanded = isNodeExpanded(nodeId)
+    const containsSelection = language.cases.some((entry) => entry.id === selectedId)
+    return (
+      <div
+        key={nodeId}
+        className={clsx(
+          'case-tree__node',
+          'case-tree__node--level-3',
+          containsSelection && 'is-highlighted',
+          expanded && 'is-expanded',
+        )}
+      >
+        <button type="button" className="case-tree__toggle" onClick={() => toggleNode(nodeId)} aria-expanded={expanded}>
+          <span>{language.label}</span>
+          <span className="case-tree__count">{language.count}</span>
+        </button>
+        {expanded && <ul className="case-tree__cases">{language.cases.map(renderCaseEntry)}</ul>}
+      </div>
+    )
+  }, [isNodeExpanded, renderCaseEntry, selectedId, toggleNode])
+
+  const renderModelBranch = useCallback((model: ModelGroup, prefix: string) => {
+    const nodeId = `${prefix}|model:${model.key}`
+    const expanded = isNodeExpanded(nodeId)
+    const containsSelection = model.languages.some((language) => language.cases.some((entry) => entry.id === selectedId))
+    return (
+      <div
+        key={nodeId}
+        className={clsx(
+          'case-tree__node',
+          'case-tree__node--level-2',
+          containsSelection && 'is-highlighted',
+          expanded && 'is-expanded',
+        )}
+      >
+        <button type="button" className="case-tree__toggle" onClick={() => toggleNode(nodeId)} aria-expanded={expanded}>
+          <span>{model.label}</span>
+          <span className="case-tree__count">{model.count}</span>
+        </button>
+        {expanded && (
+          <div className="case-tree__children">
+            {model.languages.map((language) => renderLanguageBranch(language, nodeId))}
+          </div>
+        )}
+      </div>
+    )
+  }, [isNodeExpanded, renderLanguageBranch, selectedId, toggleNode])
+
+  const renderStatusBranch = useCallback((status: StatusGroup, prefix: string) => {
+    const nodeId = `${prefix}|status:${status.key}`
+    const expanded = isNodeExpanded(nodeId)
+    const containsSelection = status.models.some((model) =>
+      model.languages.some((language) => language.cases.some((entry) => entry.id === selectedId)),
+    )
+    return (
+      <div
+        key={nodeId}
+        className={clsx(
+          'case-tree__node',
+          'case-tree__node--level-1',
+          containsSelection && 'is-highlighted',
+          expanded && 'is-expanded',
+        )}
+      >
+        <button type="button" className="case-tree__toggle" onClick={() => toggleNode(nodeId)} aria-expanded={expanded}>
+          <span>{status.label}</span>
+          <span className="case-tree__count">{status.count}</span>
+        </button>
+        {expanded && (
+          <div className="case-tree__children">
+            {status.models.map((model) => renderModelBranch(model, nodeId))}
+          </div>
+        )}
+      </div>
+    )
+  }, [isNodeExpanded, renderModelBranch, selectedId, toggleNode])
+
+  const renderAlgorithmBranch = useCallback((algorithm: AlgorithmGroup) => {
+    const nodeId = `algorithm:${algorithm.key}`
+    const expanded = isNodeExpanded(nodeId)
+    const containsSelection = algorithm.statuses.some((status) =>
+      status.models.some((model) => model.languages.some((language) => language.cases.some((entry) => entry.id === selectedId))),
+    )
+    return (
+      <div
+        key={nodeId}
+        className={clsx(
+          'case-tree__node',
+          'case-tree__node--level-0',
+          containsSelection && 'is-highlighted',
+          expanded && 'is-expanded',
+        )}
+      >
+        <button type="button" className="case-tree__toggle" onClick={() => toggleNode(nodeId)} aria-expanded={expanded}>
+          <span>{algorithm.label}</span>
+          <span className="case-tree__count">{algorithm.count}</span>
+        </button>
+        {expanded && (
+          <div className="case-tree__children">
+            {algorithm.statuses.map((status) => renderStatusBranch(status, nodeId))}
+          </div>
+        )}
+      </div>
+    )
+  }, [isNodeExpanded, renderStatusBranch, selectedId, toggleNode])
 
   return (
     <aside className="sidebar">
@@ -127,35 +300,13 @@ export function CaseSidebar({
       </div>
       {loading && !cases.length && <p className="sidebar__status">Loading…</p>}
       {error && <p className="sidebar__status sidebar__status--error">{error}</p>}
-      <ul className="sidebar__list">
-        {cases.map((testCase) => {
-          const active = testCase.id === selectedId
-          const annotation = annotations[testCase.id] ?? defaultAnnotation
-          return (
-            <li key={testCase.id}>
-              <button
-                type="button"
-                className={clsx('sidebar__item', active && 'sidebar__item--active')}
-                onClick={() => onSelect(testCase.id)}
-              >
-                <div className="sidebar__item-main">
-                  <div>
-                    <span className="sidebar__item-title">{testCase.filePath}</span>
-                    <span className="sidebar__item-subtitle">{testCase.modelSlug}</span>
-                  </div>
-                  <span className="sidebar__item-subtitle">{testCase.diffName}</span>
-                </div>
-                <div className="sidebar__chips">
-                  <StatusChip label="Src" value={annotation.sourceQuality} />
-                  <StatusChip label="Diff" value={annotation.diffQuality} />
-                  <OutcomeChip value={annotation.finalOutcome} />
-                  <PatchChip applied={testCase.patchApplied} success={testCase.success} />
-                </div>
-              </button>
-            </li>
-          )
-        })}
-      </ul>
+      {!loading && !cases.length ? (
+        <p className="sidebar__status">No cases match your filters.</p>
+      ) : (
+        <div className="case-tree" role="tree">
+          {caseTree.map((algorithm) => renderAlgorithmBranch(algorithm))}
+        </div>
+      )}
     </aside>
   )
 }
@@ -166,8 +317,16 @@ interface StatusChipProps {
 }
 
 function StatusChip({ label, value }: StatusChipProps) {
+  if (!value) {
+    return (
+      <span className="chip chip--unset">
+        {label && <strong>{label}: </strong>}
+        Pending
+      </span>
+    )
+  }
   return (
-    <span className={clsx('chip', `chip--${value}`)}>
+    <span className={clsx('chip', value === 'good' ? 'chip--good' : 'chip--poor')}>
       {label && <strong>{label}: </strong>}
       {value === 'good' ? 'Good' : 'Poor'}
     </span>
@@ -356,4 +515,119 @@ function buildStatusOptions(cases: CaseSummary[]): FilterOption[] {
     label: option.label,
     count: counts[option.value] ?? 0,
   }))
+}
+
+function buildCaseTree(cases: CaseSummary[]): AlgorithmGroup[] {
+  const algorithmMap = new Map<string, AlgorithmBuilder>()
+  for (const testCase of cases) {
+    const algorithmKey = testCase.algorithm || 'Unknown Algorithm'
+    const statusKey = deriveCaseStatus(testCase)
+    const modelKey = testCase.modelSlug || 'Unknown Model'
+    const languageKey = testCase.language || 'Unknown Language'
+
+    if (!algorithmMap.has(algorithmKey)) {
+      algorithmMap.set(algorithmKey, {
+        key: algorithmKey,
+        label: algorithmKey,
+        count: 0,
+        statuses: new Map(),
+      })
+    }
+    const algorithmNode = algorithmMap.get(algorithmKey)!
+    algorithmNode.count += 1
+
+    if (!algorithmNode.statuses.has(statusKey)) {
+      algorithmNode.statuses.set(statusKey, {
+        key: statusKey,
+        label: CASE_STATUS_OPTIONS.find((option) => option.value === statusKey)?.label ?? statusKey,
+        count: 0,
+        models: new Map(),
+      })
+    }
+    const statusNode = algorithmNode.statuses.get(statusKey)!
+    statusNode.count += 1
+
+    if (!statusNode.models.has(modelKey)) {
+      statusNode.models.set(modelKey, {
+        key: modelKey,
+        label: modelKey,
+        count: 0,
+        languages: new Map(),
+      })
+    }
+    const modelNode = statusNode.models.get(modelKey)!
+    modelNode.count += 1
+
+    if (!modelNode.languages.has(languageKey)) {
+      modelNode.languages.set(languageKey, {
+        key: languageKey,
+        label: languageKey,
+        cases: [],
+      })
+    }
+    const languageNode = modelNode.languages.get(languageKey)!
+    languageNode.cases.push(testCase)
+  }
+
+  return Array.from(algorithmMap.values())
+    .sort((a, b) => a.label.localeCompare(b.label))
+    .map((algorithm) => ({
+      key: algorithm.key,
+      label: algorithm.label,
+      count: algorithm.count,
+      statuses: Array.from(algorithm.statuses.values())
+        .sort((a, b) => statusOrder(a.key) - statusOrder(b.key))
+        .map((status) => ({
+          key: status.key,
+          label: status.label,
+          count: status.count,
+          models: Array.from(status.models.values())
+            .sort((a, b) => a.label.localeCompare(b.label))
+            .map((model) => ({
+              key: model.key,
+              label: model.label,
+              count: model.count,
+              languages: Array.from(model.languages.values())
+                .sort((a, b) => a.label.localeCompare(b.label))
+                .map((language) => ({
+                  key: language.key,
+                  label: language.label,
+                  count: language.cases.length,
+                  cases: [...language.cases].sort((aCase, bCase) => aCase.filePath.localeCompare(bCase.filePath)),
+                })),
+            })),
+        })),
+    }))
+}
+
+function statusOrder(value: CaseStatusFilter): number {
+  const index = CASE_STATUS_OPTIONS.findIndex((option) => option.value === value)
+  return index === -1 ? CASE_STATUS_OPTIONS.length : index
+}
+
+interface AlgorithmBuilder {
+  key: string
+  label: string
+  count: number
+  statuses: Map<CaseStatusFilter, StatusBuilder>
+}
+
+interface StatusBuilder {
+  key: CaseStatusFilter
+  label: string
+  count: number
+  models: Map<string, ModelBuilder>
+}
+
+interface ModelBuilder {
+  key: string
+  label: string
+  count: number
+  languages: Map<string, LanguageBuilder>
+}
+
+interface LanguageBuilder {
+  key: string
+  label: string
+  cases: CaseSummary[]
 }

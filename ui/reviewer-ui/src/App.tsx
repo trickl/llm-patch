@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from 'react'
+import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
 import './App.css'
 import { CaseSidebar } from './components/CaseSidebar'
 import { CaseWorkspace } from './components/CaseWorkspace'
@@ -79,21 +80,26 @@ function App() {
   })()
 
   return (
-    <div className="app-shell">
-      <CaseSidebar
-        cases={filteredCases}
-        allCases={cases}
-        annotations={annotations}
-        loading={casesLoading}
-        error={casesError}
-        selectedId={selectedId}
-        onSelect={handleSelect}
-        filters={filters}
-        onSetFilterValues={setFilterValues}
-        onClearFilters={clearFilters}
-      />
-      <main className="app-content">{content}</main>
-    </div>
+    <PanelGroup className="app-shell" direction="horizontal">
+      <Panel className="app-shell__panel" minSize={18} defaultSize={28} order={1}>
+        <CaseSidebar
+          cases={filteredCases}
+          allCases={cases}
+          annotations={annotations}
+          loading={casesLoading}
+          error={casesError}
+          selectedId={selectedId}
+          onSelect={handleSelect}
+          filters={filters}
+          onSetFilterValues={setFilterValues}
+          onClearFilters={clearFilters}
+        />
+      </Panel>
+      <PanelResizeHandle className="app-shell__handle" />
+      <Panel className="app-shell__panel app-shell__panel--content" minSize={40} defaultSize={72} order={2}>
+        <main className="app-content">{content}</main>
+      </Panel>
+    </PanelGroup>
   )
 }
 
