@@ -1,9 +1,35 @@
-import { create } from 'zustand'
+import { createContext, createElement, useCallback, useContext, useMemo, useReducer, type ReactNode } from 'react'
 import { fetchCaseDetail, fetchCaseSummaries } from '../api/client'
-import type { AnnotationState, CaseDetail, CaseSummary, CaseMetrics, FinalOutcome } from '../types'
+import type {
+  AnnotationState,
+  CaseDetail,
+  CaseSummary,
+  CaseMetrics,
+  FinalOutcome,
+} from '../types'
 import { defaultAnnotation } from '../types'
+import type { CaseStatusFilter } from '../utils/caseFilters'
+import { deriveCaseStatus } from '../utils/caseFilters'
 
-interface ReviewState {
+export type FilterKey = 'languages' | 'models' | 'algorithms' | 'statuses'
+
+export interface FiltersState {
+  languages: string[]
+  models: string[]
+  algorithms: string[]
+  statuses: CaseStatusFilter[]
+}
+
+function createEmptyFilters(): FiltersState {
+  return {
+    languages: [],
+    models: [],
+    algorithms: [],
+    statuses: [],
+  }
+}
+
+interface ReviewDataState {
   cases: CaseSummary[]
   casesLoading: boolean
   casesError: string | null
@@ -12,15 +38,23 @@ interface ReviewState {
   detailsError: Record<string, string | null>
   annotations: Record<string, AnnotationState>
   selectedId: string | null
+  filters: FiltersState
+}
+
+interface ReviewActions {
   fetchCases: () => Promise<void>
   fetchCaseDetail: (caseId: string) => Promise<void>
   selectCase: (caseId: string | null) => void
   updateMetrics: (caseId: string, updates: Partial<CaseMetrics>) => void
   updateNotes: (caseId: string, notes: string) => void
   markFinalOutcome: (caseId: string, outcome: FinalOutcome) => void
+  setFilterValues: <K extends FilterKey>(key: K, values: FiltersState[K]) => void
+  clearFilters: () => void
 }
 
-export const useReviewStore = create<ReviewState>((set, get) => ({
+type ReviewContextValue = ReviewDataState & ReviewActions
+
+const initialState: ReviewDataState = {
   cases: [],
   casesLoading: false,
   casesError: null,
@@ -29,66 +63,184 @@ export const useReviewStore = create<ReviewState>((set, get) => ({
   detailsError: {},
   annotations: {},
   selectedId: null,
-  async fetchCases() {
-    set({ casesLoading: true, casesError: null })
+  filters: createEmptyFilters(),
+}
+
+type ReviewAction =
+  | { type: 'FETCH_CASES_REQUEST' }
+  | { type: 'FETCH_CASES_SUCCESS'; payload: CaseSummary[] }
+  | { type: 'FETCH_CASES_FAILURE'; error: string }
+  | { type: 'FETCH_CASE_DETAIL_REQUEST'; caseId: string }
+  | { type: 'FETCH_CASE_DETAIL_SUCCESS'; caseId: string; detail: CaseDetail }
+  | { type: 'FETCH_CASE_DETAIL_FAILURE'; caseId: string; error: string }
+  | { type: 'SELECT_CASE'; caseId: string | null }
+  | { type: 'UPDATE_METRICS'; caseId: string; updates: Partial<CaseMetrics> }
+  | { type: 'UPDATE_NOTES'; caseId: string; notes: string }
+  | { type: 'SET_FILTER_VALUES'; key: FilterKey; values: FiltersState[FilterKey] }
+  | { type: 'CLEAR_FILTERS' }
+
+function reviewReducer(state: ReviewDataState, action: ReviewAction): ReviewDataState {
+  switch (action.type) {
+    case 'FETCH_CASES_REQUEST':
+      return { ...state, casesLoading: true, casesError: null }
+    case 'FETCH_CASES_SUCCESS': {
+      const nextSelected = state.selectedId ?? action.payload[0]?.id ?? null
+      return {
+        ...state,
+        cases: action.payload,
+        casesLoading: false,
+        casesError: null,
+        selectedId: nextSelected,
+      }
+    }
+    case 'FETCH_CASES_FAILURE':
+      return { ...state, casesLoading: false, casesError: action.error }
+    case 'FETCH_CASE_DETAIL_REQUEST':
+      return {
+        ...state,
+        detailsLoading: { ...state.detailsLoading, [action.caseId]: true },
+        detailsError: { ...state.detailsError, [action.caseId]: null },
+      }
+    case 'FETCH_CASE_DETAIL_SUCCESS':
+      return {
+        ...state,
+        caseDetails: { ...state.caseDetails, [action.caseId]: action.detail },
+        detailsLoading: { ...state.detailsLoading, [action.caseId]: false },
+      }
+    case 'FETCH_CASE_DETAIL_FAILURE':
+      return {
+        ...state,
+        detailsLoading: { ...state.detailsLoading, [action.caseId]: false },
+        detailsError: { ...state.detailsError, [action.caseId]: action.error },
+      }
+    case 'SELECT_CASE':
+      return { ...state, selectedId: action.caseId }
+    case 'UPDATE_METRICS':
+      return {
+        ...state,
+        annotations: {
+          ...state.annotations,
+          [action.caseId]: annotate(state.annotations[action.caseId], action.updates),
+        },
+      }
+    case 'UPDATE_NOTES':
+      return {
+        ...state,
+        annotations: {
+          ...state.annotations,
+          [action.caseId]: annotate(state.annotations[action.caseId], undefined, action.notes),
+        },
+      }
+    case 'SET_FILTER_VALUES':
+      return {
+        ...state,
+        filters: {
+          ...state.filters,
+          [action.key]: action.values,
+        },
+      }
+    case 'CLEAR_FILTERS':
+      return {
+        ...state,
+        filters: createEmptyFilters(),
+      }
+    default:
+      return state
+  }
+}
+
+const ReviewContext = createContext<ReviewContextValue | undefined>(undefined)
+
+export function ReviewProvider({ children }: { children: ReactNode }) {
+  const [state, dispatch] = useReducer(reviewReducer, initialState)
+
+  const fetchCases = useCallback(async () => {
+    dispatch({ type: 'FETCH_CASES_REQUEST' })
     try {
       const summaries = await fetchCaseSummaries()
-      set((state) => ({
-        cases: summaries,
-        casesLoading: false,
-        selectedId: state.selectedId ?? summaries[0]?.id ?? null,
-      }))
+      dispatch({ type: 'FETCH_CASES_SUCCESS', payload: summaries })
     } catch (error) {
-      set({
-        casesLoading: false,
-        casesError: error instanceof Error ? error.message : 'Failed to load cases',
+      dispatch({
+        type: 'FETCH_CASES_FAILURE',
+        error: error instanceof Error ? error.message : 'Failed to load cases',
       })
     }
-  },
-  async fetchCaseDetail(caseId) {
-    set((state) => ({
-      detailsLoading: { ...state.detailsLoading, [caseId]: true },
-      detailsError: { ...state.detailsError, [caseId]: null },
-    }))
+  }, [])
+
+  const fetchCaseDetailAction = useCallback(async (caseId: string) => {
+    dispatch({ type: 'FETCH_CASE_DETAIL_REQUEST', caseId })
     try {
       const detail = await fetchCaseDetail(caseId)
-      set((state) => ({
-        caseDetails: { ...state.caseDetails, [caseId]: detail },
-        detailsLoading: { ...state.detailsLoading, [caseId]: false },
-      }))
+      dispatch({ type: 'FETCH_CASE_DETAIL_SUCCESS', caseId, detail })
     } catch (error) {
-      set((state) => ({
-        detailsLoading: { ...state.detailsLoading, [caseId]: false },
-        detailsError: {
-          ...state.detailsError,
-          [caseId]: error instanceof Error ? error.message : 'Failed to load case detail',
-        },
-      }))
+      dispatch({
+        type: 'FETCH_CASE_DETAIL_FAILURE',
+        caseId,
+        error: error instanceof Error ? error.message : 'Failed to load case detail',
+      })
     }
-  },
-  selectCase(caseId) {
-    set({ selectedId: caseId })
-  },
-  updateMetrics(caseId, updates) {
-    set((state) => ({
-      annotations: {
-        ...state.annotations,
-        [caseId]: annotate(state.annotations[caseId], updates),
-      },
-    }))
-  },
-  updateNotes(caseId, notes) {
-    set((state) => ({
-      annotations: {
-        ...state.annotations,
-        [caseId]: annotate(state.annotations[caseId], undefined, notes),
-      },
-    }))
-  },
-  markFinalOutcome(caseId, outcome) {
-    get().updateMetrics(caseId, { finalOutcome: outcome })
-  },
-}))
+  }, [])
+
+  const selectCase = useCallback((caseId: string | null) => {
+    dispatch({ type: 'SELECT_CASE', caseId })
+  }, [])
+
+  const updateMetrics = useCallback((caseId: string, updates: Partial<CaseMetrics>) => {
+    dispatch({ type: 'UPDATE_METRICS', caseId, updates })
+  }, [])
+
+  const updateNotes = useCallback((caseId: string, notes: string) => {
+    dispatch({ type: 'UPDATE_NOTES', caseId, notes })
+  }, [])
+
+  const markFinalOutcome = useCallback(
+    (caseId: string, outcome: FinalOutcome) => {
+      updateMetrics(caseId, { finalOutcome: outcome })
+    },
+    [updateMetrics],
+  )
+
+  const setFilterValues = useCallback(
+    <K extends FilterKey>(key: K, values: FiltersState[K]) => {
+      dispatch({ type: 'SET_FILTER_VALUES', key, values })
+    },
+    [],
+  )
+
+  const clearFilters = useCallback(() => {
+    dispatch({ type: 'CLEAR_FILTERS' })
+  }, [])
+
+  const contextValue = useMemo<ReviewContextValue>(
+    () => ({
+      ...state,
+      fetchCases,
+      fetchCaseDetail: fetchCaseDetailAction,
+      selectCase,
+      updateMetrics,
+      updateNotes,
+      markFinalOutcome,
+      setFilterValues,
+      clearFilters,
+    }),
+    [state, fetchCases, fetchCaseDetailAction, selectCase, updateMetrics, updateNotes, markFinalOutcome, setFilterValues, clearFilters],
+  )
+
+  return createElement(ReviewContext.Provider, { value: contextValue, children })
+}
+
+function useReviewContext() {
+  const context = useContext(ReviewContext)
+  if (!context) {
+    throw new Error('useReviewStore must be used within a ReviewProvider')
+  }
+  return context
+}
+
+export function useReviewStore<T>(selector: (state: ReviewContextValue) => T): T {
+  const context = useReviewContext()
+  return selector(context)
+}
 
 function annotate(
   existing: AnnotationState | undefined,
@@ -109,15 +261,52 @@ function annotate(
   }
 }
 
-export const selectCases = (state: ReviewState) => state.cases
-export const selectCasesLoading = (state: ReviewState) => state.casesLoading
-export const selectCasesError = (state: ReviewState) => state.casesError
-export const selectSelectedCaseId = (state: ReviewState) => state.selectedId
-export const selectCaseDetail = (caseId: string | null) => (state: ReviewState) =>
+function applyFilters(cases: CaseSummary[], filters: FiltersState): CaseSummary[] {
+  if (
+    !filters.languages.length &&
+    !filters.models.length &&
+    !filters.algorithms.length &&
+    !filters.statuses.length
+  ) {
+    return cases
+  }
+  return cases.filter((summary) => {
+    if (filters.languages.length && !filters.languages.includes(summary.language)) {
+      return false
+    }
+    if (filters.models.length && !filters.models.includes(summary.modelSlug)) {
+      return false
+    }
+    if (filters.algorithms.length && !filters.algorithms.includes(summary.algorithm)) {
+      return false
+    }
+    if (filters.statuses.length) {
+      const status = deriveCaseStatus(summary)
+      if (!filters.statuses.includes(status)) {
+        return false
+      }
+    }
+    return true
+  })
+}
+
+export const selectCases = (state: ReviewContextValue) => state.cases
+export const selectFilteredCases = (state: ReviewContextValue) => applyFilters(state.cases, state.filters)
+export const selectCasesLoading = (state: ReviewContextValue) => state.casesLoading
+export const selectCasesError = (state: ReviewContextValue) => state.casesError
+export const selectSelectedCaseId = (state: ReviewContextValue) => state.selectedId
+export const selectCaseDetail = (caseId: string | null) => (state: ReviewContextValue) =>
   caseId ? state.caseDetails[caseId] ?? null : null
-export const selectDetailLoading = (caseId: string | null) => (state: ReviewState) =>
+export const selectDetailLoading = (caseId: string | null) => (state: ReviewContextValue) =>
   caseId ? Boolean(state.detailsLoading[caseId]) : false
-export const selectDetailError = (caseId: string | null) => (state: ReviewState) =>
+export const selectDetailError = (caseId: string | null) => (state: ReviewContextValue) =>
   caseId ? state.detailsError[caseId] ?? null : null
-export const selectAnnotation = (caseId: string | null) => (state: ReviewState) =>
+export const selectAnnotation = (caseId: string | null) => (state: ReviewContextValue) =>
   caseId ? state.annotations[caseId] ?? defaultAnnotation : defaultAnnotation
+export const selectFilters = (state: ReviewContextValue) => state.filters
+export const selectAnnotations = (state: ReviewContextValue) => state.annotations
+export const selectSelectCase = (state: ReviewContextValue) => state.selectCase
+export const selectFetchCases = (state: ReviewContextValue) => state.fetchCases
+export const selectFetchCaseDetail = (state: ReviewContextValue) => state.fetchCaseDetail
+export const selectClearFilters = (state: ReviewContextValue) => state.clearFilters
+export const selectSetFilterValues = (state: ReviewContextValue) => state.setFilterValues

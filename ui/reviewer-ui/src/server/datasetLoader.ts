@@ -152,7 +152,7 @@ export class DatasetLoader {
     ])
 
     let afterSource: 'dataset' | 'missing' = 'missing'
-    let after = before
+    let after = ''
     if (afterRaw !== null) {
       after = afterRaw
       afterSource = 'dataset'

@@ -1,10 +1,11 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import './App.css'
 import { CaseSidebar } from './components/CaseSidebar'
 import { CaseWorkspace } from './components/CaseWorkspace'
 import {
   useReviewStore,
   selectCases,
+  selectFilteredCases,
   selectCasesError,
   selectCasesLoading,
   selectSelectedCaseId,
@@ -12,21 +13,36 @@ import {
   selectDetailLoading,
   selectDetailError,
   selectAnnotation,
+  selectFilters,
+  selectAnnotations,
+  selectSelectCase,
+  selectFetchCases,
+  selectFetchCaseDetail,
+  selectClearFilters,
+  selectSetFilterValues,
 } from './store/useReviewStore'
 
 function App() {
   const cases = useReviewStore(selectCases)
+  const filteredCases = useReviewStore(selectFilteredCases)
   const casesLoading = useReviewStore(selectCasesLoading)
   const casesError = useReviewStore(selectCasesError)
   const selectedId = useReviewStore(selectSelectedCaseId)
-  const annotations = useReviewStore((state) => state.annotations)
-  const detail = useReviewStore(selectCaseDetail(selectedId))
-  const detailLoading = useReviewStore(selectDetailLoading(selectedId))
-  const detailError = useReviewStore(selectDetailError(selectedId))
-  const annotation = useReviewStore(selectAnnotation(selectedId))
-  const selectCase = useReviewStore((state) => state.selectCase)
-  const fetchCases = useReviewStore((state) => state.fetchCases)
-  const fetchCaseDetail = useReviewStore((state) => state.fetchCaseDetail)
+  const annotations = useReviewStore(selectAnnotations)
+  const detailSelector = useMemo(() => selectCaseDetail(selectedId), [selectedId])
+  const detailLoadingSelector = useMemo(() => selectDetailLoading(selectedId), [selectedId])
+  const detailErrorSelector = useMemo(() => selectDetailError(selectedId), [selectedId])
+  const annotationSelector = useMemo(() => selectAnnotation(selectedId), [selectedId])
+  const detail = useReviewStore(detailSelector)
+  const detailLoading = useReviewStore(detailLoadingSelector)
+  const detailError = useReviewStore(detailErrorSelector)
+  const annotation = useReviewStore(annotationSelector)
+  const filters = useReviewStore(selectFilters)
+  const selectCase = useReviewStore(selectSelectCase)
+  const fetchCases = useReviewStore(selectFetchCases)
+  const fetchCaseDetail = useReviewStore(selectFetchCaseDetail)
+  const clearFilters = useReviewStore(selectClearFilters)
+  const setFilterValues = useReviewStore(selectSetFilterValues)
 
   useEffect(() => {
     fetchCases()
@@ -65,12 +81,16 @@ function App() {
   return (
     <div className="app-shell">
       <CaseSidebar
-        cases={cases}
+        cases={filteredCases}
+        allCases={cases}
         annotations={annotations}
         loading={casesLoading}
         error={casesError}
         selectedId={selectedId}
         onSelect={handleSelect}
+        filters={filters}
+        onSetFilterValues={setFilterValues}
+        onClearFilters={clearFilters}
       />
       <main className="app-content">{content}</main>
     </div>

@@ -60,9 +60,9 @@ npm run build
    - Scans `benchmarks/generated/**/manifest.json` and all result JSON files to enumerate every `(case, model, algorithm, diff)` attempt.
    - Reads the corresponding `before.*`, `diffs/*.diff`, compiler stderr/stdout, and the persisted `after__*.EXT` snapshot recorded during patch evaluation (see `result.after_path`). If the after snapshot is missing it falls back to the before text.
    - Caches summaries in-memory and exposes JSON via `/api/cases` plus `/api/cases/:id`.
-- **Frontend**: React + Monaco + Zustand state
+- **Frontend**: React + Monaco + Context state
    - Monaco renders the before/after panes and the diff viewer; `react-resizable-panels` drives the layout splits.
-   - Zustand tracks fetched summaries/details, per-case annotation drafts (source/diff/final verdicts, notes), and the sidebar selection—all persisted client-side for now.
+   - A React Context + `useReducer` store tracks fetched summaries/details, per-case annotation drafts (source/diff/final verdicts, notes), and the sidebar selection—all persisted client-side for now.
 - **Shared schema**: API payload contracts live in `src/types.ts` so both the dataset loader and React components stay in sync.
 
 ## Data Model
