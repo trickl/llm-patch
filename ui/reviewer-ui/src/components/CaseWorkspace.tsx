@@ -36,6 +36,7 @@ const languageMap: Record<string, string> = {
 
 export function CaseWorkspace({ detail, annotation }: CaseWorkspaceProps) {
   const [activeDockTab, setActiveDockTab] = useState<DockTabId>('diff')
+  const [guidedDetailTab, setGuidedDetailTab] = useState<GuidedDetailTab>('prompt')
   const [requestedStageId, setRequestedStageId] = useState<string | null>(null)
   const [flowCopyStatus, setFlowCopyStatus] = useState<'idle' | 'copied' | 'error'>('idle')
   const updateMetrics = useReviewStore((state) => state.updateMetrics)
@@ -93,6 +94,10 @@ export function CaseWorkspace({ detail, annotation }: CaseWorkspaceProps) {
     }
     return iterationGroups.find((group) => group.iteration === activeStageTab.iteration) ?? iterationGroups[0]
   }, [iterationGroups, activeStageTab])
+  const responseAvailableForActiveStage = useMemo(
+    () => Boolean(activeStageTab?.artifact.response && activeStageTab.artifact.response.trim().length),
+    [activeStageTab],
+  )
   const dockTabs: DockTabDescriptor[] = useMemo(
     () => [
       { id: 'diff', label: 'Diff', shortLabel: 'Diff' },
@@ -187,6 +192,7 @@ export function CaseWorkspace({ detail, annotation }: CaseWorkspaceProps) {
       flowCopyResetRef.current = null
     }
   }, [])
+  const effectiveGuidedDetailTab: GuidedDetailTab = guidedDetailTab === 'response' && !responseAvailableForActiveStage ? 'prompt' : guidedDetailTab
 
   const handleCopyFlow = useCallback(async () => {
     if (!activeIteration) {
@@ -297,12 +303,19 @@ export function CaseWorkspace({ detail, annotation }: CaseWorkspaceProps) {
                 {activeDockTab === 'guided' && (
                   <button
                     type="button"
-                    className="dock-panel__copy-flow"
+                    className={clsx(
+                      'dock-panel__copy-flow',
+                      flowCopyStatus === 'copied' && 'dock-panel__copy-flow--success',
+                      flowCopyStatus === 'error' && 'dock-panel__copy-flow--error',
+                    )}
                     onClick={handleCopyFlow}
                     disabled={!canCopyFlow}
+                    aria-label={flowCopyButtonLabel}
                     title="Copy every LLM prompt and response for this guided loop iteration"
                   >
-                    {flowCopyButtonLabel}
+                    <span aria-hidden="true">
+                      {flowCopyStatus === 'copied' ? '✔' : flowCopyStatus === 'error' ? '⚠' : '⧉'}
+                    </span>
                   </button>
                 )}
                 <div className="dock-panel__tabs" role="tablist" aria-label="Diff, errors, and guided loop stages">
@@ -340,17 +353,62 @@ export function CaseWorkspace({ detail, annotation }: CaseWorkspaceProps) {
                     }}
                     completionStatus={detail.summary.success ? 'success' : 'failure'}
                   />
-                  {activeStageTab ? (
-                    <>
-                      <StrategyPhaseContent key={activeStageTab.id} descriptor={activeStageTab} />
+                  <div className="guided-loop-pane__detail">
+                    <div className="guided-loop-pane__detail-tabs" role="tablist" aria-label="Guided loop detail view">
+                      <button
+                        type="button"
+                        role="tab"
+                        aria-selected={effectiveGuidedDetailTab === 'prompt'}
+                        className={clsx(
+                          'guided-loop-pane__detail-tab',
+                          effectiveGuidedDetailTab === 'prompt' && 'guided-loop-pane__detail-tab--active',
+                        )}
+                        onClick={() => setGuidedDetailTab('prompt')}
+                      >
+                        LLM Request
+                      </button>
+                      <button
+                        type="button"
+                        role="tab"
+                        aria-selected={effectiveGuidedDetailTab === 'response'}
+                        className={clsx(
+                          'guided-loop-pane__detail-tab',
+                          effectiveGuidedDetailTab === 'response' && 'guided-loop-pane__detail-tab--active',
+                        )}
+                        onClick={() => setGuidedDetailTab('response')}
+                        disabled={!responseAvailableForActiveStage}
+                        title={!responseAvailableForActiveStage ? 'Response not recorded yet' : undefined}
+                      >
+                        LLM Response
+                      </button>
+                      <button
+                        type="button"
+                        role="tab"
+                        aria-selected={effectiveGuidedDetailTab === 'insights'}
+                        className={clsx(
+                          'guided-loop-pane__detail-tab',
+                          effectiveGuidedDetailTab === 'insights' && 'guided-loop-pane__detail-tab--active',
+                        )}
+                        onClick={() => setGuidedDetailTab('insights')}
+                      >
+                        Insights
+                      </button>
+                    </div>
+                    {!activeStageTab ? (
+                      <div className="dock-panel__empty">Guided loop output unavailable.</div>
+                    ) : effectiveGuidedDetailTab === 'insights' ? (
                       <div className="guided-loop-pane__insights">
                         <HypothesisDeck iteration={activeIteration} />
                         <IterationTelemetryPanel iteration={activeIteration} />
                       </div>
-                    </>
-                  ) : (
-                    <div className="dock-panel__empty">Guided loop output unavailable.</div>
-                  )}
+                    ) : (
+                      <StrategyPhaseContent
+                        key={activeStageTab.id}
+                        descriptor={activeStageTab}
+                        view={effectiveGuidedDetailTab === 'response' ? 'response' : 'prompt'}
+                      />
+                    )}
+                  </div>
                 </div>
               )}
             </div>
@@ -423,6 +481,7 @@ function ErrorsPanel({ before, after }: { before: ErrorBlob; after: ErrorBlob })
 
 type IterationKind = 'primary' | 'refine'
 type DockTabId = 'diff' | 'errors' | 'guided'
+type GuidedDetailTab = 'prompt' | 'response' | 'insights'
 
 interface DockTabDescriptor {
   id: DockTabId
@@ -452,8 +511,7 @@ interface IterationGroupDescriptor {
   telemetry?: IterationTelemetry | null
 }
 
-function StrategyPhaseContent({ descriptor }: { descriptor: StageTabDescriptor }) {
-  const [view, setView] = useState<'prompt' | 'response'>('prompt')
+function StrategyPhaseContent({ descriptor, view }: { descriptor: StageTabDescriptor; view: 'prompt' | 'response' }) {
   const [copyStatus, setCopyStatus] = useState<'idle' | 'copied' | 'error'>('idle')
   const copyResetRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const responseAvailable = Boolean(descriptor.artifact.response && descriptor.artifact.response.trim().length)
@@ -509,33 +567,16 @@ function StrategyPhaseContent({ descriptor }: { descriptor: StageTabDescriptor }
           {timestampLabel && <p className="strategy-phase__timestamps">{timestampLabel}</p>}
         </div>
         <div className="strategy-phase__actions">
-          <div className="strategy-phase__view-toggle" role="tablist" aria-label="Select LLM content view">
-            <button
-              type="button"
-              className={clsx('strategy-phase__view-button', view === 'prompt' && 'is-active')}
-              aria-selected={view === 'prompt'}
-              onClick={() => setView('prompt')}
-            >
-              LLM Request
-            </button>
-            <button
-              type="button"
-              className={clsx('strategy-phase__view-button', view === 'response' && 'is-active')}
-              aria-selected={view === 'response'}
-              onClick={() => setView('response')}
-              disabled={!responseAvailable}
-            >
-              LLM Response
-            </button>
-          </div>
+          <span className="strategy-phase__view-label">{view === 'prompt' ? 'LLM Request' : 'LLM Response'}</span>
           <button
             type="button"
             className={clsx('strategy-phase__copy', copyStatus === 'copied' && 'is-success', copyStatus === 'error' && 'is-error')}
             onClick={handleCopy}
             disabled={copyDisabled}
-            aria-label="Copy the currently visible LLM content to the clipboard"
+            aria-label={copyButtonLabel}
+            title={copyButtonLabel}
           >
-            {copyButtonLabel}
+            <span aria-hidden="true">{copyStatus === 'copied' ? '✔' : copyStatus === 'error' ? '⚠' : '⧉'}</span>
           </button>
         </div>
       </div>
