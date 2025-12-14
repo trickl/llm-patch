@@ -1,0 +1,7 @@
+--- before.c
++++ patched_before.c
+@@ -36,7 +36,7 @@
+   Token getNextToken(char **input) {
+-    skipWhitespace(input);
++    skipWhitespace(&input);
+      if (**input == '\0') return (Token){TOKEN_EOF, 0};

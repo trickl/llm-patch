@@ -1,0 +1,28 @@
+--- before.c
++++ before.c
+@@ -59,7 +59,7 @@ int evaluate_expression() {
+     int result = evaluate_term();
+     while (tokens[token_index].type == TOKEN_PLUS || tokens[token_index].type == TOKEN_MINUS) {
+         Token op = get_next_token();
+-        if (op.type == TOKEN_PLUS) {
++        if (op.type == TOKEN_PLUS) { // Added missing semicolon
+             result += evaluate_term();
+         } else if (op.type == TOKEN_MINUS) {
+             result -= evaluate_term();
+@@ -72,7 +72,7 @@ int evaluate_term() {
+     int result = evaluate_factor();
+     while (tokens[token_index].type == TOKEN_MULTIPLY || tokens[token_index].type == TOKEN_DIVIDE) {
+         Token op = get_next_token();
+-        if (op.type == TOKEN_MULTIPLY) {
++        if (op.type == TOKEN_MULTIPLY) { // Added missing semicolon
+             result *= evaluate_factor();
+         } else if (op.type == TOKEN_DIVIDE) {
+             int divisor = evaluate_factor();
+@@ -105,6 +105,7 @@ int evaluate_factor() {
+     }
+     return result;
+ }
++
+ void tokenize(const char *expression) {
+     int i = 0, j = 0;
+     while (expression[i]) {

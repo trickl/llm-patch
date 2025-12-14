@@ -1,0 +1,9 @@
+--- before.c
++++ patched_c
+@@ -59,7 +59,7 @@
+   int result = evaluate_term();
+ while (token_index  MAX_TOKENS && tokens[token_index].type == TOKEN_PLUS || tokens[token_index].type == TOKEN_MINUS) {
+-     Token op = get_next_token();
++     Token op = get_next_token(); // Added parentheses around '&&'
+       if (op.type == TOKEN_PLUS) {
+         result += evaluate_term();

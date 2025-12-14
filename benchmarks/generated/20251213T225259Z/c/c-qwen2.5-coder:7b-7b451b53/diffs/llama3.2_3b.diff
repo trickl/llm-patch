@@ -1,0 +1,6 @@
+--- before.c
++++ patched_before.c
+@@ -21,7 +21,7 @@
+     int value;
+-    value = 0; // Initialize with a default value
++    value = 0;

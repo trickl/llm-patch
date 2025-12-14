@@ -1,0 +1,6 @@
+ExpressionEvaluator.java:113: error: bad operand types for binary operator '!='
+            if (!(tokens.get(pos++) instanceof Character) || tokens.get(pos - 1) != ')') {
+                                                                                 ^
+  first type:  Object
+  second type: char
+1 error

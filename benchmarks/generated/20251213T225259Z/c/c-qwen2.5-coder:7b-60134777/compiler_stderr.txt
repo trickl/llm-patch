@@ -1,0 +1,37 @@
+expression_evaluator.c: In function ‘evaluate_expression’:
+expression_evaluator.c:88:31: warning: unused parameter ‘get_token’ [-Wunused-parameter]
+   88 | int evaluate_expression(int (*get_token)()) {
+      |                         ~~~~~~^~~~~~~~~~~~
+expression_evaluator.c: In function ‘main’:
+expression_evaluator.c:110:49: error: passing argument 1 of ‘evaluate_expression’ from incompatible pointer type [-Wincompatible-pointer-types]
+  110 |     printf("1 + 2 => %d\n", evaluate_expression(get_next_token));
+      |                                                 ^~~~~~~~~~~~~~
+      |                                                 |
+      |                                                 Token (*)()
+expression_evaluator.c:88:31: note: expected ‘int (*)()’ but argument is of type ‘Token (*)()’
+   88 | int evaluate_expression(int (*get_token)()) {
+      |                         ~~~~~~^~~~~~~~~~~~
+expression_evaluator.c:119:53: error: passing argument 1 of ‘evaluate_expression’ from incompatible pointer type [-Wincompatible-pointer-types]
+  119 |     printf("2 * 3 + 4 => %d\n", evaluate_expression(get_next_token));
+      |                                                     ^~~~~~~~~~~~~~
+      |                                                     |
+      |                                                     Token (*)()
+expression_evaluator.c:88:31: note: expected ‘int (*)()’ but argument is of type ‘Token (*)()’
+   88 | int evaluate_expression(int (*get_token)()) {
+      |                         ~~~~~~^~~~~~~~~~~~
+expression_evaluator.c:130:55: error: passing argument 1 of ‘evaluate_expression’ from incompatible pointer type [-Wincompatible-pointer-types]
+  130 |     printf("2 * (3 + 4) => %d\n", evaluate_expression(get_next_token));
+      |                                                       ^~~~~~~~~~~~~~
+      |                                                       |
+      |                                                       Token (*)()
+expression_evaluator.c:88:31: note: expected ‘int (*)()’ but argument is of type ‘Token (*)()’
+   88 | int evaluate_expression(int (*get_token)()) {
+      |                         ~~~~~~^~~~~~~~~~~~
+expression_evaluator.c:143:59: error: passing argument 1 of ‘evaluate_expression’ from incompatible pointer type [-Wincompatible-pointer-types]
+  143 |     printf("8 / 2 * (2 + 2) => %d\n", evaluate_expression(get_next_token));
+      |                                                           ^~~~~~~~~~~~~~
+      |                                                           |
+      |                                                           Token (*)()
+expression_evaluator.c:88:31: note: expected ‘int (*)()’ but argument is of type ‘Token (*)()’
+   88 | int evaluate_expression(int (*get_token)()) {
+      |                         ~~~~~~^~~~~~~~~~~~

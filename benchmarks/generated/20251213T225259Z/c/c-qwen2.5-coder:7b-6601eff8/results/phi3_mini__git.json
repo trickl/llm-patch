@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-6601eff8",
+  "language": "c",
+  "model_slug": "phi3_mini",
+  "algorithm": "git",
+  "diff_path": "diffs/phi3_mini.diff",
+  "after_path": null,
+  "patch_applied": false,
+  "patch_diagnostics": "error: corrupt patch at line 13",
+  "compile_returncode": null,
+  "errors_before": 7,
+  "errors_after": null,
+  "first_error_removed": false,
+  "added_lines": 2,
+  "removed_lines": 1,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": null,
+  "stdout_after": null
+}

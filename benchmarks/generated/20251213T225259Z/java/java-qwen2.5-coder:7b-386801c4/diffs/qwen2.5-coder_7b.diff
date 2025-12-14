@@ -1,0 +1,11 @@
+--- before.java	2023-04-10 12:34:56.000000000 +0800
++++ after.java	2023-04-10 12:35:00.000000000 +0800
+@@ -104,7 +104,7 @@
+         }
+     }
+
+-    private static Node applyOp(String op, Node b, Node a) {
++    private static Node applyOp(String op, Node a, Node b) {
+         BiFunction<Integer, Integer, Integer> func;
+         switch (op) {
+             case "+":

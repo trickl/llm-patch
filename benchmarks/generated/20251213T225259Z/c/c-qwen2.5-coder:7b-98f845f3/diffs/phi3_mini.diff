@@ -1,0 +1,28 @@
+--- before.c 2019-08-15 16:47:33.000000000 -0400 (EDT)
++++ after.c 2019-08-15 16:47:33.000000000 -0400 (EDT)
+@@ -60,12 +60,12 @@
+         TokenType operator = (TokenType)stack[--top];
+         stack[top++] = apply_operator(a, b, operator);
+     } else if (**input == '+') {
+-        (*input)++;
++    while (**input != '\0' && **input != EOF) {
+       ++(*input); // Move to the next character in input string.
+   }
+         return (Token){PLUS, 0};
+     } else if (**input == '-') {
+-        (*input)++;
++    while (**input != '\0' && **input != EOF) {
+       ++(*input); // Move to the next character in input string.
+   }
+         return (Token){MINUS, 0};
+     else if (**input == '*') {
+-        (*input)++;
++    while (**input != '\0' && **input != EOF) {
+       ++(*input); // Move to the next character in input string.
+   }
+         return (Token){MUL, 0};
+     else if (**input == '/') {
+-        (*input)++;
++    while (**input != '\0' && **input != EOF) {
+       ++(*input); // Move to the next character in input string.
+ }

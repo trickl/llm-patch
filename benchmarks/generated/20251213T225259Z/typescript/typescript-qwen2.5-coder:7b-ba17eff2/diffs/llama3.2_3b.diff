@@ -1,0 +1,22 @@
+--- before.ts
++++ patched_expression_evaluator.ts
+@@ -1,5 +1,6 @@
+-// expression_evaluator.ts
++type Token = { type: 'number' | 'operator' | 'parenthesis'; value: string };
++
++const require = require;
++const module = require('module');
++const process = require('process');
+
+ function tokenize(input: string): Token[] {
+     const tokens: Token[] = [];
+     let currentToken = '';
+
+     for (let i = 0; i  input.length; i++) {
+         const char = input[i];
+
+-        if (isNumber(char)) {
+-            currentToken += char;
++        if (isNumber(char)) {
++            return [{ type: 'number', value: char }];
++        }

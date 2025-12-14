@@ -1,7 +1,0 @@
-ExpressionEvaluator.java:1: error: class, interface, enum, or record expected
-You are there'de
-^
-ExpressionEvaluator.java:1: error: unclosed character literal
-You are there'de
-             ^
-2 errors

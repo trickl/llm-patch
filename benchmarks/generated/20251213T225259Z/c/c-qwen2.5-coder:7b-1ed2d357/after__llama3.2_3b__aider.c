@@ -1,0 +1,90 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include  string.h>
+#include  limits.h>
+#define MAX_TOKEN_LEN 256
+typedef enum { TOKEN_NUMBER, TOKEN_PLUS, TOKEN_MINUS, TOKEN_MULTIPLY, TOKEN_DIVIDE, TOKEN_LPAREN, TOKEN_RPAREN } TokenType;
+typedef struct {
+    TokenType type;
+    int value;
+} Token;
+Token tokenize(const char **input) {
+    while (**input == ' ') (*input)++;
+    if (isdigit(**input)) {
+        int value = 0;
+         while (isdigit(**input)) {
+            value = value * 10 + (**input - '0');
+            (*input)++;
+        }
+        return (Token){TOKEN_NUMBER, value};
+    } else if (**input == '+') {
+        (*input)++;
+        return (Token){TOKEN_PLUS, 0};
+    } else if (**input == '-') {
+        (*input)++;
+        return (Token){TOKEN_MINUS, 0};
+    } else if (**input == '*') {
+        (*input)++;
+        return (Token){TOKEN_MULTIPLY, 0};
+    } else if (**input == '/') {
+        (*input)++;
+        return (Token){TOKEN_DIVIDE, 0};
+    } else if (**input == '(') {
+        (*input)++;
+        return (Token){TOKEN_LPAREN, 0};
+    } else if (**input == ')') {
+        (*input)++;
+        return (Token){TOKEN_RPAREN, 0};
+    }
+    return (Token){TOKEN_NUMBER, -1}; // Error token
+}
+int evaluate(int a, int b, TokenType op) {
+    switch (op) {
+        case TOKEN_PLUS: return a + b;
+        case TOKEN_MINUS: return a - b;
+        case TOKEN_MULTIPLY: return a * b;
+        case TOKEN_DIVIDE: if (b != 0) return a / b; else return INT_MIN; // Error handling for division by zero
+        default: return 0; // Should not happen
+    }
+}
+int parse_and_evaluate(const char *expression) {
+    const char *input = expression;
+    int stack[1024];
+    int top = -1;
+    while (**input != '\0') {
+         Token token = tokenize(&input);
+        if (token.type == TOKEN_NUMBER) {
+            stack[++top] = token.value;
+        } else if (token.type == TOKEN_LPAREN) {
+            stack[++top] = token.type;
+        } else if (token.type == TOKEN_RPAREN) {
+             while (stack[top] != TOKEN_LPAREN) {
+                int b = stack[--top];
+                int a = stack[--top];
+                stack[top++] = evaluate(a, b, stack[--top]);
+            }
+            top--; // Pop the '('
+        } else {
+             while (top >= 0 && stack[top] != TOKEN_LPAREN) {
+                int b = stack[--top];
+                int a = stack[--top];
+                stack[top++] = evaluate(a, b, stack[--top]);
+            }
+            stack[++top] = token.type;
+        }
+    }
+     while (top > 0) {
+         int b = stack[--top];
+         int a = stack[--top];
+         stack[top++] = evaluate(a, b, stack[--top]);
+    }
+    return stack[0];
+}
+int main() {
+    printf("%d\n", parse_and_evaluate("1 + 2")); // Output: 3
+    printf("%d\n", parse_and_evaluate("2 * 3 + 4")); // Output: 10
+    printf("%d\n", parse_and_evaluate("2 * (3 + 4)")); // Output: 14
+    printf("%d\n", parse_and_evaluate("8 / 2 * (2 + 2)")); // Output: 16
+    return 0;
+}

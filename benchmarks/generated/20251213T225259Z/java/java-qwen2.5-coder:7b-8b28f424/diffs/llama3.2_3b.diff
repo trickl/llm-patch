@@ -1,0 +1,7 @@
+--- before.java
++++ patched-before.java
+
+@@ -36,7 +36,8 @@
+                tokens.add(new Token(TokenType.NUMBER, c));
+                                                         ^
++               return new Token(TokenType.NUMBER, (char) c);

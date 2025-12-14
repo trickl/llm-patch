@@ -1,0 +1,12 @@
+--- before.py
++++ patched_before.py
+@@ -6,7 +6,8 @@
+     for token in re.findall(r'\b\w+\b|[+\-*/()]", expression):
+-        tokens.append(token)
++        if token.endswith('"'):
++            continue
+         if token.isdigit():
+             tokens.append(int(token))
+-        else:
++        else:
+             tokens.append(token)

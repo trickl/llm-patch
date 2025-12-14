@@ -1,0 +1,20 @@
+--- before.c
++++ before.c
+@@ -29,7 +29,7 @@ Token getNextToken() {
+     while (isspace(tokens[tokenIndex].value)) {
+         tokenIndex++;
+     }
+-    if (tokenIndex >= MAX_TOKENS) {
++    if (tokenIndex >= MAX_TOKENS || tokens[tokenIndex].type == EOF) {
+         return (Token){EOF};
+     }
+     Token token = tokens[tokenIndex];
+@@ -105,7 +105,7 @@ void tokenize(const char *expression) {
+             i++;
+         }
+         token.type = NUMBER;
+-        token.value = value;
++        token.value = 0; // Initialize value to avoid warning
+         tokens[tokenIndex++] = token;
+         i--;
+     } else if (expression[i] == '+' || expression[i] == '-' ||

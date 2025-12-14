@@ -1,0 +1,155 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <string.h>
+
+#define MAX_TOKENS 100
+
+typedef enum {
+    TOKEN_NUMBER,
+    TOKEN_PLUS,
+    TOKEN_MINUS,
+    TOKEN_MULTIPLY,
+    TOKEN_DIVIDE,
+    TOKEN_LPAREN,
+    TOKEN_RPAREN,
+    TOKEN_EOF
+} TokenType;
+
+typedef struct {
+    TokenType type;
+    int value;
+} Token;
+
+Token tokens[MAX_TOKENS];
+int tokenIndex = 0;
+
+void error(const char *message) {
+    fprintf(stderr, "Error: %s\n", message);
+    exit(1);
+}
+
+void skipWhitespace() {
+    while (isspace(tokens[tokenIndex].value)) {
+        tokenIndex++;
+    }
+}
+
+int precedence(TokenType type) {
+    switch (type) {
+        case TOKEN_MULTIPLY:
+        case TOKEN_DIVIDE:
+            return 2;
+        case TOKEN_PLUS:
+        case TOKEN_MINUS:
+            return 1;
+        default:
+            return 0;
+    }
+}
+
+Token getNextToken() {
+    skipWhitespace();
+    Token token = tokens[tokenIndex];
+    tokenIndex++;
+    return token;
+}
+
+int evaluate(int left, int right, TokenType operator) {
+    switch (operator) {
+        case TOKEN_PLUS:
+            return left + right;
+        case TOKEN_MINUS:
+            return left - right;
+        case TOKEN_MULTIPLY:
+            return left * right;
+        case TOKEN_DIVIDE:
+            if (right == 0) error("Division by zero");
+            return left / right;
+        default:
+            error("Invalid operator");
+    }
+}
+
+int parseExpression() {
+    int result = parseTerm();
+    while (tokenIndex < MAX_TOKENS && (tokens[tokenIndex].type == TOKEN_PLUS || tokens[tokenIndex].type == TOKEN_MINUS)) {
+        TokenType operator = tokens[tokenIndex].type;
+        tokenIndex++;
+        int right = parseTerm();
+        result = evaluate(result, right, operator);
+    }
+    return result;
+}
+
+int parseTerm() {
+    int result = parseFactor();
+    while (tokenIndex < MAX_TOKENS && (tokens[tokenIndex].type == TOKEN_MULTIPLY || tokens[tokenIndex].type == TOKEN_DIVIDE)) {
+        TokenType operator = tokens[tokenIndex].type;
+        tokenIndex++;
+        int right = parseFactor();
+        result = evaluate(result, right, operator);
+    }
+    return result;
+}
+
+int parseFactor() {
+    Token token = getNextToken();
+    if (token.type == TOKEN_NUMBER) {
+        return token.value;
+    } else if (token.type == TOKEN_EOF) {
+        error("Unexpected end of expression");
+    } else if (token.type == TOKEN_PLUS) {
+        return parseExpression();
+    } else if (token.type == TOKEN_MINUS) {
+        return -parseExpression();
+    } else if (token.type == TOKEN_LPAREN) {
+        int result = parseExpression();
+        token = getNextToken();
+        if (token.type != TOKEN_RPAREN) error("Expected ')'");
+        return result;
+    } else {
+        error("Unexpected token");
+    }
+}
+
+void tokenize(const char *expression) {
+    tokenIndex = 0;
+    for (int i = 0; expression[i] != '\0'; i++) {
+        if (isdigit(expression[i])) {
+            int value = 0;
+            while (isdigit(expression[i])) {
+                value = value * 10 + (expression[i] - '0');
+                i++;
+            }
+            tokens[tokenIndex++] = (Token){TOKEN_NUMBER, value};
+            i--; // compensate for the extra increment
+        } else if (expression[i] == '+') {
+            tokens[tokenIndex++] = (Token){TOKEN_PLUS, '+'};
+        } else if (expression[i] == '-') {
+            tokens[tokenIndex++] = (Token){TOKEN_MINUS, '-'};
+        } else if (expression[i] == '*') {
+            tokens[tokenIndex++] = (Token){TOKEN_MULTIPLY, '*'};
+        } else if (expression[i] == '/') {
+            tokens[tokenIndex++] = (Token){TOKEN_DIVIDE, '/'};
+        } else if (expression[i] == '(') {
+            tokens[tokenIndex++] = (Token){TOKEN_LPAREN, '('};
+        } else if (expression[i] == ')') {
+            tokens[tokenIndex++] = (Token){TOKEN_RPAREN, ')'};
+        }
+    }
+    tokens[tokenIndex++] = (Token){TOKEN_EOF, 0};
+}
+
+int evaluateExpression(const char *expression) {
+    tokenize(expression);
+    return parseExpression();
+}
+
+int main() {
+    printf("%d\n", evaluateExpression("1 + 2")); // Output: 3
+    printf("%d\n", evaluateExpression("2 * 3 + 4")); // Output: 10
+    printf("%d\n", evaluateExpression("2 * (3 + 4)")); // Output: 14
+    printf("%d\n", evaluateExpression("8 / 2 * (2 + 2)")); // Output: 16
+    return 0;
+}

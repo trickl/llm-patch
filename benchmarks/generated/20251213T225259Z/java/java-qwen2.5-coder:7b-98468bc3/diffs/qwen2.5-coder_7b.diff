@@ -1,0 +1,40 @@
+--- before.java	2023-04-10 12:34:56.000000000 +0800
++++ after.java	2023-04-10 12:35:00.000000000 +0800
+@@ -67,7 +67,7 @@
+             if (token.type == TokenType.OPERATOR && (token.value == '+' || token.value == '-')) {
+                 pos++;
+                 int nextTerm = term();
+-                if (token.value == '+') {
++                if ((char) token.value == '+') {
+                     result += nextTerm;
+                 } else {
+                     result -= nextTerm;
+@@ -70,7 +70,7 @@
+             }
+         }
+     }
+
+     private int term() {
+         int result = factor();
+-        while (pos < tokens.size()) {
++        while (pos < tokens.size() && token.type == TokenType.OPERATOR) {
+             Token token = tokens.get(pos);
+             if (token.type == TokenType.OPERATOR && (token.value == '*' || token.value == '/')) {
+                 pos++;
+@@ -86,7 +86,7 @@
+         }
+
+     private int factor() {
+-        Token token = tokens.get(pos);
++        Token token = tokens.get(pos++);
+         if (token.type == TokenType.LPAREN) {
+             pos++;
+             int result = expression();
+@@ -111,7 +111,7 @@
+                 }
+             } else {
+                 break;
+-            }
++        }
+         return result;
+     }

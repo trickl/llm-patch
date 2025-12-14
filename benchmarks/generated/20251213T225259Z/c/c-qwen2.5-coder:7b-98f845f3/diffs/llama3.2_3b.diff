@@ -1,0 +1,8 @@
+--- before.c
++++ patched_before.c
+@@ -60,7 +60,7 @@
+     while (**input != '\0') {
+-        Token token = tokenize(&input);
++        Token token = tokenize(input); // Fix: Pass input instead of &input
+         if (token.type == NUMBER) {
+             stack[++top] = token.value;

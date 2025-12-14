@@ -1,0 +1,8 @@
+expression_evaluator.ts(20,41): error TS2345: Argument of type 'number | null | undefined' is not assignable to parameter of type 'number | null'.
+  Type 'undefined' is not assignable to type 'number | null'.
+expression_evaluator.ts(31,41): error TS2345: Argument of type 'number | null | undefined' is not assignable to parameter of type 'number | null'.
+  Type 'undefined' is not assignable to type 'number | null'.
+expression_evaluator.ts(41,33): error TS2345: Argument of type 'number | null | undefined' is not assignable to parameter of type 'number | null'.
+  Type 'undefined' is not assignable to type 'number | null'.
+expression_evaluator.ts(74,5): error TS2580: Cannot find name 'require'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.
+expression_evaluator.ts(74,22): error TS2580: Cannot find name 'module'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.

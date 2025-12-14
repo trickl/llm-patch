@@ -1,0 +1,22 @@
+{
+  "case_id": "typescript-qwen2.5-coder:7b-31452a75",
+  "language": "typescript",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "aider",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "after_path": "after__qwen2.5-coder_7b__aider.ts",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 2 hunks",
+  "compile_returncode": 2,
+  "errors_before": 7,
+  "errors_after": 6,
+  "first_error_removed": false,
+  "added_lines": 2,
+  "removed_lines": 1,
+  "hunks": 2,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "",
+  "stdout_after": "expression_evaluator.ts(3,26): error TS2307: Cannot find module 'process' or its corresponding type declarations.\nexpression_evaluator.ts(73,3): error TS2322: Type 'string[]' is not assignable to type 'number[]'.\n  Type 'string' is not assignable to type 'number'.\nexpression_evaluator.ts(108,22): error TS2345: Argument of type 'number[]' is not assignable to parameter of type 'string[]'.\n  Type 'number' is not assignable to type 'string'.\nexpression_evaluator.ts(112,5): error TS2580: Cannot find name 'require'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.\nexpression_evaluator.ts(112,22): error TS2580: Cannot find name 'module'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.\nexpression_evaluator.ts(122,51): error TS18046: 'error' is of type 'unknown'.\n"
+}

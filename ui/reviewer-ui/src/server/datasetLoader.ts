@@ -1,4 +1,5 @@
 import { access, readFile } from 'node:fs/promises'
+import { createHash } from 'node:crypto'
 import path from 'node:path'
 import fg from 'fast-glob'
 import type {
@@ -67,6 +68,7 @@ export class DatasetLoader {
       const runId = getRunId(this.datasetRoot, baseDir)
       const beforePath = await resolveBeforeFile(baseDir)
       if (!beforePath) continue
+      const fingerprint = await computeFingerprint(runId, manifest.case_id, beforePath)
 
       const stderrPath = path.join(baseDir, 'compiler_stderr.txt')
       const stdoutPath = path.join(baseDir, 'compiler_stdout.txt')
@@ -87,20 +89,31 @@ export class DatasetLoader {
           .filter(Boolean)
           .join('::')
 
+        const patchApplied = Boolean(result.patch_applied)
+        const errorsBefore = coerceNumber(result.errors_before)
+        const errorsAfter = coerceNumber(result.errors_after)
+        const compileReturncode = typeof result.compile_returncode === 'number' ? result.compile_returncode : null
         const summary: PatchSummaryPublic = {
           id: patchId,
           caseId: manifest.case_id,
           runId,
+          fingerprint,
           language: manifest.language,
           problemId: manifest.problem_id,
           modelSlug: result.model_slug,
           algorithm: result.algorithm,
           diffName,
           filePath: manifest.compile_command?.at(-1) ?? 'unknown',
-          patchApplied: Boolean(result.patch_applied),
-          success: Boolean(result.success),
-          errorsBefore: coerceNumber(result.errors_before),
-          errorsAfter: coerceNumber(result.errors_after),
+          patchApplied,
+          success: normalizeSuccess(
+            Boolean(result.success),
+            patchApplied,
+            compileReturncode,
+            errorsAfter,
+            errorsBefore,
+          ),
+          errorsBefore,
+          errorsAfter,
           patchDiagnostics: result.patch_diagnostics ?? null,
         }
 
@@ -170,8 +183,14 @@ export class DatasetLoader {
         result: record.result,
       },
       errors: {
-        stderr,
-        stdout,
+        before: {
+          stderr,
+          stdout,
+        },
+        after: {
+          stderr: typeof record.result.stderr_after === 'string' ? record.result.stderr_after : '',
+          stdout: typeof record.result.stdout_after === 'string' ? record.result.stdout_after : '',
+        },
       },
     }
   }
@@ -186,9 +205,38 @@ function safeParseJSON<T>(raw: string): T | null {
   }
 }
 
+function normalizeSuccess(
+  successFlag: boolean,
+  patchApplied: boolean,
+  compileReturncode: number | null,
+  errorsAfter: number | null,
+  errorsBefore: number | null,
+): boolean {
+  if (!successFlag) return false
+  if (!patchApplied) return false
+  if (compileReturncode !== 0) return false
+  if (errorsAfter === null) return false
+  if (errorsAfter > 0) return false
+  if (errorsBefore !== null && errorsBefore > 0 && errorsAfter >= errorsBefore) {
+    return false
+  }
+  return true
+}
+
 async function resolveBeforeFile(baseDir: string): Promise<string | null> {
   const matches = await fg('before.*', { cwd: baseDir, absolute: true, onlyFiles: true })
   return matches[0] ?? null
+}
+
+async function computeFingerprint(runId: string, caseId: string, filePath: string): Promise<string> {
+  const contents = await readFile(filePath, 'utf8').catch(() => '')
+  const hash = createHash('sha256')
+  hash.update(runId)
+  hash.update(':')
+  hash.update(caseId)
+  hash.update(':')
+  hash.update(contents)
+  return hash.digest('hex').slice(0, 12)
 }
 
 function coerceNumber(value: unknown): number | null {

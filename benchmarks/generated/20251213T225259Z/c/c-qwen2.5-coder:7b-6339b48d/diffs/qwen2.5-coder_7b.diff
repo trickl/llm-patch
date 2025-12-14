@@ -1,0 +1,16 @@
+--- before.c
++++ before.c
+@@ -126,7 +126,7 @@ int evaluate_expression() {
+     while (operator_count > 0) {
+         int b = values[--value_count];
+         int a = values[--value_count];
+-        operators[--operator_count] = token.type;
++        operators[--operator_count] = operators[operator_count];
+         values[value_count++] = apply_operator(a, b, operators[operator_count]);
+     }
+ 
+@@ -150,6 +150,7 @@ int evaluate_expression() {
+     return 0;
+ }
+ 
++#include "expression_evaluator.c"

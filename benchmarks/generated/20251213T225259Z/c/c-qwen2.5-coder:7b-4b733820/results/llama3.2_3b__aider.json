@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-4b733820",
+  "language": "c",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "aider",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "after_path": "after__llama3.2_3b__aider.c",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 3 hunks",
+  "compile_returncode": 1,
+  "errors_before": 2,
+  "errors_after": 4,
+  "first_error_removed": false,
+  "added_lines": 11,
+  "removed_lines": 11,
+  "hunks": 3,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "expression_evaluator.c: In function \u2018parseExpression\u2019:\nexpression_evaluator.c:62:16: error: implicit declaration of function \u2018parseTerm\u2019 [-Wimplicit-function-declaration]\n   62 |   int result = parseTerm();\n      |                ^~~~~~~~~\nexpression_evaluator.c: In function \u2018parseTerm\u2019:\nexpression_evaluator.c:73:16: error: implicit declaration of function \u2018parseFactor\u2019 [-Wimplicit-function-declaration]\n   73 |   int result = parseFactor();\n      |                ^~~~~~~~~~~\nexpression_evaluator.c: In function \u2018tokenize\u2019:\nexpression_evaluator.c:106:11: error: expected \u2018)\u2019 before \u2018strlen\u2019\n  106 |   while (i  strlen(input)) {\n      |         ~ ^ ~~~~~~\n      |           )\nexpression_evaluator.c:109:15: error: expected \u2018)\u2019 before \u2018strlen\u2019\n  109 |       while (i  strlen(input) && isdigit(input[i])) {\n      |             ~ ^ ~~~~~~\n      |               )\nexpression_evaluator.c: In function \u2018evaluateExpression\u2019:\nexpression_evaluator.c:59:1: warning: control reaches end of non-void function [-Wreturn-type]\n   59 | }\n      | ^\n",
+  "stdout_after": ""
+}

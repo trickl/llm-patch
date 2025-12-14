@@ -1,8 +1,0 @@
---- before.java
-+++ after.java
-@@ -101,7 +101,7 @@
-     public int compareTo(Expression other) {
-         return Integer.compare(this.value, other.getValue());
-     }
--};
-+}

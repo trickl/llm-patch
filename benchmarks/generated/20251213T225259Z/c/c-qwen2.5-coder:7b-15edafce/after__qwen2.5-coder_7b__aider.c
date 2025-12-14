@@ -1,0 +1,154 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+#define MAX_TOKENS 100
+
+typedef enum { TOKEN_NUMBER, TOKEN_PLUS, TOKEN_MINUS, TOKEN_MULTIPLY, TOKEN_DIVIDE, TOKEN_LPAREN, TOKEN_RPAREN } TokenType;
+
+typedef struct {
+    TokenType type;
+    int value;
+} Token;
+
+Token tokens[MAX_TOKENS];
+int token_count = 0;
+
+void tokenize(const char *expression) {
+    const char *p = expression;
+    while (*p != '\0') {
+        if (isspace(*p)) {
+            p++;
+        } else if (isdigit(*p)) {
+            int value = 0;
+            while (isdigit(*p)) {
+                value = value * 10 + (*p - '0');
+                p++;
+            }
+            tokens[token_count++] = (Token){TOKEN_NUMBER, value};
+        } else if (*p == '+') {
+            tokens[token_count++] = (Token){TOKEN_PLUS, 0};
+            p++;
+        } else if (*p == '-') {
+            if (token_count > 0 && tokens[token_count - 1].type == TOKEN_LPAREN) {
+                tokens[token_count++] = (Token){TOKEN_MINUS, 0};
+            } else {
+                int value = 0;
+                while (isdigit(*p)) {
+                    value = value * 10 + (*p - '0');
+                    p++;
+                }
+                tokens[token_count++] = (Token){TOKEN_NUMBER, -value};
+            }
+        } else if (*p == '*') {
+            tokens[token_count++] = (Token){TOKEN_MULTIPLY, 0};
+            p++;
+        } else if (*p == '/') {
+            tokens[token_count++] = (Token){TOKEN_DIVIDE, 0};
+            p++;
+        } else if (*p == '(') {
+            tokens[token_count++] = (Token){TOKEN_LPAREN, 0};
+            p++;
+        } else if (*p == ')') {
+            tokens[token_count++] = (Token){TOKEN_RPAREN, 0};
+            p++;
+        }
+    }
+}
+
+int precedence(TokenType type) {
+    switch (type) {
+        case TOKEN_MULTIPLY:
+        case TOKEN_DIVIDE:
+            return 2;
+        case TOKEN_PLUS:
+        case TOKEN_MINUS:
+            return 1;
+        default:
+            return 0;
+    }
+}
+
+int apply_operator(int a, int b, TokenType operator) {
+    switch (operator) {
+        case TOKEN_PLUS:
+            return a + b;
+        case TOKEN_MINUS:
+            return a - b;
+        case TOKEN_MULTIPLY:
+            return a * b;
+        case TOKEN_DIVIDE:
+            if (b == 0) {
+                fprintf(stderr, "Error: Division by zero\n");
+                exit(1);
+            }
+            return a / b;
+        default:
+            fprintf(stderr, "Error: Unknown operator\n");
+            exit(1);
+    }
+}
+
+int evaluate(int *tokens, int start, int end) {
+    if (start > end) {
+        return 0;
+    }
+    int i = start;
+    while (i <= end && tokens[i].type != TOKEN_LPAREN) {
+        i++;
+    }
+
+    int j = i + 1;
+    while (j <= end && tokens[j].type == TOKEN_NUMBER) {
+        j++;
+    }
+
+    int value = evaluate(tokens, i + 1, j - 2);
+    if (i > start) {
+        value = apply_operator(evaluate(tokens, start, i - 2), value, tokens[i - 1].type);
+    }
+
+    while (j <= end) {
+        if (tokens[j].type == TOKEN_LPAREN) {
+            int k = j + 1;
+            int depth = 1;
+            while (depth > 0) {
+                if (tokens[k].type == TOKEN_LPAREN) {
+                    depth++;
+                } else if (tokens[k].type == TOKEN_RPAREN) {
+                    depth--;
+                }
+                k++;
+            }
+            value = apply_operator(value, evaluate(tokens, j + 1, k - 2), tokens[j - 1].type);
+            j = k;
+        }
+    }
+            int k = j + 1;
+            while (k <= end && tokens[k].type == TOKEN_NUMBER) {
+                k++;
+            }
+            value = apply_operator(value, evaluate(tokens, j + 1, k - 2), tokens[j - 1].type);
+            j = k;
+        }
+    }
+
+    return value;
+}
+
+int main() {
+    tokenize("3 + 4 * (2 - 1)");
+    printf("%d\n", evaluate(tokens, 0, token_count - 1)); // Output: 9
+
+    tokenize("2 * 3 + 4");
+    printf("%d\n", evaluate(tokens, 0, token_count - 1)); // Output: 10
+
+    tokenize("2 * (3 + 4)");
+    printf("%d\n", evaluate(tokens, 0, token_count - 1)); // Output: 14
+
+    tokenize("8 / 2 * (2 + 2)");
+    printf("%d\n", evaluate(tokens, 0, token_count - 1)); // Output: 16
+
+    return 0;
+}

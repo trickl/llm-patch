@@ -1,0 +1,11 @@
+--- before.ts
++++ before.ts
+@@ -120,7 +120,7 @@ function parse(tokens: Token[]): number[] {
+     }
+ 
+     while (operators.length > 0) {
+-        const operator = operators.pop()!;
++        const operator = operators.pop();
+         const b = values.pop()!;
+         const a = values.pop()!;
+         values.push(applyOperator(a, b, operator));

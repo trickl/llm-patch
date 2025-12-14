@@ -1,9 +1,0 @@
-expression_evaluator.c: In function ‘parse_and_evaluate’:
-expression_evaluator.c:117:42: error: passing argument 2 of ‘evaluate’ makes pointer from integer without a cast [-Wint-conversion]
-  117 |     int result = evaluate(0, token_count - 1);
-      |                              ~~~~~~~~~~~~^~~
-      |                                          |
-      |                                          int
-expression_evaluator.c:94:31: note: expected ‘int *’ but argument is of type ‘int’
-   94 | int evaluate(int *start, int *end) {
-      |                          ~~~~~^~~

@@ -1,0 +1,15 @@
+In file included from expression_evaluator.c:1:
+expression_evaluator.c:8:63: error: expected identifier before ‘(’ token
+    8 | typedef enum { NUMBER, PLUS, MINUS, MUL, DIV, LPAREN, RPAREN, EOF } TokenType;
+      |                                                               ^~~
+expression_evaluator.c: In function ‘getNextToken’:
+expression_evaluator.c:29:9: warning: missing initializer for field ‘value’ of ‘Token’ [-Wmissing-field-initializers]
+   29 |         return (Token){EOF};
+      |         ^~~~~~
+expression_evaluator.c:12:9: note: ‘value’ declared here
+   12 |     int value;
+      |         ^~~~~
+expression_evaluator.c: In function ‘tokenize’:
+expression_evaluator.c:105:22: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+  105 |             while (i < strlen(expression) && isdigit(expression[i])) {
+      |                      ^

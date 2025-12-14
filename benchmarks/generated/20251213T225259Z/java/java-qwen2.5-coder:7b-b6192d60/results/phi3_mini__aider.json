@@ -1,0 +1,22 @@
+{
+  "case_id": "java-qwen2.5-coder:7b-b6192d60",
+  "language": "java",
+  "model_slug": "phi3_mini",
+  "algorithm": "aider",
+  "diff_path": "diffs/phi3_mini.diff",
+  "after_path": "after__phi3_mini__aider.java",
+  "patch_applied": true,
+  "patch_diagnostics": "no hunks",
+  "compile_returncode": 1,
+  "errors_before": 5,
+  "errors_after": 5,
+  "first_error_removed": false,
+  "added_lines": 0,
+  "removed_lines": 0,
+  "hunks": 0,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "ExpressionEvaluator.java:26: error: cannot find symbol\n                return new Token(TokenType.EOF, null);\n                                 ^\n  symbol:   variable TokenType\n  location: class Tokenizer\nExpressionEvaluator.java:34: error: cannot find symbol\n                return new Token(TokenType.NUMBER, Integer.parseInt(input.substring(start, pos)));\n                                 ^\n  symbol:   variable TokenType\n  location: class Tokenizer\nExpressionEvaluator.java:38: error: cannot find symbol\n                return new Token(TokenType.OPERATOR, type);\n                                 ^\n  symbol:   variable TokenType\n  location: class Tokenizer\nExpressionEvaluator.java:79: error: cannot assign a value to final variable input\n            tokenizer.input = expression;\n                     ^\n4 errors\n",
+  "stdout_after": ""
+}

@@ -1,0 +1,7 @@
+--- before.c
++++ patched_before.c
+@@ -81,7 +81,7 @@
+     while (**input != '\0') {
+-        tokens[token_count++] = tokenize(&input);
++        tokens[token_count++] = tokenize(input); // Fix: Pass input instead of &input
+      }

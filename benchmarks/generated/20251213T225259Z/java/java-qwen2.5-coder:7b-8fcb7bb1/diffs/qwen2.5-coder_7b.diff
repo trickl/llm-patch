@@ -1,0 +1,18 @@
+--- before.java	2023-04-10 12:34:56.000000000 +0800
++++ after.java	2023-04-10 12:35:00.000000000 +0800
+@@ -7,6 +7,7 @@
+ import java.util.*;
+ 
+ public class ExpressionEvaluator {
++    private static class Token;
+     public static void main(String[] args) {
+         System.out.println(evaluate("3 + 4 * (2 - 1)")); // Should print 7
+         System.out.println(evaluate("2 * 3 + 4")); // Should print 10
+@@ -80,6 +81,7 @@
+     private static class Parser {
++        private final List<Token> tokens;
+         private int pos;
+ 
+         public Parser(List<Token> tokens) {
+             this.tokens = tokens;
+             this.pos = 0;

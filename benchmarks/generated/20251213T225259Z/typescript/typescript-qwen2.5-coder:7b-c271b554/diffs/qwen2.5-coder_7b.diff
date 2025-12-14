@@ -1,0 +1,11 @@
+--- before.ts
++++ before.ts
+@@ -123,7 +123,7 @@ function applyOperator(a: number, b: number, operator: string): number {
+   }
+ }
+
+-export function evaluateExpression(input: string): number {
++export function evaluateExpression(input: string): number {
+   const tokens = tokenize(input);
+   const result = parse(tokens);
+   if (result.length !== 1) {

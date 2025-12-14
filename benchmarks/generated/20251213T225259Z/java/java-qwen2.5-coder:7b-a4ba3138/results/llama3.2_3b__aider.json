@@ -1,0 +1,22 @@
+{
+  "case_id": "java-qwen2.5-coder:7b-a4ba3138",
+  "language": "java",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "aider",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "after_path": "after__llama3.2_3b__aider.java",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 1,
+  "errors_before": 12,
+  "errors_after": 17,
+  "first_error_removed": true,
+  "added_lines": 10,
+  "removed_lines": 10,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "ExpressionEvaluator.java:21: error: '(' or '[' expected\n        List<Token> tokens = new ArrayList>();\n                                          ^\nExpressionEvaluator.java:21: error: -> expected\n        List<Token> tokens = new ArrayList>();\n                                             ^\nExpressionEvaluator.java:22: error: ')' expected\n        while (pos  input.length()) {\n                  ^\nExpressionEvaluator.java:22: error: ';' expected\n        while (pos  input.length()) {\n                                  ^\nExpressionEvaluator.java:26: error: ')' expected\n                while (pos  input.length() && Character.isDigit(input.charAt(pos))) {\n                          ^\nExpressionEvaluator.java:26: error: not a statement\n                while (pos  input.length() && Character.isDigit(input.charAt(pos))) {\n                                           ^\nExpressionEvaluator.java:26: error: ';' expected\n                while (pos  input.length() && Character.isDigit(input.charAt(pos))) {\n                                                                                  ^\nExpressionEvaluator.java:73: error: ')' expected\n        while (pos  tokens.size()) {\n                  ^\nExpressionEvaluator.java:73: error: ';' expected\n        while (pos  tokens.size()) {\n                                 ^\nExpressionEvaluator.java:91: error: ')' expected\n        while (pos  tokens.size()) {\n                  ^\nExpressionEvaluator.java:91: error: ';' expected\n        while (pos  tokens.size()) {\n                                 ^\nExpressionEvaluator.java:116: error: ')' expected\n            if (pos  tokens.size() && tokens.get(pos).type == TokenType.OPERATOR && tokens.get(pos).value.equals(\")\")) {\n                   ^\nExpressionEvaluator.java:116: error: not a statement\n            if (pos  tokens.size() && tokens.get(pos).type == TokenType.OPERATOR && tokens.get(pos).value.equals(\")\")) {\n                                                                                 ^\nExpressionEvaluator.java:116: error: ';' expected\n            if (pos  tokens.size() && tokens.get(pos).type == TokenType.OPERATOR && tokens.get(pos).value.equals(\")\")) {\n                                                                                                                     ^\nExpressionEvaluator.java:118: error: 'else' without 'if'\n            } else {\n              ^\nExpressionEvaluator.java:127: error: class, interface, enum, or record expected\n}\n^\n16 errors\n",
+  "stdout_after": ""
+}

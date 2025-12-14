@@ -1,0 +1,8 @@
+--- before.java	2023-04-10 12:34:56.000000000 +0800
++++ after.java	2023-04-10 12:35:00.000000000 +0800
+@@ -41,7 +41,7 @@
+                 ? "0-" : token)
+         .collect(Collectors.toList());
+     }
+-
++    // Add a semicolon here to fix the syntax error

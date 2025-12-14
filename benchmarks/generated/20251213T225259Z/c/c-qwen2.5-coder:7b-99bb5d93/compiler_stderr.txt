@@ -1,0 +1,16 @@
+expression_evaluator.c: In function ‘parseExpression’:
+expression_evaluator.c:75:18: error: implicit declaration of function ‘parseTerm’ [-Wimplicit-function-declaration]
+   75 |     int result = parseTerm();
+      |                  ^~~~~~~~~
+expression_evaluator.c: In function ‘parseTerm’:
+expression_evaluator.c:86:18: error: implicit declaration of function ‘parseFactor’ [-Wimplicit-function-declaration]
+   86 |     int result = parseFactor();
+      |                  ^~~~~~~~~~~
+expression_evaluator.c: In function ‘evaluate’:
+expression_evaluator.c:72:1: warning: control reaches end of non-void function [-Wreturn-type]
+   72 | }
+      | ^
+expression_evaluator.c: In function ‘parseFactor’:
+expression_evaluator.c:112:1: warning: control reaches end of non-void function [-Wreturn-type]
+  112 | }
+      | ^

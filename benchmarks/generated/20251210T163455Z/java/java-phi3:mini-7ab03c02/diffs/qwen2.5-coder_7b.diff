@@ -1,8 +1,0 @@
---- before.java
-+++ after.java
-@@ -10,5 +10,6 @@
-     public void method() {
-         // Original code here
-+        System.out.println("Additional line added");
-     }
- }

@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-cb9c9bc8",
+  "language": "c",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "aider",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "after_path": "after__qwen2.5-coder_7b__aider.c",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 2 hunks",
+  "compile_returncode": 1,
+  "errors_before": 4,
+  "errors_after": 4,
+  "first_error_removed": false,
+  "added_lines": 2,
+  "removed_lines": 2,
+  "hunks": 2,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "expression_evaluator.c: In function \u2018main\u2019:\nexpression_evaluator.c:124:44: error: passing argument 2 of \u2018evaluate\u2019 makes pointer from integer without a cast [-Wint-conversion]\n  124 |     printf(\"%d\\n\", evaluate(0, token_count - 1)); // Output: 9\n      |                                ~~~~~~~~~~~~^~~\n      |                                            |\n      |                                            int\nexpression_evaluator.c:94:31: note: expected \u2018int *\u2019 but argument is of type \u2018int\u2019\n   94 | int evaluate(int *start, int *end) {\n      |                          ~~~~~^~~\nexpression_evaluator.c:126:44: error: passing argument 2 of \u2018evaluate\u2019 makes pointer from integer without a cast [-Wint-conversion]\n  126 |     printf(\"%d\\n\", evaluate(0, token_count - 1)); // Output: 10\n      |                                ~~~~~~~~~~~~^~~\n      |                                            |\n      |                                            int\nexpression_evaluator.c:94:31: note: expected \u2018int *\u2019 but argument is of type \u2018int\u2019\n   94 | int evaluate(int *start, int *end) {\n      |                          ~~~~~^~~\nexpression_evaluator.c:130:44: error: passing argument 2 of \u2018evaluate\u2019 makes pointer from integer without a cast [-Wint-conversion]\n  130 |     printf(\"%d\\n\", evaluate(0, token_count - 1)); // Output: 14\n      |                                ~~~~~~~~~~~~^~~\n      |                                            |\n      |                                            int\nexpression_evaluator.c:94:31: note: expected \u2018int *\u2019 but argument is of type \u2018int\u2019\n   94 | int evaluate(int *start, int *end) {\n      |                          ~~~~~^~~\nexpression_evaluator.c:132:44: error: passing argument 2 of \u2018evaluate\u2019 makes pointer from integer without a cast [-Wint-conversion]\n  132 |     printf(\"%d\\n\", evaluate(0, token_count - 1)); // Output: 16\n      |                                ~~~~~~~~~~~~^~~\n      |                                            |\n      |                                            int\nexpression_evaluator.c:94:31: note: expected \u2018int *\u2019 but argument is of type \u2018int\u2019\n   94 | int evaluate(int *start, int *end) {\n      |                          ~~~~~^~~\n",
+  "stdout_after": ""
+}

@@ -1,0 +1,9 @@
+--- expression_evaluator.ts
++++ expression_evaluator.ts
+@@ -101,1 +101,2 @@
+     } else if (token === ')') {
+-        while (operators.length > 0 && operators[operators.length - 1] !== '(') {
++        while (operators.length > 0 && operators[operators.length - 1] !== '(' && precedence(operators[operators.length - 1]) >= precedence(token)) {
+             applyOperator(values, operators);
+         }
+         operators.pop(); // Remove '('

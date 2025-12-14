@@ -1,0 +1,10 @@
+--- before.c
++++ before.c
+@@ -63,6 +63,7 @@
+ int parse_factor() {
+     Token token = get_next_token();
+     switch (token.type) {
++        extern int parse_expression(); // Declare the function here
+         case TOKEN_NUMBER:
+             return token.value;
+         case TOKEN_LPAREN:

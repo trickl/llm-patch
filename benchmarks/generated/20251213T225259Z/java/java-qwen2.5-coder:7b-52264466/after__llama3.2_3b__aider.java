@@ -1,0 +1,149 @@
+import java.util.*;
+
+public class ExpressionEvaluator {
+    public static void main(String[] args) {
+        System.out.println(evaluate("3 + 4 * (2 - 1)")); // Should print 7
+        System.out.println(evaluate("2 * 3 + 4")); // Should print 10
+        System.out.println(evaluate("2 * (3 + 4)")); // Should print 14
+        System.out.println(evaluate("8 / 2 * (2 + 2)")); // Should print 16
+    }
+
+    public static int evaluate(String expression) {
+    return new Parser(new Tokenizer(expression)).parse();
+}
+private static class Tokenizer {
+    private final String input;
+    private int pos = 0;
+    Tokenizer(String input) {
+        this.input = input;
+    }
+    List<Token> tokenize() {
+        List<Token> tokens = new ArrayList<>();
+        while (pos  input.length()) {
+            char ch = input.charAt(pos);
+            if (Character.isDigit(ch)) {
+                tokens.add(new NumberToken(parseNumber()));
+            } else if (ch == '+' || ch == '-' || ch == '*' || ch == '/') {
+                tokens.add(new OperatorToken(String.valueOf(ch)));
+            } else if (ch == '(') {
+                tokens.add(new LeftParenthesisToken());
+            } else if (ch == ')') {
+                tokens.add(new RightParenthesisToken());
+            }
+            pos++;
+        }
+        return tokens;
+    }
+    private int parseNumber() {
+        int start = pos;
+        while (pos  input.length() && Character.isDigit(input.charAt(pos))) {
+            pos++;
+        }
+        return Integer.parseInt(input.substring(start, pos));
+    }
+    }
+
+    private static class Parser {
+        private final List<Token> tokens;
+        private int pos = 0;
+
+        Parser(List<Token> tokens) {
+            this.tokens = tokens;
+        }
+
+        int parse() {
+            return parseExpression();
+        }
+
+        private int parseExpression() {
+            int result = parseTerm();
+            while (pos < tokens.size()) {
+                Token token = tokens.get(pos);
+                if (!(token instanceof OperatorToken)) break;
+                OperatorToken operator = (OperatorToken) token;
+                pos++;
+                int right = parseTerm();
+                switch (operator.value) {
+                    case "+":
+                        result += right;
+                        break;
+                    case "-":
+                        result -= right;
+                        break;
+                }
+            }
+            return result;
+        }
+
+        private int parseTerm() {
+            if (pos < tokens.size()) {
+                Token token = tokens.get(pos);
+                pos++;
+                switch (token) {
+                    case LEFT_PARENTHESIS:
+                        int result = parseExpression();
+                        if (!(tokens.get(pos++) instanceof RightParenthesisToken)) {
+                            throw new IllegalArgumentException("Expected ')'");
+                        }
+                        return result;
+                    case NUMBER:
+                        return ((NumberToken) token).value;
+                    case MINUS:
+                        return -parseTerm();
+                }
+            }
+            throw new IllegalArgumentException("Unexpected end of expression");
+        }
+
+        private static class NumberToken implements Token {
+            final int value;
+
+            NumberToken(int value) {
+                this.value = value;
+            }
+
+            @Override
+            public String toString() {
+                return "NumberToken{" +
+                        "value=" + value +
+                        '}';
+            }
+        }
+
+        private static class OperatorToken implements Token {
+            final String value;
+
+            OperatorToken(String value) {
+                this.value = value;
+            }
+
+            @Override
+            public String toString() {
+                return "OperatorToken{" +
+                        "value='" + value + '\'' +
+                        '}';
+            }
+        }
+
+        private static class LeftParenthesisToken implements Token {
+            @Override
+            public String toString() {
+                return "LeftParenthesisToken{}";
+            }
+        }
+
+        private static class RightParenthesisToken implements Token {
+            @Override
+            public String toString() {
+                return "RightParenthesisToken{}";
+            }
+        }
+
+        private static final LeftParenthesisToken LEFT_PARENTHESIS = new LeftParenthesisToken();
+        private static final RightParenthesisToken RIGHT_PARENTHESIS = new RightParenthesisToken();
+        private static final OperatorToken MINUS = new OperatorToken("-");
+
+        interface Token {
+        }
+    }
+}

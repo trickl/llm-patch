@@ -1,0 +1,22 @@
+{
+  "case_id": "typescript-qwen2.5-coder:7b-36e20c77",
+  "language": "typescript",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "diff-match-patch",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "after_path": "after__llama3.2_3b__diff-match-patch.ts",
+  "patch_applied": true,
+  "patch_diagnostics": "statuses=[True]",
+  "compile_returncode": 2,
+  "errors_before": 3,
+  "errors_after": 3,
+  "first_error_removed": false,
+  "added_lines": 1,
+  "removed_lines": 0,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "",
+  "stdout_after": "expression_evaluator.ts(1,34): error TS2307: Cannot find module 'assert' or its corresponding type declarations.\nexpression_evaluator.ts(3,26): error TS2307: Cannot find module 'require' or its corresponding type declarations.\nexpression_evaluator.ts(95,22): error TS2580: Cannot find name 'module'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.\n"
+}

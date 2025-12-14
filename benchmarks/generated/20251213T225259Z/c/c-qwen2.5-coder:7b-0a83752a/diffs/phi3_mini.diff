@@ -1,0 +1,11 @@
+--- expression_evaluator.c before
++++ expression_evaluator.c after
+@@ -123,7 +123,7 @@ int evaluate(int *start, int *end) {
+         return apply_operator(value, tokens[*start].value); // Error here: expected 'int *' but argument is of type 'int'
+     }
+ 
+-   int result = evaluate(0, token_count - 1);
++   Token start_token = &tokens[0];
++   int end_index = (end == NULL) ? token_count : end; // Assuming the caller provides an optional 'end' pointer for partial evaluation.
+     printf("%s => %d\n", expressions[i], result);
+ }

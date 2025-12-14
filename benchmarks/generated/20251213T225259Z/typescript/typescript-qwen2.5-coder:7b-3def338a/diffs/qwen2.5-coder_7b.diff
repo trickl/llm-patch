@@ -1,0 +1,11 @@
+--- before.ts
++++ before.ts
+@@ -103,7 +103,7 @@ function parse(tokens: Token[]): number[] {
+     }
+ 
+     return values;
+-}
++}
+ 
+ export function evaluateExpression(input: string): number {
+     const tokens = tokenize(input);

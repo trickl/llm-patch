@@ -1,0 +1,20 @@
+diff --git a/expression_evaluator.ts b/expression_evaluator.ts
+index 3a4b5c6..7d8e9f0 100644
+--- a/expression_evaluator.ts
++++ b/expression_evaluator.ts
+@@ -1,4 +1,6 @@
+ // expression_evaluator.ts
+ 
++import * as process from 'process';
+ type Token = { type: 'number' | 'operator' | 'parenthesis'; value: string };
+ 
+ const isNumber = (char: string): boolean => !isNaN(Number(char));
+@@ -129,7 +131,7 @@ function evaluateExpression(input: string): number {
+     if (result.length !== 1) {
+         throw new Error('Invalid expression');
+     }
+-    return result[0];
++    return result;
+ }
+ 
+ function precedence(operator: string): number {

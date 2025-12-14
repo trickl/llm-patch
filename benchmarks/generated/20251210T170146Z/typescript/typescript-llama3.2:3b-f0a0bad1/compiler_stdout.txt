@@ -1,7 +1,0 @@
-expression_evaluator.ts(24,45): error TS2345: Argument of type 'string | null' is not assignable to parameter of type 'string | undefined'.
-  Type 'null' is not assignable to type 'string | undefined'.
-expression_evaluator.ts(30,43): error TS2345: Argument of type 'null' is not assignable to parameter of type 'string | undefined'.
-expression_evaluator.ts(44,23): error TS2322: Type 'number' is not assignable to type 'string'.
-expression_evaluator.ts(87,18): error TS2367: This comparison appears to be unintentional because the types '"operator"' and '"number"' have no overlap.
-expression_evaluator.ts(121,17): error TS2872: This kind of expression is always truthy.
-expression_evaluator.ts(128,10): error TS2564: Property 'value' has no initializer and is not definitely assigned in the constructor.

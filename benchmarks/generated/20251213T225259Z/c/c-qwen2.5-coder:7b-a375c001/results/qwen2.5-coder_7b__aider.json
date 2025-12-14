@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-a375c001",
+  "language": "c",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "aider",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "after_path": "after__qwen2.5-coder_7b__aider.c",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 0,
+  "errors_before": 2,
+  "errors_after": 0,
+  "first_error_removed": false,
+  "added_lines": 1,
+  "removed_lines": 1,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "expression_evaluator.c: In function \u2018main\u2019:\nexpression_evaluator.c:113:23: warning: comparison of integer expressions of different signedness: \u2018int\u2019 and \u2018long unsigned int\u2019 [-Wsign-compare]\n  113 |     for (int i = 0; i < sizeof(expressions)/sizeof(expressions[0]); i++) {\n      |                       ^\n",
+  "stdout_after": ""
+}

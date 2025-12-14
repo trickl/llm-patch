@@ -1,0 +1,45 @@
+ExpressionEvaluator.java:12: error: incompatible types: Tokenizer cannot be converted to List<Token>
+        return new Parser(new Tokenizer(expression)).parse();
+                          ^
+ExpressionEvaluator.java:79: error: bad operand types for binary operator '=='
+                if (token.type == '+' || token.type == '-') {
+                               ^
+  first type:  Object
+  second type: char
+ExpressionEvaluator.java:79: error: bad operand types for binary operator '=='
+                if (token.type == '+' || token.type == '-') {
+                                                    ^
+  first type:  Object
+  second type: char
+ExpressionEvaluator.java:82: error: bad operand types for binary operator '=='
+                    result += token.type == '+' ? nextTerm : -nextTerm;
+                                         ^
+  first type:  Object
+  second type: char
+ExpressionEvaluator.java:94: error: bad operand types for binary operator '=='
+                if (token.type == '*' || token.type == '/') {
+                               ^
+  first type:  Object
+  second type: char
+ExpressionEvaluator.java:94: error: bad operand types for binary operator '=='
+                if (token.type == '*' || token.type == '/') {
+                                                    ^
+  first type:  Object
+  second type: char
+ExpressionEvaluator.java:97: error: bad operand types for binary operator '=='
+                    result *= token.type == '*' ? nextFactor : result / nextFactor;
+                                         ^
+  first type:  Object
+  second type: char
+ExpressionEvaluator.java:107: error: bad operand types for binary operator '=='
+            if (token.type == '(') {
+                           ^
+  first type:  Object
+  second type: char
+ExpressionEvaluator.java:110: error: bad operand types for binary operator '=='
+                if (pos < tokens.size() && tokens.get(pos).type == ')') {
+                                                                ^
+  first type:  Object
+  second type: char
+Note: Some messages have been simplified; recompile with -Xdiags:verbose to get full output
+9 errors

@@ -1,0 +1,29 @@
+--- before.c
++++ before.c
+@@ -38,7 +38,7 @@ Token get_next_token() {
+     while (isspace(tokens[token_index].value)) {
+         token_index++;
+     }
+-    return (Token){TOKEN_EOF};
++    return (Token){TOKEN_EOF, 0};
+ }
+
+ int precedence(TokenType type) {
+@@ -101,7 +101,7 @@ int evaluate_expression() {
+     for (int i = 0; i < token_index; i++) {
+         Token token = tokens[i];
+         if (token.type == TOKEN_NUMBER) {
+-            stack[++top] = token.value;
++            stack[++top] = token.value;
+         } else if (token.type == TOKEN_PLUS || token.type == TOKEN_MINUS ||
+                    token.type == TOKEN_MULTIPLY || token.type == TOKEN_DIVIDE) {
+             while (top >= 0 && precedence(stack[top]) >= precedence(token.type)) {
+@@ -127,7 +127,7 @@ int evaluate_expression() {
+     for (int i = 0; i < token_index; i++) {
+         Token token = tokens[i];
+         if (token.type == TOKEN_NUMBER) {
+-            stack[++top] = token.value;
++            stack[++top] = token.value;
+         } else if (token.type == TOKEN_PLUS || token.type == TOKEN_MINUS ||
+                    token.type == TOKEN_MULTIPLY || token.type == TOKEN_DIVIDE) {
+             while (top >= 0 && precedence(stack[top]) >= precedence(token.type)) {

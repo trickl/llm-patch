@@ -1,0 +1,22 @@
+{
+  "case_id": "java-qwen2.5-coder:7b-2657608e",
+  "language": "java",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "aider",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "after_path": "after__qwen2.5-coder_7b__aider.java",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 4 hunks",
+  "compile_returncode": 1,
+  "errors_before": 10,
+  "errors_after": 8,
+  "first_error_removed": false,
+  "added_lines": 4,
+  "removed_lines": 4,
+  "hunks": 4,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "ExpressionEvaluator.java:68: error: bad operand types for binary operator '=='\n            if (token == '+' || token == '-') {\n                      ^\n  first type:  Object\n  second type: char\nExpressionEvaluator.java:68: error: bad operand types for binary operator '=='\n            if (token == '+' || token == '-') {\n                                      ^\n  first type:  Object\n  second type: char\nExpressionEvaluator.java:87: error: bad operand types for binary operator '=='\n            if (token == '*' || token == '/') {\n                      ^\n  first type:  Object\n  second type: char\nExpressionEvaluator.java:87: error: bad operand types for binary operator '=='\n            if (token == '*' || token == '/') {\n                                      ^\n  first type:  Object\n  second type: char\nExpressionEvaluator.java:107: error: bad operand types for binary operator '=='\n        } else if (token == '(') {\n                         ^\n  first type:  Object\n  second type: char\nExpressionEvaluator.java:110: error: bad operand types for binary operator '=='\n            if (pos < tokens.size() && tokens.get(pos) == ')') {\n                                                       ^\n  first type:  Object\n  second type: char\nExpressionEvaluator.java:116: error: bad operand types for binary operator '=='\n        } else if (token == '-') {\n                         ^\n  first type:  Object\n  second type: char\n7 errors\n",
+  "stdout_after": ""
+}

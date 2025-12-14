@@ -1,5 +1,0 @@
---- before.ts
-+++ before.ts
-@@ -1,2 +1 @@
--In an advanced Drafting asparate"{/noun2.
-+#error TS1434: Unexpected keyword or identifier.

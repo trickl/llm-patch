@@ -1,0 +1,64 @@
+--- before.java	2023-04-10 12:34:56.000000000 +0800
++++ after.java	2023-04-10 12:35:07.000000000 +0800
+@@ -1,4 +1,4 @@
+ import java.util.*;
+ 
+-public class ExpressionEvaluator {
++public class ExpressionEvaluator {
+     public static void main(String[] args) {
+         System.out.println(evaluate("3 + 4 * (2 - 1)")); // Should print 7
+         System.out.println(evaluate("2 * 3 + 4")); // Should print 10
+@@ -12,7 +12,7 @@
+     public static int evaluate(String expression) {
+         return new Parser(new Tokenizer(expression)).parse();
+     }
+-}
++}
+ 
+ class Tokenizer {
+     private final String input;
+@@ -56,7 +56,7 @@
+                 tokens.add(new Token(TokenType.PARENTHESIS, '('));
+                 pos++;
+             } else if (ch == ')') {
+-                tokens.add(new Token(TokenType.PARENTHESIS, ')'));
++                tokens.add(new Token(Token.TokenType.PARENTHESIS, ')'));
+                 pos++;
+             } else if (Character.isWhitespace(ch)) {
+                 pos++;
+@@ -85,7 +85,7 @@
+         return result;
+     }
+ 
+-    private int term() {
++    private int term() {
+         int result = factor();
+         while (pos < tokens.size()) {
+             Token token = tokens.get(pos);
+@@ -104,7 +104,7 @@
+                 if (token.value == '+') {
+                     result += nextTerm;
+                 } else {
+-                    result -= nextTerm;
++                    result -= nextTerm;
+                 }
+             } else {
+                 break;
+@@ -123,7 +123,7 @@
+         return result;
+     }
+ 
+-    private int factor() {
++    private int factor() {
+         Token token = tokens.get(pos);
+         if (token.type == Token.TokenType.PARENTHESIS && token.value == '(') {
+             pos++;
+@@ -140,7 +140,7 @@
+                 } else {
+                     throw new IllegalArgumentException("Missing closing parenthesis");
+                 }
+-            } else if (token.type == Token.TokenType.OPERATOR && token.value == '-') {
++            } else if (token.type == Token.TokenType.OPERATOR && token.value == '-') {
+                 pos++;
+                 return -factor();
+             } else if (token.type == Token.TokenType.NUMBER) {

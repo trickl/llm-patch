@@ -1,0 +1,22 @@
+{
+  "case_id": "java-qwen2.5-coder:7b-2657608e",
+  "language": "java",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "aider",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "after_path": "after__llama3.2_3b__aider.java",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 1,
+  "errors_before": 10,
+  "errors_after": 5,
+  "first_error_removed": true,
+  "added_lines": 2,
+  "removed_lines": 2,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "ExpressionEvaluator.java:32: error: ')' expected\n                while (pos  input.length() && Character.isDigit(input.charAt(pos))) {\n                          ^\nExpressionEvaluator.java:32: error: not a statement\n                while (pos  input.length() && Character.isDigit(input.charAt(pos))) {\n                                           ^\nExpressionEvaluator.java:32: error: ';' expected\n                while (pos  input.length() && Character.isDigit(input.charAt(pos))) {\n                                                                                  ^\nExpressionEvaluator.java:124: error: reached end of file while parsing\n}\n ^\n4 errors\n",
+  "stdout_after": ""
+}

@@ -1,0 +1,17 @@
+--- before.c	2023-04-01 15:34:00.0000000 -0700
++++ after.c	2023-04-01 15:34:00.0000000 -0700
+@@ -39,8 +39,8 @@
+     if (!**input) return (Token){TOKEN_EOF};
++   Token token = tokens[token_index]; // Initialize the 'value' field with a default value of 0.
+    int initialValue;
+@@ -61,7 +61,8 @@
+     while (**input && isdigit(**input)) {
+         if (initialValue == 0) initialValue = **input - '0'; // Initialize the 'value' field with a default value of 0.
++        else initialValue = initialValue * 10 + (**input - '0');
+         (*input)++;
+     }
+-    return (Token){TOKEN_NUMBER, token->value};
++    if (initialValue == 0) { // Check for the default value and initialize it.
+        Token::int initialValue = 0;
+    } else {
+        return (Token){TOKEN_NUMBER, initialValue};

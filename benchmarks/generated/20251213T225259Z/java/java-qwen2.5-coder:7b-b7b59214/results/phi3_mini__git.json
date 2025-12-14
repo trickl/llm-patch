@@ -1,0 +1,22 @@
+{
+  "case_id": "java-qwen2.5-coder:7b-b7b59214",
+  "language": "java",
+  "model_slug": "phi3_mini",
+  "algorithm": "git",
+  "diff_path": "diffs/phi3_mini.diff",
+  "after_path": "after__phi3_mini__git.java",
+  "patch_applied": true,
+  "patch_diagnostics": "applied",
+  "compile_returncode": 1,
+  "errors_before": 12,
+  "errors_after": 12,
+  "first_error_removed": false,
+  "added_lines": 0,
+  "removed_lines": 1,
+  "hunks": 0,
+  "delete_only": true,
+  "success": false,
+  "notes": "diff only deletes lines",
+  "stderr_after": "ExpressionEvaluator.java:81: error: cannot find symbol\n    private final List<Token> tokens;\n                       ^\n  symbol:   class Token\n  location: class Parser\nExpressionEvaluator.java:84: error: cannot find symbol\n    public Parser(List<Token> tokens) {\n                       ^\n  symbol:   class Token\n  location: class Parser\nExpressionEvaluator.java:96: error: cannot find symbol\n            Token token = tokens.get(pos);\n            ^\n  symbol:   class Token\n  location: class Parser\nExpressionEvaluator.java:97: error: package Token does not exist\n            if (token.getType() == Token.TokenType.OPERATOR && (token.getValue().equals(\"+\") || token.getValue().equals(\"-\"))) {\n                                        ^\nExpressionEvaluator.java:115: error: cannot find symbol\n            Token token = tokens.get(pos);\n            ^\n  symbol:   class Token\n  location: class Parser\nExpressionEvaluator.java:116: error: package Token does not exist\n            if (token.getType() == Token.TokenType.OPERATOR && (token.getValue().equals(\"*\") || token.getValue().equals(\"/\"))) {\n                                        ^\nExpressionEvaluator.java:132: error: cannot find symbol\n        Token token = tokens.get(pos);\n        ^\n  symbol:   class Token\n  location: class Parser\nExpressionEvaluator.java:133: error: package Token does not exist\n        if (token.getType() == Token.TokenType.LPAREN) {\n                                    ^\nExpressionEvaluator.java:136: error: package Token does not exist\n            if (tokens.get(pos).getType() != Token.TokenType.RPAREN) {\n                                                  ^\nExpressionEvaluator.java:141: error: package Token does not exist\n        } else if (token.getType() == Token.TokenType.OPERATOR && token.getValue().equals(\"-\")) {\n                                           ^\nExpressionEvaluator.java:145: error: package Token does not exist\n        } else if (token.getType() == Token.TokenType.NUMBER) {\n                                           ^\n11 errors\n",
+  "stdout_after": ""
+}

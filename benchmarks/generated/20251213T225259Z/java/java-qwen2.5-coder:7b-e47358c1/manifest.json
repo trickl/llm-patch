@@ -1,0 +1,13 @@
+{
+  "case_id": "java-qwen2.5-coder:7b-e47358c1",
+  "language": "java",
+  "problem_id": "expr_eval_v1",
+  "model": "qwen2.5-coder:7b",
+  "provider": "ollama",
+  "timestamp_utc": "2025-12-13T23:18:54.456981+00:00",
+  "compile_command": [
+    "javac",
+    "ExpressionEvaluator.java"
+  ],
+  "return_code": 1
+}

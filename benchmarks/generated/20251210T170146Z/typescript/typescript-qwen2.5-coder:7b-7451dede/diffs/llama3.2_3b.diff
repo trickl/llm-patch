@@ -1,9 +1,0 @@
---- expression_evaluator.ts
-+++ expression_evaluator.ts
-@@ -117,7 +117,8 @@
-     } else if (char === '-') {
--        currentToken += char;
-+        tokens.push({ type: 'number', value: currentToken });
-+        currentToken = '-' + char;
-     } else {
-         currentToken += char;

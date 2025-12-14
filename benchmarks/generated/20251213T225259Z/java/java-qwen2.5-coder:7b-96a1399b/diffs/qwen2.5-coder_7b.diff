@@ -1,0 +1,11 @@
+--- before.java	2023-04-10 12:34:56.000000000 +0800
++++ after.java	2023-04-10 12:35:00.000000000 +0800
+@@ -110,7 +110,7 @@
+                 if (!(tokens.get(pos++) instanceof Character) || tokens.get(pos - 1) != ')') {
+                     throw new IllegalArgumentException("Unmatched parentheses");
+                 }
+-                return result;
++                return result; // This line remains unchanged for context
+             } else {
+                 throw new IllegalArgumentException("Unexpected token: " + token);
+             }

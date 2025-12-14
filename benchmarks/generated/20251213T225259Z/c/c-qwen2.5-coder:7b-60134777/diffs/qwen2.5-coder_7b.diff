@@ -1,0 +1,29 @@
+--- before.c
++++ before.c
+@@ -85,7 +85,7 @@ int evaluate_expression(int (*get_token)());
+ 
+ int evaluate_expression(int (*get_token)()) {
+     Token token = get_next_token();
+-    int result = evaluate_term();
++    int result = evaluate_term(&token);
+ 
+     while (token.type == TOKEN_PLUS || token.type == TOKEN_MINUS) {
+         if (token.type == TOKEN_PLUS) {
+@@ -109,7 +109,7 @@ int main() {
+     tokens[token_index++] = (Token){TOKEN_NUMBER, 2};
+     tokens[token_index++] = (Token){TOKEN_MULTIPLY, '*'};
+     tokens[token_index++] = (Token){TOKEN_NUMBER, 3};
+-    printf("2 * 3 + 4 => %d\n", evaluate_expression(get_next_token));
++    printf("2 * 3 + 4 => %d\n", evaluate_expression(&get_next_token));
+ 
+     tokens[token_index++] = (Token){TOKEN_NUMBER, 2};
+     tokens[token_index++] = (Token){TOKEN_MULTIPLY, '*'};
+@@ -123,7 +123,7 @@ int main() {
+     printf("2 * (3 + 4) => %d\n", evaluate_expression(get_next_token));
+ 
+     tokens[token_index++] = (Token){TOKEN_NUMBER, 8};
+-    printf("8 / 2 * (2 + 2) => %d\n", evaluate_expression(get_next_token));
++    printf("8 / 2 * (2 + 2) => %d\n", evaluate_expression(&get_next_token));
+ 
+     return 0;
+ }

@@ -1,0 +1,22 @@
+{
+  "case_id": "java-qwen2.5-coder:7b-903b188e",
+  "language": "java",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "aider",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "after_path": "after__llama3.2_3b__aider.java",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 1,
+  "errors_before": 12,
+  "errors_after": 3,
+  "first_error_removed": true,
+  "added_lines": 4,
+  "removed_lines": 4,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "ExpressionEvaluator.java:53: error: illegal start of type\nimport java.util.*;\n^\nExpressionEvaluator.java:53: error: <identifier> expected\nimport java.util.*;\n                 ^\n2 errors\n",
+  "stdout_after": ""
+}

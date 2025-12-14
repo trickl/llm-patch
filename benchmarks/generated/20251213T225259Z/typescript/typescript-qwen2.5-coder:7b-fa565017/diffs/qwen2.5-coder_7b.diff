@@ -1,0 +1,35 @@
+--- before.ts
++++ before.ts
+@@ -1,4 +1,5 @@
+ import { Token } from './types';
++import * as process from 'process';
+
+ type Token = { type: 'number' | 'operator' | 'parenthesis'; value: string };
+
+ function tokenize(input: string): Token[] {
+@@ -96,7 +97,7 @@ export function evaluateExpression(input: string): number {
+     } catch (error) {
+         console.error(`Error evaluating expression: ${error.message}`);
+         return NaN;
+-    }
++    }
+ }
+
+ // Example CLI usage
+ if (require.main === module) {
+@@ -102,7 +103,7 @@ if (require.main === module) {
+     const input = process.argv.slice(2).join(' ');
+     if (!input) {
+         console.log('Usage: node expression_evaluator.ts "expression"');
+-    } else {
++    } else {
+         try {
+             const result = evaluateExpression(input);
+             console.log(`Result: ${result}`);
+@@ -109,7 +110,7 @@ if (require.main === module) {
+         } catch (error) {
+             console.error(`Error: ${error.message}`);
+         }
+-    }
++    }
+ }

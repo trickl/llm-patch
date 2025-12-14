@@ -1,0 +1,11 @@
+--- before.py
++++ before.py
+@@ -5,7 +5,7 @@
+     return list(filter(None, re.split(r'(\d+|\s*[-+\*/()]\s*)', expression.strip())))
+ 
+ class Parser:
+-    precedence = {'+': 1, '-': 1, '*': 2, '/': 2}
++    precedence = {'+': 1, '-': 1, '*': 2, '/': 2}
+ 
+     def parse(self, tokens):
+         output = []

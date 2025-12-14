@@ -1,0 +1,20 @@
+--- before.java	2023-04-10 12:34:56.000000000 +0800
++++ after.java	2023-04-10 12:35:00.000000000 +0800
+@@ -12,7 +12,7 @@
+     public static int evaluate(String expression) {
+         return new Parser(new Tokenizer(expression)).parse();
+     }
+-}
++}
+ 
+ class Tokenizer {
+     private final String input;
+@@ -36,7 +36,7 @@
+                 tokens.add(new Token(TokenType.OPERATOR, c));
+                 pos++;
+             } else if (c == '(') {
+-                tokens.add(new Token(TokenType.LPAREN, null));
++                tokens.add(new Token(TokenType.LPAREN, 0));
+                 pos++;
+             } else if (c == ')') {
+                 tokens.add(new Token(TokenType.RPAREN, null));

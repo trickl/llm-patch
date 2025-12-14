@@ -1,0 +1,13 @@
+--- expression_evaluator.ts
++++ expression_evaluator.ts
+@@ -23,7 +23,7 @@
+   if (token.type === 'number') {
+     values.push(Number(token.value));
+   } else if (token.value === '(') {
+-    operators.push(token.value);
++    operators.push('"parenthesis"');
+   } else if (token.value === ')') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       applyOperator(values, operators);
+     }
+     operators.pop(); // Remove the '('

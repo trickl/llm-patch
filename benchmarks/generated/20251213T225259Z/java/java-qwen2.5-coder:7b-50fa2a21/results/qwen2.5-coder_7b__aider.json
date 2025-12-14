@@ -1,0 +1,22 @@
+{
+  "case_id": "java-qwen2.5-coder:7b-50fa2a21",
+  "language": "java",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "aider",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "after_path": "after__qwen2.5-coder_7b__aider.java",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 1,
+  "errors_before": 2,
+  "errors_after": 2,
+  "first_error_removed": true,
+  "added_lines": 0,
+  "removed_lines": 0,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "ExpressionEvaluator.java:37: error: illegal start of expression\n                                                         ^\n                                                         ^\n1 error\n",
+  "stdout_after": ""
+}

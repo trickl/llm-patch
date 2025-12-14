@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-fb8dd405",
+  "language": "c",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "aider",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "after_path": "after__llama3.2_3b__aider.c",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 1,
+  "errors_before": 2,
+  "errors_after": 2,
+  "first_error_removed": false,
+  "added_lines": 1,
+  "removed_lines": 1,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "expression_evaluator.c: In function \u2018evaluateExpression\u2019:\nexpression_evaluator.c:62:16: error: implicit declaration of function \u2018evaluateTerm\u2019 [-Wimplicit-function-declaration]\n   62 |   int result = evaluateTerm();\n      |                ^~~~~~~~~~~~\nexpression_evaluator.c: In function \u2018evaluateTerm\u2019:\nexpression_evaluator.c:75:18: error: implicit declaration of function \u2018evaluateFactor\u2019 [-Wimplicit-function-declaration]\n   75 |     int result = evaluateFactor();\n      |                  ^~~~~~~~~~~~~~\nexpression_evaluator.c: In function \u2018evaluateFactor\u2019:\nexpression_evaluator.c:110:1: warning: control reaches end of non-void function [-Wreturn-type]\n  110 | }\n      | ^\n",
+  "stdout_after": ""
+}

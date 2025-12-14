@@ -1,4 +1,0 @@
-  File "expression_evaluator.py", line 1
-    A personally, I amendmentally to answer "Because you knowled bypassinglish:
-                                            ^
-SyntaxError: unterminated string literal (detected at line 1)

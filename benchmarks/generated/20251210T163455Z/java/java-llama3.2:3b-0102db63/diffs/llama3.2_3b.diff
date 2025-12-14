@@ -1,6 +1,0 @@
---- before.java
-+++ after.java
-@@ -6,7 +6,7 @@
-     return new Tokenizer().tokenize(expression).parse().evaluate();
--}
-+}

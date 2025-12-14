@@ -1,0 +1,4 @@
+expression_evaluator.c: In function ‘parse_factor’:
+expression_evaluator.c:66:26: error: implicit declaration of function ‘parse_expression’ [-Wimplicit-function-declaration]
+   66 |             int result = parse_expression();
+      |                          ^~~~~~~~~~~~~~~~

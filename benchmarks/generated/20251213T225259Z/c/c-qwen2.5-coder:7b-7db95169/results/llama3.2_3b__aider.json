@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-7db95169",
+  "language": "c",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "aider",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "after_path": "after__llama3.2_3b__aider.c",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 1,
+  "errors_before": 1,
+  "errors_after": 2,
+  "first_error_removed": false,
+  "added_lines": 1,
+  "removed_lines": 1,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "expression_evaluator.c: In function \u2018getNextToken\u2019:\nexpression_evaluator.c:37:20: error: passing argument 1 of \u2018skipWhitespace\u2019 from incompatible pointer type [-Wincompatible-pointer-types]\n   37 |     skipWhitespace(&input);\n      |                    ^~~~~~\n      |                    |\n      |                    char ***\nexpression_evaluator.c:32:28: note: expected \u2018char **\u2019 but argument is of type \u2018char ***\u2019\n   32 | void skipWhitespace(char **input) {\n      |                     ~~~~~~~^~~~~\nexpression_evaluator.c: In function \u2018evaluateInfix\u2019:\nexpression_evaluator.c:107:36: error: passing argument 1 of \u2018getNextToken\u2019 from incompatible pointer type [-Wincompatible-pointer-types]\n  107 |         Token token = getNextToken(&input);\n      |                                    ^~~~~~\n      |                                    |\n      |                                    const char **\nexpression_evaluator.c:36:29: note: expected \u2018char **\u2019 but argument is of type \u2018const char **\u2019\n   36 |   Token getNextToken(char **input) {\n      |                      ~~~~~~~^~~~~\nexpression_evaluator.c: In function \u2018getNextToken\u2019:\nexpression_evaluator.c:58:1: warning: control reaches end of non-void function [-Wreturn-type]\n   58 | }\n      | ^\nexpression_evaluator.c: In function \u2018evaluate\u2019:\nexpression_evaluator.c:78:1: warning: control reaches end of non-void function [-Wreturn-type]\n   78 | }\n      | ^\nexpression_evaluator.c: In function \u2018parseExpression\u2019:\nexpression_evaluator.c:102:1: warning: control reaches end of non-void function [-Wreturn-type]\n  102 | }\n      | ^\n",
+  "stdout_after": ""
+}

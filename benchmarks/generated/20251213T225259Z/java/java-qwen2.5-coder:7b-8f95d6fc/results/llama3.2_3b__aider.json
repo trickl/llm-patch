@@ -1,0 +1,22 @@
+{
+  "case_id": "java-qwen2.5-coder:7b-8f95d6fc",
+  "language": "java",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "aider",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "after_path": "after__llama3.2_3b__aider.java",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 6 hunks",
+  "compile_returncode": 1,
+  "errors_before": 12,
+  "errors_after": 21,
+  "first_error_removed": true,
+  "added_lines": 14,
+  "removed_lines": 14,
+  "hunks": 6,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "ExpressionEvaluator.java:23: error: illegal start of type\n    return new Parser(new Tokenizer(expression)).parse();\n    ^\nExpressionEvaluator.java:23: error: invalid method declaration; return type required\n    return new Parser(new Tokenizer(expression)).parse();\n               ^\nExpressionEvaluator.java:23: error: illegal start of type\n    return new Parser(new Tokenizer(expression)).parse();\n                      ^\nExpressionEvaluator.java:27: error: ')' expected\n        while (pos  input.length()) {\n                  ^\nExpressionEvaluator.java:27: error: ';' expected\n        while (pos  input.length()) {\n                                  ^\nExpressionEvaluator.java:31: error: ')' expected\n                while (pos  input.length() && Character.isDigit(input.charAt(pos))) {\n                          ^\nExpressionEvaluator.java:31: error: not a statement\n                while (pos  input.length() && Character.isDigit(input.charAt(pos))) {\n                                           ^\nExpressionEvaluator.java:31: error: ';' expected\n                while (pos  input.length() && Character.isDigit(input.charAt(pos))) {\n                                                                                  ^\nExpressionEvaluator.java:101: error: ')' expected\n            if (pos  tokens.size() && tokens.get(pos).type == TokenType.RPAREN) {\n                   ^\nExpressionEvaluator.java:101: error: not a statement\n            if (pos  tokens.size() && tokens.get(pos).type == TokenType.RPAREN) {\n                                   ^\nExpressionEvaluator.java:101: error: ';' expected\n            if (pos  tokens.size() && tokens.get(pos).type == TokenType.RPAREN) {\n                                                                              ^\nExpressionEvaluator.java:104: error: 'else' without 'if'\n                } else {\n                  ^\nExpressionEvaluator.java:110: error: illegal start of type\n        } else if (token.type == TokenType.NUMBER) {\n          ^\nExpressionEvaluator.java:110: error: <identifier> expected\n        } else if (token.type == TokenType.NUMBER) {\n                             ^\nExpressionEvaluator.java:110: error: <identifier> expected\n        } else if (token.type == TokenType.NUMBER) {\n                                                 ^\nExpressionEvaluator.java:113: error: illegal start of type\n                return token.value;\n                ^\nExpressionEvaluator.java:113: error: <identifier> expected\n                return token.value;\n                                  ^\nExpressionEvaluator.java:114: error: illegal start of type\n            } else {\n              ^\nExpressionEvaluator.java:118: error: class, interface, enum, or record expected\n    }\n    ^\nExpressionEvaluator.java:138: error: class, interface, enum, or record expected\n}\n^\n20 errors\n",
+  "stdout_after": ""
+}

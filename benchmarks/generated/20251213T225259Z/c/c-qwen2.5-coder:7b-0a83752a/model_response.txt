@@ -1,0 +1,129 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+#define MAX_TOKENS 100
+
+typedef enum { TOKEN_NUMBER, TOKEN_OPERATOR, TOKEN_LPAREN, TOKEN_RPAREN } TokenType;
+typedef struct {
+    TokenType type;
+    int value;
+} Token;
+
+Token tokens[MAX_TOKENS];
+int token_count = 0;
+
+void tokenize(const char *expression) {
+    const char *p = expression;
+    while (*p != '\0') {
+        if (isspace(*p)) {
+            p++;
+            continue;
+        }
+        if (isdigit(*p)) {
+            int value = 0;
+            while (isdigit(*p)) {
+                value = value * 10 + (*p - '0');
+                p++;
+            }
+            tokens[token_count++] = (Token){TOKEN_NUMBER, value};
+        } else if (*p == '+' || *p == '-' || *p == '*' || *p == '/') {
+            tokens[token_count++] = (Token){TOKEN_OPERATOR, *p};
+            p++;
+        } else if (*p == '(') {
+            tokens[token_count++] = (Token){TOKEN_LPAREN, 0};
+            p++;
+        } else if (*p == ')') {
+            tokens[token_count++] = (Token){TOKEN_RPAREN, 0};
+            p++;
+        }
+    }
+}
+
+int precedence(char op) {
+    switch (op) {
+        case '+':
+        case '-':
+            return 1;
+        case '*':
+        case '/':
+            return 2;
+        default:
+            return -1;
+    }
+}
+
+int apply_operator(int a, int b, char op) {
+    switch (op) {
+        case '+':
+            return a + b;
+        case '-':
+            return a - b;
+        case '*':
+            return a * b;
+        case '/':
+            if (b == 0) {
+                fprintf(stderr, "Error: Division by zero\n");
+                exit(1);
+            }
+            return a / b;
+        default:
+            fprintf(stderr, "Error: Unknown operator\n");
+            exit(1);
+    }
+}
+
+int evaluate(int *start, int *end) {
+    if (*start > *end) {
+        fprintf(stderr, "Error: Invalid expression\n");
+        exit(1);
+    }
+
+    int value = tokens[*start].value;
+    *start += 2;
+
+    while (*start <= *end) {
+        char op = tokens[*start].value;
+        *start += 2;
+
+        if (op == '(') {
+            int sub_start = *start + 1;
+            int sub_end = *end - 1;
+            value = apply_operator(value, evaluate(&sub_start, &sub_end), op);
+            *start = sub_end + 2;
+        } else {
+            int next_value = tokens[*start].value;
+            *start += 2;
+
+            while (*start <= *end && precedence(op) < precedence(tokens[*start].value)) {
+                char next_op = tokens[*start].value;
+                *start += 2;
+
+                if (next_op == '(') {
+                    int sub_start = *start + 1;
+                    int sub_end = *end - 1;
+                    next_value = evaluate(&sub_start, &sub_end);
+                    *start = sub_end + 2;
+                }
+
+                value = apply_operator(value, next_value, op);
+                op = next_op;
+            }
+        }
+    }
+
+    return value;
+}
+
+int main() {
+    const char *expressions[] = {"1 + 2", "2 * 3 + 4", "2 * (3 + 4)", "8 / 2 * (2 + 2)"};
+    for (size_t i = 0; i < sizeof(expressions) / sizeof(expressions[0]); i++) {
+        tokenize(expressions[i]);
+        int result = evaluate(0, token_count - 1);
+        printf("%s => %d\n", expressions[i], result);
+    }
+    return 0;
+}
+```

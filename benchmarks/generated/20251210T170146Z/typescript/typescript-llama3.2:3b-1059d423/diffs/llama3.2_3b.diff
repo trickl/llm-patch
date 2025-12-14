@@ -1,8 +1,0 @@
---- before.ts
-+++ after.ts
-@@(48,30)-(48,31)
--  output.push({ type: 'PLUS', value: '+' });
-+  if (token.type === 'PLUS') {
-+    output.push({ type: 'PLUS', value: '+' });
-+  } else if (['MINUS', '*'].includes(token.type)) {
-+    output.push({ type: token.type, value: token.value });

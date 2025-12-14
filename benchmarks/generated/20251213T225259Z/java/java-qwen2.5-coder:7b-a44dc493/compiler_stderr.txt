@@ -1,0 +1,104 @@
+ExpressionEvaluator.java:114: error: cannot find symbol
+        private void consume(TokenType type) {
+                             ^
+  symbol:   class TokenType
+  location: class Parser
+ExpressionEvaluator.java:36: error: cannot find symbol
+                return new Token(TokenType.NUMBER, Integer.parseInt(input.substring(start, pos)));
+                                 ^
+  symbol:   variable TokenType
+  location: class Tokenizer
+ExpressionEvaluator.java:40: error: cannot find symbol
+                return new Token(TokenType.OPERATOR, op);
+                                 ^
+  symbol:   variable TokenType
+  location: class Tokenizer
+ExpressionEvaluator.java:43: error: cannot find symbol
+                return new Token(TokenType.LPAREN, null);
+                                 ^
+  symbol:   variable TokenType
+  location: class Tokenizer
+ExpressionEvaluator.java:46: error: cannot find symbol
+                return new Token(TokenType.RPAREN, null);
+                                 ^
+  symbol:   variable TokenType
+  location: class Tokenizer
+ExpressionEvaluator.java:63: error: cannot find symbol
+            nextToken();
+            ^
+  symbol:   method nextToken()
+  location: class Parser
+ExpressionEvaluator.java:73: error: cannot find symbol
+            while (currentToken.type == TokenType.OPERATOR && precedence < getPrecedence(currentToken.value)) {
+                                        ^
+  symbol:   variable TokenType
+  location: class Parser
+ExpressionEvaluator.java:73: error: incompatible types: Integer cannot be converted to char
+            while (currentToken.type == TokenType.OPERATOR && precedence < getPrecedence(currentToken.value)) {
+                                                                                                     ^
+ExpressionEvaluator.java:74: error: incompatible types: Integer cannot be converted to char
+                char op = currentToken.value;
+                                      ^
+ExpressionEvaluator.java:75: error: cannot find symbol
+                nextToken();
+                ^
+  symbol:   method nextToken()
+  location: class Parser
+ExpressionEvaluator.java:87: error: cannot find symbol
+            while (currentToken.type == TokenType.OPERATOR && getPrecedence(currentToken.value) >= 2) {
+                                        ^
+  symbol:   variable TokenType
+  location: class Parser
+ExpressionEvaluator.java:87: error: incompatible types: Integer cannot be converted to char
+            while (currentToken.type == TokenType.OPERATOR && getPrecedence(currentToken.value) >= 2) {
+                                                                                        ^
+ExpressionEvaluator.java:88: error: incompatible types: Integer cannot be converted to char
+                char op = currentToken.value;
+                                      ^
+ExpressionEvaluator.java:89: error: cannot find symbol
+                nextToken();
+                ^
+  symbol:   method nextToken()
+  location: class Parser
+ExpressionEvaluator.java:99: error: cannot find symbol
+            if (currentToken.type == TokenType.LPAREN) {
+                                     ^
+  symbol:   variable TokenType
+  location: class Parser
+ExpressionEvaluator.java:100: error: cannot find symbol
+                nextToken();
+                ^
+  symbol:   method nextToken()
+  location: class Parser
+ExpressionEvaluator.java:102: error: cannot find symbol
+                consume(TokenType.RPAREN);
+                        ^
+  symbol:   variable TokenType
+  location: class Parser
+ExpressionEvaluator.java:104: error: cannot find symbol
+            } else if (currentToken.type == TokenType.OPERATOR && currentToken.value == '-') {
+                                            ^
+  symbol:   variable TokenType
+  location: class Parser
+ExpressionEvaluator.java:105: error: cannot find symbol
+                nextToken();
+                ^
+  symbol:   method nextToken()
+  location: class Parser
+ExpressionEvaluator.java:107: error: cannot find symbol
+            } else if (currentToken.type == TokenType.NUMBER) {
+                                            ^
+  symbol:   variable TokenType
+  location: class Parser
+ExpressionEvaluator.java:109: error: cannot find symbol
+                nextToken();
+                ^
+  symbol:   method nextToken()
+  location: class Parser
+ExpressionEvaluator.java:116: error: cannot find symbol
+            nextToken();
+            ^
+  symbol:   method nextToken()
+  location: class Parser
+Note: Some messages have been simplified; recompile with -Xdiags:verbose to get full output
+22 errors

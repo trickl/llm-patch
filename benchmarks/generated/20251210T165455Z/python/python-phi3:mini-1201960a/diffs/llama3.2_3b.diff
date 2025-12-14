@@ -1,1 +1,0 @@
-This diff removes the unterminated string literal by adding a closing quote at the end of the line containing the error.

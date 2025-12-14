@@ -1,0 +1,6 @@
+expression_evaluator.ts(1,34): error TS2307: Cannot find module 'assert' or its corresponding type declarations.
+expression_evaluator.ts(22,45): error TS2729: Property 'input' is used before its initialization.
+expression_evaluator.ts(174,5): error TS2580: Cannot find name 'require'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.
+expression_evaluator.ts(174,22): error TS2580: Cannot find name 'module'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.
+expression_evaluator.ts(175,17): error TS2580: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.
+expression_evaluator.ts(181,31): error TS18046: 'error' is of type 'unknown'.

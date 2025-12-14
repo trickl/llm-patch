@@ -1,0 +1,103 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <string.h>
+
+#define MAX_TOKEN_LENGTH 64
+
+typedef enum { NUMBER, PLUS, MINUS, MUL, DIV, LPAREN, RPAREN } TokenType;
+typedef struct {
+    TokenType type;
+    int value;
+} Token;
+
+Token tokenize(const char **input) {
+    while (**input == ' ') (*input)++;
+    if (isdigit(**input)) {
+        int value = 0;
+        while (isdigit(**input)) {
+            value = value * 10 + (**input - '0');
+            (*input)++;
+        }
+        return (Token){NUMBER, value};
+    } else if (**input == '+') {
+        (*input)++;
+        return (Token){PLUS, 0};
+    } else if (**input == '-') {
+        (*input)++;
+        return (Token){MINUS, 0};
+    } else if (**input == '*') {
+        (*input)++;
+        return (Token){MUL, 0};
+    } else if (**input == '/') {
+        (*input)++;
+        return (Token){DIV, 0};
+    } else if (**input == '(') {
+        (*input)++;
+        return (Token){LPAREN, 0};
+    } else if (**input == ')') {
+        (*input)++;
+        return (Token){RPAREN, 0};
+    }
+    return (Token){NUMBER, -1}; // Error token
+}
+
+int apply_operator(int a, int b, TokenType operator) {
+    switch (operator) {
+        case PLUS: return a + b;
+        case MINUS: return a - b;
+        case MUL: return a * b;
+        case DIV: return a / b;
+        default: return 0; // Error
+    }
+}
+
+int evaluate_expression(const char *expression) {
+    const char *input = expression;
+    int stack[MAX_TOKEN_LENGTH];
+    int top = -1;
+
+    while (**input != '\0') {
+        Token token = tokenize(&input);
+        if (token.type == NUMBER) {
+            stack[++top] = token.value;
+        } else if (token.type == LPAREN) {
+            stack[++top] = token.type;
+        } else if (token.type == RPAREN) {
+            while (stack[top] != LPAREN) {
+                int b = stack[--top];
+                int a = stack[--top];
+                TokenType operator = (TokenType)stack[--top];
+                stack[top++] = apply_operator(a, b, operator);
+            }
+            top--; // Remove the '('
+        } else if (token.type == PLUS || token.type == MINUS || token.type == MUL || token.type == DIV) {
+            while (top >= 0 && stack[top] != LPAREN) {
+                int b = stack[--top];
+                int a = stack[--top];
+                TokenType operator = (TokenType)stack[--top];
+                stack[top++] = apply_operator(a, b, operator);
+            }
+            stack[++top] = token.type;
+        }
+    }
+
+    while (top > 0) {
+        int b = stack[--top];
+        int a = stack[--top];
+        TokenType operator = (TokenType)stack[--top];
+        stack[top++] = apply_operator(a, b, operator);
+    }
+
+    return stack[0];
+}
+
+int main() {
+    printf("%d\n", evaluate_expression("1 + 2")); // Output: 3
+    printf("%d\n", evaluate_expression("2 * 3 + 4")); // Output: 10
+    printf("%d\n", evaluate_expression("2 * (3 + 4)")); // Output: 14
+    printf("%d\n", evaluate_expression("8 / 2 * (2 + 2)")); // Output: 16
+    return 0;
+}
+```

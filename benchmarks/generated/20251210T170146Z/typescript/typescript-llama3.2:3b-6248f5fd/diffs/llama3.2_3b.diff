@@ -1,6 +1,0 @@
---- before.ts
-+++ after.ts
-@@(4,5)-(4,6)
--    currentToken = { type: 'PAREN', value: char };
-+    if (char === '(') {
-+        currentToken = { type: 'PAREN', value: char };

@@ -1,0 +1,13 @@
+--- expression_evaluator.ts
++++ expression_evaluator.ts
+@@ -125,1 +125,2 @@
+   } else if (token.type === 'parenthesis' && token.value === ')') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+-       const operator = operators.pop()!;
++       const operator = operators.pop();
+         const b = values.pop()!;
+         const a = values.pop()!;
+         values.push(applyOperator(a, b, operator));
+     }
+     operators.pop(); // Remove the '('
+   }

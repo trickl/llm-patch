@@ -1,0 +1,19 @@
+ExpressionEvaluator.java:26: error: cannot find symbol
+                return new Token(TokenType.EOF, null);
+                                 ^
+  symbol:   variable TokenType
+  location: class Tokenizer
+ExpressionEvaluator.java:34: error: cannot find symbol
+                return new Token(TokenType.NUMBER, Integer.parseInt(input.substring(start, pos)));
+                                 ^
+  symbol:   variable TokenType
+  location: class Tokenizer
+ExpressionEvaluator.java:38: error: cannot find symbol
+                return new Token(TokenType.OPERATOR, type);
+                                 ^
+  symbol:   variable TokenType
+  location: class Tokenizer
+ExpressionEvaluator.java:79: error: cannot assign a value to final variable input
+            tokenizer.input = expression;
+                     ^
+4 errors

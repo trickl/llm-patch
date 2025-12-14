@@ -1,0 +1,64 @@
+expression_evaluator.c: In function ‘get_next_token’:
+expression_evaluator.c:39:5: warning: missing initializer for field ‘value’ of ‘Token’ [-Wmissing-field-initializers]
+   39 |     if (!**str) return (Token){TOKEN_EOF};
+      |     ^~
+expression_evaluator.c:21:9: note: ‘value’ declared here
+   21 |     int value;
+      |         ^~~~~
+expression_evaluator.c:45:9: warning: missing initializer for field ‘value’ of ‘Token’ [-Wmissing-field-initializers]
+   45 |         case '+': return (Token){TOKEN_PLUS};
+      |         ^~~~
+expression_evaluator.c:21:9: note: ‘value’ declared here
+   21 |     int value;
+      |         ^~~~~
+expression_evaluator.c:46:9: warning: missing initializer for field ‘value’ of ‘Token’ [-Wmissing-field-initializers]
+   46 |         case '-': return (Token){TOKEN_MINUS};
+      |         ^~~~
+expression_evaluator.c:21:9: note: ‘value’ declared here
+   21 |     int value;
+      |         ^~~~~
+expression_evaluator.c:47:9: warning: missing initializer for field ‘value’ of ‘Token’ [-Wmissing-field-initializers]
+   47 |         case '*': return (Token){TOKEN_MULTIPLY};
+      |         ^~~~
+expression_evaluator.c:21:9: note: ‘value’ declared here
+   21 |     int value;
+      |         ^~~~~
+expression_evaluator.c:48:9: warning: missing initializer for field ‘value’ of ‘Token’ [-Wmissing-field-initializers]
+   48 |         case '/': return (Token){TOKEN_DIVIDE};
+      |         ^~~~
+expression_evaluator.c:21:9: note: ‘value’ declared here
+   21 |     int value;
+      |         ^~~~~
+expression_evaluator.c:49:9: warning: missing initializer for field ‘value’ of ‘Token’ [-Wmissing-field-initializers]
+   49 |         case '(': return (Token){TOKEN_LPAREN};
+      |         ^~~~
+expression_evaluator.c:21:9: note: ‘value’ declared here
+   21 |     int value;
+      |         ^~~~~
+expression_evaluator.c:50:9: warning: missing initializer for field ‘value’ of ‘Token’ [-Wmissing-field-initializers]
+   50 |         case ')': return (Token){TOKEN_RPAREN};
+      |         ^~~~
+expression_evaluator.c:21:9: note: ‘value’ declared here
+   21 |     int value;
+      |         ^~~~~
+expression_evaluator.c: In function ‘evaluate_expression’:
+expression_evaluator.c:97:27: warning: operation on ‘top’ may be undefined [-Wsequence-point]
+   97 |                     stack[++top] = apply_operator(stack[top], token.value, prev_token.type);
+      |                           ^~~~~
+expression_evaluator.c: In function ‘main’:
+expression_evaluator.c:160:38: error: passing argument 1 of ‘evaluate_expression’ from incompatible pointer type [-Wincompatible-pointer-types]
+  160 |     int result = evaluate_expression(&input[0]);
+      |                                      ^~~~~~~~~
+      |                                      |
+      |                                      char *
+expression_evaluator.c:85:32: note: expected ‘char **’ but argument is of type ‘char *’
+   85 | int evaluate_expression(char **str) {
+      |                         ~~~~~~~^~~
+expression_evaluator.c: In function ‘get_next_token’:
+expression_evaluator.c:63:1: warning: control reaches end of non-void function [-Wreturn-type]
+   63 | }
+      | ^
+expression_evaluator.c: In function ‘apply_operator’:
+expression_evaluator.c:83:1: warning: control reaches end of non-void function [-Wreturn-type]
+   83 | }
+      | ^

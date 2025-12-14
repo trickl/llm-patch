@@ -1,0 +1,15 @@
+--- before.java
++++ patched.java
+@@ -68,7 +68,7 @@
+             if (token == '+' || token == '-') {
+-            if (Character.isDigit((char) token)) {
++            if ((char) token >= '0' && (char) token =='9') {
+                 int start = pos;
+                 while (pos  input.length() && Character.isDigit(input.charAt(pos))) {
+                     pos++;
+                 }
+                 tokens.add(Integer.parseInt(input.substring(start, pos)));
+             } else if (ch == '+' || ch == '-') {
+-            tokens.add((char) token);
++            tokens.add(token);
+                 pos++;

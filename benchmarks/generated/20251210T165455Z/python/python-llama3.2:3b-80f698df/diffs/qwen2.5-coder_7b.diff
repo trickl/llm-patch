@@ -1,9 +1,0 @@
---- before.py
-+++ before.py
-@@ -34,7 +34,7 @@ class Tokenizer:
-                 elif char == '(':
-                     current_token = Token('LPAREN', '(')
-                 elif char == ')':
--                    current_token = Token('RPAREN', ')'
-+                    current_token = Token('RPAREN', ')')
-             tokens.append(current_token)

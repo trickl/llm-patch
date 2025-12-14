@@ -1,0 +1,22 @@
+{
+  "case_id": "java-qwen2.5-coder:7b-ffbce4d4",
+  "language": "java",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "aider",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "after_path": "after__qwen2.5-coder_7b__aider.java",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 6 hunks",
+  "compile_returncode": 1,
+  "errors_before": 12,
+  "errors_after": 5,
+  "first_error_removed": true,
+  "added_lines": 6,
+  "removed_lines": 0,
+  "hunks": 6,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "ExpressionEvaluator.java:88: error: illegal start of type\n        this.pos = 0;\n        ^\nExpressionEvaluator.java:88: error: ';' expected\n        this.pos = 0;\n            ^\nExpressionEvaluator.java:88: error: <identifier> expected\n        this.pos = 0;\n                ^\nExpressionEvaluator.java:152: error: 'else' without 'if'\n        } else {\n          ^\n4 errors\n",
+  "stdout_after": ""
+}

@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-fa62352c",
+  "language": "c",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "git",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "after_path": "after__qwen2.5-coder_7b__git.c",
+  "patch_applied": true,
+  "patch_diagnostics": "applied",
+  "compile_returncode": 1,
+  "errors_before": 1,
+  "errors_after": 1,
+  "first_error_removed": false,
+  "added_lines": 1,
+  "removed_lines": 1,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "expression_evaluator.c: In function \u2018evaluate_expression\u2019:\nexpression_evaluator.c:136:66: error: implicit declaration of function \u2018peek\u2019 [-Wimplicit-function-declaration]\n  136 |                 while (!is_empty(&operators_stack) && precedence(peek(&operators_stack)) >= precedence(current_token.value[0])) {\n      |                                                                  ^~~~\nexpression_evaluator.c:131:9: warning: enumeration value \u2018TOKEN_TYPE_EOF\u2019 not handled in switch [-Wswitch]\n  131 |         switch (current_token.type) {\n      |         ^~~~~~\n",
+  "stdout_after": ""
+}

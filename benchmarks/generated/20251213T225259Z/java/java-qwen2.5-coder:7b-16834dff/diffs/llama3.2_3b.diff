@@ -1,0 +1,48 @@
+--- before.java
++++ after.java
+@@ -12,7 +12,7 @@
+     return new Parser(new Tokenizer(expression)).parse();
+ 
+-    public List<Token> tokenize() {
++    public List<Token> tokenize() {
+         List<Token> tokens = new ArrayList<>();
+         while (pos  input.length()) {
+             char ch = input.charAt(pos);
+-            if (Character.isDigit(ch)) {
++            if (Character.isDigit(ch)) {
+                 int value = 0;
+                 while (pos  input.length() && Character.isDigit(input.charAt(pos))) {
+                     value = value * 10 + (input.charAt(pos) - '0');
+                     pos++;
+                 }
+-                tokens.add(new Token(TokenType.NUMBER, value));
++                tokens.add(new Token(TokenType.NUMBER, value));
+             } else if (ch == '+' || ch == '-' || ch == '*' || ch == '/') {
+-                tokens.add(new Token(TokenType.OPERATOR, ch));
++                tokens.add(new Token(TokenType.OPERATOR, ch));
+                 pos++;
+             } else if (ch == '(') {
+-                tokens.add(new Token(TokenType.PARENTHESIS, '('));
++                tokens.add(new Token(TokenType.PARENTHESIS, '('));
+                 pos++;
+             } else if (ch == ')') {
+-                tokens.add(new Token(TokenType.PARENTHESIS, ')'));
++                tokens.add(new Token(TokenType.PARENTHESIS, ')'));
+                 pos++;
+             } else if (Character.isWhitespace(ch)) {
+                 pos++;
+             } else {
+-                throw new IllegalArgumentException("Unexpected character: " + ch);
++                throw new IllegalArgumentException("Unexpected character: " + ch);
+             }
+         }
+         return tokens;
+     }
+ 
+@@ -70,7 +70,7 @@
+         if (token.type == TokenType.OPERATOR && (token.value == '+' || token.value == '-')) {
+-            pos++;
++            pos++;
+             int nextTerm = term();
+             if (token.value == '+') {
+                 result += nextTerm;

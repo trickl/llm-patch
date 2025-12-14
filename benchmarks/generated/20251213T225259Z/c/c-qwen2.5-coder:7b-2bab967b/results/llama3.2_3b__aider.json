@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-2bab967b",
+  "language": "c",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "aider",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "after_path": "after__llama3.2_3b__aider.c",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 3 hunks",
+  "compile_returncode": 1,
+  "errors_before": 2,
+  "errors_after": 6,
+  "first_error_removed": false,
+  "added_lines": 3,
+  "removed_lines": 3,
+  "hunks": 3,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "expression_evaluator.c: In function \u2018get_next_token\u2019:\nexpression_evaluator.c:44:11: error: conflicting types for \u2018token\u2019; have \u2018Token\u2019\n   44 |     Token token;\n      |           ^~~~~\nexpression_evaluator.c:39:11: note: previous definition of \u2018token\u2019 with type \u2018char *\u2019\n   39 |     char *token = *input;\n      |           ^~~~~\nexpression_evaluator.c:44:11: warning: unused variable \u2018token\u2019 [-Wunused-variable]\n   44 |     Token token;\n      |           ^~~~~\nexpression_evaluator.c: In function \u2018evaluate_expression\u2019:\nexpression_evaluator.c:93:36: error: passing argument 1 of \u2018evaluate_expression\u2019 from incompatible pointer type [-Wincompatible-pointer-types]\n   93 |   int result = evaluate_expression(tokens);\n      |                                    ^~~~~~\n      |                                    |\n      |                                    Token *\nexpression_evaluator.c:87:34: note: expected \u2018char **\u2019 but argument is of type \u2018Token *\u2019\n   87 |   int evaluate_expression(char **input) {\n      |                           ~~~~~~~^~~~~\nexpression_evaluator.c:94:42: error: passing argument 1 of \u2018get_next_token\u2019 from incompatible pointer type [-Wincompatible-pointer-types]\n   94 |     Token current_token = get_next_token(token);\n      |                                          ^~~~~\n      |                                          |\n      |                                          char *\nexpression_evaluator.c:38:31: note: expected \u2018char **\u2019 but argument is of type \u2018char *\u2019\n   38 |   Token get_next_token(char **input) {\n      |                        ~~~~~~~^~~~~\nexpression_evaluator.c:95:9: error: redeclaration of \u2018result\u2019 with no linkage\n   95 |     int result;\n      |         ^~~~~~\nexpression_evaluator.c:93:7: note: previous definition of \u2018result\u2019 with type \u2018int\u2019\n   93 |   int result = evaluate_expression(tokens);\n      |       ^~~~~~\nexpression_evaluator.c: In function \u2018main\u2019:\nexpression_evaluator.c:148:35: error: passing argument 1 of \u2018get_next_token\u2019 from incompatible pointer type [-Wincompatible-pointer-types]\n  148 |         *token++ = get_next_token(&input);\n      |                                   ^~~~~~\n      |                                   |\n      |                                   char (*)[256]\nexpression_evaluator.c:38:31: note: expected \u2018char **\u2019 but argument is of type \u2018char (*)[256]\u2019\n   38 |   Token get_next_token(char **input) {\n      |                        ~~~~~~~^~~~~\nexpression_evaluator.c:151:38: error: passing argument 1 of \u2018evaluate_expression\u2019 from incompatible pointer type [-Wincompatible-pointer-types]\n  151 |     int result = evaluate_expression(tokens);\n      |                                      ^~~~~~\n      |                                      |\n      |                                      Token *\nexpression_evaluator.c:87:34: note: expected \u2018char **\u2019 but argument is of type \u2018Token *\u2019\n   87 |   int evaluate_expression(char **input) {\n      |                           ~~~~~~~^~~~~\nexpression_evaluator.c: In function \u2018get_next_token\u2019:\nexpression_evaluator.c:85:1: warning: control reaches end of non-void function [-Wreturn-type]\n   85 | }\n      | ^\n",
+  "stdout_after": ""
+}

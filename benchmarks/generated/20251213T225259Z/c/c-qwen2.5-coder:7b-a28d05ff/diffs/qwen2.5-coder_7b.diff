@@ -1,0 +1,20 @@
+--- before.c
++++ before.c
+@@ -105,7 +105,7 @@ int parse_and_evaluate() {
+                 ops[op_count--] = tokens[op_count];
+         }
+     } else if (tokens[i].type == TOKEN_LPAREN) {
+-        ops[op_count++] = tokens[i].type;
++        ops[op_count++] = TOKEN_LPAREN;
+     } else if (tokens[i].type == TOKEN_RPAREN) {
+         while (ops[op_count - 1] != TOKEN_LPAREN) {
+             int b = values[value_count - 1];
+@@ -120,7 +120,7 @@ int parse_and_evaluate() {
+                 ops[op_count--] = tokens[op_count];
+         }
+         op_count--; // Pop the '('
+-    }
++    }
+ 
+     while (op_count > 0) {
+         int b = values[value_count - 1];

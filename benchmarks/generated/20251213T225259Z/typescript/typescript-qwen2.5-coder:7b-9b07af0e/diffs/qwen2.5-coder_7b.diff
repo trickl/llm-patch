@@ -1,0 +1,18 @@
+--- before.ts
++++ before.ts
+@@ -1,4 +1,5 @@
+ // expression_evaluator.ts
+
++import * as process from 'process';
+ type Token = { type: 'number' | 'operator' | 'parenthesis'; value: string };
+
+ function tokenize(input: string): Token[] {
+@@ -116,7 +117,7 @@ export function evaluateExpression(input: string): number {
+     const input = process.argv.slice(2).join(' ');
+     try {
+         console.log(evaluateExpression(input));
+-    } catch (error) {
++    } catch (error: unknown) {
+         console.error(`Error: ${error.message}`);
+     }
+ }

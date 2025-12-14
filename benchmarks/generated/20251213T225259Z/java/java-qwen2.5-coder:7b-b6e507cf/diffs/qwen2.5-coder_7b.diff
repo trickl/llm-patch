@@ -1,0 +1,38 @@
+--- before.java	2023-04-10 12:34:56.000000000 +0800
++++ after.java	2023-04-10 12:35:07.000000000 +0800
+@@ -12,7 +12,7 @@
+     public static void main(String[] args) {
+         System.out.println(evaluate("3 + 4 * (2 - 1)")); // Should print 7
+         System.out.println(evaluate("2 * 3 + 4")); // Should print 10
+-        System.out.println(evaluate("2 * (3 + 4)")); // Should print 14
++        System.out.println(evaluate("(2 * (3 + 4))")); // Should print 14
+         System.out.println(evaluate("8 / 2 * (2 + 2)")); // Should print 16
+     }
+ 
+@@ -70,7 +70,7 @@
+                 if (token.value == '+') {
+                     result += right;
+                 } else {
+-                    result -= right;
++                    result = result - right;
+                 }
+             } else {
+                 break;
+@@ -88,7 +88,7 @@
+                 if (token.value == '*') {
+                     result *= right;
+                 } else {
+-                    result /= right;
++                    result = result / right;
+                 }
+             } else {
+                 break;
+@@ -106,7 +106,7 @@
+         } else if (token.type == TokenType.OPERATOR && token.value == '-') {
+             pos++;
+             int right = factor();
+-            return -factor();
++            return -right;
+         } else if (token.type == TokenType.LPAREN) {
+             int result = expression();
+             token = tokens.get(pos);

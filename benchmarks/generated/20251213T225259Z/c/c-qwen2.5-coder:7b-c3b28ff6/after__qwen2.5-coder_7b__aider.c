@@ -1,0 +1,161 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <string.h>
+
+#define MAX_TOKENS 100
+
+typedef enum {
+    TOKEN_NUMBER,
+    TOKEN_PLUS,
+    TOKEN_MINUS,
+    TOKEN_MULTIPLY,
+    TOKEN_DIVIDE,
+    TOKEN_LPAREN,
+    TOKEN_RPAREN,
+    TOKEN_EOF
+} TokenType;
+
+typedef struct {
+    TokenType type;
+    int value;
+} Token;
+
+Token tokens[MAX_TOKENS];
+int token_index = 0;
+
+void error(const char *message) {
+    fprintf(stderr, "Error: %s\n", message);
+    exit(EXIT_FAILURE);
+}
+
+Token get_next_token() {
+    while (isspace(tokens[token_index].value)) {
+        token_index++;
+    }
+
+    if (tokens[token_index].type == TOKEN_EOF) {
+        return tokens[token_index];
+    }
+
+    Token current = tokens[token_index++];
+    switch (current.type) {
+        case TOKEN_NUMBER:
+            break;
+        case TOKEN_PLUS:
+        case TOKEN_MINUS:
+        case TOKEN_MULTIPLY:
+        case TOKEN_DIVIDE:
+        case TOKEN_LPAREN:
+        case TOKEN_RPAREN:
+            break;
+        default:
+            error("Unexpected token");
+    }
+    return current;
+}
+
+int evaluate_expression() {
+    int result = evaluate_term();
+    while (tokens[token_index].type == TOKEN_PLUS || tokens[token_index].type == TOKEN_MINUS) {
+        Token op = get_next_token();
+        if (op.type == TOKEN_PLUS) { // Added missing semicolon
+            result += evaluate_term();
+        } else if (op.type == TOKEN_MINUS) {
+            result -= evaluate_term();
+        }
+    }
+    return result;
+}
+
+int evaluate_term() {
+    int result = evaluate_factor();
+    while (tokens[token_index].type == TOKEN_MULTIPLY || tokens[token_index].type == TOKEN_DIVIDE) {
+        Token op = get_next_token();
+        if (op.type == TOKEN_MULTIPLY) { // Added missing semicolon
+            result *= evaluate_factor();
+        } else if (op.type == TOKEN_DIVIDE) {
+            int divisor = evaluate_factor();
+            if (divisor == 0) {
+                error("Division by zero");
+            }
+            result /= divisor;
+        }
+    }
+    return result;
+}
+
+int evaluate_factor() {
+    Token token = get_next_token();
+    switch (token.type) {
+        case TOKEN_NUMBER:
+            return token.value;
+        case TOKEN_LPAREN:
+            int result = evaluate_expression();
+            if (tokens[token_index].type != TOKEN_RPAREN) {
+                error("Expected ')'");
+            }
+            get_next_token(); // consume ')'
+            return result;
+        case TOKEN_MINUS:
+            return -evaluate_factor();
+        default:
+            error("Unexpected token");
+    }
+    return result;
+}
+
+void tokenize(const char *expression) {
+    int i = 0, j = 0;
+    while (expression[i]) {
+        if (isdigit(expression[i])) {
+            tokens[j].type = TOKEN_NUMBER;
+            tokens[j++].value = expression[i++] - '0';
+            while (isdigit(expression[i])) {
+                tokens[j-1].value = tokens[j-1].value * 10 + (expression[i++] - '0');
+            }
+        } else if (expression[i] == '+') {
+            tokens[j].type = TOKEN_PLUS;
+            tokens[j++].value = '+';
+            i++;
+        } else if (expression[i] == '-') {
+            if (i == 0 || !isdigit(expression[i-1])) {
+                tokens[j].type = TOKEN_MINUS;
+                tokens[j++].value = '-';
+                i++;
+            } else {
+                tokens[j].type = TOKEN_NUMBER;
+                tokens[j++].value = expression[i++] - '0';
+                while (isdigit(expression[i])) {
+                    tokens[j-1].value = tokens[j-1].value * 10 + (expression[i++] - '0');
+                }
+            }
+        } else if (expression[i] == '*') {
+            tokens[j].type = TOKEN_MULTIPLY;
+            tokens[j++].value = '*';
+            i++;
+        } else if (expression[i] == '/') {
+            tokens[j].type = TOKEN_DIVIDE;
+            tokens[j++].value = '/';
+            i++;
+        } else if (expression[i] == '(') {
+            tokens[j].type = TOKEN_LPAREN;
+            tokens[j++].value = '(';
+            i++;
+        } else if (expression[i] == ')') {
+            tokens[j].type = TOKEN_RPAREN;
+            tokens[j++].value = ')';
+            i++;
+        }
+    }
+    tokens[j].type = TOKEN_EOF;
+}
+
+int main() {
+    const char *expressions[] = {"1 + 2", "2 * 3 + 4", "2 * (3 + 4)", "8 / 2 * (2 + 2)"};
+    for (size_t i = 0; i < sizeof(expressions) / sizeof(expressions[0]); i++) {
+        tokenize(expressions[i]);
+        printf("%s => %d\n", expressions[i], evaluate_expression());
+    }
+    return 0;
+}

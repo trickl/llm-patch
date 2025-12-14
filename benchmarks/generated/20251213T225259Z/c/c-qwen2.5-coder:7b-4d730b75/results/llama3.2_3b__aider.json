@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-4d730b75",
+  "language": "c",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "aider",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "after_path": "after__llama3.2_3b__aider.c",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 1,
+  "errors_before": 8,
+  "errors_after": 8,
+  "first_error_removed": false,
+  "added_lines": 2,
+  "removed_lines": 2,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "expression_evaluator.c: In function \u2018evaluate_expression\u2019:\nexpression_evaluator.c:67:5: error: conversion to non-scalar type requested\n   67 |     Token token = (Token)get_token(); // Add cast to Token\n      |     ^~~~~\nexpression_evaluator.c:70:17: error: incompatible types when assigning to type \u2018Token\u2019 from type \u2018int\u2019\n   70 |         token = get_token();\n      |                 ^~~~~~~~~\nexpression_evaluator.c:82:13: error: conversion to non-scalar type requested\n   82 |             token = (Token)get_token(); // Add cast to Token\n      |             ^~~~~\nexpression_evaluator.c:87:24: error: request for member \u2018type\u2019 in something not a structure or union\n   87 |         if (get_token().type != TOKEN_RPAREN) {\n      |                        ^\nexpression_evaluator.c: In function \u2018main\u2019:\nexpression_evaluator.c:104:49: error: passing argument 1 of \u2018evaluate_expression\u2019 from incompatible pointer type [-Wincompatible-pointer-types]\n  104 |     printf(\"1 + 2 => %d\\n\", evaluate_expression(get_next_token));\n      |                                                 ^~~~~~~~~~~~~~\n      |                                                 |\n      |                                                 Token (*)()\nexpression_evaluator.c:66:33: note: expected \u2018int (*)()\u2019 but argument is of type \u2018Token (*)()\u2019\n   66 |   int evaluate_expression(int (*get_token)()) {\n      |                           ~~~~~~^~~~~~~~~~~~\nexpression_evaluator.c:113:53: error: passing argument 1 of \u2018evaluate_expression\u2019 from incompatible pointer type [-Wincompatible-pointer-types]\n  113 |     printf(\"2 * 3 + 4 => %d\\n\", evaluate_expression(get_next_token));\n      |                                                     ^~~~~~~~~~~~~~\n      |                                                     |\n      |                                                     Token (*)()\nexpression_evaluator.c:66:33: note: expected \u2018int (*)()\u2019 but argument is of type \u2018Token (*)()\u2019\n   66 |   int evaluate_expression(int (*get_token)()) {\n      |                           ~~~~~~^~~~~~~~~~~~\nexpression_evaluator.c:124:55: error: passing argument 1 of \u2018evaluate_expression\u2019 from incompatible pointer type [-Wincompatible-pointer-types]\n  124 |     printf(\"2 * (3 + 4) => %d\\n\", evaluate_expression(get_next_token));\n      |                                                       ^~~~~~~~~~~~~~\n      |                                                       |\n      |                                                       Token (*)()\nexpression_evaluator.c:66:33: note: expected \u2018int (*)()\u2019 but argument is of type \u2018Token (*)()\u2019\n   66 |   int evaluate_expression(int (*get_token)()) {\n      |                           ~~~~~~^~~~~~~~~~~~\nexpression_evaluator.c:137:59: error: passing argument 1 of \u2018evaluate_expression\u2019 from incompatible pointer type [-Wincompatible-pointer-types]\n  137 |     printf(\"8 / 2 * (2 + 2) => %d\\n\", evaluate_expression(get_next_token));\n      |                                                           ^~~~~~~~~~~~~~\n      |                                                           |\n      |                                                           Token (*)()\nexpression_evaluator.c:66:33: note: expected \u2018int (*)()\u2019 but argument is of type \u2018Token (*)()\u2019\n   66 |   int evaluate_expression(int (*get_token)()) {\n      |                           ~~~~~~^~~~~~~~~~~~\nexpression_evaluator.c: In function \u2018evaluate_expression\u2019:\nexpression_evaluator.c:96:1: warning: control reaches end of non-void function [-Wreturn-type]\n   96 | }\n      | ^\n",
+  "stdout_after": ""
+}

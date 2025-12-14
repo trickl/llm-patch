@@ -1,0 +1,129 @@
+--- before.java	2023-04-10 12:34:56.000000000 +0800
++++ after.java	2023-04-10 12:35:07.000000000 +0800
+@@ -1,4 +1,4 @@
+ import java.util.*;
+ 
+-public class ExpressionEvaluator {
++public class ExpressionEvaluator {
+     public static void main(String[] args) {
+         System.out.println(evaluate("1 + 2")); // Expected: 3
+         System.out.println(evaluate("2 * 3 + 4")); // Expected: 10
+@@ -7,7 +7,7 @@
+     }
+ 
+     public static int evaluate(String expression) {
+-        return new Parser(new Tokenizer(expression)).parse();
++        return new Parser(new Tokenizer(expression).tokenize()).parse();
+     }
+ }
+ 
+@@ -25,6 +25,7 @@
+         this.input = input;
+     }
+ 
++    public List<Token> tokenize() {
+         List<Token> tokens = new ArrayList<>();
+         while (pos < input.length()) {
+             char ch = input.charAt(pos);
+@@ -34,10 +35,10 @@
+                 int value = 0;
+                 while (pos < input.length() && Character.isDigit(input.charAt(pos))) {
+                     value = value * 10 + (input.charAt(pos) - '0');
+-                    pos++;
++                    pos++;
+                 }
+                 tokens.add(new Token(TokenType.NUMBER, value));
+             } else if (ch == '+' || ch == '-' || ch == '*' || ch == '/') {
+-                tokens.add(new Token(TokenType.OPERATOR, ch));
++                tokens.add(new Token(TokenType.OPERATOR, ch));
+                 pos++;
+             } else if (ch == '(') {
+-                tokens.add(new Token(TokenType.LPAREN, null));
++                tokens.add(new Token(TokenType.LPAREN, null));
+                 pos++;
+             } else if (ch == ')') {
+-                tokens.add(new Token(TokenType.RPAREN, null));
++                tokens.add(new Token(TokenType.RPAREN, null));
+                 pos++;
+             } else if (Character.isWhitespace(ch)) {
+                 pos++;
+@@ -45,6 +46,7 @@
+         return tokens;
+     }
+ }
+ 
+@@ -81,6 +83,7 @@
+         this.tokens = tokens;
+     }
+ 
++    public int parse() {
+         return expression();
+     }
+ 
+@@ -90,6 +93,7 @@
+         int result = term();
+         while (pos < tokens.size()) {
+             Token token = tokens.get(pos);
+-            if (token.type == TokenType.OPERATOR && (token.value == '+' || token.value == '-')) {
++            if (token.type == TokenType.OPERATOR && (token.value instanceof Character && ((Character) token.value).charValue() == '+') || (token.value instanceof Character && ((Character) token.value).charValue() == '-')) {
+                 pos++;
+                 int nextTerm = term();
+                 if (token.value instanceof Character && ((Character) token.value).charValue() == '+') {
+@@ -103,6 +107,7 @@
+         return result;
+     }
+ 
++    public int parse() {
+         return expression();
+     }
+ 
+@@ -112,6 +117,7 @@
+         int result = factor();
+         while (pos < tokens.size()) {
+             Token token = tokens.get(pos);
+-            if (token.type == TokenType.OPERATOR && (token.value == '*' || token.value == '/')) {
++            if (token.type == TokenType.OPERATOR && (token.value instanceof Character && ((Character) token.value).charValue() == '*') || (token.value instanceof Character && ((Character) token.value).charValue() == '/')) {
+                 pos++;
+                 int nextFactor = factor();
+                 if (token.value instanceof Character && ((Character) token.value).charValue() == '*') {
+@@ -125,6 +131,7 @@
+         return result;
+     }
+ 
++    public int parse() {
+         Token token = tokens.get(pos);
+         if (token.type == TokenType.LPAREN) {
+             pos++;
+-            int value = expression();
++            int value = expression();
+             if (pos < tokens.size() && tokens.get(pos).type == TokenType.RPAREN) {
+                 pos++;
+                 return value;
+@@ -136,6 +143,7 @@
+         } else if (token.type == TokenType.OPERATOR && token.value instanceof Character && ((Character) token.value).charValue() == '-') {
+             pos++;
+             return -factor();
++        } else if (token.type == TokenType.NUMBER) {
+         } else if (token.type == TokenType.NUMBER) {
+             pos++;
+             return (int) token.value;
+@@ -147,6 +155,7 @@
+         }
+     }
+ }
+ 
+@@ -162,6 +171,7 @@
+     public final Object value;
+ 
+     public Token(TokenType type, Object value) {
+-        this.type = type;
++        this.type = type;
+         this.value = value;
+     }
+ 
+@@ -170,4 +180,5 @@
+                 "type=" + type +
+                 ", value=" + value +
+                 '}';
++    }
+ }

@@ -1,0 +1,25 @@
+--- before.ts
++++ after.ts
+@@ -42,6 +42,7 @@
+   } else if (token.value === ')') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       applyOperator();
+     }
+-    operators.pop(); // Remove the '('
++    if (token.type === 'parenthesis' && token.value === ')') {
++      operators.pop();
++    } else {
++      throw new Error(`Unexpected character: ${token.value}`);
++    }
+   } else {
+     while (
+       operators.length > 0 &&
+-        operators[operators.length - 1] !== '(' &&
+-        greaterPrecedence(operators[operators.length - 1], token.value)
++        operators[operators.length - 1] !== '(' &&
++        greaterPrecedence(operators[operators.length - 1], token.value)
+     ) {
+       applyOperator();
+     }
+     operators.push(token.value);
+   }

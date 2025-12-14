@@ -1,6 +1,0 @@
---- before.java
-+++ after.java
-@@ -108,7 +108,7 @@
-     private static class Node {
--        abstract int evaluate();
-+        public abstract int evaluate();

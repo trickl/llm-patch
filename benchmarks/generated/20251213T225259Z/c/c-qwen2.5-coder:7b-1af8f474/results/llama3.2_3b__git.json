@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-1af8f474",
+  "language": "c",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "git",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "after_path": null,
+  "patch_applied": false,
+  "patch_diagnostics": "error: corrupt patch at line 10",
+  "compile_returncode": null,
+  "errors_before": 1,
+  "errors_after": null,
+  "first_error_removed": false,
+  "added_lines": 3,
+  "removed_lines": 1,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": null,
+  "stdout_after": null
+}

@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-0666a706",
+  "language": "c",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "aider",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "after_path": "after__qwen2.5-coder_7b__aider.c",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 2 hunks",
+  "compile_returncode": 1,
+  "errors_before": 1,
+  "errors_after": 2,
+  "first_error_removed": false,
+  "added_lines": 2,
+  "removed_lines": 2,
+  "hunks": 2,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "In file included from expression_evaluator.c:1:\nexpression_evaluator.c:8:63: error: expected identifier before \u2018(\u2019 token\n    8 | typedef enum { NUMBER, PLUS, MINUS, MUL, DIV, LPAREN, RPAREN, EOF } TokenType;\n      |                                                               ^~~\nexpression_evaluator.c: In function \u2018getNextToken\u2019:\nexpression_evaluator.c:27:61: warning: comparison of integer expressions of different signedness: \u2018TokenType\u2019 and \u2018int\u2019 [-Wsign-compare]\n   27 |     if (tokenIndex >= MAX_TOKENS || tokens[tokenIndex].type == EOF) {\n      |                                                             ^~\nexpression_evaluator.c:28:9: warning: missing initializer for field \u2018value\u2019 of \u2018Token\u2019 [-Wmissing-field-initializers]\n   28 |         return (Token){EOF};\n      |         ^~~~~~\nexpression_evaluator.c:12:9: note: \u2018value\u2019 declared here\n   12 |     int value;\n      |         ^~~~~\nexpression_evaluator.c:31:11: error: redefinition of \u2018token\u2019\n   31 |     Token token = tokens[tokenIndex];\n      |           ^~~~~\nexpression_evaluator.c:30:11: note: previous definition of \u2018token\u2019 with type \u2018Token\u2019\n   30 |     Token token = tokens[tokenIndex];\n      |           ^~~~~\nexpression_evaluator.c: In function \u2018tokenize\u2019:\nexpression_evaluator.c:104:22: warning: comparison of integer expressions of different signedness: \u2018int\u2019 and \u2018size_t\u2019 {aka \u2018long unsigned int\u2019} [-Wsign-compare]\n  104 |             while (i < strlen(expression) && isdigit(expression[i])) {\n      |                      ^\n",
+  "stdout_after": ""
+}

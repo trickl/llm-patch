@@ -1,0 +1,22 @@
+{
+  "case_id": "java-qwen2.5-coder:7b-8b28f424",
+  "language": "java",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "git",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "after_path": "after__qwen2.5-coder_7b__git.java",
+  "patch_applied": true,
+  "patch_diagnostics": "applied",
+  "compile_returncode": 1,
+  "errors_before": 3,
+  "errors_after": 3,
+  "first_error_removed": false,
+  "added_lines": 2,
+  "removed_lines": 2,
+  "hunks": 2,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "ExpressionEvaluator.java:12: error: incompatible types: Tokenizer cannot be converted to List<Token>\n        return new Parser(new Tokenizer(expression)).parse();\n                          ^\nExpressionEvaluator.java:36: error: incompatible types: char cannot be converted to Integer\n                tokens.add(new Token(TokenType.OPERATOR, c));\n                                                         ^\nNote: Some messages have been simplified; recompile with -Xdiags:verbose to get full output\n2 errors\n",
+  "stdout_after": ""
+}

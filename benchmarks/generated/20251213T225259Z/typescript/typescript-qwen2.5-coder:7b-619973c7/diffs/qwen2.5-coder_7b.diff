@@ -1,0 +1,23 @@
+diff --git a/expression_evaluator.ts b/expression_evaluator.ts
+index 3a4b5c6..7d8e9f0 100644
+--- a/expression_evaluator.ts
++++ b/expression_evaluator.ts
+@@ -1,5 +1,7 @@
+ // expression_evaluator.ts
+ 
++import * as process from 'process';
+ import { Token } from './types'; // Assuming you have a types file or define Token here
+ 
+ function tokenize(input: string): Token[] {
+     const tokens: Token[] = [];
+@@ -94,6 +96,8 @@ if (require.main === module) {
+     const input = process.argv[2];
+     if (!input) {
+         console.log('Usage: node expression_evaluator.ts "expression"');
++    } else if (typeof require !== 'undefined' && typeof module !== 'undefined') {
+         try {
+             const result = evaluateExpression(input);
+             console.log(`Result: ${result}`);
+@@ -103,7 +107,6 @@ if (require.main === module) {
+     }
+ }

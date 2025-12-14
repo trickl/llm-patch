@@ -1,6 +1,0 @@
-ExpressionEvaluator.java:7: error: cannot find symbol
-        return parse(tokens).evaluate();
-               ^
-  symbol:   method parse(List<Token>)
-  location: class ExpressionEvaluator
-1 error

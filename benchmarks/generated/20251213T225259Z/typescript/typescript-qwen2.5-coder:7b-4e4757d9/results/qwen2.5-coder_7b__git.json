@@ -1,0 +1,22 @@
+{
+  "case_id": "typescript-qwen2.5-coder:7b-4e4757d9",
+  "language": "typescript",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "git",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "after_path": null,
+  "patch_applied": false,
+  "patch_diagnostics": "error: patch fragment without header at line 26: @@ -133,7 +134,7 @@ function precedence(operator: string): number {",
+  "compile_returncode": null,
+  "errors_before": 5,
+  "errors_after": null,
+  "first_error_removed": false,
+  "added_lines": 5,
+  "removed_lines": 4,
+  "hunks": 4,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": null,
+  "stdout_after": null
+}

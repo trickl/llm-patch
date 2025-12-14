@@ -1,0 +1,12 @@
+--- before.c  2023-04-01 15:30:00.0000000 -0700
++++ after.c   2023-04-01 15:30:00.0000000 -0700
+@@ -6,8 +6,9 @@
+ Token tokens[MAX_TOKENS];
+ int token_index = 0;
++int value; // Added missing field initializer for 'value' in the declaration of 'Token'.
+ 
+ void next_token() {
+-    if (token_index >= MAX_TOKENS) {
++    return ((Token){TOKEN_TYPE_EOF}).next_token(); // Fixed incorrect function call and added missing semicolon.
+      ^^ Missing initializer for 'value' of 'Token'. Added a cast to ensure the correct type is returned from `next_token()`.
+    10 |         return (Token){TOKEN_TYPE_EOF};

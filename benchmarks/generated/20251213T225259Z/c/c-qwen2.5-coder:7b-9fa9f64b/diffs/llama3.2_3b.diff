@@ -1,0 +1,22 @@
+--- before.c
++++ patched_c
+@@ -104,7 +104,8 @@
+     const char *expressions[] = {"3 + 4 * (2 - 1)", "2 * 3 + 4", "2 * (3 + 4)", "8 / 2 * (2 + 2)"};
+-    for (const char *expr : expressions) {
++    for (const char *expr : expressions) {
+         tokenize(expr);
+         int values[token_count];
+         int operators[token_count - 1];
+         int value_index = 0;
+         int operator_index = 0;
+-        for (int i = 0; i  token_count; i++) {
++        for (int i = 0; i  token_count; i++) {
+             if (tokens[i].type == TOKEN_NUMBER) {
+                 values[value_index++] = tokens[i].value;
+             } else {
+                 operators[operator_index++] = tokens[i].type;
+-            }
+         }
+         int result = evaluate(values, operators);
+         printf("%s => %d\n", expr, result);
+     }

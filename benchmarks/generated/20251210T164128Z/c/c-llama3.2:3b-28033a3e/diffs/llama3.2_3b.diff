@@ -1,9 +1,0 @@
---- before.c
-+++ patched_before.c
-@@ -24,7 +24,7 @@
-   Token* lexer(char* expression) {
--    int length = strlen(expression);
-+    size_t length = strlen(expression);
-     Token* tokens = malloc((length + 1) * sizeof(Token));
-     char* token = strtok(expression, "+-*/() ");
-     int index = 0;

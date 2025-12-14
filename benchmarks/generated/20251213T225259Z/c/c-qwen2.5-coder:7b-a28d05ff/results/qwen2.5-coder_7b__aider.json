@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-a28d05ff",
+  "language": "c",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "aider",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "after_path": "after__qwen2.5-coder_7b__aider.c",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 2 hunks",
+  "compile_returncode": 1,
+  "errors_before": 2,
+  "errors_after": 6,
+  "first_error_removed": false,
+  "added_lines": 2,
+  "removed_lines": 2,
+  "hunks": 2,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "expression_evaluator.c: In function \u2018parse_and_evaluate\u2019:\nexpression_evaluator.c:99:35: error: incompatible types when assigning to type \u2018TokenType\u2019 from type \u2018Token\u2019\n   99 |                 ops[op_count--] = tokens[op_count];\n      |                                   ^~~~~~\nexpression_evaluator.c:101:7: error: \u2018else\u2019 without a previous \u2018if\u2019\n  101 |     } else if (tokens[i].type == TOKEN_LPAREN) {\n      |       ^~~~\nexpression_evaluator.c:101:23: error: \u2018i\u2019 undeclared (first use in this function)\n  101 |     } else if (tokens[i].type == TOKEN_LPAREN) {\n      |                       ^\nexpression_evaluator.c:101:23: note: each undeclared identifier is reported only once for each function it appears in\nexpression_evaluator.c:109:35: error: incompatible types when assigning to type \u2018TokenType\u2019 from type \u2018Token\u2019\n  109 |                 ops[op_count--] = tokens[op_count];\n      |                                   ^~~~~~\nexpression_evaluator.c:111:35: error: incompatible types when assigning to type \u2018TokenType\u2019 from type \u2018Token\u2019\n  111 |                 ops[op_count--] = tokens[op_count];\n      |                                   ^~~~~~\nexpression_evaluator.c:121:27: error: incompatible types when assigning to type \u2018TokenType\u2019 from type \u2018Token\u2019\n  121 |         ops[op_count--] = tokens[op_count];\n      |                           ^~~~~~\n",
+  "stdout_after": ""
+}

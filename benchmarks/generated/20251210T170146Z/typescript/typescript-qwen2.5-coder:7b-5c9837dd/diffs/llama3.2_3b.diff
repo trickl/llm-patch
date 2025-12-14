@@ -1,8 +1,0 @@
---- before.ts
-+++ after.ts
-@@(98,5)-(98,6)
-+import * as node from 'node';
-@@(98,22)-(98,23)
-+import * as module from 'module';
-@@(98,19)-(98,20)
-+import * as process from 'process';

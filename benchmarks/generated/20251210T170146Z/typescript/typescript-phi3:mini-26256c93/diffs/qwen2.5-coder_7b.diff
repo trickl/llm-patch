@@ -1,5 +1,0 @@
---- before.ts
-+++ before.ts
-@@ -1,2 +1 @@
--Your task, I'de
-+#include <iostream>

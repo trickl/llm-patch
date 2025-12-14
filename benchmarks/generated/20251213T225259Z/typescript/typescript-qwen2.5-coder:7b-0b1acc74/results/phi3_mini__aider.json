@@ -1,0 +1,22 @@
+{
+  "case_id": "typescript-qwen2.5-coder:7b-0b1acc74",
+  "language": "typescript",
+  "model_slug": "phi3_mini",
+  "algorithm": "aider",
+  "diff_path": "diffs/phi3_mini.diff",
+  "after_path": "after__phi3_mini__aider.ts",
+  "patch_applied": true,
+  "patch_diagnostics": "no hunks",
+  "compile_returncode": 2,
+  "errors_before": 5,
+  "errors_after": 5,
+  "first_error_removed": false,
+  "added_lines": 0,
+  "removed_lines": 1,
+  "hunks": 0,
+  "delete_only": true,
+  "success": false,
+  "notes": "diff only deletes lines",
+  "stderr_after": "",
+  "stdout_after": "expression_evaluator.ts(51,34): error TS2345: Argument of type 'string' is not assignable to parameter of type 'number'.\nexpression_evaluator.ts(58,34): error TS2345: Argument of type 'string' is not assignable to parameter of type 'number'.\nexpression_evaluator.ts(68,26): error TS2345: Argument of type 'string' is not assignable to parameter of type 'number'.\nexpression_evaluator.ts(116,5): error TS2580: Cannot find name 'require'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.\nexpression_evaluator.ts(116,22): error TS2580: Cannot find name 'module'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.\n"
+}

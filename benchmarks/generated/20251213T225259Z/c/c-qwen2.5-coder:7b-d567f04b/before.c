@@ -1,0 +1,143 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+#define MAX_TOKENS 100
+
+typedef enum { TOKEN_NUMBER, TOKEN_PLUS, TOKEN_MINUS, TOKEN_MULTIPLY, TOKEN_DIVIDE, TOKEN_LPAREN, TOKEN_RPAREN, TOKEN_EOF } TokenType;
+typedef struct {
+    TokenType type;
+    int value;
+} Token;
+
+Token tokens[MAX_TOKENS];
+int tokenIndex = 0;
+
+void error(const char *message) {
+    fprintf(stderr, "Error: %s\n", message);
+    exit(1);
+}
+
+Token getNextToken() {
+    while (isspace(tokens[tokenIndex].value)) {
+        tokenIndex++;
+    }
+    if (tokenIndex >= MAX_TOKENS) {
+        return (Token){TOKEN_EOF};
+    }
+    Token token = tokens[tokenIndex++];
+    return token;
+}
+
+int applyOp(int a, int b, char op) {
+    switch (op) {
+        case '+': return a + b;
+        case '-': return a - b;
+        case '*': return a * b;
+        case '/': if (b == 0) error("Division by zero"); return a / b;
+    }
+    return 0;
+}
+
+int precedence(char op) {
+    if (op == '+' || op == '-') return 1;
+    if (op == '*' || op == '/') return 2;
+    return 0;
+}
+
+int evaluate() {
+    int values[MAX_TOKENS];
+    char ops[MAX_TOKENS];
+    int top = -1;
+
+    for (int i = 0; i < tokenIndex; i++) {
+        Token currentToken = tokens[i];
+
+        if (currentToken.type == TOKEN_NUMBER) {
+            values[++top] = currentToken.value;
+        } else if (currentToken.type == TOKEN_LPAREN) {
+            ops[++top] = currentToken.value;
+        } else if (currentToken.type == TOKEN_RPAREN) {
+            while (ops[top] != '(') {
+                int b = values[--top];
+                int a = values[--top];
+                char op = ops[--top];
+                values[top++] = applyOp(a, b, op);
+            }
+            top--;
+        } else if (currentToken.type == TOKEN_PLUS || currentToken.type == TOKEN_MINUS ||
+                   currentToken.type == TOKEN_MULTIPLY || currentToken.type == TOKEN_DIVIDE) {
+            while (top >= 0 && precedence(ops[top]) >= precedence(currentToken.value)) {
+                int b = values[--top];
+                int a = values[--top];
+                char op = ops[--top];
+                values[top++] = applyOp(a, b, op);
+            }
+            ops[++top] = currentToken.value;
+        }
+    }
+
+    while (top >= 0) {
+        int b = values[--top];
+        int a = values[--top];
+        char op = ops[--top];
+        values[top++] = applyOp(a, b, op);
+    }
+
+    return values[0];
+}
+
+void tokenize(const char *expression) {
+    tokenIndex = 0;
+    for (int i = 0; expression[i]; i++) {
+        if (isspace(expression[i])) continue;
+
+        Token token;
+        if (isdigit(expression[i])) {
+            int value = 0;
+            while (i < strlen(expression) && isdigit(expression[i])) {
+                value = value * 10 + (expression[i++] - '0');
+            }
+            token.type = TOKEN_NUMBER;
+            token.value = value;
+        } else if (expression[i] == '+') {
+            token.type = TOKEN_PLUS;
+            token.value = expression[i];
+        } else if (expression[i] == '-') {
+            if (i > 0 && tokens[tokenIndex - 1].type == TOKEN_EOF) {
+                token.type = TOKEN_NUMBER;
+                token.value = -(expression[i++] - '0');
+            } else {
+                token.type = TOKEN_MINUS;
+                token.value = expression[i];
+            }
+        } else if (expression[i] == '*') {
+            token.type = TOKEN_MULTIPLY;
+            token.value = expression[i];
+        } else if (expression[i] == '/') {
+            token.type = TOKEN_DIVIDE;
+            token.value = expression[i];
+        } else if (expression[i] == '(') {
+            token.type = TOKEN_LPAREN;
+            token.value = expression[i];
+        } else if (expression[i] == ')') {
+            token.type = TOKEN_RPAREN;
+            token.value = expression[i];
+        } else {
+            error("Unknown character");
+        }
+        tokens[tokenIndex++] = token;
+    }
+    tokens[tokenIndex++] = (Token){TOKEN_EOF};
+}
+
+int main() {
+    const char *expressions[] = {"1 + 2", "2 * 3 + 4", "2 * (3 + 4)", "8 / 2 * (2 + 2)"};
+    for (const char *expr : expressions) {
+        tokenize(expr);
+        int result = evaluate();
+        printf("%s => %d\n", expr, result);
+    }
+    return 0;
+}

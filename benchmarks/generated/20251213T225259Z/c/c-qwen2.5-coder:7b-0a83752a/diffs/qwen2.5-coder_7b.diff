@@ -1,0 +1,9 @@
+--- before.c	2023-04-10 12:34:56.000000000 +0800
++++ after.c	2023-04-10 12:35:07.000000000 +0800
+@@ -123,7 +123,7 @@
+     int result = evaluate(0, token_count - 1);
+     printf("%s => %d\n", expressions[i], result);
+   }
+-  return 0;
++  return 0; // Added a semicolon to fix the syntax error
+ }

@@ -1,0 +1,23 @@
+--- before.java
++++ patched-before.java
+@@ -13,7 +13,7 @@
+     return new Parser(new Tokenizer(expression)).parse();
+-}
++}
+ 
+ ExpressionEvaluator.java:76:
+-                } else if (token == '(') {
++                } else if ((char) token == '(') {
+                                 ^
+  first type:  Object
+  second type: char
+ 
+--- before.java
++++ patched-before.java
+@@ -78,7 +78,7 @@
+                 } else if (token == ')') {
+-                    while (!ops.isEmpty() && ops.peek() != '(') {
++                    while (!ops.isEmpty() && ((char) ops.peek() != '(')) {
+                                 values.push(ops.pop());
+                     }
+                     ops.pop();

@@ -1,0 +1,22 @@
+{
+  "case_id": "java-qwen2.5-coder:7b-601cb03c",
+  "language": "java",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "diff-match-patch",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "after_path": null,
+  "patch_applied": false,
+  "patch_diagnostics": "statuses=[True, False, False, False, False, False]",
+  "compile_returncode": null,
+  "errors_before": 19,
+  "errors_after": null,
+  "first_error_removed": false,
+  "added_lines": 6,
+  "removed_lines": 6,
+  "hunks": 6,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": null,
+  "stdout_after": null
+}

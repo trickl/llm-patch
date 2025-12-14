@@ -1,0 +1,36 @@
+--- expression_evaluator.ts
++++ expression_evaluator.ts
+@@ -122,1 +122,2 @@
+ function parse(tokens: Token[]): number[] {
+     const values: number[] = [];
+     const operators: string[] = [];
+
+-    for (const token of tokens) {
++    for (const token of tokens as { type: 'number' | 'operator' | 'parenthesis', value: string }[]) {
+       if (token.type === 'number') {
+         values.push(Number(token.value));
+       } else if (token.type === 'operator' || token.type === 'parenthesis') {
+-        while (
++        while (
+           operators.length > 0 &&
+           precedence(operators[operators.length - 1]) >= precedence(token.value)
+         ) {
+           const operator = operators.pop()!;
+           const b = values.pop()!;
+           const a = values.pop()!;
+           values.push(applyOperator(a, b, operator));
+         }
+-        operators.push(token.value);
++        operators.push(token.type === 'operator' ? token.value : '(');
+       }
+     }
+
+-    while (operators.length > 0) {
++    while (operators.length > 0 && operators[operators.length - 1] !== ')') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperator(a, b, operator));
+     }
+
+     return values;

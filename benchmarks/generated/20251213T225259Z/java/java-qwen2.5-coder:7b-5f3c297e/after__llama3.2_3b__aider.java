@@ -1,0 +1,108 @@
+import java.util.*;
+import java.util.function.BiFunction;
+import java.util.stream.Collectors;
+
+public class ExpressionEvaluator {
+    public static void main(String[] args) {
+        System.out.println(evaluate("1 + 2")); // 3
+        System.out.println(evaluate("2 * 3 + 4")); // 10
+        System.out.println(evaluate("2 * (3 + 4)")); // 14
+        System.out.println(evaluate("8 / 2 * (2 + 2)")); // 16
+    }
+
+    private static final Map<String, BiFunction<Integer, Integer, Integer>> OPERATIONS = new HashMap<>();
+    static {
+        OPERATIONS.put("+", (a, b) -> a + b);
+        OPERATIONS.put("-", (a, b) -> a - b);
+        OPERATIONS.put("*", (a, b) -> a * b);
+        OPERATIONS.put("/", (a, b) -> a / b);
+    }
+
+    public static int evaluate(String expression) {
+        List<String> tokens = tokenize(expression);
+        return parse(tokens).evaluate();
+    }
+
+    private static List<String> tokenize(String expression) {
+        return Arrays.stream(expression.split("\\s+"))
+.flatMap(token -> token.matches("-?\\d+") ? Stream.of(token) : Stream.of(token.split("(?<=[-+*/()])|(?=[-+*/()])")))
+java.util.stream.Stream.of(token)
+                .collect(Collectors.toList());
+    }
+
+    private static Node parse(List<String> tokens) {
+        Deque<Node> values = new ArrayDeque<>();
+        Deque<String> ops = new ArrayDeque<>();
+
+        for (String token : tokens) {
+            if (token.matches("-?\\d+")) {
+                values.push(new ValueNode(Integer.parseInt(token)));
+            } else if ("(".equals(token)) {
+                ops.push(token);
+            } else if (")".equals(token)) {
+                while (!"(".equals(ops.peek())) {
+                    applyOp(values, ops.pop());
+                }
+                ops.pop();
+            } else {
+                while (!ops.isEmpty() && hasPrecedence(ops.peek(), token)) {
+                    applyOp(values, ops.pop());
+                }
+                ops.push(token);
+            }
+        }
+
+        while (!ops.isEmpty()) {
+            applyOp(values, ops.pop());
+        }
+
+        return values.pop();
+    }
+
+    private static boolean hasPrecedence(String op1, String op2) {
+        if (("+".equals(op1) || "-".equals(op1)) && ("*".equals(op2) || "/".equals(op2))) {
+            return false;
+        }
+        return true;
+    }
+
+    private static void applyOp(Deque<Node> values, String op) {
+        Node b = values.pop();
+        Node a = values.pop();
+        values.push(new OperationNode(a, b, OPERATIONS.get(op)));
+    }
+
+    interface Node {
+        int evaluate();
+    }
+
+    static class ValueNode implements Node {
+        private final int value;
+
+        public ValueNode(int value) {
+            this.value = value;
+        }
+
+        @Override
+        public int evaluate() {
+            return value;
+        }
+    }
+
+    static class OperationNode implements Node {
+        private final Node left;
+        private final Node right;
+        private final BiFunction<Integer, Integer, Integer> operation;
+
+        public OperationNode(Node left, Node right, BiFunction<Integer, Integer, Integer> operation) {
+            this.left = left;
+            this.right = right;
+            this.operation = operation;
+        }
+
+        @Override
+        public int evaluate() {
+            return operation.apply(left.evaluate(), right.evaluate());
+        }
+    }
+}

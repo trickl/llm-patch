@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-7aaa1018",
+  "language": "c",
+  "model_slug": "phi3_mini",
+  "algorithm": "diff-match-patch",
+  "diff_path": "diffs/phi3_mini.diff",
+  "after_path": "after__phi3_mini__diff-match-patch.c",
+  "patch_applied": true,
+  "patch_diagnostics": "statuses=[True, True]",
+  "compile_returncode": 1,
+  "errors_before": 2,
+  "errors_after": 1,
+  "first_error_removed": true,
+  "added_lines": 2,
+  "removed_lines": 2,
+  "hunks": 2,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "expression_evaluator.c:1:10: fatal error: expression_tokenizer.h: No such file or directory\n    1 | #include \"expression_tokenizer.h\" // New include for the tokenization logic#include <stdlib.h>\n      |          ^~~~~~~~~~~~~~~~~~~~~~~~\ncompilation terminated.\n",
+  "stdout_after": ""
+}

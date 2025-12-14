@@ -1,0 +1,139 @@
+import java.util.*;
+import java.util.function.BiFunction;
+import java.util.stream.Collectors;
+
+public class ExpressionEvaluator {
+
+    public static void main(String[] args) {
+        System.out.println(evaluate("1 + 2")); // Expected: 3
+        System.out.println(evaluate("2 * 3 + 4")); // Expected: 10
+        System.out.println(evaluate("2 * (3 + 4)")); // Expected: 14
+        System.out.println(evaluate("8 / 2 * (2 + 2)")); // Expected: 16
+    }
+
+    public static int evaluate(String expression) {
+        List<String> tokens = tokenize(expression);
+        return parse(tokens).evaluate();
+    }
+
+    private static List<String> tokenize(String expression) {
+        List<String> tokens = new ArrayList<>();
+        StringBuilder currentToken = new StringBuilder();
+        boolean inNumber = false;
+        for (char ch : expression.toCharArray()) {
+            if (Character.isDigit(ch)) {
+                currentToken.append(ch);
+                inNumber = true;
+            } else if (ch == ' ') {
+                if (inNumber) {
+                    tokens.add(currentToken.toString());
+                    currentToken.setLength(0);
+                    inNumber = false;
+                }
+            } else {
+                if (inNumber) {
+                    tokens.add(currentToken.toString());
+                    currentToken.setLength(0);
+                    inNumber = false;
+                }
+                tokens.add(String.valueOf(ch));
+            }
+        }
+        if (inNumber) {
+            tokens.add(currentToken.toString());
+        }
+        return tokens.stream()
+                .map(token -> token.equals("-") && (tokens.isEmpty() || tokens.get(tokens.size() - 1).matches("[\\(\\s]")))
+                ? "0-" : token)
+            .collect(Collectors.toList());
+    }
+    ;
+
+    private static Node parse(List<String> tokens) {
+        Stack<Node> values = new Stack<>();
+        Stack<Character> ops = new Stack<>();
+        for (String token : tokens) {
+            if (token.matches("\\d+")) {
+                values.push(new NumberNode(Integer.parseInt(token)));
+            } else if (token.equals("-") && values.isEmpty()) {
+                values.push(new NumberNode(0));
+                ops.push('-');
+            } else if (token.equals("-")) {
+                while (!ops.isEmpty() && precedence(ops.peek()) >= precedence('-')) {
+                    applyOp(values, ops);
+                }
+                ops.push('-');
+            } else if (token.matches("[\\+\\*\\/()]")) {
+                while (!ops.isEmpty() && precedence(ops.peek()) >= precedence(token.charAt(0))) {
+                    applyOp(values, ops);
+                }
+                ops.push(token.charAt(0));
+            }
+        }
+        while (!ops.isEmpty()) {
+            applyOp(values, ops);
+        }
+        return values.pop();
+    }
+
+    private static void applyOp(Stack<Node> values, Stack<Character> ops) {
+        char op = ops.pop();
+        Node b = values.pop();
+        Node a = values.pop();
+        values.push(new BinaryNode(a, b, op));
+    }
+
+    private static int precedence(char op) {
+        switch (op) {
+            case '+':
+            case '-':
+                return 1;
+            case '*':
+            case '/':
+                return 2;
+            default:
+                return -1;
+        }
+    }
+
+    interface Node {
+        int evaluate();
+    }
+
+    static class NumberNode implements Node {
+        private final int value;
+
+        public NumberNode(int value) {
+            this.value = value;
+        }
+
+        @Override
+        public int evaluate() {
+            return value;
+        }
+    }
+
+    static class BinaryNode implements Node {
+        private final Node left;
+        private final Node right;
+        private final char op;
+
+        public BinaryNode(Node left, Node right, char op) {
+            this.left = left;
+            this.right = right;
+            this.op = op;
+        }
+
+        @Override
+        public int evaluate() {
+            BiFunction<Integer, Integer, Integer> operation = switch (op) {
+                case '+' -> Integer::sum;
+                case '-' -> (a, b) -> a - b;
+                case '*' -> (a, b) -> a * b;
+                case '/' -> (a, b) -> a / b;
+                default -> throw new IllegalArgumentException("Unsupported operation: " + op);
+            };
+            return operation.apply(left.evaluate(), right.evaluate());
+        }
+    }
+}

@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-0a83752a",
+  "language": "c",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "aider",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "after_path": "after__qwen2.5-coder_7b__aider.c",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 1,
+  "errors_before": 1,
+  "errors_after": 1,
+  "first_error_removed": false,
+  "added_lines": 1,
+  "removed_lines": 1,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "expression_evaluator.c: In function \u2018main\u2019:\nexpression_evaluator.c:123:42: error: passing argument 2 of \u2018evaluate\u2019 makes pointer from integer without a cast [-Wint-conversion]\n  123 |     int result = evaluate(0, token_count - 1);\n      |                              ~~~~~~~~~~~~^~~\n      |                                          |\n      |                                          int\nexpression_evaluator.c:77:31: note: expected \u2018int *\u2019 but argument is of type \u2018int\u2019\n   77 | int evaluate(int *start, int *end) {\n      |                          ~~~~~^~~\n",
+  "stdout_after": ""
+}

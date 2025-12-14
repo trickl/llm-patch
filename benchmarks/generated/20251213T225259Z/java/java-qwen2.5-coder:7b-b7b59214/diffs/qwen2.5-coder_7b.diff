@@ -1,0 +1,49 @@
+--- before.java	2023-04-10 12:34:56.000000000 +0800
++++ after.java	2023-04-10 12:35:00.000000000 +0800
+@@ -7,6 +7,7 @@
+ import java.util.*;
+
+ public class ExpressionEvaluator {
++    private static class Token {
+         public static void main(String[] args) {
+             System.out.println(evaluate("3 + 4 * (2 - 1)")); // Output: 7
+             System.out.println(evaluate("2 * 3 + 4")); // Output: 10
+@@ -81,6 +82,7 @@
+     private final List<Token> tokens;
+ 
+     public Parser(List<Token> tokens) {
++        this.tokens = tokens;
+         this.pos = 0;
+     }
+ 
+@@ -96,6 +98,7 @@
+             Token token = tokens.get(pos);
+             if (token.getType() == Token.TokenType.OPERATOR && (token.getValue().equals("+") || token.getValue().equals("-"))) {
+                 pos++;
++                int nextTerm = term();
+                 if (token.getValue().equals("+")) {
+                     result += nextTerm;
+                 } else {
+@@ -115,6 +118,7 @@
+             Token token = tokens.get(pos);
+             if (token.getType() == Token.TokenType.OPERATOR && (token.getValue().equals("*") || token.getValue().equals("/"))) {
+                 pos++;
++                int nextFactor = factor();
+                 if (token.getValue().equals("*")) {
+                     result *= nextFactor;
+                 } else {
+@@ -132,6 +136,7 @@
+         Token token = tokens.get(pos);
+         if (token.getType() == Token.TokenType.LPAREN) {
+             pos++;
++            int result = expression();
+             if (tokens.get(pos).getType() != Token.TokenType.RPAREN) {
+                 throw new IllegalArgumentException("Expected ')'");
+             }
+@@ -141,6 +146,7 @@
+         } else if (token.getType() == Token.TokenType.OPERATOR && token.getValue().equals("-")) {
+             pos++;
++            int result = factor();
+             return -result;
+         } else if (token.getType() == Token.TokenType.NUMBER) {
+             pos++;

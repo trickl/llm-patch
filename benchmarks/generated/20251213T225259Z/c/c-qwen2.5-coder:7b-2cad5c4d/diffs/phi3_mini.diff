@@ -1,0 +1,32 @@
+--- before.c 2023-04-15 12:00:00.0000000 -0700 (Wed, 15 Apr 2023) 9 lines of context ---
+    #include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <string.h>
+
+#define MAX_TOKENS 100
+
+typedef enum { NUMBER, PLUS, MINUS, MUL, DIV, LPAREN, RPAREN } TokenType;
+typedef struct {
+    TokenType type;
+    int value;
+} Token;
+
+Token tokens[MAX_TOKENS];
+int token_count = 0;
+
+void tokenize(const char *expression) {
+...
+--- before.c 2023-04-15 12:00:00.0000000 -0700 (Wed, 15 Apr 2023) @@ -96,7 +96,8 @@
+        else if (*p == '*') {
+            tokens[token_count++] = (Token){MUL, 0};
+-           p++;
++           Token tmp;
++           switch(tokens[j].type) {
++               case MINUS:
++                   tmp.value = -tokens[j].value;
++                   tokens[token_count++] = (Token){MINUS, 0};
++                   j++;
++               default: break; // No need to handle other cases for this fix
+             }
+         } else if (*p == '/') {

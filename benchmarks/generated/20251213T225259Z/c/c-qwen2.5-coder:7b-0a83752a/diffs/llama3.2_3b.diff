@@ -1,0 +1,51 @@
+--- before.c
++++ patched_before.c
+@@ -77,7 +77,8 @@
+ int evaluate(int *start, int *end) {
+-    if (*start > *end) {
++    if (*start > *end) {
+         fprintf(stderr, "Error: Invalid expression\n");
+         exit(1);
+     }
+
+     int value = tokens[*start].value;
+     *start += 2;
+
+-    while (*start <= *end) {
++    while (*start  *end + 1) { // Fix the loop condition
+         char op = tokens[*start].value;
+         *start += 2;
+
+-        if (op == '(') {
++        if (op == '(') {
+             int sub_start = *start + 1;
+             int sub_end = *end - 1;
+             value = apply_operator(value, evaluate(&sub_start, &sub_end), op);
+             *start = sub_end + 2;
+-        } else {
++        } else {
+             int next_value = tokens[*start].value;
+             *start += 2;
+
+-            while (*start <= *end && precedence(op)  precedence(tokens[*start].value)) {
++            while (*start  *end + 1 && precedence(op) >= precedence(tokens[*start].value)) { // Fix the loop condition
+                 char next_op = tokens[*start].value;
+                 *start += 2;
+
+-                if (next_op == '(') {
++                if (next_op == '(') {
+                     int sub_start = *start + 1;
+                     int sub_end = *end - 1;
+                     next_value = evaluate(&sub_start, &sub_end);
+                     *start = sub_end + 2;
+-                } else {
++                } else {
+                     value = apply_operator(value, next_value, op);
+                     op = next_op;
+-            }
++            }
+         }
+     }
+
+     return value;
+ }

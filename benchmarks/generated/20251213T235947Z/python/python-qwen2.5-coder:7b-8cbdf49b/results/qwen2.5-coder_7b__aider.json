@@ -1,0 +1,22 @@
+{
+  "case_id": "python-qwen2.5-coder:7b-8cbdf49b",
+  "language": "python",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "aider",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "after_path": "after__qwen2.5-coder_7b__aider.py",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 1,
+  "errors_before": 1,
+  "errors_after": 1,
+  "first_error_removed": false,
+  "added_lines": 1,
+  "removed_lines": 1,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "  File \"expression_evaluator.py\", line 83\n    tokens = [tokenizer.get_next_token() while True]\n                                         ^^^^^\nSyntaxError: invalid syntax\n",
+  "stdout_after": ""
+}

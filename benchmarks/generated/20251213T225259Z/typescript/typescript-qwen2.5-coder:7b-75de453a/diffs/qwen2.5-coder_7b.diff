@@ -1,0 +1,13 @@
+--- before.ts
++++ before.ts
+@@ -105,7 +105,7 @@ export function evaluateExpression(input: string): number {
+   const rpn = parse(tokens);
+   return evaluateRPN(rpn);
+ }
+
+ // CLI example
+-if (require.main === module) {
++if (typeof require !== 'undefined' && require.main === module) {
+   const input = process.argv[2];
+   if (!input) {
+     console.log('Usage: node expression_evaluator.ts "expression"');

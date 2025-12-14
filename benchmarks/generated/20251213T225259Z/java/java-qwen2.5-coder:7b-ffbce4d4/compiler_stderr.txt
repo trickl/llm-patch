@@ -1,0 +1,44 @@
+ExpressionEvaluator.java:81: error: cannot find symbol
+    private final List<Token> tokens;
+                       ^
+  symbol:   class Token
+  location: class Parser
+ExpressionEvaluator.java:84: error: cannot find symbol
+    public Parser(List<Token> tokens) {
+                       ^
+  symbol:   class Token
+  location: class Parser
+ExpressionEvaluator.java:96: error: cannot find symbol
+            Token token = tokens.get(pos);
+            ^
+  symbol:   class Token
+  location: class Parser
+ExpressionEvaluator.java:97: error: package Token does not exist
+            if (token.type == Token.TokenType.OPERATOR && (token.value.equals("+") || token.value.equals("-"))) {
+                                   ^
+ExpressionEvaluator.java:115: error: cannot find symbol
+            Token token = tokens.get(pos);
+            ^
+  symbol:   class Token
+  location: class Parser
+ExpressionEvaluator.java:116: error: package Token does not exist
+            if (token.type == Token.TokenType.OPERATOR && (token.value.equals("*") || token.value.equals("/"))) {
+                                   ^
+ExpressionEvaluator.java:132: error: cannot find symbol
+        Token token = tokens.get(pos);
+        ^
+  symbol:   class Token
+  location: class Parser
+ExpressionEvaluator.java:134: error: package Token does not exist
+        if (token.type == Token.TokenType.NUMBER) {
+                               ^
+ExpressionEvaluator.java:136: error: package Token does not exist
+        } else if (token.type == Token.TokenType.OPERATOR && token.value.equals("-")) {
+                                      ^
+ExpressionEvaluator.java:138: error: package Token does not exist
+        } else if (token.type == Token.TokenType.LPAREN) {
+                                      ^
+ExpressionEvaluator.java:140: error: package Token does not exist
+            if (pos < tokens.size() && tokens.get(pos).type == Token.TokenType.RPAREN) {
+                                                                    ^
+11 errors

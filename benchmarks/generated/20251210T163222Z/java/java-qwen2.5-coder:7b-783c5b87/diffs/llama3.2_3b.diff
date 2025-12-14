@@ -1,6 +1,0 @@
---- before.java
-+++ patched_before.java
-@@ -170,7 +170,7 @@
-     throw new IllegalArgumentException("Unexpected token: " + currentToken.getLiteral());
--}
-+);

@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-7b451b53",
+  "language": "c",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "aider",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "after_path": "after__qwen2.5-coder_7b__aider.c",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 1,
+  "errors_before": 1,
+  "errors_after": 1,
+  "first_error_removed": false,
+  "added_lines": 1,
+  "removed_lines": 1,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "expression_evaluator.c: In function \u2018get_next_token\u2019:\nexpression_evaluator.c:39:5: warning: missing initializer for field \u2018value\u2019 of \u2018Token\u2019 [-Wmissing-field-initializers]\n   39 |     if (!**input) return (Token){TOKEN_EOF};\n      |     ^~\nexpression_evaluator.c:21:9: note: \u2018value\u2019 declared here\n   21 |     int value;\n      |         ^~~~~\nexpression_evaluator.c:45:9: warning: missing initializer for field \u2018value\u2019 of \u2018Token\u2019 [-Wmissing-field-initializers]\n   45 |         case '+': return (Token){TOKEN_PLUS};\n      |         ^~~~\nexpression_evaluator.c:21:9: note: \u2018value\u2019 declared here\n   21 |     int value;\n      |         ^~~~~\nexpression_evaluator.c:46:9: warning: missing initializer for field \u2018value\u2019 of \u2018Token\u2019 [-Wmissing-field-initializers]\n   46 |         case '-': return (Token){TOKEN_MINUS};\n      |         ^~~~\nexpression_evaluator.c:21:9: note: \u2018value\u2019 declared here\n   21 |     int value;\n      |         ^~~~~\nexpression_evaluator.c:47:9: warning: missing initializer for field \u2018value\u2019 of \u2018Token\u2019 [-Wmissing-field-initializers]\n   47 |         case '*': return (Token){TOKEN_MULTIPLY};\n      |         ^~~~\nexpression_evaluator.c:21:9: note: \u2018value\u2019 declared here\n   21 |     int value;\n      |         ^~~~~\nexpression_evaluator.c:48:9: warning: missing initializer for field \u2018value\u2019 of \u2018Token\u2019 [-Wmissing-field-initializers]\n   48 |         case '/': return (Token){TOKEN_DIVIDE};\n      |         ^~~~\nexpression_evaluator.c:21:9: note: \u2018value\u2019 declared here\n   21 |     int value;\n      |         ^~~~~\nexpression_evaluator.c:49:9: warning: missing initializer for field \u2018value\u2019 of \u2018Token\u2019 [-Wmissing-field-initializers]\n   49 |         case '(': return (Token){TOKEN_LPAREN};\n      |         ^~~~\nexpression_evaluator.c:21:9: note: \u2018value\u2019 declared here\n   21 |     int value;\n      |         ^~~~~\nexpression_evaluator.c:50:9: warning: missing initializer for field \u2018value\u2019 of \u2018Token\u2019 [-Wmissing-field-initializers]\n   50 |         case ')': return (Token){TOKEN_RPAREN};\n      |         ^~~~\nexpression_evaluator.c:21:9: note: \u2018value\u2019 declared here\n   21 |     int value;\n      |         ^~~~~\nexpression_evaluator.c: In function \u2018main\u2019:\nexpression_evaluator.c:126:39: error: passing argument 1 of \u2018evaluate_expression\u2019 from incompatible pointer type [-Wincompatible-pointer-types]\n  126 |     token.value = evaluate_expression(&input);\n      |                                       ^~~~~~\n      |                                       |\n      |                                       char (*)[1024]\nexpression_evaluator.c:85:32: note: expected \u2018char **\u2019 but argument is of type \u2018char (*)[1024]\u2019\n   85 | int evaluate_expression(char **input) {\n      |                         ~~~~~~~^~~~~\nexpression_evaluator.c: In function \u2018get_next_token\u2019:\nexpression_evaluator.c:63:1: warning: control reaches end of non-void function [-Wreturn-type]\n   63 | }\n      | ^\nexpression_evaluator.c: In function \u2018apply_operator\u2019:\nexpression_evaluator.c:83:1: warning: control reaches end of non-void function [-Wreturn-type]\n   83 | }\n      | ^\n",
+  "stdout_after": ""
+}

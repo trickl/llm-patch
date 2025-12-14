@@ -1,0 +1,22 @@
+{
+  "case_id": "typescript-qwen2.5-coder:7b-9b29a5a1",
+  "language": "typescript",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "aider",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "after_path": "after__llama3.2_3b__aider.ts",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 2,
+  "errors_before": 7,
+  "errors_after": 7,
+  "first_error_removed": false,
+  "added_lines": 1,
+  "removed_lines": 1,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "",
+  "stdout_after": "expression_evaluator.ts(23,27): error TS2322: Type 'number' is not assignable to type '\"number\" | \"operator\" | \"parenthesis\"'.\nexpression_evaluator.ts(23,33): error TS2362: The left-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.\nexpression_evaluator.ts(23,46): error TS2363: The right-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.\nexpression_evaluator.ts(115,5): error TS2580: Cannot find name 'require'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.\nexpression_evaluator.ts(115,22): error TS2580: Cannot find name 'module'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.\nexpression_evaluator.ts(116,19): error TS2580: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.\nexpression_evaluator.ts(124,37): error TS18046: 'error' is of type 'unknown'.\n"
+}

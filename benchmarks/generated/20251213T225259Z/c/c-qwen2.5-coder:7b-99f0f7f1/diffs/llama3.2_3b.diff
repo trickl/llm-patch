@@ -1,0 +1,9 @@
+--- before.c
++++ patched_before.c
+@@ -144,7 +144,7 @@
+   operators[operator_index--] = token.type;
+-  values[value_index++] = apply_operator(a, b, operators[operator_index]);
++  if (token.type == TOKEN_EOF) {
++    break;
++  }
+   values[value_index++] = apply_operator(a, b, operators[operator_index]);

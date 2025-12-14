@@ -1,7 +1,0 @@
-ExpressionEvaluator.java:160: error: method evaluate(String) is already defined in class ExpressionEvaluator
-    public int evaluate(String expression) {
-               ^
-ExpressionEvaluator.java:138: error: incompatible types: Double cannot be converted to int
-                return (int) tokens.get(0).value;
-                                          ^
-2 errors

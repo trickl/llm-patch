@@ -1,0 +1,46 @@
+ExpressionEvaluator.java:68: error: bad operand types for binary operator '=='
+            if (token == '+' || token == '-') {
+                      ^
+  first type:  Object
+  second type: char
+ExpressionEvaluator.java:68: error: bad operand types for binary operator '=='
+            if (token == '+' || token == '-') {
+                                      ^
+  first type:  Object
+  second type: char
+ExpressionEvaluator.java:71: error: bad operand types for binary operator '=='
+                if (token == '+') {
+                          ^
+  first type:  Object
+  second type: char
+ExpressionEvaluator.java:87: error: bad operand types for binary operator '=='
+            if (token == '*' || token == '/') {
+                      ^
+  first type:  Object
+  second type: char
+ExpressionEvaluator.java:87: error: bad operand types for binary operator '=='
+            if (token == '*' || token == '/') {
+                                      ^
+  first type:  Object
+  second type: char
+ExpressionEvaluator.java:90: error: bad operand types for binary operator '=='
+                if (token == '*') {
+                          ^
+  first type:  Object
+  second type: char
+ExpressionEvaluator.java:107: error: bad operand types for binary operator '=='
+        } else if (token == '(') {
+                         ^
+  first type:  Object
+  second type: char
+ExpressionEvaluator.java:110: error: bad operand types for binary operator '=='
+            if (pos < tokens.size() && tokens.get(pos) == ')') {
+                                                       ^
+  first type:  Object
+  second type: char
+ExpressionEvaluator.java:116: error: bad operand types for binary operator '=='
+        } else if (token == '-') {
+                         ^
+  first type:  Object
+  second type: char
+9 errors

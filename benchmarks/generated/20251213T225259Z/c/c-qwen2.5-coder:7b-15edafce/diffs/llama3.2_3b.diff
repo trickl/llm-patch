@@ -1,0 +1,25 @@
+--- before.c
++++ after.c
+@@ -93,7 +93,7 @@
+   int evaluate(int *tokens, int start, int end) {
+-    if (start > end) {
++    if (start >= end) {
+       return 0;
+     }
+
+     int i = start;
+     while (i <= end && tokens[i].type != TOKEN_LPAREN) {
+       i++;
+     }
+
+@@ -104,7 +104,7 @@
+   int j = i + 1;
+   while (j <= end && tokens[j].type == TOKEN_NUMBER) {
+     j++;
+   }
+
+-    value = evaluate(tokens, i + 1, j - 2);
++    value = evaluate(tokens, i + 1, j - 3);
+
+     if (i > start) {
+       value = apply_operator(evaluate(tokens, start, i - 2), value, tokens[i - 1].type);

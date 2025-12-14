@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-e44327fc",
+  "language": "c",
+  "model_slug": "phi3_mini",
+  "algorithm": "git",
+  "diff_path": "diffs/phi3_mini.diff",
+  "after_path": "after__phi3_mini__git.c",
+  "patch_applied": true,
+  "patch_diagnostics": "applied",
+  "compile_returncode": 1,
+  "errors_before": 1,
+  "errors_after": 1,
+  "first_error_removed": false,
+  "added_lines": 0,
+  "removed_lines": 0,
+  "hunks": 0,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "expression_evaluator.c: In function \u2018parse\u2019:\nexpression_evaluator.c:59:18: error: implicit declaration of function \u2018evaluate\u2019 [-Wimplicit-function-declaration]\n   59 |     int result = evaluate(token, &input);\n      |                  ^~~~~~~~\nexpression_evaluator.c: In function \u2018evaluate\u2019:\nexpression_evaluator.c:73:9: warning: enumeration value \u2018TOKEN_EOF\u2019 not handled in switch [-Wswitch]\n   73 |         switch (token.type) {\n      |         ^~~~~~\n",
+  "stdout_after": ""
+}

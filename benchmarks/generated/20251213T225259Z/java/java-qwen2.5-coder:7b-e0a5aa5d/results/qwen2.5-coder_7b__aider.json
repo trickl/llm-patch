@@ -1,0 +1,22 @@
+{
+  "case_id": "java-qwen2.5-coder:7b-e0a5aa5d",
+  "language": "java",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "aider",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "after_path": "after__qwen2.5-coder_7b__aider.java",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 2 hunks",
+  "compile_returncode": 1,
+  "errors_before": 8,
+  "errors_after": 3,
+  "first_error_removed": true,
+  "added_lines": 2,
+  "removed_lines": 0,
+  "hunks": 2,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "ExpressionEvaluator.java:4: error: '{' expected\n    static class Token;\n                      ^\nExpressionEvaluator.java:77: error: '{' expected\n    static class Token;\n                      ^\n2 errors\n",
+  "stdout_after": ""
+}

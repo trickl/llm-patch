@@ -1,0 +1,33 @@
+expression_evaluator.c: In function ‘main’:
+expression_evaluator.c:124:44: error: passing argument 2 of ‘evaluate’ makes pointer from integer without a cast [-Wint-conversion]
+  124 |     printf("%d\n", evaluate(0, token_count - 1)); // Output: 9
+      |                                ~~~~~~~~~~~~^~~
+      |                                            |
+      |                                            int
+expression_evaluator.c:94:31: note: expected ‘int *’ but argument is of type ‘int’
+   94 | int evaluate(int *start, int *end) {
+      |                          ~~~~~^~~
+expression_evaluator.c:127:44: error: passing argument 2 of ‘evaluate’ makes pointer from integer without a cast [-Wint-conversion]
+  127 |     printf("%d\n", evaluate(0, token_count - 1)); // Output: 10
+      |                                ~~~~~~~~~~~~^~~
+      |                                            |
+      |                                            int
+expression_evaluator.c:94:31: note: expected ‘int *’ but argument is of type ‘int’
+   94 | int evaluate(int *start, int *end) {
+      |                          ~~~~~^~~
+expression_evaluator.c:130:44: error: passing argument 2 of ‘evaluate’ makes pointer from integer without a cast [-Wint-conversion]
+  130 |     printf("%d\n", evaluate(0, token_count - 1)); // Output: 14
+      |                                ~~~~~~~~~~~~^~~
+      |                                            |
+      |                                            int
+expression_evaluator.c:94:31: note: expected ‘int *’ but argument is of type ‘int’
+   94 | int evaluate(int *start, int *end) {
+      |                          ~~~~~^~~
+expression_evaluator.c:133:44: error: passing argument 2 of ‘evaluate’ makes pointer from integer without a cast [-Wint-conversion]
+  133 |     printf("%d\n", evaluate(0, token_count - 1)); // Output: 16
+      |                                ~~~~~~~~~~~~^~~
+      |                                            |
+      |                                            int
+expression_evaluator.c:94:31: note: expected ‘int *’ but argument is of type ‘int’
+   94 | int evaluate(int *start, int *end) {
+      |                          ~~~~~^~~

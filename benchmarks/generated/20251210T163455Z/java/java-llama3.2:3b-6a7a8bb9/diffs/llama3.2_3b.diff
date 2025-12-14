@@ -1,5 +1,0 @@
---- before.java
-+++ after.java
-@@ -7,4 +7,5 @@
-  return parse(tokens).evaluate();
-+}

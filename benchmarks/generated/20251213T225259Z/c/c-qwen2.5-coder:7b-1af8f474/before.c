@@ -1,0 +1,138 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <string.h>
+
+#define MAX_TOKEN_LENGTH 256
+
+typedef enum {
+    TOKEN_NUMBER,
+    TOKEN_PLUS,
+    TOKEN_MINUS,
+    TOKEN_MULTIPLY,
+    TOKEN_DIVIDE,
+    TOKEN_LPAREN,
+    TOKEN_RPAREN,
+    TOKEN_EOF
+} TokenType;
+
+typedef struct {
+    TokenType type;
+    int value;
+} Token;
+
+Token tokenize(const char **input) {
+    while (**input == ' ') (*input)++;
+    if (**input == '\0') return (Token){TOKEN_EOF, 0};
+    if (isdigit(**input)) {
+        int value = 0;
+        while (isdigit(**input)) {
+            value = value * 10 + (**input - '0');
+            (*input)++;
+        }
+        return (Token){TOKEN_NUMBER, value};
+    } else if (**input == '+') {
+        (*input)++;
+        return (Token){TOKEN_PLUS, 0};
+    } else if (**input == '-') {
+        (*input)++;
+        return (Token){TOKEN_MINUS, 0};
+    } else if (**input == '*') {
+        (*input)++;
+        return (Token){TOKEN_MULTIPLY, 0};
+    } else if (**input == '/') {
+        (*input)++;
+        return (Token){TOKEN_DIVIDE, 0};
+    } else if (**input == '(') {
+        (*input)++;
+        return (Token){TOKEN_LPAREN, 0};
+    } else if (**input == ')') {
+        (*input)++;
+        return (Token){TOKEN_RPAREN, 0};
+    }
+    return (Token){TOKEN_EOF, 0};
+}
+
+int precedence(TokenType token) {
+    switch (token) {
+        case TOKEN_MULTIPLY:
+        case TOKEN_DIVIDE: return 2;
+        case TOKEN_PLUS:
+        case TOKEN_MINUS: return 1;
+        default: return 0;
+    }
+}
+
+int evaluate(int a, int b, TokenType op) {
+    switch (op) {
+        case TOKEN_PLUS: return a + b;
+        case TOKEN_MINUS: return a - b;
+        case TOKEN_MULTIPLY: return a * b;
+        case TOKEN_DIVIDE: return a / b;
+        default: return 0;
+    }
+}
+
+int parse_and_evaluate(const char *expression) {
+    Token tokens[MAX_TOKEN_LENGTH];
+    int token_count = 0;
+
+    const char *input = expression;
+    while (token_count < MAX_TOKEN_LENGTH && tokenize(&input).type != TOKEN_EOF) {
+        tokens[token_count++] = tokenize(&input);
+    }
+
+    int values[MAX_TOKEN_LENGTH] = {0};
+    TokenType ops[MAX_TOKEN_LENGTH] = {TOKEN_PLUS}; // Default to addition for empty stack
+    int value_top = 0, op_top = 0;
+
+    for (int i = 0; i < token_count; i++) {
+        Token token = tokens[i];
+        switch (token.type) {
+            case TOKEN_NUMBER:
+                values[value_top++] = token.value;
+                break;
+            case TOKEN_PLUS:
+            case TOKEN_MINUS:
+            case TOKEN_MULTIPLY:
+            case TOKEN_DIVIDE:
+                while (op_top > 0 && precedence(ops[op_top - 1]) >= precedence(token.type)) {
+                    int b = values[--value_top];
+                    int a = values[--value_top];
+                    ops[--op_top] = token.type;
+                    values[value_top++] = evaluate(a, b, ops[op_top]);
+                }
+                ops[op_top++] = token.type;
+                break;
+            case TOKEN_LPAREN:
+                ops[op_top++] = token.type;
+                break;
+            case TOKEN_RPAREN:
+                while (ops[op_top - 1] != TOKEN_LPAREN) {
+                    int b = values[--value_top];
+                    int a = values[--value_top];
+                    ops[--op_top] = token.type;
+                    values[value_top++] = evaluate(a, b, ops[op_top]);
+                }
+                op_top--; // Pop the '('
+                break;
+        }
+    }
+
+    while (op_top > 0) {
+        int b = values[--value_top];
+        int a = values[--value_top];
+        ops[--op_top] = token.type;
+        values[value_top++] = evaluate(a, b, ops[op_top]);
+    }
+
+    return values[0];
+}
+
+int main() {
+    printf("1 + 2 => %d\n", parse_and_evaluate("1 + 2"));
+    printf("2 * 3 + 4 => %d\n", parse_and_evaluate("2 * 3 + 4"));
+    printf("2 * (3 + 4) => %d\n", parse_and_evaluate("2 * (3 + 4)"));
+    printf("8 / 2 * (2 + 2) => %d\n", parse_and_evaluate("8 / 2 * (2 + 2)"));
+    return 0;
+}

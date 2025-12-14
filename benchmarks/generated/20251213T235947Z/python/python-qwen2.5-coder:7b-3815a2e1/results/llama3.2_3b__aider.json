@@ -1,0 +1,22 @@
+{
+  "case_id": "python-qwen2.5-coder:7b-3815a2e1",
+  "language": "python",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "aider",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "after_path": "after__llama3.2_3b__aider.py",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 1,
+  "errors_before": 1,
+  "errors_after": 1,
+  "first_error_removed": false,
+  "added_lines": 1,
+  "removed_lines": 1,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "  File \"expression_evaluator.py\", line 15\n    elif self.position  len(self.input_string) and (self.input_string[self.position] == '+' or \n    ^^^^\nSyntaxError: invalid syntax\n",
+  "stdout_after": ""
+}

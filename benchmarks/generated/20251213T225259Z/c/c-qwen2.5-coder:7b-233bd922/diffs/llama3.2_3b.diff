@@ -1,0 +1,7 @@
+--- before.c
++++ after.c
+@@ -66,7 +66,8 @@
+   int result = parse_expression();
+      ^~~~~~~~~~~~~~~~
+- 66 |             int result = parse_expression();
++ 66 |             int result = parse_expression(); // Added parentheses around function call

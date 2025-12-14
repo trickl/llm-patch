@@ -1,0 +1,17 @@
+expression_evaluator.c: In function ‘evaluate_expression’:
+expression_evaluator.c:59:18: error: implicit declaration of function ‘evaluate_term’ [-Wimplicit-function-declaration]
+   59 |     int result = evaluate_term();
+      |                  ^~~~~~~~~~~~~
+expression_evaluator.c: In function ‘evaluate_term’:
+expression_evaluator.c:72:18: error: implicit declaration of function ‘evaluate_factor’; did you mean ‘evaluate_term’? [-Wimplicit-function-declaration]
+   72 |     int result = evaluate_factor();
+      |                  ^~~~~~~~~~~~~~~
+      |                  evaluate_term
+expression_evaluator.c: In function ‘tokenize’:
+expression_evaluator.c:141:30: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+  141 |                     while (i < strlen(expression) && isdigit(expression[i])) {
+      |                              ^
+expression_evaluator.c: In function ‘evaluate_factor’:
+expression_evaluator.c:107:1: warning: control reaches end of non-void function [-Wreturn-type]
+  107 | }
+      | ^

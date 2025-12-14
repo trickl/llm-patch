@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-0666a706",
+  "language": "c",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "aider",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "after_path": "after__llama3.2_3b__aider.c",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 1,
+  "errors_before": 1,
+  "errors_after": 1,
+  "first_error_removed": false,
+  "added_lines": 1,
+  "removed_lines": 1,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "In file included from expression_evaluator.c:1:\nexpression_evaluator.c:8:63: error: expected identifier before \u2018(\u2019 token\n    8 | typedef enum { NUMBER, PLUS, MINUS, MUL, DIV, LPAREN, RPAREN, EOF } TokenType;\n      |                                                               ^~~\nexpression_evaluator.c: In function \u2018getNextToken\u2019:\nexpression_evaluator.c:29:9: warning: unused variable \u2018value\u2019 [-Wunused-variable]\n   29 |     int value;\n      |         ^~~~~\nexpression_evaluator.c: In function \u2018tokenize\u2019:\nexpression_evaluator.c:106:22: warning: comparison of integer expressions of different signedness: \u2018int\u2019 and \u2018size_t\u2019 {aka \u2018long unsigned int\u2019} [-Wsign-compare]\n  106 |             while (i < strlen(expression) && isdigit(expression[i])) {\n      |                      ^\n",
+  "stdout_after": ""
+}

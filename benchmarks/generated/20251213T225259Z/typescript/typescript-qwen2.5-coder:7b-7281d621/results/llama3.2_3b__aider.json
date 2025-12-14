@@ -1,0 +1,22 @@
+{
+  "case_id": "typescript-qwen2.5-coder:7b-7281d621",
+  "language": "typescript",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "aider",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "after_path": "after__llama3.2_3b__aider.ts",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 2,
+  "errors_before": 6,
+  "errors_after": 7,
+  "first_error_removed": true,
+  "added_lines": 1,
+  "removed_lines": 1,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "",
+  "stdout_after": "expression_evaluator.ts(25,9): error TS1232: An import declaration can only be used at the top level of a namespace or module.\nexpression_evaluator.ts(130,5): error TS2580: Cannot find name 'require'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.\nexpression_evaluator.ts(130,22): error TS2580: Cannot find name 'module'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.\nexpression_evaluator.ts(131,19): error TS2580: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.\nexpression_evaluator.ts(134,9): error TS2580: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.\nexpression_evaluator.ts(140,55): error TS18046: 'error' is of type 'unknown'.\nexpression_evaluator.ts(141,9): error TS2580: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.\n"
+}

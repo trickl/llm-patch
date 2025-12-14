@@ -1,0 +1,9 @@
+--- before.ts
++++ patched_before_ts
+@@ -109,5 +109,7 @@
+         case '/':
+             if (b === 0) throw new Error('Division by zero');
+             return Math.floor(a / b);
+-        default:
++        // Add this line to import the 'require' function from Node.js
++        const require = require;

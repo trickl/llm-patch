@@ -1,0 +1,22 @@
+{
+  "case_id": "java-qwen2.5-coder:7b-e47358c1",
+  "language": "java",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "aider",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "after_path": "after__qwen2.5-coder_7b__aider.java",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 7 hunks",
+  "compile_returncode": 1,
+  "errors_before": 13,
+  "errors_after": 19,
+  "first_error_removed": true,
+  "added_lines": 10,
+  "removed_lines": 3,
+  "hunks": 7,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "ExpressionEvaluator.java:50: error: cannot find symbol\n        final TokenType type;\n              ^\n  symbol:   class TokenType\n  location: class Token\nExpressionEvaluator.java:53: error: class Token is already defined in class Tokenizer\n    private static class Token {\n                   ^\nExpressionEvaluator.java:80: error: cannot find symbol\n    private final List<Token> tokens;\n                       ^\n  symbol:   class Token\n  location: class Parser\nExpressionEvaluator.java:83: error: cannot find symbol\n    public Parser(List<Token> tokens) {\n                       ^\n  symbol:   class Token\n  location: class Parser\nExpressionEvaluator.java:34: error: constructor Token in class Token cannot be applied to given types;\n                tokens.add(new Token(TokenType.NUMBER, value));\n                           ^\n  required: no arguments\n  found:    TokenType,int\n  reason: actual and formal argument lists differ in length\nExpressionEvaluator.java:36: error: constructor Token in class Token cannot be applied to given types;\n                tokens.add(new Token(TokenType.OPERATOR, ch));\n                           ^\n  required: no arguments\n  found:    TokenType,char\n  reason: actual and formal argument lists differ in length\nExpressionEvaluator.java:39: error: constructor Token in class Token cannot be applied to given types;\n                tokens.add(new Token(TokenType.LPAREN, null));\n                           ^\n  required: no arguments\n  found:    TokenType,<null>\n  reason: actual and formal argument lists differ in length\nExpressionEvaluator.java:42: error: constructor Token in class Token cannot be applied to given types;\n                tokens.add(new Token(TokenType.RPAREN, null));\n                           ^\n  required: no arguments\n  found:    TokenType,<null>\n  reason: actual and formal argument lists differ in length\nExpressionEvaluator.java:12: error: incompatible types: Tokenizer cannot be converted to List<Token>\n        return new Parser(new Tokenizer(expression)).parse();\n                          ^\nExpressionEvaluator.java:94: error: cannot find symbol\n            Token token = tokens.get(pos);\n            ^\n  symbol:   class Token\n  location: class Parser\nExpressionEvaluator.java:95: error: package Token does not exist\n            if (token.type == Token.TokenType.OPERATOR && (token.value.equals(\"+\") || token.value.equals(\"-\"))) {\n                                   ^\nExpressionEvaluator.java:109: error: cannot find symbol\n            Token token = tokens.get(pos);\n            ^\n  symbol:   class Token\n  location: class Parser\nExpressionEvaluator.java:110: error: package Token does not exist\n            if (token.type == Token.TokenType.OPERATOR && (token.value.equals(\"*\") || token.value.equals(\"/\"))) {\n                                   ^\nExpressionEvaluator.java:122: error: cannot find symbol\n        Token token = tokens.get(pos);\n        ^\n  symbol:   class Token\n  location: class Parser\nExpressionEvaluator.java:123: error: package Token does not exist\n        if (token.type == Token.TokenType.LPAREN) {\n                               ^\nExpressionEvaluator.java:126: error: package Token does not exist\n            if (tokens.get(pos).type != Token.TokenType.RPAREN) {\n                                             ^\nExpressionEvaluator.java:131: error: package Token does not exist\n        } else if (token.type == Token.TokenType.OPERATOR && token.value.equals(\"-\")) {\n                                      ^\nExpressionEvaluator.java:134: error: package Token does not exist\n        } else if (token.type == Token.TokenType.NUMBER) {\n                                      ^\nNote: Some messages have been simplified; recompile with -Xdiags:verbose to get full output\n18 errors\n",
+  "stdout_after": ""
+}

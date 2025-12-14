@@ -1,0 +1,30 @@
+--- before.c
++++ after.c
+@@ -129,7 +129,7 @@ int parse_and_evaluate() {
+     int values[MAX_TOKENS] = {0};
+     TokenType ops[MAX_TOKENS] = {TOKEN_PLUS}; // Default to addition for empty expression
+     int value_index = 0;
+-    int op_index = 0;
++    int op_index = 1; // Initialize op_index to avoid undeclared variable error
+
+     for (int i = 0; i < token_count; i++) {
+         if (tokens[i].type == TOKEN_NUMBER) {
+@@ -137,7 +137,7 @@ int parse_and_evaluate() {
+             ops[op_index++] = tokens[i].type;
+         } else if (tokens[i].type == TOKEN_LPAREN) {
+             ops[op_index++] = tokens[i].type;
+-        } else if (tokens[i].type == TOKEN_RPAREN) {
++        } else if (tokens[i].type == TOKEN_RPAREN && op_index > 0) { // Add check to avoid out-of-bounds access
+             while (op_index > 0 && ops[op_index - 1] != TOKEN_LPAREN) {
+                 int b = values[value_index - 1];
+                 value_index--;
+@@ -145,7 +145,7 @@ int parse_and_evaluate() {
+             op_index--; // Pop the '('
+         }
+     }
+
+-    while (op_index > 0) {
++    while (op_index > 1) { // Adjust loop condition to avoid out-of-bounds access
+         int b = values[value_index - 1];
+         value_index--;
+         int a = values[value_index - 1];

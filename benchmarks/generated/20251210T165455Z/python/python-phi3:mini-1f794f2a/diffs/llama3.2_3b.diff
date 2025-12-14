@@ -1,7 +1,0 @@
---- before.py
-+++ after.py
-@@ -19,7 +19,7 @@
- I'de]
--     ^
-+     ^
- SyntaxError: unterminated string literal (detected at line 20)

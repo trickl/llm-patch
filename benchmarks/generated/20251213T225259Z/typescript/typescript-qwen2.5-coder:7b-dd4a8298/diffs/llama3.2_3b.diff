@@ -1,0 +1,29 @@
+--- before.ts
++++ patched_before_ts
+@@ -103,5 +103,6 @@
+     while (
+       operators.length > 0 &&
+-       precedence(operators[operators.length - 1]) >= precedence(token.value)
++       precedence(operators[operators.length - 1]) >= getPrecedence(token.value)
+     ) {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperator(a, b, operator));
+     }
+     operators.push(token.value);
+-   } else if (token.type === 'parenthesis' && token.value === ')') {
++   } else if (token.type === 'parenthesis' && token.value === ')') {
+     while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+       const operator = operators.pop()!;
+       const b = values.pop()!;
+       const a = values.pop()!;
+       values.push(applyOperator(a, b, operator));
+     }
+     operators.pop(); // Remove the '('
+   }
+
++function getPrecedence(operator: string): number {
++  if (operator === '+' || operator === '-') return 1;
++  if (operator === '*' || operator === '/') return 2;
++  return 0;

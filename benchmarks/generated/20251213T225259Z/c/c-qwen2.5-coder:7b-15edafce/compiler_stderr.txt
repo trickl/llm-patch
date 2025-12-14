@@ -1,0 +1,61 @@
+expression_evaluator.c: In function ‘evaluate’:
+expression_evaluator.c:99:33: error: request for member ‘type’ in something not a structure or union
+   99 |     while (i <= end && tokens[i].type != TOKEN_LPAREN) {
+      |                                 ^
+expression_evaluator.c:104:33: error: request for member ‘type’ in something not a structure or union
+  104 |     while (j <= end && tokens[j].type == TOKEN_NUMBER) {
+      |                                 ^
+expression_evaluator.c:110:84: error: request for member ‘type’ in something not a structure or union
+  110 |         value = apply_operator(evaluate(tokens, start, i - 2), value, tokens[i - 1].type);
+      |                                                                                    ^
+expression_evaluator.c:114:22: error: request for member ‘type’ in something not a structure or union
+  114 |         if (tokens[j].type == TOKEN_LPAREN) {
+      |                      ^
+expression_evaluator.c:118:30: error: request for member ‘type’ in something not a structure or union
+  118 |                 if (tokens[k].type == TOKEN_LPAREN) {
+      |                              ^
+expression_evaluator.c:120:37: error: request for member ‘type’ in something not a structure or union
+  120 |                 } else if (tokens[k].type == TOKEN_RPAREN) {
+      |                                     ^
+expression_evaluator.c:125:88: error: request for member ‘type’ in something not a structure or union
+  125 |             value = apply_operator(value, evaluate(tokens, j + 1, k - 2), tokens[j - 1].type);
+      |                                                                                        ^
+expression_evaluator.c:129:41: error: request for member ‘type’ in something not a structure or union
+  129 |             while (k <= end && tokens[k].type == TOKEN_NUMBER) {
+      |                                         ^
+expression_evaluator.c:132:88: error: request for member ‘type’ in something not a structure or union
+  132 |             value = apply_operator(value, evaluate(tokens, j + 1, k - 2), tokens[j - 1].type);
+      |                                                                                        ^
+expression_evaluator.c: In function ‘main’:
+expression_evaluator.c:142:29: error: passing argument 1 of ‘evaluate’ from incompatible pointer type [-Wincompatible-pointer-types]
+  142 |     printf("%d\n", evaluate(tokens, 0, token_count - 1)); // Output: 9
+      |                             ^~~~~~
+      |                             |
+      |                             Token *
+expression_evaluator.c:93:19: note: expected ‘int *’ but argument is of type ‘Token *’
+   93 | int evaluate(int *tokens, int start, int end) {
+      |              ~~~~~^~~~~~
+expression_evaluator.c:145:29: error: passing argument 1 of ‘evaluate’ from incompatible pointer type [-Wincompatible-pointer-types]
+  145 |     printf("%d\n", evaluate(tokens, 0, token_count - 1)); // Output: 10
+      |                             ^~~~~~
+      |                             |
+      |                             Token *
+expression_evaluator.c:93:19: note: expected ‘int *’ but argument is of type ‘Token *’
+   93 | int evaluate(int *tokens, int start, int end) {
+      |              ~~~~~^~~~~~
+expression_evaluator.c:148:29: error: passing argument 1 of ‘evaluate’ from incompatible pointer type [-Wincompatible-pointer-types]
+  148 |     printf("%d\n", evaluate(tokens, 0, token_count - 1)); // Output: 14
+      |                             ^~~~~~
+      |                             |
+      |                             Token *
+expression_evaluator.c:93:19: note: expected ‘int *’ but argument is of type ‘Token *’
+   93 | int evaluate(int *tokens, int start, int end) {
+      |              ~~~~~^~~~~~
+expression_evaluator.c:151:29: error: passing argument 1 of ‘evaluate’ from incompatible pointer type [-Wincompatible-pointer-types]
+  151 |     printf("%d\n", evaluate(tokens, 0, token_count - 1)); // Output: 16
+      |                             ^~~~~~
+      |                             |
+      |                             Token *
+expression_evaluator.c:93:19: note: expected ‘int *’ but argument is of type ‘Token *’
+   93 | int evaluate(int *tokens, int start, int end) {
+      |              ~~~~~^~~~~~

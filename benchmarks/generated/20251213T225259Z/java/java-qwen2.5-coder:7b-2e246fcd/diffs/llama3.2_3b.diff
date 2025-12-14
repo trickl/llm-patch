@@ -1,0 +1,162 @@
+--- before.java
++++ after.java
+@@ -12,7 +12,7 @@
+     return new Parser(new Tokenizer(expression)).parse();
+-}
++}
+ 
+ class Tokenizer {
+     private final String input;
+     private int pos = 0;
+
+-    public List<Token> tokenize() {
++    public List<Token> tokenize() {
+         List<Token> tokens = new ArrayList<>();
+         while (pos  input.length()) {
+             char ch = input.charAt(pos);
+-            if (Character.isDigit(ch)) {
++            if (Character.isDigit(ch)) {
+                 int value = 0;
+                 while (pos  input.length() && Character.isDigit(input.charAt(pos))) {
+                     value = value * 10 + (input.charAt(pos) - '0');
+                     pos++;
+                 }
+-                tokens.add(new Token(TokenType.NUMBER, value));
++                tokens.add(new Token(TokenType.NUMBER, value));
+             } else if (ch == '+' || ch == '-' || ch == '*' || ch == '/') {
+-                tokens.add(new Token(TokenType.OPERATOR, ch));
++                tokens.add(new Token(TokenType.OPERATOR, ch));
+                 pos++;
+             } else if (ch == '(') {
+-                tokens.add(new Token(TokenType.PARENTHESIS, '('));
++                tokens.add(new Token(TokenType.PARENTHESIS, '('));
+                 pos++;
+             } else if (ch == ')') {
+-                tokens.add(new Token(TokenType.PARENTHESIS, ')'));
++                tokens.add(new Token(TokenType.PARENTHESIS, ')'));
+                 pos++;
+             } else if (Character.isWhitespace(ch)) {
+-                pos++;
++                pos++;
+             } else {
+-                throw new IllegalArgumentException("Unexpected character: " + ch);
++                throw new IllegalArgumentException("Unexpected character: " + ch);
+             }
+         }
+-        return tokens;
++        return tokens;
+     }
+ 
+ class Parser {
+     private final List<Token> tokens;
+     private int pos = 0;
+
+-    public Parser(List<Token> tokens) {
++    public Parser(List<Token> tokens) {
+         this.tokens = tokens;
+     }
+
+-    public int parse() {
++    public int parse() {
+         return expression();
+     }
+
+-    private int expression() {
++    private int expression() {
+         int result = term();
+         while (pos  tokens.size()) {
+             Token token = tokens.get(pos);
+-            if (token.type == TokenType.OPERATOR && (token.value == '+' || token.value == '-')) {
++            if (token.type == TokenType.OPERATOR && (token.value == '+' || token.value == '-')) {
+                 pos++;
+                 int nextTerm = term();
+                 if (token.value == '+') {
+                     result += nextTerm;
+                 } else {
+                     result -= nextTerm;
+                 }
+             } else {
+-                break;
++                break;
+             }
+         }
+-        return result;
++        return result;
+     }
+
+-    private int term() {
++    private int term() {
+         int result = factor();
+         while (pos  tokens.size()) {
+             Token token = tokens.get(pos);
+-            if (token.type == TokenType.OPERATOR && (token.value == '*' || token.value == '/')) {
++            if (token.type == TokenType.OPERATOR && (token.value == '*' || token.value == '/')) {
+                 pos++;
+                 int nextFactor = factor();
+                 if (token.value == '*') {
+                     result *= nextFactor;
+                 } else {
+                     result /= nextFactor;
+                 }
+             } else {
+-                break;
++                break;
+             }
+         }
+-        return result;
++        return result;
+     }
+
+-    private int factor() {
++    private int factor() {
+         Token token = tokens.get(pos);
+-        if (token.type == TokenType.PARENTHESIS && token.value == '(') {
++        if (token.type == TokenType.PARENTHESIS && token.value == '(') {
+             pos++;
+             int result = expression();
+             if (pos  tokens.size() && tokens.get(pos).type == TokenType.PARENTHESIS && tokens.get(pos).value == ')') {
+                 pos++;
+                 return result;
+             } else {
+-                throw new IllegalArgumentException("Unmatched parenthesis");
++                throw new IllegalArgumentException("Unmatched parenthesis");
+             }
+         } else if (token.type == TokenType.OPERATOR && token.value == '-') {
+-            pos++;
++            pos++;
+             return -factor();
+         } else if (token.type == TokenType.NUMBER) {
+-            pos++;
++            pos++;
+             return token.value;
+         } else {
+-                throw new IllegalArgumentException("Unexpected token: " + token);
++                throw new IllegalArgumentException("Unexpected token: " + token);
+         }
+     }
+ 
+ enum TokenType {
+     NUMBER,
+     OPERATOR,
+     PARENTHESIS
+ }
+
+ class Token {
+     final TokenType type;
+     final int value;
+
+-    public Token(TokenType type, int value) {
++    public Token(TokenType type, int value) {
+         this.type = type;
+         this.value = value;
+     }
+
+-    @Override
++    @Override
+     public String toString() {
+         return "Token{" +
+                 "type=" + type +
+                 ", value=" + value +
+                 '}';
+     }
+ }

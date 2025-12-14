@@ -1,0 +1,11 @@
+--- before.ts
++++ before.ts
+@@ -89,7 +89,7 @@ function evaluateExpression(input: string): number {
+     const tokens = tokenize(input);
+     const result = parse(tokens);
+     if (result.length !== 1) {
+-        throw new Error('Invalid expression');
++        throw new Error('Invalid expression'); // Added semicolon
+     }
+     return result[0];
+ }

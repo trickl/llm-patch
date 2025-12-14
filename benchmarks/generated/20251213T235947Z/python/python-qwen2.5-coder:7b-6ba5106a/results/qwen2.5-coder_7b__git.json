@@ -1,0 +1,22 @@
+{
+  "case_id": "python-qwen2.5-coder:7b-6ba5106a",
+  "language": "python",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "git",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "after_path": "after__qwen2.5-coder_7b__git.py",
+  "patch_applied": true,
+  "patch_diagnostics": "applied",
+  "compile_returncode": 1,
+  "errors_before": 1,
+  "errors_after": 1,
+  "first_error_removed": false,
+  "added_lines": 1,
+  "removed_lines": 1,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "  File \"expression_evaluator.py\", line 6\n    for token in re.findall(r'\\b\\w+\\b|[+\\-*/()]\", expression):\n                            ^\nSyntaxError: unterminated string literal (detected at line 6)\n",
+  "stdout_after": ""
+}

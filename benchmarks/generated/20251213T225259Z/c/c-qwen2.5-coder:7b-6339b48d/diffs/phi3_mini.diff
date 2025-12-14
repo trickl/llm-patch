@@ -1,0 +1,6 @@
+--- before.c 2019-10-07 15:34:36.8920000 -0400
++++ after.c 2019-10-07 15:34:36.8920000 -0400
+@@ -95,7 +95,7 @@
+        case TOKEN_PLUS: return a + b;
++    default: return apply_operator(a, b); // Added this line to handle the 'default' case in switch-case for operators.
+  } else if (*p == '-') {

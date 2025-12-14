@@ -1,0 +1,9 @@
+expression_evaluator.c: In function ‘parse_and_evaluate’:
+expression_evaluator.c:91:9: warning: enumeration value ‘TOKEN_EOF’ not handled in switch [-Wswitch]
+   91 |         switch (token.type) {
+      |         ^~~~~~
+expression_evaluator.c:125:25: error: ‘token’ undeclared (first use in this function); did you mean ‘Token’?
+  125 |         ops[--op_top] = token.type;
+      |                         ^~~~~
+      |                         Token
+expression_evaluator.c:125:25: note: each undeclared identifier is reported only once for each function it appears in

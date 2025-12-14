@@ -1,0 +1,6 @@
+--- before.java
++++ after.java
+@@ -113,7 +113,7 @@
+     if (!(tokens.get(pos++) instanceof Character) || tokens.get(pos - 1) != ')') {
+-        throw new IllegalArgumentException("Expected closing parenthesis");
++        throw new IllegalArgumentException("Unexpected token: '('");

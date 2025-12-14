@@ -1,0 +1,8 @@
+--- before.java
++++ patched_before.java
+@@ -38,7 +38,7 @@
+             return new Token(TokenType.OPERATOR, type);
++         } else if (type == TokenType.NUMBER) {
++             int value = currentToken.value;
++             currentToken = tokenizer.nextToken();
++             return new Token(TokenType.NUMBER, value);

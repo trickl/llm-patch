@@ -1,6 +1,0 @@
---- before.c
-+++ after.c
-@@ -144,7 +144,8 @@
-     tokens[token_index++] = get_next_token(&input);
--    int result = evaluate_expression(input);
-+    int result = evaluate_expression(&input);

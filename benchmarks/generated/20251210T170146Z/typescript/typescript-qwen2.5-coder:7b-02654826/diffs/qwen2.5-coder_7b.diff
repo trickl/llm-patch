@@ -1,8 +1,0 @@
---- before.ts
-+++ before.ts
-@@ -1,4 +1,6 @@
-+/// <reference types="node" />
-+
- type Token = { type: 'number' | 'operator' | 'parenthesis', value: string };
-
- const isNumber = (char: string): boolean => !isNaN(Number(char));

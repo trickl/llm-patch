@@ -1,0 +1,118 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <string.h>
+
+#define MAX_TOKENS 100
+
+typedef enum { NUMBER, PLUS, MINUS, MUL, DIV, LPAREN, RPAREN } TokenType;
+typedef struct {
+    TokenType type;
+    int value;
+} Token;
+
+Token tokens[MAX_TOKENS];
+int token_count = 0;
+
+void tokenize(const char *expression) {
+    const char *p = expression;
+    while (*p != '\0') {
+        if (isspace(*p)) {
+            p++;
+            continue;
+        }
+        if (isdigit(*p)) {
+            int value = 0;
+            while (isdigit(*p)) {
+                value = value * 10 + (*p - '0');
+                p++;
+            }
+            tokens[token_count++] = (Token){NUMBER, value};
+        } else if (*p == '+') {
+            tokens[token_count++] = (Token){PLUS, 0};
+            p++;
+        } else if (*p == '-') {
+            if (token_count == 0 || tokens[token_count - 1].type != NUMBER) {
+                tokens[token_count++] = (Token){MINUS, 0};
+            } else {
+                tokens[token_count - 1].value = -tokens[token_count - 1].value;
+            }
+            p++;
+        } else if (*p == '*') {
+            tokens[token_count++] = (Token){MUL, 0};
+            p++;
+        } else if (*p == '/') {
+            tokens[token_count++] = (Token){DIV, 0};
+            p++;
+        } else if (*p == '(') {
+            tokens[token_count++] = (Token){LPAREN, 0};
+            p++;
+        } else if (*p == ')') {
+            tokens[token_count++] = (Token){RPAREN, 0};
+            p++;
+        }
+    }
+}
+
+int apply_operator(int a, int b, TokenType operator) {
+    switch (operator) {
+        case PLUS: return a + b;
+        case MINUS: return a - b;
+        case MUL: return a * b;
+        case DIV: return a / b;
+        default: return 0;
+    }
+}
+
+int evaluate_expression(int start, int end) {
+    if (start > end) return 0;
+
+    int i = start;
+    while (i <= end && tokens[i].type != LPAREN) {
+        if (tokens[i].type == NUMBER) {
+            i++;
+        } else if (tokens[i].type == MINUS) {
+            tokens[i + 1].value = -tokens[i + 1].value;
+            i += 2;
+        }
+    }
+
+    int j = i;
+    while (j <= end && tokens[j].type != RPAREN) {
+        if (tokens[j].type == PLUS || tokens[j].type == MINUS) {
+            int a = evaluate_expression(i, j - 1);
+            int b = evaluate_expression(j + 1, end);
+            return apply_operator(a, b, tokens[j].type);
+        }
+        j++;
+    }
+
+    if (i > end) return 0;
+
+    i++;
+    int result = evaluate_expression(i, j - 2);
+    while (j <= end) {
+        int a = result;
+        int b = evaluate_expression(j + 1, end);
+        result = apply_operator(a, b, tokens[j]);
+        j += 2;
+    }
+
+    return result;
+}
+
+int main() {
+    tokenize("3 + 4 * (2 - 1)");
+    printf("%d\n", evaluate_expression(0, token_count - 1)); // Output: 7
+
+    tokenize("2 * 3 + 4");
+    printf("%d\n", evaluate_expression(0, token_count - 1)); // Output: 10
+
+    tokenize("2 * (3 + 4)");
+    printf("%d\n", evaluate_expression(0, token_count - 1)); // Output: 14
+
+    tokenize("8 / 2 * (2 + 2)");
+    printf("%d\n", evaluate_expression(0, token_count - 1)); // Output: 16
+
+    return 0;
+}

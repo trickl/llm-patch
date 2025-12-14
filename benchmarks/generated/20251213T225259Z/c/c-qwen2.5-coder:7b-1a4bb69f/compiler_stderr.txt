@@ -1,0 +1,7 @@
+expression_evaluator.c: In function ‘parse_factor’:
+expression_evaluator.c:106:26: error: implicit declaration of function ‘parse_expression’ [-Wimplicit-function-declaration]
+  106 |             int result = parse_expression();
+      |                          ^~~~~~~~~~~~~~~~
+expression_evaluator.c:115:1: warning: control reaches end of non-void function [-Wreturn-type]
+  115 | }
+      | ^

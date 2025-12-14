@@ -17,3 +17,14 @@ export async function fetchCaseDetail(caseId: string, signal?: AbortSignal): Pro
   const response = await fetch(`/api/cases/${encodeURIComponent(caseId)}`, { signal })
   return handleResponse<CaseDetail>(response)
 }
+
+export async function refreshDatasetCache(): Promise<{ status: string }> {
+  const response = await fetch('/api/dataset/refresh', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: '{}',
+  })
+  return handleResponse<{ status: string }>(response)
+}

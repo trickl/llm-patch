@@ -1,0 +1,20 @@
+--- before.java	2023-04-10 12:34:56.000000000 +0800
++++ after.java	2023-04-10 12:35:07.000000000 +0800
+@@ -31,7 +31,7 @@
+                 .flatMap(token -> token.matches("-?\\d+") ? Stream.of(token) : Stream.of(token.split("")))
+                 .filter(token -> !token.isEmpty())
+                 .collect(Collectors.toList());
+-        return parse(tokens).evaluate();
++        return parse(tokens.stream().map(String::trim).collect(Collectors.toList())).evaluate();
+     }
+ 
+     private static Node parse(List<String> tokens) {
+@@ -79,7 +79,7 @@
+             values.push(new ValueNode(-(a.getValue() - b.getValue())));
+         } else {
+             values.push(new OperatorNode(a, b, OPERATORS.get(op)));
+-        }
++    }
+ 
+     private static abstract class Node {
+         public abstract int evaluate();

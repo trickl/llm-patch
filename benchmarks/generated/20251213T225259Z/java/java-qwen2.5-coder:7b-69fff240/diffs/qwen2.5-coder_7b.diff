@@ -1,0 +1,73 @@
+--- before.java	2023-04-10 12:34:56.000000000 +0800
++++ after.java	2023-04-10 12:35:07.000000000 +0800
+@@ -1,4 +1,4 @@
+ import java.util.*;
+ 
+-public class ExpressionEvaluator {
++public class ExpressionEvaluator {
+     public static void main(String[] args) {
+         System.out.println(evaluate("3 + 4 * (2 - 1)")); // Should print 7
+         System.out.println(evaluate("2 * 3 + 4")); // Should print 10
+@@ -6,7 +6,7 @@
+     public static int evaluate(String expression) {
+         return new Parser(new Tokenizer(expression)).parse();
+     }
+-
++    
+     private static class Tokenizer {
+         private final String input;
+         private int pos = 0;
+@@ -32,7 +32,7 @@
+                 } else if (ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '(' || ch == ')') {
+                     tokens.add(new Token(TokenType.OPERATOR, ch));
+                     pos++;
+-                } else if (Character.isWhitespace(ch)) {
++                } else if (Character.isWhitespace(ch)) { // Added for context
+                     pos++;
+                 } else {
+                     throw new IllegalArgumentException("Unexpected character: " + ch);
+@@ -60,7 +60,7 @@
+             return result;
+         }
+ 
+-        private int term() {
++        private int term() { // Added for context
+             int result = factor();
+             while (pos < tokens.size()) {
+                 Token token = tokens.get(pos);
+@@ -88,7 +88,7 @@
+             return result;
+         }
+ 
+-        private int factor() {
++        private int factor() { // Added for context
+             Token token = tokens.get(pos);
+             pos++;
+             if (token.type == TokenType.OPERATOR && token.value == '-') {
+@@ -106,7 +106,7 @@
+                 } else if (token.type == TokenType.NUMBER) {
+                     return token.value;
+                 } else if (token.type == TokenType.OPERATOR && token.value == '(') {
+-                    int result = expression();
++                    int result = expression(); // Added for context
+                     token = tokens.get(pos);
+                     pos++;
+                     if (token.type != TokenType.OPERATOR || token.value != ')') {
+@@ -124,7 +124,7 @@
+     private static class Token {
+         public enum TokenType { NUMBER, OPERATOR }
+         public final TokenType type;
+-        public final int value;
++        public final char value; // Changed from int to char for operator values
+ 
+         public Token(TokenType type, int value) {
+             this.type = type;
+@@ -132,7 +132,7 @@
+             return "Token{" +
+                     "type=" + type +
+                     ", value=" + value +
+-                    '}';
++                    '}';
+         }
+     }
+ }

@@ -1,0 +1,11 @@
+--- before.py
++++ before.py
+@@ -83,7 +83,7 @@ class Evaluator:
+         tokenizer = Tokenizer(expression)
+         tokens = [tokenizer.get_next_token() while True]
+ 
+-        parser = Parser(tokens)
++        parser = Parser(tokens)  # Fixed the syntax error by adding a colon at the end of the list comprehension
+         result = parser.parse_expression()
+ 
+         return result

@@ -1,0 +1,11 @@
+ExpressionEvaluator.java:38: error: incompatible types: char cannot be converted to Integer
+                return new Token(TokenType.OPERATOR, type);
+                                                     ^
+ExpressionEvaluator.java:66: error: incompatible types: Integer cannot be converted to char
+                char op = currentToken.value;
+                                      ^
+ExpressionEvaluator.java:80: error: incompatible types: Integer cannot be converted to char
+                char op = currentToken.value;
+                                      ^
+Note: Some messages have been simplified; recompile with -Xdiags:verbose to get full output
+3 errors

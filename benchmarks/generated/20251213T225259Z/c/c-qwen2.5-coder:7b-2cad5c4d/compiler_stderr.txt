@@ -1,0 +1,9 @@
+expression_evaluator.c: In function ‘evaluate_expression’:
+expression_evaluator.c:97:45: error: incompatible type for argument 3 of ‘apply_operator’
+   97 |         result = apply_operator(a, b, tokens[j]);
+      |                                       ~~~~~~^~~
+      |                                             |
+      |                                             Token
+expression_evaluator.c:57:44: note: expected ‘TokenType’ but argument is of type ‘Token’
+   57 | int apply_operator(int a, int b, TokenType operator) {
+      |                                  ~~~~~~~~~~^~~~~~~~

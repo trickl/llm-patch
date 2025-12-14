@@ -1,0 +1,22 @@
+{
+  "case_id": "java-qwen2.5-coder:7b-89226387",
+  "language": "java",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "aider",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "after_path": "after__qwen2.5-coder_7b__aider.java",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 1,
+  "errors_before": 3,
+  "errors_after": 3,
+  "first_error_removed": true,
+  "added_lines": 1,
+  "removed_lines": 0,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "ExpressionEvaluator.java:4: error: illegal start of type\n    import java.util.function.BiFunction;\n    ^\nExpressionEvaluator.java:4: error: <identifier> expected\n    import java.util.function.BiFunction;\n                                        ^\n2 errors\n",
+  "stdout_after": ""
+}

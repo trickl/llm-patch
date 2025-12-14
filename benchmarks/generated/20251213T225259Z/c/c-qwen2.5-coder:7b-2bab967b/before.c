@@ -1,0 +1,157 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+#define MAX_TOKENS 100
+
+typedef enum {
+    TOKEN_NUMBER,
+    TOKEN_PLUS,
+    TOKEN_MINUS,
+    TOKEN_MULTIPLY,
+    TOKEN_DIVIDE,
+    TOKEN_LPAREN,
+    TOKEN_RPAREN,
+    TOKEN_EOF
+} TokenType;
+
+typedef struct {
+    TokenType type;
+    int value;
+} Token;
+
+Token tokens[MAX_TOKENS];
+int token_index = 0;
+
+void error(const char *message) {
+    fprintf(stderr, "Error: %s\n", message);
+    exit(EXIT_FAILURE);
+}
+
+void skip_whitespace(char **input) {
+    while (**input && isspace(**input)) {
+        (*input)++;
+    }
+}
+
+Token get_next_token(char **input) {
+    skip_whitespace(input);
+
+    if (**input == '\0') {
+        return (Token){TOKEN_EOF, 0};
+    }
+
+    Token token;
+    switch (**input) {
+        case '+':
+            token.type = TOKEN_PLUS;
+            (*input)++;
+            break;
+        case '-':
+            token.type = TOKEN_MINUS;
+            (*input)++;
+            break;
+        case '*':
+            token.type = TOKEN_MULTIPLY;
+            (*input)++;
+            break;
+        case '/':
+            token.type = TOKEN_DIVIDE;
+            (*input)++;
+            break;
+        case '(':
+            token.type = TOKEN_LPAREN;
+            (*input)++;
+            break;
+        case ')':
+            token.type = TOKEN_RPAREN;
+            (*input)++;
+            break;
+        default:
+            if (isdigit(**input)) {
+                int value = 0;
+                while (**input && isdigit(**input)) {
+                    value = value * 10 + (**input - '0');
+                    (*input)++;
+                }
+                token.type = TOKEN_NUMBER;
+                token.value = value;
+            } else {
+                error("Unexpected character");
+            }
+    }
+
+    return token;
+}
+
+int evaluate_expression(char **input) {
+    skip_whitespace(input);
+
+    if (**input == '\0') {
+        return 0;
+    }
+
+    Token current_token = get_next_token(input);
+    int result;
+
+    switch (current_token.type) {
+        case TOKEN_NUMBER:
+            result = current_token.value;
+            break;
+        case TOKEN_LPAREN:
+            result = evaluate_expression(input);
+            if (**input != ')') {
+                error("Expected closing parenthesis");
+            }
+            (*input)++;
+            break;
+        default:
+            error("Unexpected token at start of expression");
+    }
+
+    while (**input) {
+        current_token = get_next_token(input);
+
+        switch (current_token.type) {
+            case TOKEN_PLUS:
+                result += evaluate_expression(input);
+                break;
+            case TOKEN_MINUS:
+                result -= evaluate_expression(input);
+                break;
+            case TOKEN_MULTIPLY:
+                result *= evaluate_expression(input);
+                break;
+            case TOKEN_DIVIDE:
+                int divisor = evaluate_expression(input);
+                if (divisor == 0) {
+                    error("Division by zero");
+                }
+                result /= divisor;
+                break;
+            case TOKEN_RPAREN:
+                return result;
+            default:
+                error("Unexpected token in expression");
+        }
+    }
+
+    return result;
+}
+
+int main() {
+    char input[256];
+    printf("Enter an arithmetic expression: ");
+    fgets(input, sizeof(input), stdin);
+
+    Token *token = tokens;
+    while (*input) {
+        *token++ = get_next_token(&input);
+    }
+
+    int result = evaluate_expression(tokens);
+    printf("Result: %d\n", result);
+
+    return 0;
+}

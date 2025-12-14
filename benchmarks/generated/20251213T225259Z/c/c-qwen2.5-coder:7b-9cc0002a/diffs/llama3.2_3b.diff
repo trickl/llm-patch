@@ -1,0 +1,7 @@
+--- before.c
++++ patched_before.c
+@@ -79,7 +79,7 @@
+   int b = evaluate_expression(i + 2, end);
+-  tokens[i] = apply_operator(a, b, tokens[i + 1].type);
++  tokens[i] = (Token)apply_operator(a, b, tokens[i + 1].type);
+      start = i + 3;

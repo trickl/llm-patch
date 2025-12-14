@@ -1,0 +1,47 @@
+--- before.java
++++ patched_before.java
+@@ -12,7 +12,7 @@
+     return new Parser(new Tokenizer(expression)).parse();
+-}
++}
+ 
+@@ -79,7 +79,7 @@
+         if (token.type == '+' || token.type == '-') {
+             pos++;
+-            int nextTerm = parseTerm();
+-            result += token.type == '+' ? nextTerm : -nextTerm;
++            int nextTerm = parseTerm();
++            result += token.type == '+' ? nextTerm : -nextTerm;
+         } else {
+             break;
+         }
+@@ -82,7 +82,7 @@
+         result += token.type == '+' ? nextTerm : -nextTerm;
+-        pos++;
++        pos++;
+ 
+@@ -94,7 +94,7 @@
+         if (token.type == '*' || token.type == '/') {
+             pos++;
+-            int nextFactor = parseFactor();
+-            result *= token.type == '*' ? nextFactor : result / nextFactor;
++            int nextFactor = parseFactor();
++            result *= token.type == '*' ? nextFactor : result / nextFactor;
+         } else {
+             break;
+         }
+@@ -97,7 +97,7 @@
+         result *= token.type == '*' ? nextFactor : result / nextFactor;
+-        pos++;
++        pos++;
+ 
+@@ -107,7 +107,7 @@
+         if (token.type == '(') {
+             pos++;
+-            int result = parseExpression();
+-            if (pos  tokens.size() && tokens.get(pos).type == ')') {
++            int result = parseExpression();
++            if (pos  tokens.size() && tokens.get(pos).type == ')') {
+                 pos++;
+             } else {
+                 throw new IllegalArgumentException("Expected ')' at position " + pos);

@@ -1,0 +1,22 @@
+{
+  "case_id": "java-qwen2.5-coder:7b-41c5b6b2",
+  "language": "java",
+  "model_slug": "phi3_mini",
+  "algorithm": "aider",
+  "diff_path": "diffs/phi3_mini.diff",
+  "after_path": "after__phi3_mini__aider.java",
+  "patch_applied": true,
+  "patch_diagnostics": "no hunks",
+  "compile_returncode": 1,
+  "errors_before": 2,
+  "errors_after": 2,
+  "first_error_removed": false,
+  "added_lines": 0,
+  "removed_lines": 0,
+  "hunks": 0,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "ExpressionEvaluator.java:101: error: Node is not abstract and does not override abstract method evaluate() in Node\n    private static class Node {\n                   ^\n1 error\n",
+  "stdout_after": ""
+}

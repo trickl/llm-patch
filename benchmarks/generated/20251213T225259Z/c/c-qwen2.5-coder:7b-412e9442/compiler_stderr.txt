@@ -1,0 +1,20 @@
+expression_evaluator.c: In function ‘get_next_token’:
+expression_evaluator.c:38:9: warning: missing initializer for field ‘value’ of ‘Token’ [-Wmissing-field-initializers]
+   38 |         return (Token){TOKEN_EOF};
+      |         ^~~~~~
+expression_evaluator.c:21:9: note: ‘value’ declared here
+   21 |     int value;
+      |         ^~~~~
+expression_evaluator.c: In function ‘evaluate_expression’:
+expression_evaluator.c:75:17: warning: enumeration value ‘TOKEN_NUMBER’ not handled in switch [-Wswitch]
+   75 |                 switch (tokens[i].type) {
+      |                 ^~~~~~
+expression_evaluator.c:75:17: warning: enumeration value ‘TOKEN_LPAREN’ not handled in switch [-Wswitch]
+expression_evaluator.c:75:17: warning: enumeration value ‘TOKEN_RPAREN’ not handled in switch [-Wswitch]
+expression_evaluator.c:75:17: warning: enumeration value ‘TOKEN_EOF’ not handled in switch [-Wswitch]
+expression_evaluator.c:101:25: error: switch quantity not an integer
+  101 |                 switch (tokens[top]) {
+      |                         ^~~~~~
+expression_evaluator.c:127:17: error: switch quantity not an integer
+  127 |         switch (tokens[top]) {
+      |                 ^~~~~~

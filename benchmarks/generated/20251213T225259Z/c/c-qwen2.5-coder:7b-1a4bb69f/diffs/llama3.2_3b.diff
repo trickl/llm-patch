@@ -1,0 +1,14 @@
+--- before.c
++++ patched_c
+@@ -106,7 +106,8 @@
+   int result = parse_expression();
+     while (token_index  MAX_TOKENS && (tokens[token_index].type == TOKEN_PLUS || tokens[token_index].type == TOKEN_MINUS)) {
+-      Token current_token = tokens[token_index++];
++      Token current_token = get_next_token(&input);
+       if (current_token.type == TOKEN_PLUS) {
+         result += parse_term();
+       } else {
+         result -= parse_term();
+       }
+     }
+   return result;

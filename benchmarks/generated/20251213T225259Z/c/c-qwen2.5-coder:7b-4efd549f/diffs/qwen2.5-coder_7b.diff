@@ -1,0 +1,28 @@
+--- before.c	2023-04-10 12:34:56.000000000 +0800
++++ after.c	2023-04-10 12:35:07.000000000 +0800
+@@ -59,7 +59,7 @@
+     int result = evaluate_term();
+     while (token_index < MAX_TOKENS && (tokens[token_index].type == TOKEN_PLUS || tokens[token_index].type == TOKEN_MINUS)) {
+         TokenType operator = tokens[token_index++].type;
+-        int next_term = evaluate_term();
++        int next_term = evaluate_factor(); // Corrected function call
+         if (operator == TOKEN_PLUS) {
+             result += next_term;
+         } else {
+@@ -73,7 +73,7 @@
+     int result = evaluate_factor();
+     while (token_index < MAX_TOKENS && (tokens[token_index].type == TOKEN_MULTIPLY || tokens[token_index].type == TOKEN_DIVIDE)) {
+         TokenType operator = tokens[token_index++].type;
+-        int next_factor = evaluate_factor();
++        int next_factor = evaluate_term(); // Corrected function call
+         if (operator == TOKEN_MULTIPLY) {
+             result *= next_factor;
+         } else {
+@@ -108,6 +108,7 @@
+     Token current = get_next_token();
+     switch (current.type) {
+         case TOKEN_NUMBER:
++            return current.value; // Added return statement
+         case TOKEN_PLUS:
+             return evaluate_expression();
+         case TOKEN_MINUS:

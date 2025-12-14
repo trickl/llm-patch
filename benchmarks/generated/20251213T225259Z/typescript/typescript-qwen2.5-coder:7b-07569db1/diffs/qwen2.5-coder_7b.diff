@@ -1,0 +1,9 @@
+diff --git a/expression_evaluator.ts b/expression_evaluator.ts
+index 3a4b5c6..7d8e9f0 100644
+--- a/expression_evaluator.ts
++++ b/expression_evaluator.ts
+@@ -1,4 +1,5 @@
+ import { isNumber, isOperator, isParenthesis } from './utils';
++import * as node from 'node';
+ 
+ type Token = { type: 'number' | 'operator' | 'parenthesis', value: string };

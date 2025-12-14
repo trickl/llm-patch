@@ -1,0 +1,22 @@
+{
+  "case_id": "java-qwen2.5-coder:7b-98468bc3",
+  "language": "java",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "aider",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "after_path": "after__qwen2.5-coder_7b__aider.java",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 4 hunks",
+  "compile_returncode": 1,
+  "errors_before": 8,
+  "errors_after": 20,
+  "first_error_removed": true,
+  "added_lines": 4,
+  "removed_lines": 4,
+  "hunks": 4,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "ExpressionEvaluator.java:82: error: class, interface, enum, or record expected\n    }\n    ^\nExpressionEvaluator.java:85: error: class, interface, enum, or record expected\n        while (pos < tokens.size() && token.type == TokenType.OPERATOR) {\n        ^\nExpressionEvaluator.java:87: error: class, interface, enum, or record expected\n            if (token.type == TokenType.OPERATOR && (token.value == '*' || token.value == '/')) {\n            ^\nExpressionEvaluator.java:89: error: unnamed classes are a preview feature and are disabled by default.\n                int nextFactor = factor();\n                ^\n  (use --enable-preview to enable unnamed classes)\nExpressionEvaluator.java:90: error: class, interface, enum, or record expected\n                if (token.value == '*') {\n                ^\nExpressionEvaluator.java:92: error: class, interface, enum, or record expected\n                } else {\n                ^\nExpressionEvaluator.java:94: error: class, interface, enum, or record expected\n                }\n                ^\nExpressionEvaluator.java:97: error: class, interface, enum, or record expected\n        }\n        ^\nExpressionEvaluator.java:99: error: class, interface, enum, or record expected\n    }\n    ^\nExpressionEvaluator.java:102: error: class, interface, enum, or record expected\n        if (token.type == TokenType.LPAREN) {\n        ^\nExpressionEvaluator.java:105: error: class, interface, enum, or record expected\n            if (tokens.get(pos).type != TokenType.RPAREN) {\n            ^\nExpressionEvaluator.java:107: error: class, interface, enum, or record expected\n            }\n            ^\nExpressionEvaluator.java:109: error: class, interface, enum, or record expected\n            return result;\n            ^\nExpressionEvaluator.java:110: error: class, interface, enum, or record expected\n        } else if (token.type == TokenType.OPERATOR && token.value == '-') {\n        ^\nExpressionEvaluator.java:112: error: class, interface, enum, or record expected\n            return -factor();\n            ^\nExpressionEvaluator.java:113: error: class, interface, enum, or record expected\n        } else if (token.type == TokenType.NUMBER) {\n        ^\nExpressionEvaluator.java:115: error: class, interface, enum, or record expected\n            return (int) token.value;\n            ^\nExpressionEvaluator.java:116: error: class, interface, enum, or record expected\n        } else {\n        ^\nExpressionEvaluator.java:118: error: class, interface, enum, or record expected\n        }\n        ^\n19 errors\n",
+  "stdout_after": ""
+}

@@ -1,7 +1,0 @@
---- before.java
-+++ after.java
-@@ -142,7 +142,8 @@
- private static Evaluator parse(List<Token> tokens, int index) {
--    return new Evaluator(parse(tokens).evaluate());
-+    return new Evaluator(-(int) parse(tokens, index + 1).value);
-     ^

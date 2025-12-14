@@ -1,0 +1,26 @@
+diff --git a/expression_evaluator.ts b/expression_evaluator.ts
+index 3a4b5c6..7d8e9f0 100644
+--- a/expression_evaluator.ts
++++ b/expression_evaluator.ts
+@@ -1,4 +1,6 @@
+ // expression_evaluator.ts
+ 
++import * as process from 'process';
+ type Token = { type: 'number' | 'operator' | 'parenthesis'; value: string };
+ 
+ const isNumber = (char: string): boolean => !isNaN(Number(char));
+@@ -129,5 +131,5 @@ function evaluateExpression(input: string): number {
+     if (!input) {
+         console.error('Usage: node expression_evaluator.ts "expression"');
+-        process.exit(1);
++        process.exitCode = 1;
+     }
+     try {
+         const result = evaluateExpression(input);
+@@ -139,5 +141,5 @@ function evaluateExpression(input: string): number {
+             console.error(`Error evaluating expression: ${error.message}`);
+-            process.exit(1);
++            process.exitCode = 1;
+         }
+     }
+ }

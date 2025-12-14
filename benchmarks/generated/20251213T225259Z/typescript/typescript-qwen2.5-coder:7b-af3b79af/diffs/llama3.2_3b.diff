@@ -1,0 +1,10 @@
+--- before.ts
++++ patched_before_ts
+@@ -104,7 +104,8 @@
+         } else if (char === ' ') {
+             continue;
+-        } else {
++        // Add this line to import the required types from node
++        const { module, process } = require('node');
+             throw new Error(`Invalid character: ${char}`);
+         }

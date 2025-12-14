@@ -1,1 +1,0 @@
-Your task: "You are there'in#.jpg]

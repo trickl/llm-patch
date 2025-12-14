@@ -1,0 +1,22 @@
+{
+  "case_id": "typescript-qwen2.5-coder:7b-75de453a",
+  "language": "typescript",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "aider",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "after_path": "after__qwen2.5-coder_7b__aider.ts",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 2,
+  "errors_before": 6,
+  "errors_after": 7,
+  "first_error_removed": false,
+  "added_lines": 1,
+  "removed_lines": 1,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "",
+  "stdout_after": "expression_evaluator.ts(69,3): error TS2322: Type 'string[]' is not assignable to type 'number[]'.\n  Type 'string' is not assignable to type 'number'.\nexpression_evaluator.ts(104,22): error TS2345: Argument of type 'number[]' is not assignable to parameter of type 'string[]'.\n  Type 'number' is not assignable to type 'string'.\nexpression_evaluator.ts(107,12): error TS2580: Cannot find name 'require'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.\nexpression_evaluator.ts(107,39): error TS2580: Cannot find name 'require'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.\nexpression_evaluator.ts(107,56): error TS2580: Cannot find name 'module'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.\nexpression_evaluator.ts(108,17): error TS2580: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.\nexpression_evaluator.ts(116,53): error TS18046: 'error' is of type 'unknown'.\n"
+}

@@ -1,0 +1,80 @@
+--- before.java
++++ after.java
+@@ -13,7 +13,7 @@
+     public static void main(String[] args) {
+-        System.out.println(evaluate("1 + 2")); // Expected: 3
++        System.out.println(evaluate("1 + 2")); // Expected: 3
+         System.out.println(evaluate("2 * 3 + 4")); // Expected: 10
+         System.out.println(evaluate("2 * (3 + 4)")); // Expected: 14
+         System.out.println(evaluate("8 / 2 * (2 + 2)")); // Expected: 16
+@@ -24,7 +24,7 @@
+     public int parse() {
+-        return expression();
++        return new Parser(new Tokenizer(expression)).parse();
+     }
+
+     private int expression() {
+         int result = term();
+@@ -35,7 +35,7 @@
+     private int factor() {
+-        Token token = tokens.get(pos);
++        Token token = tokens.get(pos);
+         if (token.type == Token.TokenType.LPAREN) {
+             pos++;
+             int result = expression();
+@@ -46,7 +46,7 @@
+         } else if (token.type == Token.TokenType.OPERATOR && token.value.equals("-")) {
+             pos++;
+-            return -factor();
++            return new Parser(new Tokenizer(expression)).parse();
+         } else if (token.type == Token.TokenType.NUMBER) {
+             int value = (int) token.value;
+@@ -57,7 +57,7 @@
+     }
+ 
+ class Tokenizer {
+     private final String input;
+-    private int pos = 0;
++    private int pos = 0;
+     
+     public Tokenizer(String input) {
+         this.input = input.replaceAll("\\s+", "");
+     }
+ 
+     public ListToken> tokenize() {
+@@ -65,7 +65,7 @@
+         tokens.add(new Token(TokenType.NUMBER, value));
+     }
+ 
+-    private static class Token {
++    private static class Token {
+         final TokenType type;
+         final Object value;
+
+         Token(TokenType type, Object value) {
+             this.type = type;
+             this.value = value;
+@@ -74,7 +74,7 @@
+     enum TokenType {
+         NUMBER,
+         OPERATOR,
+-        LPAREN,
++        LPAREN,
+         RPAREN
+     }
+ 
+ class Parser {
+     private final ListToken> tokens;
+-    private int pos = 0;
++    private int pos = 0;
+     
+     public Parser(ListToken> tokens) {
+         this.tokens = tokens;
+@@ -83,7 +83,7 @@
+     public int parse() {
+-        return expression();
++        return new Parser(new Tokenizer(expression)).parse();
+     }
+
+     private int expression() {
+         int result = term();

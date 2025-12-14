@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-d567f04b",
+  "language": "c",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "aider",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "after_path": "after__qwen2.5-coder_7b__aider.c",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 3 hunks",
+  "compile_returncode": 1,
+  "errors_before": 2,
+  "errors_after": 2,
+  "first_error_removed": false,
+  "added_lines": 5,
+  "removed_lines": 4,
+  "hunks": 3,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "expression_evaluator.c: In function \u2018getNextToken\u2019:\nexpression_evaluator.c:27:9: warning: missing initializer for field \u2018value\u2019 of \u2018Token\u2019 [-Wmissing-field-initializers]\n   27 |         return (Token){TOKEN_EOF};\n      |         ^~~~~~\nexpression_evaluator.c:11:9: note: \u2018value\u2019 declared here\n   11 |     int value;\n      |         ^~~~~\nexpression_evaluator.c: At top level:\nexpression_evaluator.c:32:5: error: expected identifier or \u2018(\u2019 before \u2018return\u2019\n   32 |     return token;\n      |     ^~~~~~\nexpression_evaluator.c:33:1: error: expected identifier or \u2018(\u2019 before \u2018}\u2019 token\n   33 | }\n      | ^\nexpression_evaluator.c: In function \u2018tokenize\u2019:\nexpression_evaluator.c:100:22: warning: comparison of integer expressions of different signedness: \u2018int\u2019 and \u2018size_t\u2019 {aka \u2018long unsigned int\u2019} [-Wsign-compare]\n  100 |             while (i < strlen(expression) && isdigit(expression[i])) {\n      |                      ^\nexpression_evaluator.c:133:5: warning: missing initializer for field \u2018value\u2019 of \u2018Token\u2019 [-Wmissing-field-initializers]\n  133 |     tokens[tokenIndex++] = (Token){TOKEN_EOF};\n      |     ^~~~~~\nexpression_evaluator.c:11:9: note: \u2018value\u2019 declared here\n   11 |     int value;\n      |         ^~~~~\n",
+  "stdout_after": ""
+}

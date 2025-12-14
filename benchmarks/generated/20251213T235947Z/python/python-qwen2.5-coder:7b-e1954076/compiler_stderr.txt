@@ -1,0 +1,4 @@
+  File "expression_evaluator.py", line 18
+    (token in '+-' and stack[-2] not in '(*')))):
+                                               ^
+SyntaxError: unmatched ')'

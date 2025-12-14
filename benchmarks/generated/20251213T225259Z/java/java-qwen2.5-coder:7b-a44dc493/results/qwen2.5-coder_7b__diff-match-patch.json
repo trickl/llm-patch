@@ -1,0 +1,22 @@
+{
+  "case_id": "java-qwen2.5-coder:7b-a44dc493",
+  "language": "java",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "diff-match-patch",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "after_path": null,
+  "patch_applied": false,
+  "patch_diagnostics": "DMP parse error: Invalid patch string: @@ -36,7 +36,7 @@ public class ExpressionEvaluator {",
+  "compile_returncode": null,
+  "errors_before": 23,
+  "errors_after": null,
+  "first_error_removed": false,
+  "added_lines": 8,
+  "removed_lines": 8,
+  "hunks": 8,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": null,
+  "stdout_after": null
+}

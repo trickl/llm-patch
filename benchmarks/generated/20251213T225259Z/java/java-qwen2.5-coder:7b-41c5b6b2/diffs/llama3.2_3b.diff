@@ -1,0 +1,7701 @@
+--- before.java
++++ after.java
+@@ -101,7 +101,7 @@
+ 
+ private static class Node {
+-    // ...
++    abstract int evaluate();
+     }
+ 
+ --- before.java
++++ after.java
+@@ -103,7 +103,7 @@
+ 
+ private static class NumberNode extends Node {
+-        final int value;
++        final int value;
+         NumberNode(int value) {
+             this.value = value;
+-        }
++        }
+ 
+ --- before.java
++++ after.java
+@@ -105,7 +105,7 @@
+ 
+ private static class BinaryNode extends Node {
+-        final char op;
++        final char op;
+         final Node left;
+         final Node right;
+
+-        BinaryNode(char op, Node left, Node right) {
++        BinaryNode(char op, Node left, Node right) {
+             this.op = op;
+             this.left = left;
+             this.right = right;
+-        }
++        }
+ 
+ --- before.java
++++ after.java
+@@ -107,7 +107,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -109,7 +109,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -111,7 +111,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -113,7 +113,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -115,7 +115,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -117,7 +117,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -119,7 +119,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -121,7 +121,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -123,7 +123,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -125,7 +125,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -127,7 +127,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -129,7 +129,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -131,7 +131,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -133,7 +133,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -135,7 +135,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -137,7 +137,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -139,7 +139,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -141,7 +141,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -143,7 +143,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -145,7 +145,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -147,7 +147,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -149,7 +149,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -151,7 +151,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -153,7 +153,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -155,7 +155,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -157,7 +157,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -159,7 +159,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -161,7 +161,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -163,7 +163,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -165,7 +165,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -167,7 +167,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -169,7 +169,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -171,7 +171,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -173,7 +173,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -175,7 +175,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -177,7 +177,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -179,7 +179,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -181,7 +181,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -183,7 +183,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -185,7 +185,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -187,7 +187,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -189,7 +189,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -191,7 +191,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -193,7 +193,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -195,7 +195,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -197,7 +197,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -199,7 +199,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -201,7 +201,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -203,7 +203,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -205,7 +205,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -207,7 +207,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -209,7 +209,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -211,7 +211,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -213,7 +213,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -215,7 +215,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -217,7 +217,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -219,7 +219,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -221,7 +221,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -223,7 +223,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -225,7 +225,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -227,7 +227,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -229,7 +229,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -231,7 +231,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -233,7 +233,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -235,7 +235,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -237,7 +237,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -239,7 +239,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -241,7 +241,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -243,7 +243,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -245,7 +245,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -247,7 +247,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -249,7 +249,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -251,7 +251,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -253,7 +253,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -255,7 +255,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -257,7 +257,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -259,7 +259,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -261,7 +261,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -263,7 +263,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -265,7 +265,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -267,7 +267,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -269,7 +269,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -271,7 +271,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -273,7 +273,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -275,7 +275,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -277,7 +277,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -279,7 +279,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -281,7 +281,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -283,7 +283,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -285,7 +285,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -287,7 +287,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -289,7 +289,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -291,7 +291,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -293,7 +293,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -295,7 +295,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -297,7 +297,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -299,7 +299,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -301,7 +301,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -303,7 +303,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -305,7 +305,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -307,7 +307,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -309,7 +309,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -311,7 +311,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -313,7 +313,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -315,7 +315,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -317,7 +317,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -319,7 +319,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -321,7 +321,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -323,7 +323,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -325,7 +325,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -327,7 +327,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -329,7 +329,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -331,7 +331,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -333,7 +333,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -335,7 +335,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -337,7 +337,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -339,7 +339,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -341,7 +341,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -343,7 +343,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -345,7 +345,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -347,7 +347,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -349,7 +349,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -351,7 +351,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -353,7 +353,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -355,7 +355,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -357,7 +357,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -359,7 +359,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -361,7 +361,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -363,7 +363,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -365,7 +365,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -367,7 +367,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -369,7 +369,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -371,7 +371,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -373,7 +373,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -375,7 +375,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -377,7 +377,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -379,7 +379,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -381,7 +381,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -383,7 +383,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -385,7 +385,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -387,7 +387,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -389,7 +389,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -391,7 +391,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -393,7 +393,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -395,7 +395,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -397,7 +397,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -399,7 +399,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -401,7 +401,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -403,7 +403,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -405,7 +405,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -407,7 +407,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -409,7 +409,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -411,7 +411,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -413,7 +413,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -415,7 +415,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -417,7 +417,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -419,7 +419,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -421,7 +421,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -423,7 +423,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -425,7 +425,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -427,7 +427,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -429,7 +429,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -431,7 +431,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -433,7 +433,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -435,7 +435,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -437,7 +437,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -439,7 +439,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -441,7 +441,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -443,7 +443,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -445,7 +445,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -447,7 +447,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -449,7 +449,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -451,7 +451,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -453,7 +453,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -455,7 +455,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -457,7 +457,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -459,7 +459,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -461,7 +461,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -463,7 +463,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -465,7 +465,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -467,7 +467,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -469,7 +469,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -471,7 +471,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -473,7 +473,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -475,7 +475,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -477,7 +477,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -479,7 +479,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -481,7 +481,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -483,7 +483,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -485,7 +485,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -487,7 +487,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -489,7 +489,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -491,7 +491,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -493,7 +493,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -495,7 +495,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -497,7 +497,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -499,7 +499,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -501,7 +501,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -503,7 +503,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -505,7 +505,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -507,7 +507,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -509,7 +509,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -511,7 +511,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -513,7 +513,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -515,7 +515,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -517,7 +517,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -519,7 +519,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -521,7 +521,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -523,7 +523,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -525,7 +525,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -527,7 +527,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -529,7 +529,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -531,7 +531,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -533,7 +533,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -535,7 +535,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -537,7 +537,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -539,7 +539,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -541,7 +541,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -543,7 +543,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -545,7 +545,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -547,7 +547,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -549,7 +549,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -551,7 +551,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -553,7 +553,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -555,7 +555,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -557,7 +557,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -559,7 +559,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -561,7 +561,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -563,7 +563,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -565,7 +565,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -567,7 +567,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -569,7 +569,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -571,7 +571,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -573,7 +573,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -575,7 +575,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -577,7 +577,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -579,7 +579,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -581,7 +581,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -583,7 +583,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -585,7 +585,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -587,7 +587,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -589,7 +589,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -591,7 +591,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -593,7 +593,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -595,7 +595,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -597,7 +597,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -599,7 +599,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -601,7 +601,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -603,7 +603,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -605,7 +605,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -607,7 +607,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -609,7 +609,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -611,7 +611,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -613,7 +613,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -615,7 +615,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -617,7 +617,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -619,7 +619,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -621,7 +621,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -623,7 +623,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -625,7 +625,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -627,7 +627,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -629,7 +629,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -631,7 +631,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -633,7 +633,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -635,7 +635,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -637,7 +637,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -639,7 +639,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -641,7 +641,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -643,7 +643,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -645,7 +645,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -647,7 +647,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -649,7 +649,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -651,7 +651,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -653,7 +653,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -655,7 +655,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -657,7 +657,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -659,7 +659,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -661,7 +661,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -663,7 +663,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -665,7 +665,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -667,7 +667,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -669,7 +669,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -671,7 +671,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -673,7 +673,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -675,7 +675,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -677,7 +677,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -679,7 +679,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -681,7 +681,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -683,7 +683,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -685,7 +685,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -687,7 +687,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -689,7 +689,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -691,7 +691,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -693,7 +693,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -695,7 +695,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -697,7 +697,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -699,7 +699,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -701,7 +701,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -703,7 +703,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -705,7 +705,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -707,7 +707,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -709,7 +709,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -711,7 +711,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -713,7 +713,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -715,7 +715,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -717,7 +717,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case '-':
+             return left.evaluate() - right.evaluate();
+         case '*':
+             return left.evaluate() * right.evaluate();
+-        case '/':
++        case '/':
+             return left.evaluate() / right.evaluate();
+-        default:
++        default:
+             throw new IllegalArgumentException("Unsupported operator: " + op);
+-        }
++        }
+     }
+ 
+ --- before.java
++++ after.java
+@@ -719,7 +719,7 @@
+ 
+ @Override
+ int evaluate() {
+-    switch (op) {
++    switch (op) {
+         case '+':
+             return left.evaluate() + right.evaluate();
+-        case '-':
++        case

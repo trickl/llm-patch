@@ -1,0 +1,28 @@
+diff --git a/expression_evaluator.ts b/expression_evaluator.ts
+index 3a4b5c6..7d8e9f0 100644
+--- a/expression_evaluator.ts
++++ b/expression_evaluator.ts
+@@ -1,4 +1,5 @@
+ import { strict as assert } from 'assert';
++import * as process from 'process';
+ 
+ type Token = { type: 'number' | 'operator' | 'parenthesis', value: string };
+ 
+@@ -109,7 +110,7 @@ export function evaluateExpression(input: string): number {
+     const tokens = tokenize(input);
+     const result = parse(tokens);
+     if (result.length !== 1) throw new Error('Malformed expression');
+-    return result[0];
++    return result;
+ }
+ 
+ // Example CLI usage
+@@ -118,7 +119,7 @@ if (require.main === module) {
+     const input = process.argv.slice(2).join(' ');
+     try {
+         const result = evaluateExpression(input);
+-        console.log(`Result: ${result}`);
++        console.log(`Result: ${result[0]}`);
+     } catch (error) {
+         console.error(`Error: ${error.message}`);
+     }

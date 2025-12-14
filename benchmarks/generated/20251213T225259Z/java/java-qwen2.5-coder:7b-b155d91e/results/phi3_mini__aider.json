@@ -1,0 +1,22 @@
+{
+  "case_id": "java-qwen2.5-coder:7b-b155d91e",
+  "language": "java",
+  "model_slug": "phi3_mini",
+  "algorithm": "aider",
+  "diff_path": "diffs/phi3_mini.diff",
+  "after_path": "after__phi3_mini__aider.java",
+  "patch_applied": true,
+  "patch_diagnostics": "no hunks",
+  "compile_returncode": 1,
+  "errors_before": 4,
+  "errors_after": 4,
+  "first_error_removed": false,
+  "added_lines": 0,
+  "removed_lines": 0,
+  "hunks": 0,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "ExpressionEvaluator.java:13: error: incompatible types: Tokenizer cannot be converted to List<Object>\n        return new Parser(new Tokenizer(expression)).parse();\n                          ^\nExpressionEvaluator.java:76: error: bad operand types for binary operator '=='\n                } else if (token == '(') {\n                                 ^\n  first type:  Object\n  second type: char\nExpressionEvaluator.java:78: error: bad operand types for binary operator '=='\n                } else if (token == ')') {\n                                 ^\n  first type:  Object\n  second type: char\nNote: Some messages have been simplified; recompile with -Xdiags:verbose to get full output\n3 errors\n",
+  "stdout_after": ""
+}

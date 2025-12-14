@@ -1,0 +1,7 @@
+--- before.c
++++ patched_before.c
+@@ -146,7 +146,7 @@
+   operators[operator_index--] = token.type;
+-  // No declaration of 'token'
++  Token token = tokens[token_index--].type;
+      // ...

@@ -1,0 +1,7 @@
+expression_evaluator.c: In function ‘parse_and_evaluate’:
+expression_evaluator.c:74:12: error: invalid type argument of unary ‘*’ (have ‘int’)
+   74 |     while (**input != '\0') {
+      |            ^~~~~~~
+expression_evaluator.c:84:9: warning: enumeration value ‘TOKEN_TYPE_EOF’ not handled in switch [-Wswitch]
+   84 |         switch (token.type) {
+      |         ^~~~~~

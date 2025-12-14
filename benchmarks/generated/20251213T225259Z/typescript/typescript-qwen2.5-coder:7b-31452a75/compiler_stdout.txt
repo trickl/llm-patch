@@ -1,0 +1,9 @@
+expression_evaluator.ts(73,3): error TS2322: Type 'string[]' is not assignable to type 'number[]'.
+  Type 'string' is not assignable to type 'number'.
+expression_evaluator.ts(108,22): error TS2345: Argument of type 'number[]' is not assignable to parameter of type 'string[]'.
+  Type 'number' is not assignable to type 'string'.
+expression_evaluator.ts(112,5): error TS2580: Cannot find name 'require'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.
+expression_evaluator.ts(112,22): error TS2580: Cannot find name 'module'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.
+expression_evaluator.ts(113,17): error TS2580: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.
+expression_evaluator.ts(116,5): error TS2580: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.
+expression_evaluator.ts(122,51): error TS18046: 'error' is of type 'unknown'.

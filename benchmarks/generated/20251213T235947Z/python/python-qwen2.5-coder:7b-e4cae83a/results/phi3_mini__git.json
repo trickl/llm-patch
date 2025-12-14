@@ -1,0 +1,22 @@
+{
+  "case_id": "python-qwen2.5-coder:7b-e4cae83a",
+  "language": "python",
+  "model_slug": "phi3_mini",
+  "algorithm": "git",
+  "diff_path": "diffs/phi3_mini.diff",
+  "after_path": "after__phi3_mini__git.py",
+  "patch_applied": true,
+  "patch_diagnostics": "applied",
+  "compile_returncode": 1,
+  "errors_before": 1,
+  "errors_after": 1,
+  "first_error_removed": false,
+  "added_lines": 0,
+  "removed_lines": 0,
+  "hunks": 0,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "  File \"expression_evaluator.py\", line 5\n    return list(filter(None, re.split(r'(\\d+|\\s*[-+\\*/()]\\s*)', expression.strip()))\n               ^\nSyntaxError: '(' was never closed\n",
+  "stdout_after": ""
+}

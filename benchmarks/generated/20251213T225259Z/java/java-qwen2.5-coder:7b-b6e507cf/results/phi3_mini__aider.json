@@ -1,0 +1,22 @@
+{
+  "case_id": "java-qwen2.5-coder:7b-b6e507cf",
+  "language": "java",
+  "model_slug": "phi3_mini",
+  "algorithm": "aider",
+  "diff_path": "diffs/phi3_mini.diff",
+  "after_path": "after__phi3_mini__aider.java",
+  "patch_applied": true,
+  "patch_diagnostics": "no hunks",
+  "compile_returncode": 1,
+  "errors_before": 9,
+  "errors_after": 9,
+  "first_error_removed": false,
+  "added_lines": 0,
+  "removed_lines": 0,
+  "hunks": 0,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "ExpressionEvaluator.java:12: error: incompatible types: Tokenizer cannot be converted to List<Token>\n        return new Parser(new Tokenizer(expression)).parse();\n                          ^\nExpressionEvaluator.java:68: error: bad operand types for binary operator '=='\n            if (token.type == TokenType.OPERATOR && (token.value == '+' || token.value == '-')) {\n                                                                 ^\n  first type:  Object\n  second type: char\nExpressionEvaluator.java:68: error: bad operand types for binary operator '=='\n            if (token.type == TokenType.OPERATOR && (token.value == '+' || token.value == '-')) {\n                                                                                       ^\n  first type:  Object\n  second type: char\nExpressionEvaluator.java:71: error: bad operand types for binary operator '=='\n                if (token.value == '+') {\n                                ^\n  first type:  Object\n  second type: char\nExpressionEvaluator.java:87: error: bad operand types for binary operator '=='\n            if (token.type == TokenType.OPERATOR && (token.value == '*' || token.value == '/')) {\n                                                                 ^\n  first type:  Object\n  second type: char\nExpressionEvaluator.java:87: error: bad operand types for binary operator '=='\n            if (token.type == TokenType.OPERATOR && (token.value == '*' || token.value == '/')) {\n                                                                                       ^\n  first type:  Object\n  second type: char\nExpressionEvaluator.java:90: error: bad operand types for binary operator '=='\n                if (token.value == '*') {\n                                ^\n  first type:  Object\n  second type: char\nExpressionEvaluator.java:107: error: bad operand types for binary operator '=='\n        } else if (token.type == TokenType.OPERATOR && token.value == '-') {\n                                                                   ^\n  first type:  Object\n  second type: char\nNote: Some messages have been simplified; recompile with -Xdiags:verbose to get full output\n8 errors\n",
+  "stdout_after": ""
+}

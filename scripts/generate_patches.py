@@ -175,7 +175,7 @@ def build_prompt(case: CaseInfo) -> str:
         ```
 
         Respond with a valid unified diff (GNU format) that patches `{filename}`.
-        The diff must include the `---` and `+++` headers and only touch the lines required for this fix.
+        The diff must include the `---` and `+++` headers and should include only a few unchanged lines for context.
         Do not add explanations or additional files.
         """
     ).strip()

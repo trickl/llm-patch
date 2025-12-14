@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-1ed2d357",
+  "language": "c",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "aider",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "after_path": "after__llama3.2_3b__aider.c",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 1,
+  "errors_before": 5,
+  "errors_after": 7,
+  "first_error_removed": false,
+  "added_lines": 10,
+  "removed_lines": 9,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "expression_evaluator.c:4:11: error: #include expects \"FILENAME\" or <FILENAME>\n    4 | #include  string.h>\n      |           ^~~~~~\nexpression_evaluator.c:5:11: error: #include expects \"FILENAME\" or <FILENAME>\n    5 | #include  limits.h>\n      |           ^~~~~~\nexpression_evaluator.c: In function \u2018evaluate\u2019:\nexpression_evaluator.c:47:66: error: \u2018INT_MIN\u2019 undeclared (first use in this function)\n   47 |         case TOKEN_DIVIDE: if (b != 0) return a / b; else return INT_MIN; // Error handling for division by zero\n      |                                                                  ^~~~~~~\nexpression_evaluator.c:4:1: note: \u2018INT_MIN\u2019 is defined in header \u2018<limits.h>\u2019; this is probably fixable by adding \u2018#include <limits.h>\u2019\n    3 | #include <ctype.h>\n  +++ |+#include <limits.h>\n    4 | #include  string.h>\nexpression_evaluator.c:47:66: note: each undeclared identifier is reported only once for each function it appears in\n   47 |         case TOKEN_DIVIDE: if (b != 0) return a / b; else return INT_MIN; // Error handling for division by zero\n      |                                                                  ^~~~~~~\nexpression_evaluator.c: In function \u2018parse_and_evaluate\u2019:\nexpression_evaluator.c:55:12: error: invalid type argument of unary \u2018*\u2019 (have \u2018int\u2019)\n   55 |     while (**input != '\\0') {\n      |            ^~~~~~~\nexpression_evaluator.c:65:26: warning: operation on \u2018top\u2019 may be undefined [-Wsequence-point]\n   65 |                 stack[top++] = evaluate(a, b, stack[--top]);\n      |                       ~~~^~\nexpression_evaluator.c:72:26: warning: operation on \u2018top\u2019 may be undefined [-Wsequence-point]\n   72 |                 stack[top++] = evaluate(a, b, stack[--top]);\n      |                       ~~~^~\nexpression_evaluator.c:80:19: warning: operation on \u2018top\u2019 may be undefined [-Wsequence-point]\n   80 |          stack[top++] = evaluate(a, b, stack[--top]);\n      |                ~~~^~\nexpression_evaluator.c: In function \u2018evaluate\u2019:\nexpression_evaluator.c:47:31: warning: this statement may fall through [-Wimplicit-fallthrough=]\n   47 |         case TOKEN_DIVIDE: if (b != 0) return a / b; else return INT_MIN; // Error handling for division by zero\n      |                               ^\nexpression_evaluator.c:48:9: note: here\n   48 |         default: return 0; // Should not happen\n      |         ^~~~~~~\n",
+  "stdout_after": ""
+}

@@ -1,0 +1,22 @@
+{
+  "case_id": "typescript-qwen2.5-coder:7b-b0342b0e",
+  "language": "typescript",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "aider",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "after_path": null,
+  "patch_applied": false,
+  "patch_diagnostics": "aider matcher could not locate context",
+  "compile_returncode": null,
+  "errors_before": 5,
+  "errors_after": null,
+  "first_error_removed": false,
+  "added_lines": 1,
+  "removed_lines": 0,
+  "hunks": 2,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": null,
+  "stdout_after": null
+}

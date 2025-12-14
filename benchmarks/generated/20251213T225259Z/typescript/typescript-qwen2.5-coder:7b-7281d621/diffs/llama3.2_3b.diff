@@ -1,0 +1,10 @@
+--- before.ts
++++ patched_expression_evaluator.ts
+@@ -129,7 +129,7 @@
+         if (currentToken !== '') {
+             tokens.push({ type: 'number', value: currentToken });
+             currentToken = '';
+         }
+-        require('module');
++        import * as module from 'module';
+         tokens.push({ type: 'operator', value: char });

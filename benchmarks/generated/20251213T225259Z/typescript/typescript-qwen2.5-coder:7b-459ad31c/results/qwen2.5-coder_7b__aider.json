@@ -1,0 +1,22 @@
+{
+  "case_id": "typescript-qwen2.5-coder:7b-459ad31c",
+  "language": "typescript",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "aider",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "after_path": "after__qwen2.5-coder_7b__aider.ts",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 2 hunks",
+  "compile_returncode": 2,
+  "errors_before": 5,
+  "errors_after": 5,
+  "first_error_removed": true,
+  "added_lines": 2,
+  "removed_lines": 2,
+  "hunks": 2,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "",
+  "stdout_after": "expression_evaluator.ts(19,41): error TS2345: Argument of type 'number | null | undefined' is not assignable to parameter of type 'number | null'.\n  Type 'undefined' is not assignable to type 'number | null'.\nexpression_evaluator.ts(30,41): error TS2345: Argument of type 'number | null | undefined' is not assignable to parameter of type 'number | null'.\n  Type 'undefined' is not assignable to type 'number | null'.\nexpression_evaluator.ts(40,33): error TS2345: Argument of type 'number | null | undefined' is not assignable to parameter of type 'number | null'.\n  Type 'undefined' is not assignable to type 'number | null'.\nexpression_evaluator.ts(73,5): error TS2580: Cannot find name 'require'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.\nexpression_evaluator.ts(73,22): error TS2580: Cannot find name 'module'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.\n"
+}

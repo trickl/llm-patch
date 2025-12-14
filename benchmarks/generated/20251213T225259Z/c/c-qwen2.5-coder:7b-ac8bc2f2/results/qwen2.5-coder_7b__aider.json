@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-ac8bc2f2",
+  "language": "c",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "aider",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "after_path": "after__qwen2.5-coder_7b__aider.c",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 1,
+  "errors_before": 1,
+  "errors_after": 1,
+  "first_error_removed": false,
+  "added_lines": 1,
+  "removed_lines": 1,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "expression_evaluator.c: In function \u2018evaluate_expression\u2019:\nexpression_evaluator.c:100:9: warning: enumeration value \u2018TOKEN_EOF\u2019 not handled in switch [-Wswitch]\n  100 |         switch (token.type) {\n      |         ^~~~~~\nexpression_evaluator.c:135:39: error: \u2018token\u2019 undeclared (first use in this function); did you mean \u2018Token\u2019?\n  135 |         operators[operator_index--] = token.type;\n      |                                       ^~~~~\n      |                                       Token\nexpression_evaluator.c:135:39: note: each undeclared identifier is reported only once for each function it appears in\n",
+  "stdout_after": ""
+}

@@ -1,0 +1,16 @@
+--- before.ts
++++ patched_expression_evaluator.ts
+@@ -123,30 +123,31 @@
+         } else if (char === ' ') {
+             continue;
+-        } else if (isOperator(char) || isParenthesis(char)) {
++        } else if (isOperator(char) || isParenthesis(char) || char === ';') {
+             if (current !== '') {
+                 tokens.push({ type: 'number', value: current });
+                 current = '';
+             }
+-            tokens.push({ type: 'operator', value: char });
++            tokens.push({ type: 'operator', value: char + ';'});
+         } else {
+             throw new Error(`Invalid character: ${char}`);
+         }

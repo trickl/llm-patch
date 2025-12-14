@@ -1,0 +1,15 @@
+--- before.java
++++ after.java
+@@ -35,7 +35,7 @@
+             tokens.add(new Token(TokenType.NUMBER, value));
+-            }
++            if (token.type == TokenType.NUMBER) {
++                pos++;
++                return (int) token.value;
++            } else {
++                throw new IllegalArgumentException("Unexpected token: " + token);
++            }
+         } else if (ch == '(') {
+             tokens.add(new Token(TokenType.LPAREN, null));
+-            pos++;
++            }

@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-d567f04b",
+  "language": "c",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "aider",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "after_path": "after__llama3.2_3b__aider.c",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 1,
+  "errors_before": 2,
+  "errors_after": 3,
+  "first_error_removed": false,
+  "added_lines": 3,
+  "removed_lines": 3,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "expression_evaluator.c: In function \u2018getNextToken\u2019:\nexpression_evaluator.c:27:9: warning: missing initializer for field \u2018value\u2019 of \u2018Token\u2019 [-Wmissing-field-initializers]\n   27 |         return (Token){TOKEN_EOF};\n      |         ^~~~~~\nexpression_evaluator.c:11:9: note: \u2018value\u2019 declared here\n   11 |     int value;\n      |         ^~~~~\nexpression_evaluator.c:31:11: error: redefinition of \u2018token\u2019\n   31 |     Token token = (Token){TOKEN_EOF};\n      |           ^~~~~\nexpression_evaluator.c:29:11: note: previous definition of \u2018token\u2019 with type \u2018Token\u2019\n   29 |     Token token = tokens[tokenIndex++];\n      |           ^~~~~\nexpression_evaluator.c:31:5: warning: missing initializer for field \u2018value\u2019 of \u2018Token\u2019 [-Wmissing-field-initializers]\n   31 |     Token token = (Token){TOKEN_EOF};\n      |     ^~~~~\nexpression_evaluator.c:11:9: note: \u2018value\u2019 declared here\n   11 |     int value;\n      |         ^~~~~\nexpression_evaluator.c:30:9: warning: unused variable \u2018value\u2019 [-Wunused-variable]\n   30 |     int value;\n      |         ^~~~~\nexpression_evaluator.c: In function \u2018tokenize\u2019:\nexpression_evaluator.c:99:22: warning: comparison of integer expressions of different signedness: \u2018int\u2019 and \u2018size_t\u2019 {aka \u2018long unsigned int\u2019} [-Wsign-compare]\n   99 |             while (i < strlen(expression) && isdigit(expression[i])) {\n      |                      ^\nexpression_evaluator.c:132:5: warning: missing initializer for field \u2018value\u2019 of \u2018Token\u2019 [-Wmissing-field-initializers]\n  132 |     tokens[tokenIndex++] = (Token){TOKEN_EOF};\n      |     ^~~~~~\nexpression_evaluator.c:11:9: note: \u2018value\u2019 declared here\n   11 |     int value;\n      |         ^~~~~\nexpression_evaluator.c: In function \u2018main\u2019:\nexpression_evaluator.c:137:27: error: expected \u2018=\u2019, \u2018,\u2019, \u2018;\u2019, \u2018asm\u2019 or \u2018__attribute__\u2019 before \u2018:\u2019 token\n  137 |     for (const char *expr : expressions) {\n      |                           ^\nexpression_evaluator.c:138:18: error: \u2018expr\u2019 undeclared (first use in this function)\n  138 |         tokenize(expr);\n      |                  ^~~~\nexpression_evaluator.c:138:18: note: each undeclared identifier is reported only once for each function it appears in\nexpression_evaluator.c:136:17: warning: unused variable \u2018expressions\u2019 [-Wunused-variable]\n  136 |     const char *expressions[] = {\"1 + 2\", \"2 * 3 + 4\", \"2 * (3 + 4)\", \"8 / 2 * (2 + 2)\"};\n      |                 ^~~~~~~~~~~\n",
+  "stdout_after": ""
+}

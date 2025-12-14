@@ -1,0 +1,12 @@
+--- before.c
++++ before.c
+@@ -112,7 +112,7 @@ int main() {
+     const char *expressions[] = {"3 + 4 * (2 - 1)", "2 * 3 + 4", "2 * (3 + 4)", "8 / 2 * (2 + 2)"};
+-    for (const char *expr : expressions) {
++    for (int i = 0; i < sizeof(expressions)/sizeof(expressions[0]); i++) {
+         tokenize(expressions[i]);
+         int result = parse_and_evaluate();
+         printf("%s => %d\n", expressions[i], result);
+     }
+     return 0;
+ }

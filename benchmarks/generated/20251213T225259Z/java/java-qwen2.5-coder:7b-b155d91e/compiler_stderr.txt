@@ -1,0 +1,15 @@
+ExpressionEvaluator.java:13: error: incompatible types: Tokenizer cannot be converted to List<Object>
+        return new Parser(new Tokenizer(expression)).parse();
+                          ^
+ExpressionEvaluator.java:76: error: bad operand types for binary operator '=='
+                } else if (token == '(') {
+                                 ^
+  first type:  Object
+  second type: char
+ExpressionEvaluator.java:78: error: bad operand types for binary operator '=='
+                } else if (token == ')') {
+                                 ^
+  first type:  Object
+  second type: char
+Note: Some messages have been simplified; recompile with -Xdiags:verbose to get full output
+3 errors

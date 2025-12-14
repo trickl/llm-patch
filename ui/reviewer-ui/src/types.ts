@@ -11,6 +11,7 @@ export interface CaseSummary {
   id: string
   caseId: string
   runId: string
+  fingerprint: string
   language: string
   problemId: string
   modelSlug: string
@@ -38,8 +39,14 @@ export interface CaseDetail {
     result: Record<string, unknown>
   }
   errors: {
-    stderr: string
-    stdout: string
+    before: {
+      stderr: string
+      stdout: string
+    }
+    after: {
+      stderr: string
+      stdout: string
+    }
   }
 }
 

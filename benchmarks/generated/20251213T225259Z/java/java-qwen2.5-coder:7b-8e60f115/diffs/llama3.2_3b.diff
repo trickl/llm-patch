@@ -1,0 +1,10 @@
+--- before.java
++++ patched.java
+@@ -47,7 +47,8 @@
+     return parse(tokens).evaluate();
+ 
+-    return tokens.stream()
++    return tokens.stream()
+                .map(token -> token.equals("-") && (tokens.isEmpty() || tokens.get(tokens.size() - 1).matches("[\\(\\s]")))
+                        ? "0-" : token)
+                .collect(Collectors.toList());

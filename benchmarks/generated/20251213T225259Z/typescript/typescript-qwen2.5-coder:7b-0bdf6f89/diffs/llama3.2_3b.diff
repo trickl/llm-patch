@@ -1,0 +1,9 @@
+--- before.ts
++++ patched_before_ts
+@@ -103,5 +103,6 @@
+     const char = input[i];
+ 
+     if (isNumber(char)) {
+-        currentToken += char;
++        currentToken = char;
+         }

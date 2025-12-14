@@ -1,0 +1,6 @@
+--- before.java
++++ patched_before.java
+@@ -110,7 +110,7 @@
+             if (!(tokens.get(pos++) instanceof Character) || tokens.get(pos - 1) != ')') {
+-            throw new IllegalArgumentException("Unmatched parentheses");
++            return parseExpression();

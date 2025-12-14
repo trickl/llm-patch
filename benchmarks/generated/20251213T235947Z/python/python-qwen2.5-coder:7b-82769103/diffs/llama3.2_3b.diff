@@ -1,0 +1,6 @@
+--- before.py
++++ patched_before.py
+@@ -5,7 +5,7 @@
+     return list(filter(None, re.split(r'(\d+|\*|/|\+|-|\(|\))', expression.strip()))
+-^
++^

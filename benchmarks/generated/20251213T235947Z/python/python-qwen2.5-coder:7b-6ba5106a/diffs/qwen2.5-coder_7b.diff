@@ -1,0 +1,11 @@
+--- before.py	2023-04-10 12:34:56.000000000 +0800
++++ after.py	2023-04-10 12:35:00.000000000 +0800
+@@ -6,7 +6,7 @@
+ class Tokenizer:
+     def tokenize(self, expression):
+         tokens = []
+-        for token in re.findall(r'\b\w+\b|[+\-*/()]", expression):
++        for token in re.findall(r'\b\w+\b|[+\-*/()]", expression):
+             if token.isdigit():
+                 tokens.append(int(token))
+             else:

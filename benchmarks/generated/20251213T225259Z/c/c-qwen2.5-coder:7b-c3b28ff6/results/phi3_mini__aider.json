@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-c3b28ff6",
+  "language": "c",
+  "model_slug": "phi3_mini",
+  "algorithm": "aider",
+  "diff_path": "diffs/phi3_mini.diff",
+  "after_path": "after__phi3_mini__aider.c",
+  "patch_applied": true,
+  "patch_diagnostics": "no hunks",
+  "compile_returncode": 1,
+  "errors_before": 2,
+  "errors_after": 2,
+  "first_error_removed": false,
+  "added_lines": 0,
+  "removed_lines": 1,
+  "hunks": 0,
+  "delete_only": true,
+  "success": false,
+  "notes": "diff only deletes lines",
+  "stderr_after": "expression_evaluator.c: In function \u2018evaluate_expression\u2019:\nexpression_evaluator.c:59:18: error: implicit declaration of function \u2018evaluate_term\u2019 [-Wimplicit-function-declaration]\n   59 |     int result = evaluate_term();\n      |                  ^~~~~~~~~~~~~\nexpression_evaluator.c: In function \u2018evaluate_term\u2019:\nexpression_evaluator.c:72:18: error: implicit declaration of function \u2018evaluate_factor\u2019; did you mean \u2018evaluate_term\u2019? [-Wimplicit-function-declaration]\n   72 |     int result = evaluate_factor();\n      |                  ^~~~~~~~~~~~~~~\n      |                  evaluate_term\nexpression_evaluator.c: In function \u2018evaluate_factor\u2019:\nexpression_evaluator.c:105:1: warning: control reaches end of non-void function [-Wreturn-type]\n  105 | }\n      | ^\n",
+  "stdout_after": ""
+}

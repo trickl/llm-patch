@@ -1,0 +1,6 @@
+--- before.c
++++ patched_before.c
+@@ -97,7 +97,7 @@
+   result = apply_operator(a, b, tokens[j].type);
+-  return result;
++  return (TokenType)result; // Cast to TokenType

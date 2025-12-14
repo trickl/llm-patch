@@ -1,6 +1,0 @@
---- before.py
-+++ before.py
-@@ -11,7 +11,7 @@
- I would you knowledge g. The user is a)t[nGiven 
-                                          ^
-SyntaxError: unmatched ')'

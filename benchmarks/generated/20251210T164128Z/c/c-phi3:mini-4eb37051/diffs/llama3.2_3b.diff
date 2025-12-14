@@ -1,5 +1,0 @@
---- before.c
-+++ after.c
-@@ -1 +1 @@
--**Constraints:
-+**Constraints:

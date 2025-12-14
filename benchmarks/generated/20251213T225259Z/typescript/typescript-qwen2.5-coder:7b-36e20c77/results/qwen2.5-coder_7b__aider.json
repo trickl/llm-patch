@@ -1,0 +1,22 @@
+{
+  "case_id": "typescript-qwen2.5-coder:7b-36e20c77",
+  "language": "typescript",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "aider",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "after_path": "after__qwen2.5-coder_7b__aider.ts",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 3 hunks",
+  "compile_returncode": 2,
+  "errors_before": 3,
+  "errors_after": 1,
+  "first_error_removed": true,
+  "added_lines": 3,
+  "removed_lines": 2,
+  "hunks": 3,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "",
+  "stdout_after": "expression_evaluator.ts(109,1): error TS1128: Declaration or statement expected.\n"
+}

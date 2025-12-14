@@ -1,0 +1,22 @@
+{
+  "case_id": "java-qwen2.5-coder:7b-52264466",
+  "language": "java",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "aider",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "after_path": "after__llama3.2_3b__aider.java",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 1,
+  "errors_before": 11,
+  "errors_after": 6,
+  "first_error_removed": true,
+  "added_lines": 4,
+  "removed_lines": 4,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "ExpressionEvaluator.java:22: error: ')' expected\n        while (pos  input.length()) {\n                  ^\nExpressionEvaluator.java:22: error: ';' expected\n        while (pos  input.length()) {\n                                  ^\nExpressionEvaluator.java:39: error: ')' expected\n        while (pos  input.length() && Character.isDigit(input.charAt(pos))) {\n                  ^\nExpressionEvaluator.java:39: error: not a statement\n        while (pos  input.length() && Character.isDigit(input.charAt(pos))) {\n                                   ^\nExpressionEvaluator.java:39: error: ';' expected\n        while (pos  input.length() && Character.isDigit(input.charAt(pos))) {\n                                                                          ^\n5 errors\n",
+  "stdout_after": ""
+}

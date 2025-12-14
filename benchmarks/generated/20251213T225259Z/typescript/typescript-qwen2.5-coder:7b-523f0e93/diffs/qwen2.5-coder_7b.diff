@@ -1,0 +1,11 @@
+diff --git a/expression_evaluator.ts b/expression_evaluator.ts
+index 3a4b5c6..7d8e9f0 100644
+--- a/expression_evaluator.ts
++++ b/expression_evaluator.ts
+@@ -1,5 +1,7 @@
+ // expression_evaluator.ts
+ 
++import * as process from 'process';
+ type Token = { type: 'number' | 'operator' | 'parenthesis'; value: string };
+ 
+ function tokenize(input: string): Token[] {

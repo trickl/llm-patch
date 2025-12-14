@@ -1,0 +1,11 @@
+--- before.java	2023-04-10 12:34:56.000000000 +0800
++++ after.java	2023-04-10 12:35:07.000000000 +0800
+@@ -110,7 +110,7 @@
+                 pos++;
+             } else if (token instanceof Character && (Character) token == '(') {
+                 pos++;
+-                int result = parseExpression();
++                int result = parseExpression();
+                 if (!(tokens.get(pos++) instanceof Character) || tokens.get(pos - 1) != ')') {
+                     throw new IllegalArgumentException("Expected closing parenthesis");
+                 }

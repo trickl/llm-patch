@@ -1,8 +1,0 @@
---- before.java
-+++ after.java
-@@ -40,7 +40,7 @@
-     } else if (tokens.get(0).type == Token.Type.OPERATOR && tokens.get(0).value.equals("*") || tokens.get(0).type == Token.Type.OPERATOR && tokens.get(0).value.equals("/")) {
--        tokens.remove(0);
-+        tokens.remove(0);
-         int rightOperand = parseFactor();
-         return leftOperand * rightOperand;

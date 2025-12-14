@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-2ba23c84",
+  "language": "c",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "aider",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "after_path": "after__qwen2.5-coder_7b__aider.c",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 3 hunks",
+  "compile_returncode": 1,
+  "errors_before": 2,
+  "errors_after": 2,
+  "first_error_removed": false,
+  "added_lines": 3,
+  "removed_lines": 2,
+  "hunks": 3,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "expression_evaluator.c: In function \u2018evaluate_expression\u2019:\nexpression_evaluator.c:52:18: error: implicit declaration of function \u2018evaluate_term\u2019 [-Wimplicit-function-declaration]\n   52 |     int result = evaluate_term();\n      |                  ^~~~~~~~~~~~~\nexpression_evaluator.c:55:26: error: implicit declaration of function \u2018evaluate_factor\u2019 [-Wimplicit-function-declaration]\n   55 |         int next_value = evaluate_factor(); // Corrected function call\n      |                          ^~~~~~~~~~~~~~~\nexpression_evaluator.c: In function \u2018tokenize\u2019:\nexpression_evaluator.c:127:30: warning: comparison of integer expressions of different signedness: \u2018int\u2019 and \u2018size_t\u2019 {aka \u2018long unsigned int\u2019} [-Wsign-compare]\n  127 |                     while (i < strlen(expression) && isdigit(expression[i])) {\n      |                              ^\nexpression_evaluator.c: In function \u2018evaluate_factor\u2019:\nexpression_evaluator.c:97:1: warning: control reaches end of non-void function [-Wreturn-type]\n   97 | }\n      | ^\n",
+  "stdout_after": ""
+}

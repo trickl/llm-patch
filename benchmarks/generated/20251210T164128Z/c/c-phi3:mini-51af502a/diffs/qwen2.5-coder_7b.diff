@@ -1,5 +1,0 @@
---- before.c
-+++ before.c
-@@ -1,1 +1 @@
--# Instruct you can'dejson
-+# Instruct you can't dejson

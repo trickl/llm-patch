@@ -1,0 +1,12 @@
+--- expression_evaluator.ts
++++ expression_evaluator.ts
+@@ -125,7 +125,8 @@
+     } else if (isOperator(char) || isParenthesis(char)) {
+         if (currentToken !== '') {
+-            tokens.push({ type: 'number', value: currentToken });
++            tokens.push({ type: 'operator' | 'parenthesis', value: currentToken });
+             currentToken = '';
+         }
+         tokens.push({ type: 'operator' | 'parenthesis', value: char });
+     } else {
+         throw new Error(`Invalid character: ${char}`);

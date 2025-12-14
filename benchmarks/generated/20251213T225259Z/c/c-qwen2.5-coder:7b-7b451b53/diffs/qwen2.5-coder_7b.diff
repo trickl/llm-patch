@@ -1,0 +1,11 @@
+--- before.c
++++ after.c
+@@ -127,7 +127,7 @@ int main() {
+     char input[1024];
+     printf("Enter an expression: ");
+     fgets(input, sizeof(input), stdin);
+-    Token *token = tokens;
++    Token token;
+     token.type = TOKEN_NUMBER;
+     token.value = evaluate_expression(&input);
+     printf("Result: %d\n", token.value);

@@ -1,4 +1,0 @@
-  File "expression_evaluator.py", line 1
-    **user:
-    ^^
-SyntaxError: invalid syntax

@@ -1,0 +1,22 @@
+{
+  "case_id": "java-qwen2.5-coder:7b-52264466",
+  "language": "java",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "aider",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "after_path": "after__qwen2.5-coder_7b__aider.java",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 5 hunks",
+  "compile_returncode": 1,
+  "errors_before": 11,
+  "errors_after": 14,
+  "first_error_removed": false,
+  "added_lines": 5,
+  "removed_lines": 1,
+  "hunks": 5,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "ExpressionEvaluator.java:3: error: cannot find symbol\npublic class ExpressionEvaluator implements Token {\n                                            ^\n  symbol: class Token\nExpressionEvaluator.java:23: error: cannot find symbol\n        List<Token> tokenize() {\n             ^\n  symbol:   class Token\n  location: class Tokenizer\nExpressionEvaluator.java:12: error: incompatible types: Tokenizer cannot be converted to List<Token>\n        return new Parser(new Tokenizer(expression)).parse();\n                          ^\nExpressionEvaluator.java:24: error: cannot find symbol\n            List<Token> tokens = new ArrayList<>();\n                 ^\n  symbol:   class Token\n  location: class Tokenizer\nExpressionEvaluator.java:28: error: cannot find symbol\n                tokens.add(new NumberToken(parseNumber()));\n                               ^\n  symbol:   class NumberToken\n  location: class Tokenizer\nExpressionEvaluator.java:30: error: cannot find symbol\n                tokens.add(new OperatorToken(String.valueOf(ch)));\n                               ^\n  symbol:   class OperatorToken\n  location: class Tokenizer\nExpressionEvaluator.java:32: error: cannot find symbol\n                tokens.add(new LeftParenthesisToken());\n                               ^\n  symbol:   class LeftParenthesisToken\n  location: class Tokenizer\nExpressionEvaluator.java:34: error: cannot find symbol\n                tokens.add(new RightParenthesisToken());\n                               ^\n  symbol:   class RightParenthesisToken\n  location: class Tokenizer\nExpressionEvaluator.java:36: error: cannot find symbol\n                    tokens.add(new RightParenthesisToken());\n                                   ^\n  symbol:   class RightParenthesisToken\n  location: class Tokenizer\nExpressionEvaluator.java:77: error: incompatible types: OperatorToken cannot be converted to String\n                    case MINUS:\n                         ^\nExpressionEvaluator.java:90: error: pattern or enum constant required\n                    case LEFT_PARENTHESIS:\n                         ^\nExpressionEvaluator.java:96: error: cannot find symbol\n                    case NUMBER:\n                         ^\n  symbol:   variable NUMBER\n  location: class Parser\nExpressionEvaluator.java:98: error: pattern or enum constant required\n                    case MINUS:\n                         ^\nNote: Some messages have been simplified; recompile with -Xdiags:verbose to get full output\n13 errors\n",
+  "stdout_after": ""
+}

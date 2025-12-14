@@ -1,1 +1,0 @@
-This diff adds a newline character after the closing parenthesis to properly terminate the string literal, resolving the syntax error.

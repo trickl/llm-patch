@@ -1,0 +1,11 @@
+--- before.py	2023-04-10 12:34:56.000000000 +0800
++++ after.py	2023-04-10 12:35:00.000000000 +0800
+@@ -18,7 +18,7 @@
+                         (token == '*' or token == '/' or
+                          (token in '+-' and stack[-2] not in '(*'))))):
+                     right = stack.pop()
+-                    left = stack.pop()
++                    operator = stack.pop()
+                     stack.append(self.apply_operator(left, operator, right))
+                 stack.append(token)
+             elif token == '(':

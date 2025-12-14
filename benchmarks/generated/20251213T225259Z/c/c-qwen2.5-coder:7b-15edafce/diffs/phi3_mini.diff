@@ -1,0 +1,14 @@
+--- before.c	2023-04-01 10:00:00.0000000 -0700
++++ after.c	2023-04-01 10:00:00.0000000 -0700
+@@ -9,7 +9,8 @@
+ int evaluate(int *tokens, int start, int end) {
++    while (i <= end && tokens[i].type != TOKEN_LPAREN) {
+     while (j <= end && tokens[j].type == TOKEN-NUMBER) {
+@@ -12,7 +13,8 @@
+                 value = apply_operator(value, evaluate(tokens, j+1, k-2), tokens[j-1].type);
+             } else if (tokens[k].type == TOKEN_LPAREN) {
+@@ -14,7 +15,8 @@
+                 value = apply_operator(value, evaluate(tokens, j+1, k-2), tokens[j-1].type);
+             } else if (tokens[k].type == TOKEN_RPAREN) {
+@@ -17,7 +18,8 @@
+                 while (k <= end && tokens[k].type == TOKEN_NUMBER) {

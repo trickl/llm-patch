@@ -1,0 +1,11 @@
+--- before.py
++++ before.py
+@@ -59,7 +59,7 @@ class Evaluator:
+                 stack.append(token)
+             elif token == '(':
+                 stack.append(token)
+-            elif token == ')':
++            elif token == ')':
+                 while stack and stack[-1] != '(':
+                     right = stack.pop()
+                     left = stack.pop()

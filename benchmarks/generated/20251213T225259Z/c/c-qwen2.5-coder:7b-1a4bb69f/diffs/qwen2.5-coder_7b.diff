@@ -1,0 +1,10 @@
+--- before.c
++++ before.c
+@@ -103,6 +103,7 @@
+     return result;
+ }
+ 
++int parse_expression(); // Forward declaration to resolve implicit declaration
+ int parse_factor() {
+     Token current_token = tokens[token_index];
+     switch (current_token.type) {

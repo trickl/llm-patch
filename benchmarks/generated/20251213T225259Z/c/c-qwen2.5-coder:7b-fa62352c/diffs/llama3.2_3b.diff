@@ -1,0 +1,13 @@
+--- before.c
++++ after.c
+@@ -131,9 +131,10 @@
+         case '(':
+             token.type = TOKEN_TYPE_LPAREN;
+             (*expression)++;
+-            break;
++            break;
+         case ')':
+             token.type = TOKEN_TYPE_RPAREN;
+             (*expression)++;
+-            break;
++            break;

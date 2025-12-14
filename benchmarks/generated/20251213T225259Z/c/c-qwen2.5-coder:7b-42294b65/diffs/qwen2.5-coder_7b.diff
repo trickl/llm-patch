@@ -1,0 +1,11 @@
+--- before.c
++++ before.c
+@@ -81,7 +81,7 @@ int evaluate(const char *expression) {
+     Token tokens[MAX_TOKEN_LENGTH];
+     int token_count = 0;
+
+-    const char *input = expression;
++    const char **input_ptr = &expression;
+     while (**input_ptr != '\0') {
+         tokens[token_count++] = tokenize(input_ptr);
+     }

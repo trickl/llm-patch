@@ -1,0 +1,10 @@
+--- before.c
++++ patched_before.c
+@@ -75,7 +75,7 @@
+     int result = parseTerm();
+-    while (tokenIndex < MAX_TOKENS && (tokens[tokenIndex].type == TOKEN_PLUS || tokens[tokenIndex].type == TOKEN_MINUS)) {
++    while (tokenIndex  MAX_TOKENS && (tokens[tokenIndex].type == TOKEN_PLUS || tokens[tokenIndex].type == TOKEN_MINUS)) {
+         TokenType operator = tokens[tokenIndex].type;
+         tokenIndex++;
+         int right = parseTerm();
+         result = evaluate(result, right, operator);

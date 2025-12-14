@@ -1,0 +1,7 @@
+--- expression_evaluator.c before
++++ expression_evaluator.c after
+@@ -146,7 +146,7 @@
+   operators[operator_index--] = token.type;
+-  operators[operator_index--] = token.value;
++  values[value_index++] = token.value;
+    break;

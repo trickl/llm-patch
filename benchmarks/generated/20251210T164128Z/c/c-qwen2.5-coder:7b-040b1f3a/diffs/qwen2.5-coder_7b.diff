@@ -1,8 +1,0 @@
---- before.c
-+++ before.c
-@@ -117,7 +117,7 @@ int parse_and_evaluate(const char *expression) {
-     tokenize(expression);
-     int result = evaluate(0, token_count - 1);
-     return result;
--}
-+}

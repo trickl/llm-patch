@@ -1,9 +1,0 @@
---- before.ts
-+++ before.ts
-@@ -1,5 +1,7 @@
- // expression_evaluator.ts
-
-+import * as process from 'process';
- type Token = number | '+' | '-' | '*' | '/' | '(' | ')' | 'u';
-
- function tokenize(input: string): Token[] {

@@ -1,0 +1,19 @@
+diff --git a/expression_evaluator.ts b/expression_evaluator.ts
+index 3a4b5c6..7d8e9f0 100644
+--- a/expression_evaluator.ts
++++ b/expression_evaluator.ts
+@@ -1,4 +1,5 @@
+ import * as process from 'process';
++import * as module from 'module';
+ 
+ type Token = number | '+' | '-' | '*' | '/' | '(' | ')' | 'u';
+ 
+@@ -98,7 +99,7 @@ function evaluateExpression(input: string): number {
+     }
+ 
+     return values.pop()!;
+-}
++}
+ 
+ // CLI example
+ if (require.main === module) {

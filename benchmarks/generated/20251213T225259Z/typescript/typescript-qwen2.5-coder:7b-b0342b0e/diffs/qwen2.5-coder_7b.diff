@@ -1,0 +1,20 @@
+diff --git a/expression_evaluator.ts b/expression_evaluator.ts
+index 3a4b5c6..7d8e9f0 100644
+--- a/expression_evaluator.ts
++++ b/expression_evaluator.ts
+@@ -1,4 +1,5 @@
+ import { evaluateExpression } from './expression_evaluator';
+ 
++import * as process from 'process';
+ import * as readline from 'readline';
+ 
+ const rl = readline.createInterface({
+@@ -10,7 +11,6 @@ const rl = readline.createInterface({
+     input: process.stdin,
+     output: process.stdout
+ });
+ 
+ rl.question('Enter an expression: ', (input) => {
+     try {
+         const result = evaluateExpression(input);
+         console.log(result);

@@ -1,7 +1,0 @@
---- before.java
-+++ before.java
-@@ -1,2 +1 @@
--You are there'de
--
--*# Theory of the user:
-+public class ExpressionEvaluator {

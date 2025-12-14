@@ -1,5 +1,0 @@
---- before.py
-+++ after.py
-@@ -1,5 +1,5 @@
--    elif re0.match(r'\d+\.\d*', str(float(self.tokens[i+1]))):
-+    elif re0.match(r'\d+\.\d*', str(float(selfsxte[i+1]))):

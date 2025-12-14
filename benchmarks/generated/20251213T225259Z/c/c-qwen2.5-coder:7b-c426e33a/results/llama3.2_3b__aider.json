@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-c426e33a",
+  "language": "c",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "aider",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "after_path": "after__llama3.2_3b__aider.c",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 1,
+  "errors_before": 1,
+  "errors_after": 2,
+  "first_error_removed": false,
+  "added_lines": 1,
+  "removed_lines": 1,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "expression_evaluator.c: In function \u2018evaluate\u2019:\nexpression_evaluator.c:130:53: error: passing argument 2 of \u2018evaluate_expression\u2019 makes pointer from integer without a cast [-Wint-conversion]\n  130 |     int result = evaluate_expression(0, token_count - 2);\n      |                                         ~~~~~~~~~~~~^~~\n      |                                                     |\n      |                                                     int\nexpression_evaluator.c:101:42: note: expected \u2018int *\u2019 but argument is of type \u2018int\u2019\n  101 | int evaluate_expression(int *start, int *end) {\n      |                                     ~~~~~^~~\nexpression_evaluator.c:131:52: error: passing argument 2 of \u2018evaluate_expression\u2019 makes pointer from integer without a cast [-Wint-conversion]\n  131 |     return (int)evaluate_expression(0, token_count - 2);\n      |                                        ~~~~~~~~~~~~^~~\n      |                                                    |\n      |                                                    int\nexpression_evaluator.c:101:42: note: expected \u2018int *\u2019 but argument is of type \u2018int\u2019\n  101 | int evaluate_expression(int *start, int *end) {\n      |                                     ~~~~~^~~\nexpression_evaluator.c:130:9: warning: unused variable \u2018result\u2019 [-Wunused-variable]\n  130 |     int result = evaluate_expression(0, token_count - 2);\n      |         ^~~~~~\n",
+  "stdout_after": ""
+}

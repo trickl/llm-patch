@@ -1,0 +1,121 @@
+// expression_evaluator.ts
+
+type Token = number | '+' | '-' | '*' | '/' | '(' | ')' | 'u';
+
+function tokenize(input: string): Token[] {
+    const tokens: Token[] = [];
+    let i = 0;
+    while (i < input.length) {
+        if (input[i] === ' ') {
+            i++;
+            continue;
+        }
+        if (!isNaN(Number(input[i]))) {
+            let num = Number(input[i]);
+            i++;
+            while (i < input.length && !isNaN(Number(input[i]))) {
+                num = num * 10 + Number(input[i]);
+                i++;
+            }
+            tokens.push(num);
+        } else if ('+-*/()'.includes(input[i])) {
+            tokens.push(input[i] as Token);
+            i++;
+        } else if (input[i] === '-') {
+            if (i === 0 || '+-*/('.includes(input[i - 1])) {
+                tokens.push('u');
+            } else {
+                tokens.push('-');
+            }
+            i++;
+        } else {
+            throw new Error(`Invalid character: ${input[i]}`);
+        }
+    }
+    return tokens;
+}
+
+function parse(tokens: Token[]): number[] {
+    const outputQueue: number[] = [];
+    const operatorStack: string[] = [];
+
+    while (tokens.length > 0) {
+        const token = tokens.shift()!;
+        if (typeof token === 'number') {
+            outputQueue.push(token);
+        } else if ('+-*/'.includes(token)) {
+            while (
+                operatorStack.length > 0 &&
+                operatorPrecedence(operatorStack[operatorStack.length - 1]) >= operatorPrecedence(token)
+            ) {
+                outputQueue.push(operatorStack.pop()!);
+            }
+            operatorStack.push(token);
+        } else if (token === '(') {
+            operatorStack.push(token);
+        } else if (token === ')') {
+            while (operatorStack[operatorStack.length - 1] !== '(') {
+                outputQueue.push(operatorStack.pop()!);
+            }
+            operatorStack.pop();
+        } else if (token === 'u') {
+            const num = tokens.shift()!;
+            outputQueue.push(-num);
+        }
+    }
+
+    while (operatorStack.length > 0) {
+        outputQueue.push(operatorStack.pop()!);
+    }
+
+    return outputQueue;
+}
+
+function evaluate(tokens: number[]): number {
+    const stack: number[] = [];
+
+    for (const token of tokens) {
+        if (typeof token === 'number') {
+            stack.push(token);
+        } else {
+            const b = stack.pop()!;
+            const a = stack.pop()!;
+            switch (token) {
+                case '+':
+                    stack.push(a + b);
+                    break;
+                case '-':
+                    stack.push(a - b);
+                    break;
+                case '*':
+                    stack.push(a * b);
+                    break;
+                case '/':
+                    stack.push(Math.floor(a / b));
+                    break;
+            }
+        }
+    }
+
+    return stack[0];
+}
+
+function operatorPrecedence(op: string): number {
+    if ('+-'.includes(op)) return 1;
+    if ('*/'.includes(op)) return 2;
+    return 0;
+}
+
+export function evaluateExpression(input: string): number {
+    const tokens = tokenize(input);
+    const parsedTokens = parse(tokens);
+    return evaluate(parsedTokens);
+}
+
+// CLI example
+if (require.main === module) {
+    console.log(evaluateExpression("1 + 2")); // 3
+    console.log(evaluateExpression("2 * 3 + 4")); // 10
+    console.log(evaluateExpression("2 * (3 + 4)")); // 14
+    console.log(evaluateExpression("8 / 2 * (2 + 2)")); // 16
+}

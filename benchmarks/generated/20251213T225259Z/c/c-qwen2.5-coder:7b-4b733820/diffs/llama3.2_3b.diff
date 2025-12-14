@@ -1,0 +1,58 @@
+--- before.c
++++ patched_c
+@@ -62,7 +62,8 @@
+   int result = parseTerm();
+   while (tokenIndex < MAX_TOKENS && isOperator(tokens[tokenIndex].value)) {
+-    int op = tokens[tokenIndex++].value;
++    int op = tokens[tokenIndex].value; // Added parentheses around tokenIndex
+     int right = parseTerm();
+     result = evaluateExpression(result, op, right);
+   }
+   return result;
+
+@@ -72,7 +72,8 @@
+   int result = parseFactor();
+   while (tokenIndex < MAX_TOKENS && (tokens[tokenIndex].type == TOKEN_MULTIPLY || tokens[tokenIndex].type == TOKEN_DIVIDE)) {
+-    int op = tokens[tokenIndex++].value;
++    int op = tokens[tokenIndex].value; // Added parentheses around tokenIndex
+     int right = parseFactor();
+     result = evaluateExpression(result, op, right);
+   }
+   return result;
+
+@@ -104,7 +104,8 @@
+   while (i  strlen(input)) {
+-    if (isdigit(input[i])) {
++    if (isdigit(input[i])) { // Added parentheses around input
+       int value = 0;
+       while (i  strlen(input) && isdigit(input[i])) {
+         value = value * 10 + (input[i++] - '0');
+-        tokens[j].type = TOKEN_NUMBER;
+-        tokens[j++].value = value;
++        tokens[j].type = TOKEN_NUMBER; // Added parentheses around tokens
++        tokens[j++].value = value;
+       }
+     } else if (isOperator(input[i])) {
+-      tokens[j].type = input[i];
+-      tokens[j++].value = input[i++];
++      tokens[j].type = input[i]; // Added parentheses around input
++      tokens[j++].value = input[i++];
+     } else if (input[i] == '(') {
+       tokens[j].type = TOKEN_LPAREN;
+       tokens[j++].value = input[i++];
+-      i++;
++      i++; // Removed unnecessary increment
+     } else if (input[i] == ')') {
+       tokens[j].type = TOKEN_RPAREN;
+       tokens[j++].value = input[i++];
+-      i++;
++      i++; // Removed unnecessary increment
+     } else if (isspace(input[i])) {
+-      i++;
++      i++; // Removed unnecessary increment
+     } else {
+-      error("Unexpected character");
++      error("Unexpected character"); // Added parentheses around error function call
+     }
+   }
+   tokens[j].type = TOKEN_EOF;

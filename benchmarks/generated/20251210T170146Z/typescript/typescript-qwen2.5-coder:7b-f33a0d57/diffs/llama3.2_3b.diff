@@ -1,6 +1,0 @@
---- before.ts
-+++ patched_expression_evaluator.ts
-
--} else if (char === ' ') {
-+} else if (char === ' ') {
-    continue;

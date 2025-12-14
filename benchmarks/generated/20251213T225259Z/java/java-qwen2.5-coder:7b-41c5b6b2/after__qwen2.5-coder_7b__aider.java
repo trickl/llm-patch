@@ -1,0 +1,146 @@
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class ExpressionEvaluator {
+
+    public static void main(String[] args) {
+        System.out.println(evaluate("1 + 2")); // 3
+        System.out.println(evaluate("2 * 3 + 4")); // 10
+        System.out.println(evaluate("2 * (3 + 4)")); // 14
+        System.out.println(evaluate("8 / 2 * (2 + 2)")); // 16
+    }
+
+    public static int evaluate(String expression) {
+        List<String> tokens = tokenize(expression);
+        return parse(tokens).evaluate();
+    }
+
+    private static List<String> tokenize(String expression) {
+        List<String> tokens = new ArrayList<>();
+        StringBuilder currentToken = new StringBuilder();
+        boolean inNumber = false;
+        for (char ch : expression.toCharArray()) {
+            if (Character.isDigit(ch)) {
+                currentToken.append(ch);
+                inNumber = true;
+            } else if (ch == ' ') {
+                if (inNumber) {
+                    tokens.add(currentToken.toString());
+                    currentToken.setLength(0);
+                    inNumber = false;
+                }
+            } else {
+                if (currentToken.length() > 0) {
+                    tokens.add(currentToken.toString());
+                    currentToken.setLength(0);
+                }
+                tokens.add(String.valueOf(ch));
+            }
+        }
+        if (currentToken.length() > 0) {
+            tokens.add(currentToken.toString());
+        }
+        return tokens;
+    }
+
+    private static Node parse(List<String> tokens) {
+        Deque<Node> values = new ArrayDeque<>();
+        Deque<Character> ops = new ArrayDeque<>();
+        for (String token : tokens) {
+            if (token.equals("(")) {
+                ops.push(token.charAt(0));
+            } else if (token.equals(")")) {
+                while (!ops.peek().equals('(')) {
+                    values.push(applyOp(values.pop(), values.pop(), ops.pop()));
+                }
+                ops.pop();
+            } else if (isOperator(token.charAt(0))) {
+                while (!ops.isEmpty() && hasPrecedence(ops.peek(), token.charAt(0))) {
+                    values.push(applyOp(values.pop(), values.pop(), ops.pop()));
+                }
+                ops.push(token.charAt(0));
+            } else {
+                values.push(new NumberNode(Integer.parseInt(token)));
+            }
+        }
+        while (!ops.isEmpty()) {
+            values.push(applyOp(values.pop(), values.pop(), ops.pop()));
+        }
+        return values.pop();
+    }
+
+    private static boolean isOperator(char ch) {
+        return ch == '+' || ch == '-' || ch == '*' || ch == '/';
+    }
+
+    private static boolean hasPrecedence(char op1, char op2) {
+        if (op2 == '(' || op2 == ')') {
+            return false;
+        }
+        if ((op1 == '*' || op1 == '/') && (op2 == '+' || op2 == '-')) {
+            return false;
+        }
+        return true;
+    }
+
+    private static Node applyOp(Node b, Node a, char op) {
+        switch (op) {
+            case '+':
+                return new BinaryNode('+', a, b);
+            case '-':
+                return new BinaryNode('-', a, b);
+            case '*':
+                return new BinaryNode('*', a, b);
+            case '/':
+                return new BinaryNode('/', a, b);
+            default:
+                throw new IllegalArgumentException("Unsupported operator: " + op);
+        }
+    }
+
+    private static class Node {
+        abstract int evaluate();
+    }
+    abstract int evaluate();
+
+    private static class NumberNode extends Node {
+        final int value;
+
+        NumberNode(int value) {
+            this.value = value;
+        }
+
+        @Override
+        int evaluate() {
+            return value;
+        }
+    }
+
+    private static class BinaryNode extends Node {
+        final char op;
+        final Node left;
+        final Node right;
+
+        BinaryNode(char op, Node left, Node right) {
+            this.op = op;
+            this.left = left;
+            this.right = right;
+        }
+
+        @Override
+        int evaluate() {
+            switch (op) {
+                case '+':
+                    return left.evaluate() + right.evaluate();
+                case '-':
+                    return left.evaluate() - right.evaluate();
+                case '*':
+                    return left.evaluate() * right.evaluate();
+                case '/':
+                    return left.evaluate() / right.evaluate();
+                default:
+                    throw new IllegalArgumentException("Unsupported operator: " + op);
+            }
+        }
+    }
+}

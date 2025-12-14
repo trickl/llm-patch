@@ -1,0 +1,22 @@
+{
+  "case_id": "java-qwen2.5-coder:7b-8f95d6fc",
+  "language": "java",
+  "model_slug": "phi3_mini",
+  "algorithm": "aider",
+  "diff_path": "diffs/phi3_mini.diff",
+  "after_path": "after__phi3_mini__aider.java",
+  "patch_applied": true,
+  "patch_diagnostics": "no hunks",
+  "compile_returncode": 1,
+  "errors_before": 12,
+  "errors_after": 12,
+  "first_error_removed": false,
+  "added_lines": 0,
+  "removed_lines": 0,
+  "hunks": 0,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "ExpressionEvaluator.java:12: error: incompatible types: Tokenizer cannot be converted to List<Token>\n        return new Parser(new Tokenizer(expression)).parse();\n                          ^\nExpressionEvaluator.java:32: error: cannot find symbol\n                    tokens.add(new Token(TokenType.NUMBER, Integer.parseInt(input.substring(numStart, pos))));\n                                         ^\n  symbol:   variable TokenType\n  location: class Tokenizer\nExpressionEvaluator.java:34: error: cannot find symbol\n                    tokens.add(new Token(TokenType.OPERATOR, ch));\n                                         ^\n  symbol:   variable TokenType\n  location: class Tokenizer\nExpressionEvaluator.java:37: error: cannot find symbol\n                    tokens.add(new Token(TokenType.LPAREN, null));\n                                         ^\n  symbol:   variable TokenType\n  location: class Tokenizer\nExpressionEvaluator.java:40: error: cannot find symbol\n                    tokens.add(new Token(TokenType.RPAREN, null));\n                                         ^\n  symbol:   variable TokenType\n  location: class Tokenizer\nExpressionEvaluator.java:68: error: cannot find symbol\n                if (token.type == TokenType.OPERATOR && (token.value == '+' || token.value == '-')) {\n                                  ^\n  symbol:   variable TokenType\n  location: class Parser\nExpressionEvaluator.java:83: error: cannot find symbol\n                if (token.type == TokenType.OPERATOR && (token.value == '*' || token.value == '/')) {\n                                  ^\n  symbol:   variable TokenType\n  location: class Parser\nExpressionEvaluator.java:96: error: cannot find symbol\n            if (token.type == TokenType.LPAREN) {\n                              ^\n  symbol:   variable TokenType\n  location: class Parser\nExpressionEvaluator.java:99: error: cannot find symbol\n                if (pos < tokens.size() && tokens.get(pos).type == TokenType.RPAREN) {\n                                                                   ^\n  symbol:   variable TokenType\n  location: class Parser\nExpressionEvaluator.java:105: error: cannot find symbol\n            } else if (token.type == TokenType.OPERATOR && token.value == '-') {\n                                     ^\n  symbol:   variable TokenType\n  location: class Parser\nExpressionEvaluator.java:108: error: cannot find symbol\n            } else if (token.type == TokenType.NUMBER) {\n                                     ^\n  symbol:   variable TokenType\n  location: class Parser\nNote: Some messages have been simplified; recompile with -Xdiags:verbose to get full output\n11 errors\n",
+  "stdout_after": ""
+}

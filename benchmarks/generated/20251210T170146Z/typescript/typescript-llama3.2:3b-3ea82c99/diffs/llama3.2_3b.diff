@@ -1,5 +1,0 @@
---- before.ts
-+++ after.ts
-@@(27,23)-(27,24)
--  output.push({ type: char, value: tokenValue });
-+  output.push({ type: char, value: tokenValue as 'NUMBER' | 'PLUS' | 'MINUS' | 'MUL' | 'DIV' | 'LPAREN' | 'RPAREN' })

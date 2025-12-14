@@ -1,0 +1,39 @@
+--- before.c
++++ before.c
+@@ -27,9 +27,10 @@ Token getNextToken() {
+     while (isspace(tokens[tokenIndex].value)) {
+         tokenIndex++;
+     }
+-    if (tokenIndex >= MAX_TOKENS) {
++    if (tokenIndex >= MAX_TOKENS || tokens[tokenIndex].type == TOKEN_EOF) {
+         return (Token){TOKEN_EOF};
+     }
++    Token token = tokens[tokenIndex++];
+     return token;
+ }
+
+@@ -99,7 +100,7 @@ void tokenize(const char *expression) {
+     for (int i = 0; expression[i]; i++) {
+         if (isspace(expression[i])) continue;
+
+-        Token token;
++        Token token = {TOKEN_NUMBER, 0};
+         if (isdigit(expression[i])) {
+             int value = 0;
+             while (i < strlen(expression) && isdigit(expression[i])) {
+@@ -132,9 +133,10 @@ void tokenize(const char *expression) {
+     }
+     tokens[tokenIndex++] = (Token){TOKEN_EOF};
+ }
+
+-int main() {
++int main(void) {
+     const char *expressions[] = {"1 + 2", "2 * 3 + 4", "2 * (3 + 4)", "8 / 2 * (2 + 2)"};
+-    for (const char *expr : expressions) {
++    for (size_t i = 0; i < sizeof(expressions) / sizeof(expressions[0]); i++) {
+         tokenize(expressions[i]);
+         int result = evaluate();
+         printf("%s => %d\n", expressions[i], result);
+     }
+     return 0;
+ }

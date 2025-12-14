@@ -1,0 +1,19 @@
+--- before.c
++++ before.c
+@@ -124,7 +124,7 @@ int main() {
+     tokenize("3 + 4 * (2 - 1)");
+     printf("%d\n", evaluate(0, token_count - 1)); // Output: 9
+
+-    tokenize("2 * 3 + 4");
++    tokenize("2 * 3 + 4"); // Ensure the expression is correctly tokenized
+     printf("%d\n", evaluate(0, token_count - 1)); // Output: 10
+
+     tokenize("2 * (3 + 4)");
+@@ -130,7 +130,7 @@ int main() {
+     printf("%d\n", evaluate(0, token_count - 1)); // Output: 14
+
+-    tokenize("8 / 2 * (2 + 2)");
++    tokenize("8 / 2 * (2 + 2)"); // Ensure the expression is correctly tokenized
+     printf("%d\n", evaluate(0, token_count - 1)); // Output: 16
+
+     return 0;

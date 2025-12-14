@@ -1,0 +1,26 @@
+--- before.c
++++ patched_before.c
+@@ -11,7 +11,8 @@
+     int value;
+-    }
++    Token token = (Token){TOKEN_EOF};
+     return token;
+ }
+
+-int applyOp(int a, int b, char op) {
++int applyOp(int a, int b, char op) {
+     switch (op) {
+         case '+': return a + b;
+         case '-': return a - b;
+         case '*': return a * b;
+         case '/': if (b == 0) error("Division by zero"); return a / b;
+-        default: return 0;
++        default: return 0; // Added default value
+     }
+ }
+
+ int precedence(char op) {
+     if (op == '+' || op == '-') return 1;
+     if (op == '*' || op == '/') return 2;
+     return 0;
+ }

@@ -1,4 +1,0 @@
-  File "expression_evaluator.py", line 8
-    In this instruction: "You arethi
-                         ^
-SyntaxError: unterminated string literal (detected at line 8)

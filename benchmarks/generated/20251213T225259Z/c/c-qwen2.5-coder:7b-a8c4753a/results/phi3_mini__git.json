@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-a8c4753a",
+  "language": "c",
+  "model_slug": "phi3_mini",
+  "algorithm": "git",
+  "diff_path": "diffs/phi3_mini.diff",
+  "after_path": "after__phi3_mini__git.c",
+  "patch_applied": true,
+  "patch_diagnostics": "applied",
+  "compile_returncode": 1,
+  "errors_before": 1,
+  "errors_after": 1,
+  "first_error_removed": false,
+  "added_lines": 0,
+  "removed_lines": 0,
+  "hunks": 0,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "expression_evaluator.c: In function \u2018parse_and_evaluate\u2019:\nexpression_evaluator.c:105:21: warning: unused variable \u2018a\u2019 [-Wunused-variable]\n  105 |                 int a = values[value_index - 1];\n      |                     ^\nexpression_evaluator.c:103:21: warning: unused variable \u2018b\u2019 [-Wunused-variable]\n  103 |                 int b = values[value_index - 1];\n      |                     ^\nexpression_evaluator.c:116:21: warning: unused variable \u2018a\u2019 [-Wunused-variable]\n  116 |                 int a = values[value_index - 1];\n      |                     ^\nexpression_evaluator.c:114:21: warning: unused variable \u2018b\u2019 [-Wunused-variable]\n  114 |                 int b = values[value_index - 1];\n      |                     ^\nexpression_evaluator.c:129:34: error: \u2018i\u2019 undeclared (first use in this function)\n  129 |         ops[--op_index] = tokens[i].type;\n      |                                  ^\nexpression_evaluator.c:129:34: note: each undeclared identifier is reported only once for each function it appears in\nexpression_evaluator.c:127:13: warning: unused variable \u2018a\u2019 [-Wunused-variable]\n  127 |         int a = values[value_index - 1];\n      |             ^\nexpression_evaluator.c:125:13: warning: unused variable \u2018b\u2019 [-Wunused-variable]\n  125 |         int b = values[value_index - 1];\n      |             ^\n",
+  "stdout_after": ""
+}

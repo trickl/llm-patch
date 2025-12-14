@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-4d730b75",
+  "language": "c",
+  "model_slug": "phi3_mini",
+  "algorithm": "aider",
+  "diff_path": "diffs/phi3_mini.diff",
+  "after_path": "after__phi3_mini__aider.c",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 1,
+  "errors_before": 8,
+  "errors_after": 9,
+  "first_error_removed": false,
+  "added_lines": 2,
+  "removed_lines": 1,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "expression_evaluator.c: In function \u2018evaluate_expression\u2019:\nexpression_evaluator.c:67:19: error: invalid initializer\n   67 |     Token token = get_token(); // Fixed invalid initializer error by removing the asterisk and parentheses.\n      |                   ^~~~~~~~~\nexpression_evaluator.c:82:21: error: incompatible types when assigning to type \u2018Token\u2019 from type \u2018int\u2019\n   82 |             token = get_token();\n      |                     ^~~~~~~~~\nexpression_evaluator.c:85:7: error: expected \u2018}\u2019 before \u2018else\u2019\n   85 |     } else if (token.type == TOKEN_LPAREN) {\n      |       ^~~~\nexpression_evaluator.c:87:24: error: request for member \u2018type\u2019 in something not a structure or union\n   87 |         if (get_token().type != TOKEN_RPAREN) {\n      |                        ^\nexpression_evaluator.c: In function \u2018main\u2019:\nexpression_evaluator.c:104:49: error: passing argument 1 of \u2018evaluate_expression\u2019 from incompatible pointer type [-Wincompatible-pointer-types]\n  104 |     printf(\"1 + 2 => %d\\n\", evaluate_expression(get_next_token));\n      |                                                 ^~~~~~~~~~~~~~\n      |                                                 |\n      |                                                 Token (*)()\nexpression_evaluator.c:66:31: note: expected \u2018int (*)()\u2019 but argument is of type \u2018Token (*)()\u2019\n   66 | int evaluate_expression(int (*get_token)()) {\n      |                         ~~~~~~^~~~~~~~~~~~\nexpression_evaluator.c:113:53: error: passing argument 1 of \u2018evaluate_expression\u2019 from incompatible pointer type [-Wincompatible-pointer-types]\n  113 |     printf(\"2 * 3 + 4 => %d\\n\", evaluate_expression(get_next_token));\n      |                                                     ^~~~~~~~~~~~~~\n      |                                                     |\n      |                                                     Token (*)()\nexpression_evaluator.c:66:31: note: expected \u2018int (*)()\u2019 but argument is of type \u2018Token (*)()\u2019\n   66 | int evaluate_expression(int (*get_token)()) {\n      |                         ~~~~~~^~~~~~~~~~~~\nexpression_evaluator.c:124:55: error: passing argument 1 of \u2018evaluate_expression\u2019 from incompatible pointer type [-Wincompatible-pointer-types]\n  124 |     printf(\"2 * (3 + 4) => %d\\n\", evaluate_expression(get_next_token));\n      |                                                       ^~~~~~~~~~~~~~\n      |                                                       |\n      |                                                       Token (*)()\nexpression_evaluator.c:66:31: note: expected \u2018int (*)()\u2019 but argument is of type \u2018Token (*)()\u2019\n   66 | int evaluate_expression(int (*get_token)()) {\n      |                         ~~~~~~^~~~~~~~~~~~\nexpression_evaluator.c:137:59: error: passing argument 1 of \u2018evaluate_expression\u2019 from incompatible pointer type [-Wincompatible-pointer-types]\n  137 |     printf(\"8 / 2 * (2 + 2) => %d\\n\", evaluate_expression(get_next_token));\n      |                                                           ^~~~~~~~~~~~~~\n      |                                                           |\n      |                                                           Token (*)()\nexpression_evaluator.c:66:31: note: expected \u2018int (*)()\u2019 but argument is of type \u2018Token (*)()\u2019\n   66 | int evaluate_expression(int (*get_token)()) {\n      |                         ~~~~~~^~~~~~~~~~~~\nexpression_evaluator.c: In function \u2018evaluate_expression\u2019:\nexpression_evaluator.c:96:1: warning: control reaches end of non-void function [-Wreturn-type]\n   96 | }\n      | ^\n",
+  "stdout_after": ""
+}

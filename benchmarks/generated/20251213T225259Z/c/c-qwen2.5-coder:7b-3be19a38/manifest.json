@@ -1,0 +1,19 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-3be19a38",
+  "language": "c",
+  "problem_id": "expr_eval_v1",
+  "model": "qwen2.5-coder:7b",
+  "provider": "ollama",
+  "timestamp_utc": "2025-12-13T22:53:11.870315+00:00",
+  "compile_command": [
+    "gcc",
+    "expression_evaluator.c",
+    "-std=c17",
+    "-Wall",
+    "-Wextra",
+    "-O0",
+    "-o",
+    "expr_eval.out"
+  ],
+  "return_code": 1
+}

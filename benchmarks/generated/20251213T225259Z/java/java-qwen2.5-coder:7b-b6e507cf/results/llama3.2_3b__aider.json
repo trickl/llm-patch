@@ -1,0 +1,22 @@
+{
+  "case_id": "java-qwen2.5-coder:7b-b6e507cf",
+  "language": "java",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "aider",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "after_path": "after__llama3.2_3b__aider.java",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 1,
+  "errors_before": 9,
+  "errors_after": 13,
+  "first_error_removed": true,
+  "added_lines": 21,
+  "removed_lines": 21,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "ExpressionEvaluator.java:14: error: illegal start of type\n    return new Parser(new Tokenizer(expression)).parse();\n    ^\nExpressionEvaluator.java:14: error: invalid method declaration; return type required\n    return new Parser(new Tokenizer(expression)).parse();\n               ^\nExpressionEvaluator.java:14: error: illegal start of type\n    return new Parser(new Tokenizer(expression)).parse();\n                      ^\nExpressionEvaluator.java:22: error: ')' expected\n        while (pos  input.length()) {\n                  ^\nExpressionEvaluator.java:22: error: ';' expected\n        while (pos  input.length()) {\n                                  ^\nExpressionEvaluator.java:26: error: ')' expected\n                while (pos  input.length() && Character.isDigit(input.charAt(pos))) {\n                          ^\nExpressionEvaluator.java:26: error: not a statement\n                while (pos  input.length() && Character.isDigit(input.charAt(pos))) {\n                                           ^\nExpressionEvaluator.java:26: error: ';' expected\n                while (pos  input.length() && Character.isDigit(input.charAt(pos))) {\n                                                                                  ^\nExpressionEvaluator.java:58: error: ')' expected\n        while (pos  tokens.size()) {\n                  ^\nExpressionEvaluator.java:58: error: ';' expected\n        while (pos  tokens.size()) {\n                                 ^\nExpressionEvaluator.java:76: error: ')' expected\n        while (pos  tokens.size()) {\n                  ^\nExpressionEvaluator.java:76: error: ';' expected\n        while (pos  tokens.size()) {\n                                 ^\n12 errors\n",
+  "stdout_after": ""
+}

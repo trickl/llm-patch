@@ -1,0 +1,19 @@
+diff --git a/expression_evaluator.ts b/expression_evaluator.ts
+index 3a4b5c6..7d8e9f0 100644
+--- a/expression_evaluator.ts
++++ b/expression_evaluator.ts
+@@ -1,4 +1,5 @@
+ import * as fs from 'fs';
++import * as process from 'process';
+ 
+ type Token = { type: 'NUMBER' | 'PLUS' | 'MINUS' | 'MUL' | 'DIV' | 'LPAREN' | 'RPAREN' | 'UMINUS'; value?: number };
+ 
+@@ -125,7 +126,7 @@ export function evaluateExpression(input: string): number {
+     if (require.main === module) {
+         const input = process.argv.slice(2).join(' ');
+         if (!input) {
+-            console.log('Usage: node expression_evaluator.ts "expression"');
++            console.log('Usage: node expression_evaluator.ts <expression>');
+         } else {
+             try {
+                 const result = evaluateExpression(input);

@@ -1,0 +1,14 @@
+--- before.java
++++ after.java
+@@ -107,7 +107,7 @@
+ return new NumberNode(func.apply(a.getValue(), b.getValue()));
+@@ -107,7 +107,7 @@
+ symbol:   method getValue()
+  location: variable a of type Node
+ ExpressionEvaluator.java:107: error: cannot find symbol
++return new NumberNode(func.apply(a.getValue(), b.getValue()));
+@@ -107,7 +107,7 @@
+ symbol:   method getValue()
+  location: variable b of type Node
+ ExpressionEvaluator.java:107: error: cannot find symbol
++return new NumberNode(func.apply(b.getValue(), a.getValue()));

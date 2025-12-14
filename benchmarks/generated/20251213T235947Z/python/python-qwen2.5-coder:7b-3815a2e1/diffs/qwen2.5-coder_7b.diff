@@ -1,0 +1,11 @@
+--- before.py
++++ before.py
+@@ -15,7 +15,7 @@ class Tokenizer:
+             self.current_token = int(self.input_string[self.position])
+             self.position += 1
+         elif self.position < len(self.input_string) and (self.input_string[self.position] == '+' or 
+-                                                        self.input_string[self.position] == '-' or 
++                                                        self.input_string[self.position] == '-' or
+                                                         self.input_string[self.position] == '*' or 
+                                                         self.input_string[self.position] == '/' or 
+                                                         self.input_string[self.position] == '(' or

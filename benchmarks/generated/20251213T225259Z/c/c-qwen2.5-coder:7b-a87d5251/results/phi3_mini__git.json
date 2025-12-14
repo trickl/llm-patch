@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-a87d5251",
+  "language": "c",
+  "model_slug": "phi3_mini",
+  "algorithm": "git",
+  "diff_path": "diffs/phi3_mini.diff",
+  "after_path": "after__phi3_mini__git.c",
+  "patch_applied": true,
+  "patch_diagnostics": "applied",
+  "compile_returncode": 1,
+  "errors_before": 1,
+  "errors_after": 1,
+  "first_error_removed": false,
+  "added_lines": 0,
+  "removed_lines": 0,
+  "hunks": 0,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "expression_evaluator.c: In function \u2018parse_and_evaluate\u2019:\nexpression_evaluator.c:81:12: error: invalid type argument of unary \u2018*\u2019 (have \u2018int\u2019)\n   81 |     while (**input != '\\0') {\n      |            ^~~~~~~\n",
+  "stdout_after": ""
+}

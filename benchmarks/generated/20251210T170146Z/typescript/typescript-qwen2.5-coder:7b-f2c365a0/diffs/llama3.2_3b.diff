@@ -1,4 +1,0 @@
---- before.ts
-+++ after.ts
-@@(98,5)-(98,6)
-+import { require } from 'node';

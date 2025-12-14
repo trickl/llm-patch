@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-fddb83c8",
+  "language": "c",
+  "model_slug": "phi3_mini",
+  "algorithm": "aider",
+  "diff_path": "diffs/phi3_mini.diff",
+  "after_path": "after__phi3_mini__aider.c",
+  "patch_applied": true,
+  "patch_diagnostics": "no hunks",
+  "compile_returncode": 1,
+  "errors_before": 2,
+  "errors_after": 2,
+  "first_error_removed": false,
+  "added_lines": 0,
+  "removed_lines": 0,
+  "hunks": 0,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "expression_evaluator.c: In function \u2018evaluate_expression\u2019:\nexpression_evaluator.c:59:18: error: implicit declaration of function \u2018evaluate_term\u2019 [-Wimplicit-function-declaration]\n   59 |     int result = evaluate_term();\n      |                  ^~~~~~~~~~~~~\nexpression_evaluator.c:60:37: warning: suggest parentheses around \u2018&&\u2019 within \u2018||\u2019 [-Wparentheses]\n   60 |     while (token_index < MAX_TOKENS && tokens[token_index].type == TOKEN_PLUS || tokens[token_index].type == TOKEN_MINUS) {\n      |            ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\nexpression_evaluator.c: In function \u2018evaluate_term\u2019:\nexpression_evaluator.c:72:18: error: implicit declaration of function \u2018evaluate_factor\u2019; did you mean \u2018evaluate_term\u2019? [-Wimplicit-function-declaration]\n   72 |     int result = evaluate_factor();\n      |                  ^~~~~~~~~~~~~~~\n      |                  evaluate_term\nexpression_evaluator.c:73:37: warning: suggest parentheses around \u2018&&\u2019 within \u2018||\u2019 [-Wparentheses]\n   73 |     while (token_index < MAX_TOKENS && tokens[token_index].type == TOKEN_MULTIPLY || tokens[token_index].type == TOKEN_DIVIDE) {\n      |            ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\nexpression_evaluator.c: In function \u2018evaluate_factor\u2019:\nexpression_evaluator.c:104:1: warning: control reaches end of non-void function [-Wreturn-type]\n  104 | }\n      | ^\n",
+  "stdout_after": ""
+}

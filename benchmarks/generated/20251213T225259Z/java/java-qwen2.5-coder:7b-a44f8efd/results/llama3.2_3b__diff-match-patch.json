@@ -1,0 +1,22 @@
+{
+  "case_id": "java-qwen2.5-coder:7b-a44f8efd",
+  "language": "java",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "diff-match-patch",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "after_path": "after__llama3.2_3b__diff-match-patch.java",
+  "patch_applied": true,
+  "patch_diagnostics": "statuses=[True]",
+  "compile_returncode": 1,
+  "errors_before": 12,
+  "errors_after": 22,
+  "first_error_removed": true,
+  "added_lines": 10,
+  "removed_lines": 10,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "ExpressionEvaluator.java:1: error: unnamed classes are a preview feature and are disabled by default.\nimport java.util.*;    private final Token token;public class ExpressionEvaluator {\n                                     ^\n  (use --enable-preview to enable unnamed classes)\nExpressionEvaluator.java:4: error: ')' or ',' expected\n        System.out.println(evaluat        System.out.println(evaluate(\"2 * (3 + 4)\")); // Should print 14\"2 * (3 + 4)\")); // Should print 14\n                                  ^\nExpressionEvaluator.java:8: error: illegal start of type\n    public static        return new Parser(token).parse();r(expression).tokenize()).parse();\n                         ^\nExpressionEvaluator.java:8: error: invalid method declaration; return type required\n    public static        return new Parser(token).parse();r(expression).tokenize()).parse();\n                                    ^\nExpressionEvaluator.java:8: error: <identifier> expected\n    public static        return new Parser(token).parse();r(expression).tokenize()).parse();\n                                                ^\nExpressionEvaluator.java:8: error: ';' expected\n    public static        return new Parser(token).parse();r(expression).tokenize()).parse();\n                                                 ^\nExpressionEvaluator.java:8: error: invalid method declaration; return type required\n    public static        return new Parser(token).parse();r(expression).tokenize()).parse();\n                                                          ^\nExpressionEvaluator.java:8: error: <identifier> expected\n    public static        return new Parser(token).parse();r(expression).tokenize()).parse();\n                                                                      ^\nExpressionEvaluator.java:8: error: ';' expected\n    public static        return new Parser(token).parse();r(expression).tokenize()).parse();\n                                                                       ^\nExpressionEvaluator.java:20: error: > or ',' expected\n            List<T            while (pos  input.length()) {    while (pos < input.length()) {\n                              ^\nExpressionEvaluator.java:20: error: not a statement\n            List<T            while (pos  input.length()) {    while (pos < input.length()) {\n                ^\nExpressionEvaluator.java:20: error: ')' expected\n            List<T            while (pos  input.length()) {    while (pos < input.length()) {\n                                        ^\nExpressionEvaluator.java:20: error: ';' expected\n            List<T            while (pos  input.length()) {    while (pos < input.length()) {\n                                                        ^\nExpressionEvaluator.java:26: error: ';' expected\n                                       tokens.add(new Token(TokenType.NUMBER, value));Token(TokenType.NUMBER, value));\n                                                                                                                    ^\nExpressionEvaluator.java:27: error: 'else' without 'if'\n                } else if (ch == '+' || ch == '-' || ch == '*' || ch == '/') {\n                  ^\nExpressionEvaluator.java:43: error: illegal start of expression\n        private static class Token {\n        ^\nExpressionEvaluator.java:95: error: illegal start of expression\n        private int term() {\n        ^\nExpressionEvaluator.java:112: error: illegal start of expression\n        private int factor() {\n        ^\nExpressionEvaluator.java:128: error: illegal start of expression\n                throw new IllegalArgumentException(\"Unexpected token: \" +        }            }\n                                                                                 ^\nExpressionEvaluator.java:130: error: class, interface, enum, or record expected\n    }\n    ^\n20 errors\n",
+  "stdout_after": ""
+}

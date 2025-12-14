@@ -1,4 +1,0 @@
---- before.py
-+++ patched_before.py
-@@ -34,7 +34,7 @@
-     self precedence = {'+': 1, '-': 1, '*': 2, '/': 2}

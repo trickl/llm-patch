@@ -1,8 +1,0 @@
---- before.java
-+++ after.java
-@@ -24,7 +24,7 @@
-         Queue<Token> tokens = tokenizer.tokenize();
-+
-         Parser parser = new Parser(tokens);
--
-+         return evaluator.evaluate(parser.parse());

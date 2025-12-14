@@ -1,0 +1,55 @@
+--- before.java	2023-04-10 12:34:56.000000000 +0800
++++ after.java	2023-04-10 12:35:07.000000000 +0800
+@@ -1,4 +1,4 @@
+ import java.util.*;
+ 
+-public class ExpressionEvaluator {
++public class ExpressionEvaluator {
+     public static void main(String[] args) {
+         System.out.println(evaluate("3 + 4 * (2 - 1)")); // Should print 7
+         System.out.println(evaluate("2 * 3 + 4")); // Should print 10
+@@ -12,7 +12,7 @@
+     public static int evaluate(String expression) {
+         return new Parser(new Tokenizer(expression)).parse();
+     }
+-}
++}
+ 
+ class Tokenizer {
+     private final String input;
+@@ -56,7 +56,7 @@
+                 result += token.value == '+' ? rhs : -rhs;
+             } else {
+                 break;
+-            }
++        }
+         return result;
+     }
+ 
+@@ -80,7 +80,7 @@
+                 result += token.value == '*' ? rhs : result / rhs;
+             } else {
+                 break;
+-            }
++        }
+         return result;
+     }
+ 
+@@ -104,7 +104,7 @@
+                 pos++;
+                 int result = expression();
+                 if (pos < tokens.size() && tokens.get(pos).type == TokenType.RPAREN) {
+-                    pos++;
++                    pos++;
+                     return result;
+                 } else {
+                     throw new IllegalArgumentException("Missing closing parenthesis");
+@@ -123,4 +123,4 @@
+     }
+ }
+ 
+-class Token {
++class Token {
+     enum TokenType { NUMBER, OPERATOR, LPAREN, RPAREN }
+ 
+     final TokenType type;

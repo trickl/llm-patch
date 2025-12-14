@@ -1,0 +1,55 @@
+ExpressionEvaluator.java:12: error: incompatible types: Tokenizer cannot be converted to List<Token>
+        return new Parser(new Tokenizer(expression)).parse();
+                          ^
+ExpressionEvaluator.java:32: error: cannot find symbol
+                    tokens.add(new Token(TokenType.NUMBER, Integer.parseInt(input.substring(numStart, pos))));
+                                         ^
+  symbol:   variable TokenType
+  location: class Tokenizer
+ExpressionEvaluator.java:34: error: cannot find symbol
+                    tokens.add(new Token(TokenType.OPERATOR, ch));
+                                         ^
+  symbol:   variable TokenType
+  location: class Tokenizer
+ExpressionEvaluator.java:37: error: cannot find symbol
+                    tokens.add(new Token(TokenType.LPAREN, null));
+                                         ^
+  symbol:   variable TokenType
+  location: class Tokenizer
+ExpressionEvaluator.java:40: error: cannot find symbol
+                    tokens.add(new Token(TokenType.RPAREN, null));
+                                         ^
+  symbol:   variable TokenType
+  location: class Tokenizer
+ExpressionEvaluator.java:68: error: cannot find symbol
+                if (token.type == TokenType.OPERATOR && (token.value == '+' || token.value == '-')) {
+                                  ^
+  symbol:   variable TokenType
+  location: class Parser
+ExpressionEvaluator.java:83: error: cannot find symbol
+                if (token.type == TokenType.OPERATOR && (token.value == '*' || token.value == '/')) {
+                                  ^
+  symbol:   variable TokenType
+  location: class Parser
+ExpressionEvaluator.java:96: error: cannot find symbol
+            if (token.type == TokenType.LPAREN) {
+                              ^
+  symbol:   variable TokenType
+  location: class Parser
+ExpressionEvaluator.java:99: error: cannot find symbol
+                if (pos < tokens.size() && tokens.get(pos).type == TokenType.RPAREN) {
+                                                                   ^
+  symbol:   variable TokenType
+  location: class Parser
+ExpressionEvaluator.java:105: error: cannot find symbol
+            } else if (token.type == TokenType.OPERATOR && token.value == '-') {
+                                     ^
+  symbol:   variable TokenType
+  location: class Parser
+ExpressionEvaluator.java:108: error: cannot find symbol
+            } else if (token.type == TokenType.NUMBER) {
+                                     ^
+  symbol:   variable TokenType
+  location: class Parser
+Note: Some messages have been simplified; recompile with -Xdiags:verbose to get full output
+11 errors

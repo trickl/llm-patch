@@ -1,0 +1,7 @@
+--- before.py
++++ patched_before.py
+@@ -13,7 +13,7 @@
+     tokens = re.findall(r'\d+|[+\-*/()]", expression)
+-    tokens = [Token('NUMBER', int(token)) if token.isdigit() else Token(token, token) for token in tokens]
++    tokens = [Token('NUMBER', int(token)) if token.isdigit() else Token(token, token.strip('"')) for token in tokens]
+     return tokens

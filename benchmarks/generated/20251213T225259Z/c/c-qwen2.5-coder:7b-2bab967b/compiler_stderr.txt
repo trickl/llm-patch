@@ -1,0 +1,17 @@
+expression_evaluator.c: In function ‘main’:
+expression_evaluator.c:150:35: error: passing argument 1 of ‘get_next_token’ from incompatible pointer type [-Wincompatible-pointer-types]
+  150 |         *token++ = get_next_token(&input);
+      |                                   ^~~~~~
+      |                                   |
+      |                                   char (*)[256]
+expression_evaluator.c:38:29: note: expected ‘char **’ but argument is of type ‘char (*)[256]’
+   38 | Token get_next_token(char **input) {
+      |                      ~~~~~~~^~~~~
+expression_evaluator.c:153:38: error: passing argument 1 of ‘evaluate_expression’ from incompatible pointer type [-Wincompatible-pointer-types]
+  153 |     int result = evaluate_expression(tokens);
+      |                                      ^~~~~~
+      |                                      |
+      |                                      Token *
+expression_evaluator.c:88:32: note: expected ‘char **’ but argument is of type ‘Token *’
+   88 | int evaluate_expression(char **input) {
+      |                         ~~~~~~~^~~~~

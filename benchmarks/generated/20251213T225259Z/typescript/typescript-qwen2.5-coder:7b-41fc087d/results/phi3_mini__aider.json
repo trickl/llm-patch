@@ -1,0 +1,22 @@
+{
+  "case_id": "typescript-qwen2.5-coder:7b-41fc087d",
+  "language": "typescript",
+  "model_slug": "phi3_mini",
+  "algorithm": "aider",
+  "diff_path": "diffs/phi3_mini.diff",
+  "after_path": "after__phi3_mini__aider.ts",
+  "patch_applied": true,
+  "patch_diagnostics": "no hunks",
+  "compile_returncode": 2,
+  "errors_before": 14,
+  "errors_after": 14,
+  "first_error_removed": false,
+  "added_lines": 0,
+  "removed_lines": 3,
+  "hunks": 0,
+  "delete_only": true,
+  "success": false,
+  "notes": "diff only deletes lines",
+  "stderr_after": "",
+  "stdout_after": "expression_evaluator.ts(42,41): error TS18048: 'a' is possibly 'undefined'.\nexpression_evaluator.ts(42,45): error TS18048: 'b' is possibly 'undefined'.\nexpression_evaluator.ts(43,46): error TS18048: 'a' is possibly 'undefined'.\nexpression_evaluator.ts(43,50): error TS18048: 'b' is possibly 'undefined'.\nexpression_evaluator.ts(44,46): error TS18048: 'a' is possibly 'undefined'.\nexpression_evaluator.ts(44,50): error TS18048: 'b' is possibly 'undefined'.\nexpression_evaluator.ts(45,57): error TS18048: 'a' is possibly 'undefined'.\nexpression_evaluator.ts(45,61): error TS18048: 'b' is possibly 'undefined'.\nexpression_evaluator.ts(51,16): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ '+': number; '-': number; '*': number; '/': number; }'.\n  No index signature with a parameter of type 'string' was found on type '{ '+': number; '-': number; '*': number; '/': number; }'.\nexpression_evaluator.ts(51,34): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ '+': number; '-': number; '*': number; '/': number; }'.\n  No index signature with a parameter of type 'string' was found on type '{ '+': number; '-': number; '*': number; '/': number; }'.\nexpression_evaluator.ts(91,5): error TS2580: Cannot find name 'require'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.\nexpression_evaluator.ts(91,22): error TS2580: Cannot find name 'module'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.\nexpression_evaluator.ts(92,19): error TS2580: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.\nexpression_evaluator.ts(96,33): error TS18046: 'error' is of type 'unknown'.\n"
+}

@@ -1,0 +1,11 @@
+--- before.ts
++++ before.ts
+@@ -101,7 +101,7 @@ function applyOperator(values: number[], operators: string[]): void {
+     switch (operator) {
+         case '+':
+             values.push(a + b);
+-            break;
++            break; // Added missing semicolon
+         case '-':
+             values.push(a - b);
+             break;

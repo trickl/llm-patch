@@ -1,0 +1,12 @@
+--- before.java
++++ patched_before.java
+@@ -12,7 +12,7 @@
+     return new Parser(new Tokenizer(expression)).parse();
+ 
+ class Tokenizer {
+-    private final String input;
++    private final String input;
+     private int pos = 0;
+
+     public Tokenizer(String input) {
+         this.input = input;

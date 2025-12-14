@@ -1,0 +1,44 @@
+--- expression_evaluator.ts
++++ expression_evaluator.ts
+@@ -124,1 +124,2 @@
+ function parse(tokens: Token[]): number[] {
+     const values: number[] = [];
+     const operators: string[] = [];
+
+-    for (const token of tokens) {
++    for (const token of tokens) {
+         if (token.type === 'number') {
+             values.push(Number(token.value));
+         } else if (token.value === '(') {
+             operators.push(token.value);
+         } else if (token.value === ')') {
+             while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+                 const operator = operators.pop()!;
+                 const b = values.pop()!;
+                 const a = values.pop()!;
+                 values.push(applyOperator(a, b, operator));
+             }
+             operators.pop(); // Remove '('
+         } else if (isOperator(token.value)) {
+             while (
+                 operators.length > 0 &&
+                 precedence(operators[operators.length - 1]) >= precedence(token.value)
+             ) {
+                 const operator = operators.pop()!;
+                 const b = values.pop()!;
+                 const a = values.pop()!;
+                 values.push(applyOperator(a, b, operator));
+             }
+             operators.push(token.value);
+         }
+     }
+
+-    while (operators.length > 0) {
++    while (operators.length > 0 && operators[operators.length - 1] !== ')') {
+         const operator = operators.pop()!;
+         const b = values.pop()!;
+         const a = values.pop()!;
+         values.push(applyOperator(a, b, operator));
+     }
+
+     return values;

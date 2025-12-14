@@ -1,0 +1,7 @@
+--- before.c    2023-04-01 15:30:00.0000000 -0700
++++ after.c     2023-04-01 15:30:00.0000000 -0700
+@@ -150,6 +150,8 @@
+   *token++ = get_next_token(&input);
++#ifdef __cplusplus
+-Token get_next_token(char **input) {
++extern "C" Token get_next_token(const char **input) {

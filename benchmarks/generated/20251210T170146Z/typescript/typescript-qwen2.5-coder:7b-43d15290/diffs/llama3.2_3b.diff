@@ -1,7 +1,0 @@
---- before.ts
-+++ patched_before_ts
-@@ -97,5 +97,6 @@
-     } else if (token === 'u-') {
-         values.push(-values.pop()!);
-+       } else if (typeof token === 'string' && typeof require !== 'undefined') {
-+           require('assert');

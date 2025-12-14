@@ -1,5 +1,0 @@
---- before.ts
-+++ after.ts
-@@(76,5)-(76,6)
--require.main === module
-+import { require } from 'node';

@@ -1,0 +1,16 @@
+--- before.ts
++++ patched_before_ts
+@@ -96,7 +96,7 @@
+         } else if (token.type === 'parenthesis' && token.value === '(') {
+             operators.push(token.value);
+-        } else if (token.type === 'parenthesis' && token.value === ')') {
++        } else if (token.type === 'parenthesis' && token.value === ')') {
+             while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+                 const operator = operators.pop()!;
+-                const b = values.pop()!;
+-                const a = values.pop()!;
++                const b = values.pop()!;
++                const a = values.pop()!;
+                 values.push(applyOperator(a, b, operator));
+             }
+             operators.pop(); // Remove the '('

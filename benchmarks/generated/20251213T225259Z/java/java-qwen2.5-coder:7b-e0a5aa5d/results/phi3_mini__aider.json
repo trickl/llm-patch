@@ -1,0 +1,22 @@
+{
+  "case_id": "java-qwen2.5-coder:7b-e0a5aa5d",
+  "language": "java",
+  "model_slug": "phi3_mini",
+  "algorithm": "aider",
+  "diff_path": "diffs/phi3_mini.diff",
+  "after_path": "after__phi3_mini__aider.java",
+  "patch_applied": true,
+  "patch_diagnostics": "no hunks",
+  "compile_returncode": 1,
+  "errors_before": 8,
+  "errors_after": 8,
+  "first_error_removed": false,
+  "added_lines": 0,
+  "removed_lines": 0,
+  "hunks": 0,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "ExpressionEvaluator.java:76: error: cannot find symbol\n    private final List<Token> tokens;\n                       ^\n  symbol:   class Token\n  location: class Parser\nExpressionEvaluator.java:79: error: cannot find symbol\n    public Parser(List<Token> tokens) {\n                       ^\n  symbol:   class Token\n  location: class Parser\nExpressionEvaluator.java:90: error: cannot find symbol\n            Token token = tokens.get(pos);\n            ^\n  symbol:   class Token\n  location: class Parser\nExpressionEvaluator.java:91: error: cannot find symbol\n            if (token.type != TokenType.OPERATOR) break;\n                              ^\n  symbol:   variable TokenType\n  location: class Parser\nExpressionEvaluator.java:107: error: cannot find symbol\n            Token token = tokens.get(pos);\n            ^\n  symbol:   class Token\n  location: class Parser\nExpressionEvaluator.java:108: error: cannot find symbol\n            if (token.type != TokenType.OPERATOR) break;\n                              ^\n  symbol:   variable TokenType\n  location: class Parser\nExpressionEvaluator.java:122: error: cannot find symbol\n        Token token = tokens.get(pos);\n        ^\n  symbol:   class Token\n  location: class Parser\n7 errors\n",
+  "stdout_after": ""
+}

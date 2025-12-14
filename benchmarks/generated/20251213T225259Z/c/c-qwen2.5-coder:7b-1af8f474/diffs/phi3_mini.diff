@@ -1,0 +1,28 @@
+--- before.c 2019-10-15 14:38:00.760000 -0400
++++ after.c 2019-10-15 14:38:00.760000 -0400
+@@ -91,9 +91,9 @@
+         switch (token.type) {
+-        case TOKEN_EOF: return values[value_top]; // Handle EOF token by returning the result of evaluation so far
++        default: break; // Add this line to handle any unhandled enumeration value for 'TOKEN_EOF'
+         }
+     }
+ 
+++   case TOKEN_NUMBER:
+++      values[value_top++] = token.value;
+@@ -125,7 +125,8 @@
+       TokenType ops[MAX_TOKEN_LENGTH] = {TOKEN_PLUS}; // Default to addition for empty stack
+       int value_top = 0, op_top = 0;
++   
+     case TOKEN_LPAREN:
+@@ -128,7 +130,9 @@
+         ops[op_top++] = token.type; // Handle '(' by pushing it onto the stack of operators
+-      break;
++        continue; // Add this line to handle any unhandled enumeration value for TOKEN_LPAREN and avoid fallthrough into next case
+ 
+     case TOKEN_RPAREN:
+@@ -132,7 +134,9 @@
+         while (op_top > 0 && precedence(ops[op_top - 1]) >= precedence(token.type)) { // Change 'TOKEN_LPAREN' to 'TOKEN_RPAREN' in the condition of this loop
+-        case TOKEN_RPAREN: ops[--op_top] = token.type; break; // Remove fallthrough and handle any unhandled enumeration value for TOKEN_RPAREN by adding a continue statement or removing it if not needed elsewhere in the code
++      continue; // Add this line to prevent falling through into next case, which is now handled correctly with 'TOKEN_LPAREN' handling above. If fallthrough was intended and necessary for logic outside of shown context (e.g., nested parentheses), then remove or comment out these lines instead.
+ 
+     default: // Add this line to handle any unhandled enumeration value in the switch statement, which is now unnecessary due to added 'default' case above. If handling was intended and necessary for logic outside of shown context (e.g., nested parentheses), then add appropriate code here or remove these lines instead.

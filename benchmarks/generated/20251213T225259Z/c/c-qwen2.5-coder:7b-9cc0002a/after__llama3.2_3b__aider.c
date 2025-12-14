@@ -1,0 +1,145 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <string.h>
+
+#define MAX_TOKENS 100
+
+typedef enum {
+    TOKEN_NUMBER,
+    TOKEN_PLUS,
+    TOKEN_MINUS,
+    TOKEN_MULTIPLY,
+    TOKEN_DIVIDE,
+    TOKEN_LPAREN,
+    TOKEN_RPAREN,
+    TOKEN_EOF
+} TokenType;
+
+typedef struct {
+    TokenType type;
+    int value;
+} Token;
+
+Token tokens[MAX_TOKENS];
+int token_index = 0;
+
+void error(const char *msg) {
+    fprintf(stderr, "Error: %s\n", msg);
+    exit(EXIT_FAILURE);
+}
+
+void skip_whitespace() {
+    while (isspace(tokens[token_index].value)) {
+        token_index++;
+    }
+}
+
+Token get_next_token() {
+    Token token = tokens[token_index];
+    token_index++;
+    return token;
+}
+
+int precedence(TokenType type) {
+    switch (type) {
+        case TOKEN_MULTIPLY:
+        case TOKEN_DIVIDE:
+            return 2;
+        case TOKEN_PLUS:
+        case TOKEN_MINUS:
+            return 1;
+        default:
+            return 0;
+    }
+}
+
+int apply_operator(int a, int b, TokenType operator) {
+    switch (operator) {
+        case TOKEN_PLUS:
+            return a + b;
+        case TOKEN_MINUS:
+            return a - b;
+        case TOKEN_MULTIPLY:
+            return a * b;
+        case TOKEN_DIVIDE:
+            if (b == 0) error("Division by zero");
+            return a / b;
+        default:
+            error("Invalid operator");
+    }
+}
+
+int evaluate_expression(int start, int end) {
+    while (start < end && tokens[start].type != TOKEN_LPAREN) {
+        int i = start;
+        while (i < end && precedence(tokens[i].type) <= precedence(tokens[end - 1].type)) {
+            int a = evaluate_expression(start, i);
+  int b = evaluate_expression(i + 2, end);
+  tokens[i] = (Token)apply_operator(a, b, tokens[i + 1].type);
+     start = i + 3;
+        }
+    }
+
+    if (tokens[start].type == TOKEN_LPAREN) {
+        int value = evaluate_expression(start + 1, end - 1);
+        if (tokens[end].type != TOKEN_RPAREN) error("Unmatched parentheses");
+        return value;
+    } else {
+        return tokens[start].value;
+    }
+}
+
+int main() {
+    char input[256];
+    printf("Enter an expression: ");
+    fgets(input, sizeof(input), stdin);
+
+    // Tokenize the input
+    token_index = 0;
+    int i = 0;
+    while (input[i]) {
+        if (isspace(input[i])) {
+            i++;
+        } else if (isdigit(input[i])) {
+            tokens[token_index].type = TOKEN_NUMBER;
+            tokens[token_index].value = atoi(&input[i]);
+            while (isdigit(input[++i]));
+            token_index++;
+        } else if (input[i] == '+') {
+            tokens[token_index].type = TOKEN_PLUS;
+            i++;
+            token_index++;
+        } else if (input[i] == '-') {
+            if (token_index == 0 || tokens[token_index - 1].type != TOKEN_NUMBER) {
+                tokens[token_index].type = TOKEN_MINUS;
+            } else {
+                tokens[token_index - 1].value *= -1;
+            }
+            i++;
+            token_index++;
+        } else if (input[i] == '*') {
+            tokens[token_index].type = TOKEN_MULTIPLY;
+            i++;
+            token_index++;
+        } else if (input[i] == '/') {
+            tokens[token_index].type = TOKEN_DIVIDE;
+            i++;
+            token_index++;
+        } else if (input[i] == '(') {
+            tokens[token_index].type = TOKEN_LPAREN;
+            i++;
+            token_index++;
+        } else if (input[i] == ')') {
+            tokens[token_index].type = TOKEN_RPAREN;
+            i++;
+            token_index++;
+        }
+    }
+
+    // Evaluate the expression
+    int result = evaluate_expression(0, token_index);
+    printf("Result: %d\n", result);
+
+    return 0;
+}

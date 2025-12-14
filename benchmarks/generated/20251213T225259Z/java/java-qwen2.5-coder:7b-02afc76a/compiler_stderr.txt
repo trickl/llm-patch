@@ -1,0 +1,40 @@
+ExpressionEvaluator.java:13: error: incompatible types: Tokenizer cannot be converted to List<Token>
+        return new Parser(new Tokenizer(expression)).parse();
+                          ^
+ExpressionEvaluator.java:70: error: bad operand types for binary operator '=='
+                if (token.type == TokenType.OPERATOR && (token.value == '+' || token.value == '-')) {
+                                                                     ^
+  first type:  Object
+  second type: char
+ExpressionEvaluator.java:70: error: bad operand types for binary operator '=='
+                if (token.type == TokenType.OPERATOR && (token.value == '+' || token.value == '-')) {
+                                                                                           ^
+  first type:  Object
+  second type: char
+ExpressionEvaluator.java:73: error: bad operand types for binary operator '=='
+                    result += token.value == '+' ? nextTerm : -nextTerm;
+                                          ^
+  first type:  Object
+  second type: char
+ExpressionEvaluator.java:85: error: bad operand types for binary operator '=='
+                if (token.type == TokenType.OPERATOR && (token.value == '*' || token.value == '/')) {
+                                                                     ^
+  first type:  Object
+  second type: char
+ExpressionEvaluator.java:85: error: bad operand types for binary operator '=='
+                if (token.type == TokenType.OPERATOR && (token.value == '*' || token.value == '/')) {
+                                                                                           ^
+  first type:  Object
+  second type: char
+ExpressionEvaluator.java:88: error: bad operand types for binary operator '=='
+                    result += token.value == '*' ? nextFactor : result / nextFactor;
+                                          ^
+  first type:  Object
+  second type: char
+ExpressionEvaluator.java:110: error: bad operand types for binary operator '=='
+            } else if (token.type == TokenType.OPERATOR && token.value == '-') {
+                                                                       ^
+  first type:  Object
+  second type: char
+Note: Some messages have been simplified; recompile with -Xdiags:verbose to get full output
+8 errors

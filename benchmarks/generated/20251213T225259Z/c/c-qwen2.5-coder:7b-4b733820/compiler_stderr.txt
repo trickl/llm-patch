@@ -1,0 +1,19 @@
+expression_evaluator.c: In function ‘parseExpression’:
+expression_evaluator.c:62:18: error: implicit declaration of function ‘parseTerm’ [-Wimplicit-function-declaration]
+   62 |     int result = parseTerm();
+      |                  ^~~~~~~~~
+expression_evaluator.c: In function ‘parseTerm’:
+expression_evaluator.c:72:18: error: implicit declaration of function ‘parseFactor’ [-Wimplicit-function-declaration]
+   72 |     int result = parseFactor();
+      |                  ^~~~~~~~~~~
+expression_evaluator.c: In function ‘tokenize’:
+expression_evaluator.c:104:14: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+  104 |     while (i < strlen(input)) {
+      |              ^
+expression_evaluator.c:107:22: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+  107 |             while (i < strlen(input) && isdigit(input[i])) {
+      |                      ^
+expression_evaluator.c: In function ‘evaluateExpression’:
+expression_evaluator.c:59:1: warning: control reaches end of non-void function [-Wreturn-type]
+   59 | }
+      | ^

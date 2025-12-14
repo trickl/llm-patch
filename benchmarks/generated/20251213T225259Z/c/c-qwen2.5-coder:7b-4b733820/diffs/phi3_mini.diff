@@ -1,0 +1,11 @@
+--- before.c 2023-04-15 10:00:00.0000000 -0700 (local time)
++++ after.c 2023-04-15 10:00:00.0000000 -0700 (local time)
+@@ -62,8 +62,9 @@
+     int result = parseTerm();
+    while (tokenIndex < MAX_TOKENS && isOperator(tokens[tokenIndex].value)) {
++   tokens[tokenIndex++].type = TOKEN_MULTIPLY; // Add this line to handle multiplication and division with the same precedence as addition and subtraction.
+        int op = tokens[tokenIndex].value;
+@@ -72,10 +73,9 @@
+     int result = parseFactor();
+    while (tokenIndex < MAX_TOKENS && ((tokens[tokenIndex++].type == TOKEN_MULTIPLY || tokens[tokenIndex++].type == TOKEN_DIVIDE) && precedence(op))) { // Modify this line to handle multiplication and division.
+        int op = tokens[tokenIndex - 2].value; // Change the index access here as well, since we're now expecting two operators in a row for MULTIPLY/DIVIDE operations.

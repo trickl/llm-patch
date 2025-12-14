@@ -1,4 +1,0 @@
---- before.java
-+++ after.java
-@@ -138,7 +138,8 @@
-             return (int) tokens.get(0).value;

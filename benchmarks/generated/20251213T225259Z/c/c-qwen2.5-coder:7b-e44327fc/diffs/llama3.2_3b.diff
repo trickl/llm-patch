@@ -1,0 +1,6 @@
+--- before.c
++++ after.c
+@@ -59,7 +59,7 @@
+   int result = evaluate(token, &input);
+-  return result;
++  return evaluate(tokenize(input), input);

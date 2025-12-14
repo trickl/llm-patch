@@ -1,0 +1,23 @@
+expression_evaluator.c: In function ‘parse_and_evaluate’:
+expression_evaluator.c:105:21: warning: unused variable ‘a’ [-Wunused-variable]
+  105 |                 int a = values[value_index - 1];
+      |                     ^
+expression_evaluator.c:103:21: warning: unused variable ‘b’ [-Wunused-variable]
+  103 |                 int b = values[value_index - 1];
+      |                     ^
+expression_evaluator.c:116:21: warning: unused variable ‘a’ [-Wunused-variable]
+  116 |                 int a = values[value_index - 1];
+      |                     ^
+expression_evaluator.c:114:21: warning: unused variable ‘b’ [-Wunused-variable]
+  114 |                 int b = values[value_index - 1];
+      |                     ^
+expression_evaluator.c:129:34: error: ‘i’ undeclared (first use in this function)
+  129 |         ops[--op_index] = tokens[i].type;
+      |                                  ^
+expression_evaluator.c:129:34: note: each undeclared identifier is reported only once for each function it appears in
+expression_evaluator.c:127:13: warning: unused variable ‘a’ [-Wunused-variable]
+  127 |         int a = values[value_index - 1];
+      |             ^
+expression_evaluator.c:125:13: warning: unused variable ‘b’ [-Wunused-variable]
+  125 |         int b = values[value_index - 1];
+      |             ^

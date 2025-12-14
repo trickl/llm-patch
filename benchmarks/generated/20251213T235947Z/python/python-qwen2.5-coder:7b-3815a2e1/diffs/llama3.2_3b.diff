@@ -1,0 +1,6 @@
+--- before.py
++++ patched_before.py
+@@ -15,7 +15,7 @@
+     elif self.position  len(self.input_string) and (self.input_string[self.position] == '+' or 
+-    ^^^^
++    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

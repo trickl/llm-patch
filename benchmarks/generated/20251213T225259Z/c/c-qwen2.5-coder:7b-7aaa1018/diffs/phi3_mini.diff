@@ -1,0 +1,13 @@
+--- expression_evaluator.c before after
++++ expression_evaluator.c patched
+@@ -1,7 +1,8 @@
+-#include <stdio.h>
++#include "expression_tokenizer.h" // New include for the tokenization logic
+ #include <stdlib.h>
+ #include <ctype.h>
+ #include <string.h>
+ 
+@@ -14,7 +14,8 @@
+-void tokenize(const char *expression) {
++Tokenizer::tokenize(const char *expression); // Use the new class method for tokenization
+   const char *p = expression;

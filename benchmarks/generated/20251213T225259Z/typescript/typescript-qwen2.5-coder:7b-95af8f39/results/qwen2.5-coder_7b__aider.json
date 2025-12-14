@@ -1,0 +1,22 @@
+{
+  "case_id": "typescript-qwen2.5-coder:7b-95af8f39",
+  "language": "typescript",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "aider",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "after_path": "after__qwen2.5-coder_7b__aider.ts",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 2 hunks",
+  "compile_returncode": 2,
+  "errors_before": 4,
+  "errors_after": 10,
+  "first_error_removed": false,
+  "added_lines": 3,
+  "removed_lines": 3,
+  "hunks": 2,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "",
+  "stdout_after": "expression_evaluator.ts(68,5): error TS2322: Type 'string[]' is not assignable to type 'number[]'.\n  Type 'string' is not assignable to type 'number'.\nexpression_evaluator.ts(69,5): error TS2322: Type 'string[]' is not assignable to type 'number[]'.\n  Type 'string' is not assignable to type 'number'.\nexpression_evaluator.ts(74,29): error TS2345: Argument of type 'number' is not assignable to parameter of type 'string'.\nexpression_evaluator.ts(75,33): error TS2345: Argument of type 'number' is not assignable to parameter of type 'string'.\nexpression_evaluator.ts(80,22): error TS2678: Type 'string' is not comparable to type 'number'.\nexpression_evaluator.ts(83,22): error TS2678: Type 'string' is not comparable to type 'number'.\nexpression_evaluator.ts(86,22): error TS2678: Type 'string' is not comparable to type 'number'.\nexpression_evaluator.ts(89,22): error TS2678: Type 'string' is not comparable to type 'number'.\nexpression_evaluator.ts(105,12): error TS2580: Cannot find name 'require'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.\nexpression_evaluator.ts(105,46): error TS2580: Cannot find name 'module'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.\n"
+}

@@ -1,5 +1,0 @@
-expression_evaluator.ts(45,23): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ '+': number; '-': number; '*': number; '/': number; }'.
-  No index signature with a parameter of type 'string' was found on type '{ '+': number; '-': number; '*': number; '/': number; }'.
-expression_evaluator.ts(45,49): error TS7053: Element implicitly has an 'any' type because expression of type '"("' can't be used to index type '{ '+': number; '-': number; '*': number; '/': number; }'.
-  Property '(' does not exist on type '{ '+': number; '-': number; '*': number; '/': number; }'.
-expression_evaluator.ts(53,19): error TS2322: Type '{ type: string; operator: string; left: any; right: string; }' is not assignable to type 'string'.

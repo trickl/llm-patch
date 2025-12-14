@@ -1,7 +1,0 @@
-expression_evaluator.c:4:1: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘Your’
-    4 | Your task:
-      | ^~~~
-expression_evaluator.c:4:1: error: unknown type name ‘Your’
-expression_evaluator.c:11:3: error: invalid preprocessing directive #Instructedd
-   11 | # Instructedd, and the second instruction:
-      |   ^~~~~~~~~~~

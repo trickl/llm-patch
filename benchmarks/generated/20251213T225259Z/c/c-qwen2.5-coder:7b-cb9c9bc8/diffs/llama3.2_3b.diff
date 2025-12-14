@@ -1,0 +1,35 @@
+--- before.c
++++ patched_c
+@@ -94,7 +94,7 @@
+   int evaluate(int *start, int *end) {
+-    if (*start > *end) {
++    if (start > end) {
+       fprintf(stderr, "Error: Invalid expression\n");
+       exit(1);
+     }
+
+     int value = tokens[*start].value;
+     TokenType operator = TOKEN_PLUS;
+
+@@ -127,7 +127,7 @@
+   printf("%d\n", evaluate(0, token_count - 1)); // Output: 10
+-    if (tokens[i].type == TOKEN_LPAREN) {
++    if (tokens[i].type == TOKEN_LPAREN) {
+       int j = i + 1;
+       while (j <= *end && tokens[j].type != TOKEN_RPAREN) {
+         j++;
+       }
+@@ -130,7 +130,7 @@
+   printf("%d\n", evaluate(0, token_count - 1)); // Output: 14
+-    if (tokens[i].type == TOKEN_LPAREN) {
++    if (tokens[i].type == TOKEN_LPAREN) {
+       int j = i + 1;
+       while (j <= *end && tokens[j].type != TOKEN_RPAREN) {
+         j++;
+@@ -133,7 +133,7 @@
+   printf("%d\n", evaluate(0, token_count - 1)); // Output: 16
+-    if (tokens[i].type == TOKEN_LPAREN) {
++    if (tokens[i].type == TOKEN_LPAREN) {
+       int j = i + 1;
+       while (j <= *end && tokens[j].type != TOKEN_RPAREN) {
+         j++;

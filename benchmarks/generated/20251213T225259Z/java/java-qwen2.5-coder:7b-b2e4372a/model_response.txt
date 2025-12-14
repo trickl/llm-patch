@@ -1,0 +1,101 @@
+```java
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class ExpressionEvaluator {
+    public static void main(String[] args) {
+        System.out.println(evaluate("1 + 2")); // Should print 3
+        System.out.println(evaluate("2 * 3 + 4")); // Should print 10
+        System.out.println(evaluate("2 * (3 + 4)")); // Should print 14
+        System.out.println(evaluate("8 / 2 * (2 + 2)")); // Should print 16
+    }
+
+    public static int evaluate(String expression) {
+        List<String> tokens = tokenize(expression);
+        return parse(tokens);
+    }
+
+    private static List<String> tokenize(String expression) {
+        List<String> tokens = new ArrayList<>();
+        StringBuilder sb = new StringBuilder();
+        boolean inNumber = false;
+        for (char c : expression.toCharArray()) {
+            if (Character.isDigit(c)) {
+                sb.append(c);
+                inNumber = true;
+            } else if (c == ' ') {
+                continue;
+            } else {
+                if (inNumber) {
+                    tokens.add(sb.toString());
+                    sb.setLength(0);
+                    inNumber = false;
+                }
+                tokens.add(String.valueOf(c));
+            }
+        }
+        if (inNumber) {
+            tokens.add(sb.toString());
+        }
+        return tokens.stream()
+                .map(token -> token.equals("-") && (tokens.isEmpty() || tokens.get(tokens.size() - 1).matches("[\\d)]")))
+                        ? "(-1)" : token)
+                .collect(Collectors.toList());
+    }
+
+    private static int parse(List<String> tokens) {
+        Deque<Integer> values = new ArrayDeque<>();
+        Deque<Character> operators = new ArrayDeque<>();
+
+        for (String token : tokens) {
+            if (token.matches("\\d+")) {
+                values.push(Integer.parseInt(token));
+            } else if (token.equals("(")) {
+                operators.push(token.charAt(0));
+            } else if (token.equals(")")) {
+                while (!operators.peek().equals('(')) {
+                    applyOperation(values, operators);
+                }
+                operators.pop();
+            } else {
+                while (!operators.isEmpty() && hasPrecedence(operators.peek(), token.charAt(0))) {
+                    applyOperation(values, operators);
+                }
+                operators.push(token.charAt(0));
+            }
+        }
+
+        while (!operators.isEmpty()) {
+            applyOperation(values, operators);
+        }
+
+        return values.pop();
+    }
+
+    private static void applyOperation(Deque<Integer> values, Deque<Character> operators) {
+        int b = values.pop();
+        int a = values.pop();
+        char operator = operators.pop();
+        switch (operator) {
+            case '+':
+                values.push(a + b);
+                break;
+            case '-':
+                values.push(a - b);
+                break;
+            case '*':
+                values.push(a * b);
+                break;
+            case '/':
+                values.push(a / b);
+                break;
+        }
+    }
+
+    private static boolean hasPrecedence(char op1, char op2) {
+        if (op2 == '(' || op2 == ')') return false;
+        if ((op1 == '*' || op1 == '/') && (op2 == '+' || op2 == '-')) return false;
+        return true;
+    }
+}
+```

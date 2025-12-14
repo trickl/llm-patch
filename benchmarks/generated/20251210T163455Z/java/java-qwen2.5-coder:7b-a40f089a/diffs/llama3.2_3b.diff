@@ -1,9 +1,0 @@
---- before.java
-+++ after.java
-@@ -111,7 +111,8 @@
- } else if (token == '(') {
-+    int tokenPos = pos;
-     tokens.get(pos++) == '(') {
--        return parseExpression();
-+        return new Parser(new Tokenizer(expression)).parse();
-     }

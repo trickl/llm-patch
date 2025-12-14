@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-3be19a38",
+  "language": "c",
+  "model_slug": "phi3_mini",
+  "algorithm": "diff-match-patch",
+  "diff_path": "diffs/phi3_mini.diff",
+  "after_path": null,
+  "patch_applied": false,
+  "patch_diagnostics": "DMP parse error: Invalid patch string: @@ -10,7 +10,7 @@ typedef struct {",
+  "compile_returncode": null,
+  "errors_before": 1,
+  "errors_after": null,
+  "first_error_removed": false,
+  "added_lines": 3,
+  "removed_lines": 2,
+  "hunks": 3,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": null,
+  "stdout_after": null
+}

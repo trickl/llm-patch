@@ -1,0 +1,16 @@
+--- before.java
++++ after.java
+@@ -13,7 +13,7 @@
+     return new Parser(new Tokenizer(expression)).parse();
+-}
++}
+ 
+@@ -70,7 +70,7 @@
+         if (token.type == TokenType.OPERATOR && (token.value == '+' || token.value == '-')) {
+             pos++;
+-            int nextTerm = term();
+-            result += token.value == '+' ? nextTerm : -nextTerm;
++            int nextTerm = parse();
++            result += token.value == '+' ? nextTerm : -nextTerm;
+         } else {
+             break;

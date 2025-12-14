@@ -1,0 +1,22 @@
+{
+  "case_id": "java-qwen2.5-coder:7b-54da2b1c",
+  "language": "java",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "aider",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "after_path": "after__llama3.2_3b__aider.java",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 1,
+  "errors_before": 4,
+  "errors_after": 8,
+  "first_error_removed": false,
+  "added_lines": 4,
+  "removed_lines": 0,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "ExpressionEvaluator.java:38: error: incompatible types: char cannot be converted to Integer\n                return new Token(TokenType.OPERATOR, type);\n                                                     ^\nExpressionEvaluator.java:39: error: cannot find symbol\n             } else if (type == TokenType.NUMBER) {\n                        ^\n  symbol:   variable type\n  location: class Tokenizer\nExpressionEvaluator.java:40: error: cannot find symbol\n                 int value = currentToken.value;\n                             ^\n  symbol:   variable currentToken\n  location: class Tokenizer\nExpressionEvaluator.java:41: error: cannot find symbol\n                 currentToken = tokenizer.nextToken();\n                 ^\n  symbol:   variable currentToken\n  location: class Tokenizer\nExpressionEvaluator.java:41: error: cannot find symbol\n                 currentToken = tokenizer.nextToken();\n                                ^\n  symbol:   variable tokenizer\n  location: class Tokenizer\nExpressionEvaluator.java:70: error: incompatible types: Integer cannot be converted to char\n                char op = currentToken.value;\n                                      ^\nExpressionEvaluator.java:84: error: incompatible types: Integer cannot be converted to char\n                char op = currentToken.value;\n                                      ^\nNote: Some messages have been simplified; recompile with -Xdiags:verbose to get full output\n7 errors\n",
+  "stdout_after": ""
+}

@@ -1,0 +1,22 @@
+{
+  "case_id": "java-qwen2.5-coder:7b-bd78d37e",
+  "language": "java",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "aider",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "after_path": "after__llama3.2_3b__aider.java",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 1,
+  "errors_before": 4,
+  "errors_after": 15,
+  "first_error_removed": true,
+  "added_lines": 19,
+  "removed_lines": 19,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "ExpressionEvaluator.java:30: error: ')' expected\n        while (pos  input.length()) {\n                  ^\nExpressionEvaluator.java:30: error: ';' expected\n        while (pos  input.length()) {\n                                  ^\nExpressionEvaluator.java:34: error: ')' expected\n                while (pos  input.length() && (Character.isDigit(input.charAt(pos)) || Character.isLetter(input.charAt(pos)))) {\n                          ^\nExpressionEvaluator.java:34: error: not a statement\n                while (pos  input.length() && (Character.isDigit(input.charAt(pos)) || Character.isLetter(input.charAt(pos)))) {\n                                           ^\nExpressionEvaluator.java:34: error: ';' expected\n                while (pos  input.length() && (Character.isDigit(input.charAt(pos)) || Character.isLetter(input.charAt(pos)))) {\n                                                                                                                             ^\nExpressionEvaluator.java:59: error: ')' expected\n        while (pos  tokens.size()) {\n                  ^\nExpressionEvaluator.java:59: error: ';' expected\n        while (pos  tokens.size()) {\n                                 ^\nExpressionEvaluator.java:73: error: ')' expected\n        while (pos  tokens.size()) {\n                  ^\nExpressionEvaluator.java:73: error: ';' expected\n        while (pos  tokens.size()) {\n                                 ^\nExpressionEvaluator.java:96: error: ')' expected\n            if (pos  tokens.size() && tokens.get(pos).type == TokenType.OPERATOR && tokens.get(pos).value.equals(\")\")) {\n                   ^\nExpressionEvaluator.java:96: error: not a statement\n            if (pos  tokens.size() && tokens.get(pos).type == TokenType.OPERATOR && tokens.get(pos).value.equals(\")\")) {\n                                                                                 ^\nExpressionEvaluator.java:96: error: ';' expected\n            if (pos  tokens.size() && tokens.get(pos).type == TokenType.OPERATOR && tokens.get(pos).value.equals(\")\")) {\n                                                                                                                     ^\nExpressionEvaluator.java:98: error: 'else' without 'if'\n            } else {\n              ^\nExpressionEvaluator.java:125: error: reached end of file while parsing\n}\n ^\n14 errors\n",
+  "stdout_after": ""
+}

@@ -1,0 +1,7 @@
+expression_evaluator.c: In function ‘parse_and_evaluate’:
+expression_evaluator.c:108:35: error: incompatible types when assigning to type ‘TokenType’ from type ‘Token’
+  108 |                 ops[op_count--] = tokens[op_count];
+      |                                   ^~~~~~
+expression_evaluator.c:120:27: error: incompatible types when assigning to type ‘TokenType’ from type ‘Token’
+  120 |         ops[op_count--] = tokens[op_count];
+      |                           ^~~~~~

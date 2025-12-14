@@ -1,0 +1,143 @@
+import java.util.*;
+
+public class ExpressionEvaluator {
+    public static void main(String[] args) {
+        System.out.println(evaluate("3 + 4 * (2 - 1)")); // Should print 7        System.out.println(evaluate("2 * 3 + 4")); // Should print 10
+         System.out.println(evaluate("2 * (3 + 4)")); // Should print 14       System.out.println(evaluate("8 / 2 * (2 + 2)")); // Should print 16
+    }
+
+    public static int evaluate(String expression) {
+          return new Evaluator(new Tokenizer(expression)).evaluate();  }
+
+    private static class Tokenizer {
+        private final String input;
+        private int pos = 0;
+
+        Tokenizer(String input) {
+            this.input = input;
+        }
+
+           Token nextToken() {         skipWhitespace();
+            if (pos >= input.length()) {
+                return new Token(TokenType.EOF, null);
+            }
+            char ch = input.charAt(pos);
+            if (Character.isDigit(ch)) {
+                int start = pos;
+                while (pos < input.length() && Character.isDigit(input.charAt(pos))) {
+                    pos++;
+                }
+                return new Token(TokenType.NUMBER, Integer.parseInt(input.substring(start, pos)));
+            } else if (ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '(' || ch == ')') {
+                char type = ch;
+                pos++;
+                return new Token(TokenType.OPERATOR, type);
+            } else {
+                throw new IllegalArgumentException("Unexpected character: " + ch);
+            }
+          private void skipWhitespace() {
+            }        while (pos < input.length() && Character.isWhitespace(input.charAt(pos))) {
+                pos++;
+            }
+        }
+    }
+
+    private static class Token {
+        enum TokenType { NUMBER, OPERATOR, EOF }
+        final TokenType type;
+        final Object value;
+
+        Token(TokenType type, Object value) {
+            this.type = type;
+            this.value = value;
+        }
+
+            @Override    public String toString() {
+            return "Token{" +
+                    "type=" + type +
+                    ", value=" + value +
+                    '}';
+        }
+    }
+
+    private static class Evaluator {
+        private final Tokenizer tokenizer;
+        private Token current;
+
+        Evaluator() {
+            this.tokenizer = new Tokenizer("");
+        }
+
+             int evaluate(String expression) {       tokenizer.input = expression;
+            tokenizer.pos = 0;
+            nextToken();
+            return parseExpression(0);
+        }
+
+              private int parseExpression(int precedence) {      int result = parseTerm();
+
+            while (true) {
+                if (current.type == Token.TokenType.OPERATOR && getPrecedence(current.value.toString()) >= precedence) {
+                    String operator = current.value.toString();
+                    nextToken();
+                    int right = parseTerm();
+                    switch (operator) {
+                        case "+":
+                            result += right;
+                            break;
+                        case "-":
+                            result -= right;
+                            break;
+                        default:
+                            throw new IllegalArgumentException("Unsupported operator: " + operator);
+                    }
+                } else {
+                    break;
+                }
+            }
+
+            return result;
+        }
+
+               private int parseTerm() {     if (current.type == Token.TokenType.OPERATOR && current.value.toString().equals("-")) {
+                nextToken();
+                return -parseFactor();
+            } else {
+                return parseFactor();
+            }
+        }
+
+                private int parseFactor() {    int result;
+            if (current.type == Token.TokenType.NUMBER) {
+                result = (int) current.value;
+                nextToken();
+            } else if (current.type == Token.TokenType.OPERATOR && current.value.toString().equals("(")) {
+                nextToken();
+                result = parseExpression(0);
+                if (current.type != Token.TokenType.OPERATOR || !current.value.toString().equals(")")) {
+                    throw new IllegalArgumentException("Expected ')'");
+                }
+                nextToken();
+            } else {
+                throw new IllegalArgumentException("Unexpected token: " + current);
+            }
+
+            return result;
+        }
+
+        p        private int getPrecedence(String operator) {   switch (operator) {
+                case "+":
+                case "-":
+                    return 1;
+                case "*":
+                case "/":
+                    return 2;
+                default:
+                    throw new IllegalArgumentException("Unsupported operator: " + operator);
+            }
+        }
+
+        pr        private void nextToken() {  current = tokenizer.nextToken();
+        }
+    }
+}

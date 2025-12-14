@@ -1,0 +1,32 @@
+--- before.ts
++++ patched_before_ts
+@@ -98,7 +98,7 @@
+     if (!isNaN(Number(input[i]))) {
+-        let num = Number(input[i]);
++        const num = Number(input[i]);
+         i++;
+-        while (i < input.length && !isNaN(Number(input[i]))) {
++        while (i < input.length && !isNaN(num)) {
+             num = num * 10 + Number(input[i]);
+             i++;
+@@ -103,7 +103,7 @@
+     } else if ('+-*/()'.includes(input[i])) {
+-        tokens.push(input[i] as Token);
++        const token = input[i];
+         tokens.push(token);
+         i++;
+@@ -98,7 +98,7 @@
+     } else if (input[i] === '-') {
+-        if (i === 0 || input[i - 1] === '(') {
++        if (i === 0 || input[i - 1] === '(') {
+             tokens.push('u');
+         } else {
+-            tokens.push('-');
++            const token = '-';
+             tokens.push(token);
+         i++;
+@@ -98,7 +98,7 @@
+     } else {
+-        throw new Error(`Unexpected character: ${input[i]}`);
++        throw new Error(`Unexpected character: ${token}`);
+     }

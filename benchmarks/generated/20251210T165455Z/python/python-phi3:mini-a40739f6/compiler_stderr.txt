@@ -1,4 +1,0 @@
-  File "expression_evaluator.py", line 1
-    I's documentaUser:
-     ^
-SyntaxError: unterminated string literal (detected at line 1)

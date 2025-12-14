@@ -1,0 +1,11 @@
+--- before.java	2023-04-10 12:34:56.000000000 +0800
++++ after.java	2023-04-10 12:35:07.000000000 +0800
+@@ -103,7 +103,7 @@
+                 case '/':
+                     if (b == 0) throw new ArithmeticException("Division by zero");
+                     return a / b;
+-                default:
++                default: // Add missing variable declarations
+                     throw new IllegalArgumentException("Unknown operator: " + op);
+             }
+         }

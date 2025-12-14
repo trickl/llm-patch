@@ -1,0 +1,5 @@
+expression_evaluator.ts(51,34): error TS2345: Argument of type 'string' is not assignable to parameter of type 'number'.
+expression_evaluator.ts(58,34): error TS2345: Argument of type 'string' is not assignable to parameter of type 'number'.
+expression_evaluator.ts(68,26): error TS2345: Argument of type 'string' is not assignable to parameter of type 'number'.
+expression_evaluator.ts(116,5): error TS2580: Cannot find name 'require'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.
+expression_evaluator.ts(116,22): error TS2580: Cannot find name 'module'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.

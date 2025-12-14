@@ -1,0 +1,4 @@
+expression_evaluator.c: In function ‘parse_and_evaluate’:
+expression_evaluator.c:81:12: error: invalid type argument of unary ‘*’ (have ‘int’)
+   81 |     while (**input != '\0') {
+      |            ^~~~~~~

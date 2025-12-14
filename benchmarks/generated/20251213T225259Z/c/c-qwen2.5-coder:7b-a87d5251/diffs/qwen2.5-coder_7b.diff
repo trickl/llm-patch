@@ -1,0 +1,11 @@
+--- before.c
++++ before.c
+@@ -81,7 +81,7 @@ Token tokenize(const char **input) {
+     while (**input && isspace(**input)) (*input)++;
+     if (!**input) return (Token){TOKEN_EOF, 0};
+ 
+-    while (**input && isdigit(**input)) {
++    while (**input && isdigit((unsigned char)**input)) {
+         token.value = token.value * 10 + (**input - '0');
+         (*input)++;
+     }

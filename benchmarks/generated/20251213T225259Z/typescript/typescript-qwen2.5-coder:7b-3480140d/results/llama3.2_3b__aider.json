@@ -1,0 +1,22 @@
+{
+  "case_id": "typescript-qwen2.5-coder:7b-3480140d",
+  "language": "typescript",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "aider",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "after_path": "after__llama3.2_3b__aider.ts",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 2,
+  "errors_before": 6,
+  "errors_after": 14,
+  "first_error_removed": true,
+  "added_lines": 6,
+  "removed_lines": 1,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "",
+  "stdout_after": "expression_evaluator.ts(10,8): error TS1357: An enum member name must be followed by a ',', '=', or '}'.\nexpression_evaluator.ts(10,29): error TS1434: Unexpected keyword or identifier.\nexpression_evaluator.ts(39,11): error TS1005: ',' expected.\nexpression_evaluator.ts(39,24): error TS1005: ',' expected.\nexpression_evaluator.ts(39,32): error TS1005: ';' expected.\nexpression_evaluator.ts(75,3): error TS1128: Declaration or statement expected.\nexpression_evaluator.ts(76,3): error TS1128: Declaration or statement expected.\nexpression_evaluator.ts(76,21): error TS1005: ';' expected.\nexpression_evaluator.ts(78,19): error TS1005: ')' expected.\nexpression_evaluator.ts(78,36): error TS1005: ';' expected.\nexpression_evaluator.ts(80,7): error TS1128: Declaration or statement expected.\nexpression_evaluator.ts(84,1): error TS1128: Declaration or statement expected.\nexpression_evaluator.ts(174,3): error TS1128: Declaration or statement expected.\nexpression_evaluator.ts(175,1): error TS1128: Declaration or statement expected.\n"
+}

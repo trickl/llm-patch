@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-ac8bc2f2",
+  "language": "c",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "aider",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "after_path": "after__llama3.2_3b__aider.c",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 1,
+  "errors_before": 1,
+  "errors_after": 4,
+  "first_error_removed": false,
+  "added_lines": 45,
+  "removed_lines": 43,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "expression_evaluator.c: In function \u2018apply_operator\u2019:\nexpression_evaluator.c:90:3: error: case label not within a switch statement\n   90 |   case TOKEN_EOF:\n      |   ^~~~\nexpression_evaluator.c:91:5: error: break statement not within loop or switch\n   91 |     break;\n      |     ^~~~~\nexpression_evaluator.c:92:3: error: \u2018default\u2019 label not within a switch statement\n   92 |   default:\n      |   ^~~~~~~\nexpression_evaluator.c: In function \u2018evaluate_expression\u2019:\nexpression_evaluator.c:104:5: warning: enumeration value \u2018TOKEN_EOF\u2019 not handled in switch [-Wswitch]\n  104 |     switch (token.type) {\n      |     ^~~~~~\nexpression_evaluator.c:143:5: warning: \u2018main\u2019 is normally a non-static function [-Wmain]\n  143 | int main() {\n      |     ^~~~\nexpression_evaluator.c:153:1: error: expected declaration or statement at end of input\n  153 | }\n      | ^\nexpression_evaluator.c:154: warning: control reaches end of non-void function [-Wreturn-type]\nexpression_evaluator.c: At top level:\nexpression_evaluator.c:143:5: warning: \u2018main\u2019 defined but not used [-Wunused-function]\n  143 | int main() {\n      |     ^~~~\n",
+  "stdout_after": ""
+}

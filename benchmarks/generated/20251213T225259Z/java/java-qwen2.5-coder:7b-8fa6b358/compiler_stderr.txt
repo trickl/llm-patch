@@ -1,0 +1,28 @@
+ExpressionEvaluator.java:13: error: incompatible types: Tokenizer cannot be converted to List<Token>
+        return new Parser(new Tokenizer(expression)).parse();
+                          ^
+ExpressionEvaluator.java:106: error: cannot find symbol
+                    return a + b;
+                           ^
+  symbol:   variable a
+  location: class Parser
+ExpressionEvaluator.java:108: error: cannot find symbol
+                    return a - b;
+                           ^
+  symbol:   variable a
+  location: class Parser
+ExpressionEvaluator.java:110: error: cannot find symbol
+                    return a * b;
+                           ^
+  symbol:   variable a
+  location: class Parser
+ExpressionEvaluator.java:113: error: cannot find symbol
+                    return a / b;
+                           ^
+  symbol:   variable a
+  location: class Parser
+ExpressionEvaluator.java:120: error: Token is not abstract and does not override abstract method precedence() in Token
+    private static class Token {
+                   ^
+Note: Some messages have been simplified; recompile with -Xdiags:verbose to get full output
+6 errors

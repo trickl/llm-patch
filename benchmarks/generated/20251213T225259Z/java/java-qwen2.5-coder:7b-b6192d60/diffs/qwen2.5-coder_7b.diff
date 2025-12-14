@@ -1,0 +1,27 @@
+--- before.java	2023-04-10 12:34:56.000000000 +0800
++++ after.java	2023-04-10 12:35:00.000000000 +0800
+@@ -26,7 +26,7 @@
+                 return new Token(TokenType.EOF, null);
+         }
+ 
+-        if (Character.isDigit(ch)) {
++        if (Tokenizer.TokenType.values()[0] == Tokenizer.TokenType.NUMBER && Character.isDigit(ch)) {
+             int start = pos;
+             while (pos < input.length() && Character.isDigit(input.charAt(pos))) {
+                 pos++;
+@@ -34,7 +34,7 @@
+         } else if (ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '(' || ch == ')') {
+             char type = ch;
+             pos++;
+-            return new Token(TokenType.OPERATOR, type);
++            return new Token(Tokenizer.TokenType.values()[1], type);
+         } else {
+             throw new IllegalArgumentException("Unexpected character: " + ch);
+         }
+@@ -79,7 +79,7 @@
+                 tokenizer.input = expression;
+              tokenizer.pos = 0;
+-            nextToken();
++            current = tokenizer.nextToken();
+             return parseExpression(0);
+         }

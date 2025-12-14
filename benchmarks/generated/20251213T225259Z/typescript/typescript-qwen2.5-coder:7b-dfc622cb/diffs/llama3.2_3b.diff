@@ -1,0 +1,21 @@
+--- expression_evaluator.ts
++++ expression_evaluator.ts
+@@ -107,7 +107,8 @@
+   } else if (token.value === '(') {
+     operatorStack.push(token.value);
+   } else if (token.value === ')') {
+-    throw new Error(`Unexpected character: ${input[i]}`);
++    while (operatorStack.length > 0 && operatorStack[operatorStack.length - 1] !== '(') {
++      outputQueue.push(operatorStack.pop()!);
++    }
+     operatorStack.pop(); // Remove the '('
+   } else {
+     while (
+       operatorStack.length > 0 &&
+-      precedence[token.value] <= precedence[operatorStack[operatorStack.length - 1]]
++      precedence[token.value] >= precedence[operatorStack[operatorStack.length - 1]]
+     ) {
+       outputQueue.push(operatorStack.pop()!);
+     }
+     operatorStack.push(token.value);
+   }

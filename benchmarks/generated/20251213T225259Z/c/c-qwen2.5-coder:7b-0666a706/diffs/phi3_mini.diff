@@ -1,0 +1,25 @@
+--- before.c 2019-10-15 14:38:00.760000 -0400
++++ after.c 2019-10-15 14:38:00.760000 -0400
+@@ -8,7 +8,7 @@
+ typedef enum { NUMBER, PLUS, MINUS, MUL, DIV, LPAREN, RPAREN, EOF } TokenType;
++typedef struct {
+-    int type;
++    TokenType type;
+     char value; // Changed 'int' to 'char' and added a semicolon.
+   }} Token;
+ 
+ diff --git a/expression_evaluator.c b/expression_evaluator.c
+ index ee7b9f3..d0a6f85 100644
+ --- a/expression_evaluator.c
++++ b/expression_evaluator.c
+@@ -29,9 +29,9 @@ void getNextToken() {
+     return (Token){EOF}; // Changed 'return' to include the Token structure with EOF value and type.
+   }
+ 
+-    int tokenIndex = 0;
++    size_t tokenIndex = 0; // Corrected data type for index access, changed from 'int'.
+     char currentToken[2]; // Added a buffer to hold the character representation of the TokenType enum value.
+@@ -12,9 +12,9 @@ void error(const char *msg) {
+   fprintf(stderr, "Error: %s\n", msg);
+-  exit(EXIT_FAILURE); // Removed 'exit' as it is not needed when using the Token structure.
++return; // Simply return from function to indicate an error without terminating program execution.

@@ -1,8 +1,0 @@
---- before.java
-+++ before.java
-@@ -93,6 +93,7 @@
-         return converter.convert(postfix).toInt();
-     }
- 
-+    String expression = "0 - 2 + 3 * (4 - 1)"; // Add this line to define the expression
- }

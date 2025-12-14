@@ -1,8 +1,0 @@
---- before.java
-+++ patched_before.java
-@@ -119,7 +119,8 @@
-             return Double.parseDouble(tokens.remove(0).value);
-                                                          ^
-+       } else {
-+           return Double.parseDouble(tokens.remove(0).value);
-+       }

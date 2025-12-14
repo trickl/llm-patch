@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-e44327fc",
+  "language": "c",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "aider",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "after_path": "after__llama3.2_3b__aider.c",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 1,
+  "errors_before": 1,
+  "errors_after": 2,
+  "first_error_removed": false,
+  "added_lines": 1,
+  "removed_lines": 1,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "expression_evaluator.c: In function \u2018parse\u2019:\nexpression_evaluator.c:59:16: error: implicit declaration of function \u2018evaluate\u2019 [-Wimplicit-function-declaration]\n   59 |   int result = evaluate(token, &input);\n      |                ^~~~~~~~\nexpression_evaluator.c:60:28: error: passing argument 1 of \u2018tokenize\u2019 from incompatible pointer type [-Wincompatible-pointer-types]\n   60 |   return evaluate(tokenize(input), input);\n      |                            ^~~~~\n      |                            |\n      |                            const char *\nexpression_evaluator.c:24:29: note: expected \u2018const char **\u2019 but argument is of type \u2018const char *\u2019\n   24 | Token tokenize(const char **input) {\n      |                ~~~~~~~~~~~~~^~~~~\nexpression_evaluator.c: In function \u2018evaluate\u2019:\nexpression_evaluator.c:74:9: warning: enumeration value \u2018TOKEN_EOF\u2019 not handled in switch [-Wswitch]\n   74 |         switch (token.type) {\n      |         ^~~~~~\n",
+  "stdout_after": ""
+}

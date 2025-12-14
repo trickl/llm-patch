@@ -1,0 +1,11 @@
+--- before.c
++++ before.c
+@@ -136,7 +136,7 @@ double evaluate_expression(char *expression) {
+                 while (!is_empty(&operators_stack) && precedence(peek(&operators_stack)) >= precedence(current_token.value[0])) {
+                     double b = pop(&values_stack);
+                     double a = pop(&values_stack);
+-                    char op = pop(&operators_stack);
++                    char op = peek(&operators_stack); // Corrected to use peek
+                     push(&values_stack, apply_operator(a, b, op));
+                 }
+                 push(&operators_stack, current_token.value[0]);

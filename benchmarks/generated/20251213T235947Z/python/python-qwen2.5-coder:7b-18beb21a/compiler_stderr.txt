@@ -1,0 +1,4 @@
+  File "expression_evaluator.py", line 59
+    if tokens[i] == '-' and (i == 0 or tokens[i-1] in '(*(')):
+                                                            ^
+SyntaxError: unmatched ')'

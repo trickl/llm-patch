@@ -1,0 +1,13 @@
+--- before.java	2023-04-10 12:34:56.000000000 +0800
++++ after.java	2023-04-10 12:35:07.000000000 +0800
+@@ -54,7 +54,7 @@
+     private static class Evaluator {
+         private final List<String> tokens;
+         private int pos = 0;
+ 
+         public Evaluator() {
+-            this.tokens = new Tokenizer("").tokenize();
++            this.tokens = Collections.emptyList();
+         }
+ 
+         public Evaluator(List<String> tokens) {

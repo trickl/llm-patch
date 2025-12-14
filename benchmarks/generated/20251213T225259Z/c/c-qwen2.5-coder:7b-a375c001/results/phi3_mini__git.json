@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-a375c001",
+  "language": "c",
+  "model_slug": "phi3_mini",
+  "algorithm": "git",
+  "diff_path": "diffs/phi3_mini.diff",
+  "after_path": "after__phi3_mini__git.c",
+  "patch_applied": true,
+  "patch_diagnostics": "applied",
+  "compile_returncode": 1,
+  "errors_before": 2,
+  "errors_after": 2,
+  "first_error_removed": false,
+  "added_lines": 0,
+  "removed_lines": 2,
+  "hunks": 0,
+  "delete_only": true,
+  "success": false,
+  "notes": "diff only deletes lines",
+  "stderr_after": "expression_evaluator.c: In function \u2018main\u2019:\nexpression_evaluator.c:113:27: error: expected \u2018=\u2019, \u2018,\u2019, \u2018;\u2019, \u2018asm\u2019 or \u2018__attribute__\u2019 before \u2018:\u2019 token\n  113 |     for (const char *expr : expressions) {\n      |                           ^\nexpression_evaluator.c:114:18: error: \u2018expr\u2019 undeclared (first use in this function)\n  114 |         tokenize(expr);\n      |                  ^~~~\nexpression_evaluator.c:114:18: note: each undeclared identifier is reported only once for each function it appears in\nexpression_evaluator.c:112:17: warning: unused variable \u2018expressions\u2019 [-Wunused-variable]\n  112 |     const char *expressions[] = {\"3 + 4 * (2 - 1)\", \"2 * 3 + 4\", \"2 * (3 + 4)\", \"8 / 2 * (2 + 2)\"};\n      |                 ^~~~~~~~~~~\n",
+  "stdout_after": ""
+}

@@ -1,0 +1,19 @@
+{
+  "case_id": "typescript-qwen2.5-coder:7b-a5e5c7f4",
+  "language": "typescript",
+  "problem_id": "expr_eval_v1",
+  "model": "qwen2.5-coder:7b",
+  "provider": "ollama",
+  "timestamp_utc": "2025-12-13T23:56:02.212631+00:00",
+  "compile_command": [
+    "tsc",
+    "--strict",
+    "--target",
+    "ES2020",
+    "--module",
+    "commonjs",
+    "--noEmit",
+    "expression_evaluator.ts"
+  ],
+  "return_code": 2
+}

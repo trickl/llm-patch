@@ -1,0 +1,48 @@
+ExpressionEvaluator.java:77: error: cannot find symbol
+    private final List<Token> tokens;
+                       ^
+  symbol:   class Token
+  location: class Parser
+ExpressionEvaluator.java:80: error: cannot find symbol
+    public Parser(List<Token> tokens) {
+                       ^
+  symbol:   class Token
+  location: class Parser
+ExpressionEvaluator.java:13: error: incompatible types: Tokenizer cannot be converted to List<Token>
+        return new Parser(new Tokenizer(expression)).parse();
+                          ^
+ExpressionEvaluator.java:91: error: cannot find symbol
+            Token token = tokens.get(pos);
+            ^
+  symbol:   class Token
+  location: class Parser
+ExpressionEvaluator.java:92: error: package Token does not exist
+            if (token.type == Token.TokenType.OPERATOR && (token.value.equals("+") || token.value.equals("-"))) {
+                                   ^
+ExpressionEvaluator.java:106: error: cannot find symbol
+            Token token = tokens.get(pos);
+            ^
+  symbol:   class Token
+  location: class Parser
+ExpressionEvaluator.java:107: error: package Token does not exist
+            if (token.type == Token.TokenType.OPERATOR && (token.value.equals("*") || token.value.equals("/"))) {
+                                   ^
+ExpressionEvaluator.java:119: error: cannot find symbol
+        Token token = tokens.get(pos);
+        ^
+  symbol:   class Token
+  location: class Parser
+ExpressionEvaluator.java:120: error: package Token does not exist
+        if (token.type == Token.TokenType.LPAREN) {
+                               ^
+ExpressionEvaluator.java:123: error: package Token does not exist
+            if (tokens.get(pos).type != Token.TokenType.RPAREN) {
+                                             ^
+ExpressionEvaluator.java:128: error: package Token does not exist
+        } else if (token.type == Token.TokenType.OPERATOR && token.value.equals("-")) {
+                                      ^
+ExpressionEvaluator.java:131: error: package Token does not exist
+        } else if (token.type == Token.TokenType.NUMBER) {
+                                      ^
+Note: Some messages have been simplified; recompile with -Xdiags:verbose to get full output
+12 errors

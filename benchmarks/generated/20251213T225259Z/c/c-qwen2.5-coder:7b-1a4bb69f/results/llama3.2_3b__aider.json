@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-1a4bb69f",
+  "language": "c",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "aider",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "after_path": "after__llama3.2_3b__aider.c",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 1,
+  "errors_before": 1,
+  "errors_after": 3,
+  "first_error_removed": false,
+  "added_lines": 1,
+  "removed_lines": 1,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "expression_evaluator.c: In function \u2018parse_factor\u2019:\nexpression_evaluator.c:106:26: error: implicit declaration of function \u2018parse_expression\u2019 [-Wimplicit-function-declaration]\n  106 |             int result = parse_expression();\n      |                          ^~~~~~~~~~~~~~~~\nexpression_evaluator.c: In function \u2018parse_expression\u2019:\nexpression_evaluator.c:136:23: error: expected \u2018)\u2019 before numeric constant\n  136 |     while (token_index  MAX_TOKENS && (tokens[token_index].type == TOKEN_PLUS || tokens[token_index].type == TOKEN_MINUS)) {\n      |           ~           ^\n      |                       )\nexpression_evaluator.c:137:45: error: \u2018input\u2019 undeclared (first use in this function); did you mean \u2018int\u2019?\n  137 |       Token current_token = get_next_token(&input);\n      |                                             ^~~~~\n      |                                             int\nexpression_evaluator.c:137:45: note: each undeclared identifier is reported only once for each function it appears in\nexpression_evaluator.c: In function \u2018parse_factor\u2019:\nexpression_evaluator.c:115:1: warning: control reaches end of non-void function [-Wreturn-type]\n  115 | }\n      | ^\n",
+  "stdout_after": ""
+}

@@ -1,0 +1,4 @@
+  File "expression_evaluator.py", line 6
+    for token in re.findall(r'\b\w+\b|[+\-*/()]", expression):
+                            ^
+SyntaxError: unterminated string literal (detected at line 6)

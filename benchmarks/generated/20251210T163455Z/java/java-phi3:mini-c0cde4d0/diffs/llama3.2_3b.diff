@@ -1,7 +1,0 @@
---- before.java
-+++ after.java
-@@ -23,7 +23,7 @@
-     TokenStream tokenizer = new InfixTokenizer(expression);
--    ParseTree parseTree = Parser.parse(tokenizer);
-+    ParseTree parseTree = Parser.parse((TokenStream)tokenizer);
-     return Evaluator.evaluate(parseTree);

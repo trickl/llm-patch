@@ -1,0 +1,11 @@
+--- before.c
++++ before.c
+@@ -143,7 +143,7 @@ int evaluate_expression() {
+     while (tokens[token_index].type != TOKEN_EOF) {
+         Token token = tokens[token_index++];
+         switch (token.type) {
+-            case TOKEN_NUMBER:
++            case TOKEN_NUMBER:
+                 values[value_index++] = token.value;
+                 break;
+             case TOKEN_PLUS:

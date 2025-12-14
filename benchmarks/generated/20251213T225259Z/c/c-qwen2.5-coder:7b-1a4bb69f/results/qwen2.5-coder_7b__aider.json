@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-1a4bb69f",
+  "language": "c",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "aider",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "after_path": "after__qwen2.5-coder_7b__aider.c",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 1,
+  "errors_before": 1,
+  "errors_after": 1,
+  "first_error_removed": false,
+  "added_lines": 1,
+  "removed_lines": 0,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "expression_evaluator.c: In function \u2018parse_number\u2019:\nexpression_evaluator.c:93:12: error: \u2018result\u2019 undeclared (first use in this function)\n   93 |     return result;\n      |            ^~~~~~\nexpression_evaluator.c:93:12: note: each undeclared identifier is reported only once for each function it appears in\nexpression_evaluator.c:92:9: warning: unused variable \u2018value\u2019 [-Wunused-variable]\n   92 |     int value = tokens[token_index++].value;\n      |         ^~~~~\nexpression_evaluator.c:94:1: warning: control reaches end of non-void function [-Wreturn-type]\n   94 | }\n      | ^\nexpression_evaluator.c: In function \u2018parse_factor\u2019:\nexpression_evaluator.c:116:1: warning: control reaches end of non-void function [-Wreturn-type]\n  116 | }\n      | ^\n",
+  "stdout_after": ""
+}

@@ -1,0 +1,15 @@
+--- before.c
++++ patched_before.c
+@@ -132,7 +132,8 @@
+   operators[--top_operator] = token.type;
+ }
+ 
+ int evaluate_expression() {
+-    int values[MAX_TOKENS] = {0};
++    int values[MAX_TOKENS] = {0, 0}; // Initialize with a default value for the first element
+     TokenType operators[MAX_TOKENS] = {TOKEN_PLUS}; // Default to addition for the first value
+     int top_value = 0, top_operator = 0;
+
+     while (tokens[token_index].type != TOKEN_EOF) {
+-        Token token = tokens[token_index];
++        Token token = get_next_token(); // Fix: Use get_next_token() instead of accessing tokens[token_index]

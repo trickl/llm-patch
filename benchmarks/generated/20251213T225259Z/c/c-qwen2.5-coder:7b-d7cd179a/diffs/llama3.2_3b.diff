@@ -1,0 +1,30 @@
+--- before.c
++++ patched_before.c
+@@ -95,7 +95,7 @@
+     TokenType operator = tokens[i];
+-    TokenType operator;
++    Token operator = tokens[i];
+
+@@ -96,7 +96,7 @@
+     int result = value;
+     i++;
+-    while (i <= end) {
++    while (i  end) {
+         if (tokens[i].type == TOKEN_LPAREN) {
+             j = i;
+             int depth = 1;
+-            while (depth > 0) {
++            while (depth > 0) {
+                 i++;
+                 if (tokens[i].type == TOKEN_LPAREN) depth++;
+                 else if (tokens[i].type == TOKEN_RPAREN) depth--;
+             }
+         } else {
+-            result = apply_operator(result, evaluate_expression(i + 1, end), operator);
++            result = apply_operator(result, evaluate_expression(i + 1, end), operator->type);
+             i += 2;
+         }
+     }
+
+@@ -97,7 +97,7 @@
+     return result;

@@ -1,0 +1,38 @@
+--- before.java	2023-04-10 12:34:56.000000000 +0800
++++ after.java	2023-04-10 12:35:07.000000000 +0800
+@@ -13,7 +13,7 @@
+     public static int evaluate(String expression) {
+         return new Parser(new Tokenizer(expression)).parse();
+     }
+
+-    private static class Tokenizer {
++    public static class Tokenizer {
+         private final String input;
+         private int pos = 0;
+
+@@ -69,7 +69,7 @@
+                 if (token.type == TokenType.OPERATOR && (token.value == '+' || token.value == '-')) {
+                     pos++;
+                     int nextTerm = term();
+-                    result += token.value == '+' ? nextTerm : -nextTerm;
++                    result += ((char) token.value) == '+' ? nextTerm : -nextTerm;
+                 } else {
+                     break;
+                 }
+@@ -82,7 +82,7 @@
+                 if (token.type == TokenType.OPERATOR && (token.value == '*' || token.value == '/')) {
+                     pos++;
+                     int nextFactor = factor();
+-                    result += token.value == '*' ? nextFactor : result / nextFactor;
++                    result += ((char) token.value) == '*' ? nextFactor : result / nextFactor;
+                 } else {
+                     break;
+                 }
+@@ -104,7 +104,7 @@
+             } else if (token.type == TokenType.OPERATOR && token.value == '-') {
+                 pos++;
+-                return -factor();
++                return -(int) factor();
+             } else {
+                 throw new IllegalArgumentException("Unexpected token: " + token);
+             }

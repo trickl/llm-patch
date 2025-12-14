@@ -1,0 +1,19 @@
+diff --git a/expression_evaluator.ts b/expression_evaluator.ts
+index 3a4b5c6..7d8e9f0 100644
+--- a/expression_evaluator.ts
++++ b/expression_evaluator.ts
+@@ -1,5 +1,7 @@
+ // expression_evaluator.ts
+ 
++import * as process from 'process';
+ type Token = { type: 'number' | 'operator' | 'parenthesis'; value: string };
+ 
+ const isNumber = (char: string): boolean => !isNaN(Number(char));
+@@ -98,3 +100,4 @@ function evaluateExpression(input: string): number {
+     if (parsedValues.length !== 1) throw new Error('Invalid expression');
+     return parsedValues[0];
+ }
++
+ // CLI example
+ if (require.main === module) {
+     const input = process.argv[2] || '3 + 4 * (2 - 1)';

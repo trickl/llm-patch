@@ -1,5 +1,0 @@
---- before.py
-+++ before.py
-@@ -1 +1 @@
--**Given your
-+print("Hello, World!")

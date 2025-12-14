@@ -1,0 +1,9 @@
+--- before.java
++++ after.java
+@@ -36,7 +36,7 @@
+             return new Token(TokenType.NUMBER, Integer.parseInt(input.substring(start, pos)));
+-        } else if (ch == '+' || ch == '-' || ch == '*' || ch == '/') {
++        } else if (ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '-') {
+                 char op = ch;
+                 pos++;
+                 return new Token(TokenType.OPERATOR, op);

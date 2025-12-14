@@ -1,7 +1,0 @@
---- before.java
-+++ after.java
-@@ -101,7 +101,8 @@
-   }
- 
--}
-+} // added closing bracket to end the method

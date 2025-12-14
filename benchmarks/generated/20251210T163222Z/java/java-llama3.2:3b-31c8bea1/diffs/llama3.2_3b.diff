@@ -1,6 +1,0 @@
---- before.java
-+++ after.java
-@@ -35,7 +35,7 @@
-         yield(expression.substring(pos, endPos));
--       pos = endPos;
-+       pos = endPos + 1;

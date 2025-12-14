@@ -1,0 +1,13 @@
+--- before.c	2023-04-01 10:00:00.0000000 -0700
++++ after.c	2023-04-01 10:00:00.0000000 -0700
+@@ -6,9 +6,10 @@
+ TokenType precedence(TokenType type) {
+     switch (type) {
++        case TOKEN_MULTIPLY: return 2;
++        case TOKEN_DIVIDE: return 2;
+         case TOKEN_PLUS: return 1;
+@@ -39,7 +39,8 @@
+ Token get_next_token(char **str) {
+     skip_whitespace(str);
++    if (!**str || !isdigit((int)****str)) return (Token){TOKEN_EOF};
+-   while (**str && isspace(****str)) (***** = **** + 1);

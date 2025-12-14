@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-9fa9f64b",
+  "language": "c",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "aider",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "after_path": "after__qwen2.5-coder_7b__aider.c",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 3 hunks",
+  "compile_returncode": 1,
+  "errors_before": 2,
+  "errors_after": 5,
+  "first_error_removed": false,
+  "added_lines": 6,
+  "removed_lines": 1,
+  "hunks": 3,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "expression_evaluator.c: In function \u2018evaluate\u2019:\nexpression_evaluator.c:90:9: error: duplicate case value\n   90 |         case TOKEN_PLUS:\n      |         ^~~~\nexpression_evaluator.c:84:13: note: previously used here\n   84 |             case TOKEN_PLUS:\n      |             ^~~~\nexpression_evaluator.c:93:9: error: duplicate case value\n   93 |         case TOKEN_MINUS:\n      |         ^~~~\nexpression_evaluator.c:87:13: note: previously used here\n   87 |             case TOKEN_MINUS:\n      |             ^~~~\nexpression_evaluator.c:73:5: warning: enumeration value \u2018TOKEN_NUMBER\u2019 not handled in switch [-Wswitch]\n   73 |     switch (tokens[max_index].type) {\n      |     ^~~~~~\nexpression_evaluator.c:73:5: warning: enumeration value \u2018TOKEN_LPAREN\u2019 not handled in switch [-Wswitch]\nexpression_evaluator.c:73:5: warning: enumeration value \u2018TOKEN_RPAREN\u2019 not handled in switch [-Wswitch]\nexpression_evaluator.c:108:5: warning: \u2018main\u2019 is normally a non-static function [-Wmain]\n  108 | int main() {\n      |     ^~~~\nexpression_evaluator.c: In function \u2018main\u2019:\nexpression_evaluator.c:110:27: error: expected \u2018=\u2019, \u2018,\u2019, \u2018;\u2019, \u2018asm\u2019 or \u2018__attribute__\u2019 before \u2018:\u2019 token\n  110 |     for (const char *expr : expressions) {\n      |                           ^\nexpression_evaluator.c:111:18: error: \u2018expr\u2019 undeclared (first use in this function)\n  111 |         tokenize(expr);\n      |                  ^~~~\nexpression_evaluator.c:111:18: note: each undeclared identifier is reported only once for each function it appears in\nexpression_evaluator.c:109:17: warning: unused variable \u2018expressions\u2019 [-Wunused-variable]\n  109 |     const char *expressions[] = {\"3 + 4 * (2 - 1)\", \"2 * 3 + 4\", \"2 * (3 + 4)\", \"8 / 2 * (2 + 2)\"};\n      |                 ^~~~~~~~~~~\nexpression_evaluator.c: In function \u2018evaluate\u2019:\nexpression_evaluator.c:127:1: error: expected declaration or statement at end of input\n  127 | }\n      | ^\nexpression_evaluator.c:128: warning: control reaches end of non-void function [-Wreturn-type]\nexpression_evaluator.c: At top level:\nexpression_evaluator.c:108:5: warning: \u2018main\u2019 defined but not used [-Wunused-function]\n  108 | int main() {\n      |     ^~~~\n",
+  "stdout_after": ""
+}

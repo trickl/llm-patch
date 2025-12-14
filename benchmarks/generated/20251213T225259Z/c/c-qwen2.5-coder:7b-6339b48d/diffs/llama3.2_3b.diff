@@ -1,0 +1,18 @@
+--- before.c
++++ patched_before.c
+@@ -129,7 +129,8 @@
+   operators[--operator_count] = token.type;
+-  values[value_count++] = apply_operator(a, b, operators[operator_count]);
++  if (token.type == TOKEN_EOF) {
++    // Handle EOF case explicitly
++    return a;
++  }
+   while (operator_count > 0 && precedence(operators[operator_count - 1]) >= precedence(token.type)) {
+     int b = values[--value_count];
+     int a = values[--value_count];
+-    operators[--operator_count] = token.type;
+-    values[value_count++] = apply_operator(a, b, operators[operator_count]);
++    operators[--operator_count] = token.type;
++    values[value_count++] = apply_operator(a, b, operators[operator_count]);
+   }
+   operators[operator_count++] = token.type;

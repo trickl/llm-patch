@@ -29,6 +29,8 @@ export interface ResultRecord {
   delete_only?: boolean
   success?: boolean
   notes?: string
+  stderr_after?: string
+  stdout_after?: string
   [key: string]: unknown
 }
 
@@ -36,6 +38,7 @@ export interface PatchSummaryPublic {
   id: string
   caseId: string
   runId: string
+  fingerprint: string
   language: string
   problemId: string
   modelSlug: string
@@ -63,8 +66,14 @@ export interface PatchDetailResponse {
     result: ResultRecord
   }
   errors: {
-    stderr: string
-    stdout: string
+    before: {
+      stderr: string
+      stdout: string
+    }
+    after: {
+      stderr: string
+      stdout: string
+    }
   }
 }
 

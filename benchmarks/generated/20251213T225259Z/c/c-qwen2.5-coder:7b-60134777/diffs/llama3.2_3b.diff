@@ -1,0 +1,28 @@
+--- before.c
++++ patched_before.c
+@@ -110,7 +110,7 @@
+     printf("1 + 2 => %d\n", evaluate_expression(get_next_token));
+ 
+@@ -119,7 +119,7 @@
+     printf("2 * 3 + 4 => %d\n", evaluate_expression(get_next_token));
+ 
+@@ -130,7 +130,7 @@
+     printf("2 * (3 + 4) => %d\n", evaluate_expression(get_next_token));
+ 
+@@ -143,7 +143,7 @@
+     printf("8 / 2 * (2 + 2) => %d\n", evaluate_expression(get_next_token));
+ 
++int evaluate_expression(int (*get_token)(Token *)) {
++    Token token = get_token();
++    int result = evaluate_term();
++
++    while (token.type == TOKEN_PLUS || token.type == TOKEN_MINUS) {
++        if (token.type == TOKEN_PLUS) {
++            result += evaluate_term();
++        } else {
++            result -= evaluate_term();
++        }
++        token = get_token();
++    }
++
++    return result;

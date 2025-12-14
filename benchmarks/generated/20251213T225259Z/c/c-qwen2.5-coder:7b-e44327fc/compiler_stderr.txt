@@ -1,0 +1,8 @@
+expression_evaluator.c: In function ‘parse’:
+expression_evaluator.c:59:18: error: implicit declaration of function ‘evaluate’ [-Wimplicit-function-declaration]
+   59 |     int result = evaluate(token, &input);
+      |                  ^~~~~~~~
+expression_evaluator.c: In function ‘evaluate’:
+expression_evaluator.c:73:9: warning: enumeration value ‘TOKEN_EOF’ not handled in switch [-Wswitch]
+   73 |         switch (token.type) {
+      |         ^~~~~~

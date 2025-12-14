@@ -1,0 +1,11 @@
+--- before.c
++++ after.c
+@@ -108,7 +108,7 @@
+   ops[op_count--] = tokens[op_count];
+-}
++}
+ 
+@@ -120,7 +120,7 @@
+   ops[op_count--] = tokens[op_count];
+-}
++}

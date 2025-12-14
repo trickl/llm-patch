@@ -1,0 +1,8 @@
+--- before.java	2023-04-10 12:34:56.000000000 +0800
++++ after.java	2023-04-10 12:35:07.000000000 +0800
+@@ -28,7 +28,7 @@
+                 .flatMap(token -> token.matches("-?\\d+") ? Stream.of(token) : Stream.of(token.split("(?<=[-+*/()])|(?=[-+*/()])")))
+                 .collect(Collectors.toList());
+     }
+-
++    import java.util.stream.Stream;

@@ -1,0 +1,7 @@
+--- before.java
++++ patched_before.java
+
+@@ -13,7 +13,7 @@
+     return new Parser(new Tokenizer(expression)).parse();
+-}
++}

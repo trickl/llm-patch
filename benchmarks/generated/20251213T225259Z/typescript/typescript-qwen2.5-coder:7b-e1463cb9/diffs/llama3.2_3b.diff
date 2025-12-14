@@ -1,0 +1,23 @@
+--- before.ts
++++ patched_expression_evaluator.ts
+@@ -120,30 +120,31 @@
+   } else if (token.value === '(') {
+     operatorStack.push(token.value);
+   } else if (token.value === ')') {
+-    throw new Error('Mismatched parentheses');
++      while (operatorStack.length > 0 && operatorStack[operatorStack.length - 1] !== '(') {
++        outputQueue.push(operatorStack.pop()!);
++      }
++      if (operatorStack.length === 0 || operatorStack.pop() !== ')') {
++        throw new Error('Mismatched parentheses');
++      }
+   } else {
+     while (
+       operatorStack.length > 0 &&
+-      precedence[operatorStack[operatorStack.length - 1]] >= precedence[token.value]
++      precedence[operatorStack[operatorStack.length - 1]] >= precedence[token.value]
+     ) {
+       outputQueue.push(operatorStack.pop()!);
+     }
+     operatorStack.push(token.value);
+   }

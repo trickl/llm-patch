@@ -1,4 +1,0 @@
-  File "expression_evaluator.py", line 31
-    self precedence = {'+': 1, '-': 1, '*': 2, '/': 2}
-         ^^^^^^^^^^
-SyntaxError: invalid syntax

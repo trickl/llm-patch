@@ -1,5 +1,5 @@
 import { createContext, createElement, useCallback, useContext, useMemo, useReducer, type ReactNode } from 'react'
-import { fetchCaseDetail, fetchCaseSummaries } from '../api/client'
+import { fetchCaseDetail, fetchCaseSummaries, refreshDatasetCache } from '../api/client'
 import type {
   AnnotationState,
   CaseDetail,
@@ -39,6 +39,8 @@ interface ReviewDataState {
   annotations: Record<string, AnnotationState>
   selectedId: string | null
   filters: FiltersState
+  datasetRefreshing: boolean
+  datasetRefreshError: string | null
 }
 
 interface ReviewActions {
@@ -49,6 +51,7 @@ interface ReviewActions {
   markFinalOutcome: (caseId: string, outcome: FinalOutcome) => void
   setFilterValues: <K extends FilterKey>(key: K, values: FiltersState[K]) => void
   clearFilters: () => void
+  refreshDataset: () => Promise<void>
 }
 
 type ReviewContextValue = ReviewDataState & ReviewActions
@@ -63,6 +66,8 @@ const initialState: ReviewDataState = {
   annotations: {},
   selectedId: null,
   filters: createEmptyFilters(),
+  datasetRefreshing: false,
+  datasetRefreshError: null,
 }
 
 type ReviewAction =
@@ -76,6 +81,10 @@ type ReviewAction =
   | { type: 'UPDATE_METRICS'; caseId: string; updates: Partial<CaseMetrics> }
   | { type: 'SET_FILTER_VALUES'; key: FilterKey; values: FiltersState[FilterKey] }
   | { type: 'CLEAR_FILTERS' }
+  | { type: 'DATASET_REFRESH_REQUEST' }
+  | { type: 'DATASET_REFRESH_SUCCESS' }
+  | { type: 'DATASET_REFRESH_FAILURE'; error: string }
+  | { type: 'CLEAR_CASE_DETAILS' }
 
 function reviewReducer(state: ReviewDataState, action: ReviewAction): ReviewDataState {
   switch (action.type) {
@@ -133,6 +142,30 @@ function reviewReducer(state: ReviewDataState, action: ReviewAction): ReviewData
       return {
         ...state,
         filters: createEmptyFilters(),
+      }
+    case 'DATASET_REFRESH_REQUEST':
+      return {
+        ...state,
+        datasetRefreshing: true,
+        datasetRefreshError: null,
+      }
+    case 'DATASET_REFRESH_SUCCESS':
+      return {
+        ...state,
+        datasetRefreshing: false,
+      }
+    case 'DATASET_REFRESH_FAILURE':
+      return {
+        ...state,
+        datasetRefreshing: false,
+        datasetRefreshError: action.error,
+      }
+    case 'CLEAR_CASE_DETAILS':
+      return {
+        ...state,
+        caseDetails: {},
+        detailsLoading: {},
+        detailsError: {},
       }
     default:
       return state
@@ -197,6 +230,26 @@ export function ReviewProvider({ children }: { children: ReactNode }) {
     dispatch({ type: 'CLEAR_FILTERS' })
   }, [])
 
+  const selectedCaseId = state.selectedId
+
+  const refreshDataset = useCallback(async () => {
+    dispatch({ type: 'DATASET_REFRESH_REQUEST' })
+    try {
+      await refreshDatasetCache()
+      dispatch({ type: 'CLEAR_CASE_DETAILS' })
+      await fetchCases()
+      if (selectedCaseId) {
+        await fetchCaseDetailAction(selectedCaseId)
+      }
+      dispatch({ type: 'DATASET_REFRESH_SUCCESS' })
+    } catch (error) {
+      dispatch({
+        type: 'DATASET_REFRESH_FAILURE',
+        error: error instanceof Error ? error.message : 'Failed to refresh dataset',
+      })
+    }
+  }, [fetchCases, fetchCaseDetailAction, selectedCaseId])
+
   const contextValue = useMemo<ReviewContextValue>(
     () => ({
       ...state,
@@ -207,8 +260,19 @@ export function ReviewProvider({ children }: { children: ReactNode }) {
       markFinalOutcome,
       setFilterValues,
       clearFilters,
+      refreshDataset,
     }),
-    [state, fetchCases, fetchCaseDetailAction, selectCase, updateMetrics, markFinalOutcome, setFilterValues, clearFilters],
+    [
+      state,
+      fetchCases,
+      fetchCaseDetailAction,
+      selectCase,
+      updateMetrics,
+      markFinalOutcome,
+      setFilterValues,
+      clearFilters,
+      refreshDataset,
+    ],
   )
 
   return createElement(ReviewContext.Provider, { value: contextValue, children })
@@ -289,3 +353,6 @@ export const selectFetchCases = (state: ReviewContextValue) => state.fetchCases
 export const selectFetchCaseDetail = (state: ReviewContextValue) => state.fetchCaseDetail
 export const selectClearFilters = (state: ReviewContextValue) => state.clearFilters
 export const selectSetFilterValues = (state: ReviewContextValue) => state.setFilterValues
+export const selectDatasetRefreshing = (state: ReviewContextValue) => state.datasetRefreshing
+export const selectDatasetRefreshError = (state: ReviewContextValue) => state.datasetRefreshError
+export const selectRefreshDataset = (state: ReviewContextValue) => state.refreshDataset

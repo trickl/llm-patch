@@ -1,0 +1,13 @@
+--- before.ts
++++ patched_expression_evaluator.ts
+@@ -86,7 +86,8 @@
+         } else if (token.value === '(') {
+             ops.push(token.value);
+-        } else if (token.value === ')') {
++        } else if (token.value === ')') {
+             while (ops.length && ops[ops.length - 1] !== '(') {
+                 values.push(applyOp(values.pop()!, values.pop()!, ops.pop()!));
+             }
+             ops.pop();
+-        }
++        }

@@ -1,9 +1,0 @@
---- before.ts
-+++ before.ts
-@@ -1,4 +1,6 @@
- type Token = { type: 'number' | 'operator' | 'lparen' | 'rparen'; value: string };
-
-+import * as process from 'process';
- import * as require from 'require';
-
- function tokenize(input: string): Token[] {

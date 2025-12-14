@@ -1,0 +1,24 @@
+diff --git a/expression_evaluator.ts b/expression_evaluator.ts
+index 3a4b5c6..7d8e9f0 100644
+--- a/expression_evaluator.ts
++++ b/expression_evaluator.ts
+@@ -1,4 +1,5 @@
+ import { strict as assert } from 'assert';
++import * as process from 'process';
+ 
+ type Token = { type: 'number' | 'operator' | 'parenthesis'; value: string };
+ 
+@@ -107,9 +108,9 @@ function evaluateExpression(input: string): number {
+     const tokens = tokenize(input);
+     const result = parse(tokens);
+     if (result.length !== 1) throw new Error('Invalid expression');
+-    return result[0];
++    return result;
+ }
+ 
+ // CLI example
+-if (require.main === module) {
++if (process.mainModule === module) {
+     const input = process.argv[2];
+     if (!input) {
+         console.error('Usage: node expression_evaluator.ts "expression"');

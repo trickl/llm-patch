@@ -1,4 +1,0 @@
-  File "expression_evaluator.py", line 5
-    I's/forces and a[constructions:
-     ^
-SyntaxError: unterminated string literal (detected at line 5)

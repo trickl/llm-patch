@@ -1,0 +1,72 @@
+--- before.java	2023-04-10 12:34:56.000000000 +0800
++++ after.java	2023-04-10 12:35:07.000000000 +0800
+@@ -1,4 +1,4 @@
+ import java.util.*;
+-import java.util.function.Function;
++import static ExpressionEvaluator.Token.TokenType.*;
+ 
+ public class ExpressionEvaluator {
+     public static void main(String[] args) {
+@@ -36,7 +36,7 @@ public class ExpressionEvaluator {
+                 return new Token(TokenType.NUMBER, Integer.parseInt(input.substring(start, pos)));
+             } else if (ch == '+' || ch == '-' || ch == '*' || ch == '/') {
+                 char op = ch;
+-                pos++;
++                pos += 1;
+                 return new Token(TokenType.OPERATOR, op);
+             } else if (ch == '(') {
+                 pos++;
+@@ -40,7 +40,7 @@ public class ExpressionEvaluator {
+                 return new Token(TokenType.LPAREN, null);
+             } else if (ch == ')') {
+                 pos++;
+-                return new Token(TokenType.RPAREN, null);
++                return new Token(RPAREN, null);
+             } else {
+                 throw new IllegalArgumentException("Unexpected character: " + ch);
+             }
+@@ -73,7 +73,7 @@ public class ExpressionEvaluator {
+             while (currentToken.type == TokenType.OPERATOR && precedence < getPrecedence(currentToken.value)) {
+                 char op = currentToken.value;
+                 nextToken();
+-                if (op == '+') result += term();
++                if (op == '+') result += term(precedence);
+                 else if (op == '-') result -= term(precedence);
+                 else throw new IllegalArgumentException("Unexpected operator: " + op);
+             }
+@@ -87,7 +87,7 @@ public class ExpressionEvaluator {
+             while (currentToken.type == TokenType.OPERATOR && getPrecedence(currentToken.value) >= 2) {
+                 char op = currentToken.value;
+                 nextToken();
+-                if (op == '*') result *= factor();
++                if (op == '*') result *= factor(precedence);
+                 else if (op == '/') result /= factor(precedence);
+                 else throw new IllegalArgumentException("Unexpected operator: " + op);
+             }
+@@ -104,7 +104,7 @@ public class ExpressionEvaluator {
+                 nextToken();
+                 return -factor();
+             } else if (currentToken.type == TokenType.NUMBER) {
+-                int value = currentToken.value;
++                int value = currentToken.value.intValue();
+                 nextToken();
+                 return value;
+             } else throw new IllegalArgumentException("Unexpected token: " + currentToken);
+@@ -116,7 +116,7 @@ public class ExpressionEvaluator {
+         }
+ 
+         private void consume(TokenType type) {
+-            if (currentToken.type != type) throw new IllegalArgumentException("Expected " + type + ", but got " + currentToken.type);
++            if (currentToken.type != type) throw new IllegalArgumentException("Expected " + type + ", but got " + currentToken.type.name());
+             nextToken();
+         }
+ 
+@@ -124,7 +124,7 @@ public class ExpressionEvaluator {
+                 return switch (op) {
+                     case '+', '-' -> 1;
+                     case '*', '/' -> 2;
+-                    default -> -1;
++                    default -> throw new IllegalArgumentException("Unexpected operator: " + op);
+                 };
+             }
+         }

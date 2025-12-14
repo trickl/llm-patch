@@ -1,0 +1,15 @@
+--- before.ts
++++ after.ts
+@@ -1,4 +1,5 @@
+ // expression_evaluator.ts
+
++import * as process from 'process';
+ type Token = { type: 'number' | 'operator' | 'parenthesis', value: string };
+
+ const precedence: { [key: string]: number } = {
+@@ -90,7 +91,7 @@ export function evaluateExpression(input: string): number {
+   console.log(evaluateExpression('2 * (3 + 4)')); // Output: 14
+   console.log(evaluateExpression('8 / 2 * (2 + 2)')); // Output: 16
+ }
+-require.main === module && require('./expression_evaluator').evaluateExpression(process.argv[2]);
++process.mainModule === module && process.argv.slice(2).map(arg => evaluateExpression(arg)).forEach(result => console.log(result));

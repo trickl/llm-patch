@@ -1,0 +1,10 @@
+--- before.c
++++ patched_before.c
+@@ -52,7 +52,7 @@
+   int result = evaluate_term();
+     while (tokens[token_index].type == TOKEN_PLUS || tokens[token_index].type == TOKEN_MINUS) {
+-    TokenType op = tokens[token_index++].type;
++    TokenType op = tokens[token_index].type;
+       int next_value = evaluate_term();
+       if (op == TOKEN_PLUS) {
+         result += next_value;

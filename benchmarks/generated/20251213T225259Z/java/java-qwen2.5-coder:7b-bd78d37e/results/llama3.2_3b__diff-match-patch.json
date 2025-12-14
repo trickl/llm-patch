@@ -1,0 +1,22 @@
+{
+  "case_id": "java-qwen2.5-coder:7b-bd78d37e",
+  "language": "java",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "diff-match-patch",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "after_path": "after__llama3.2_3b__diff-match-patch.java",
+  "patch_applied": true,
+  "patch_diagnostics": "statuses=[True]",
+  "compile_returncode": 1,
+  "errors_before": 4,
+  "errors_after": 24,
+  "first_error_removed": true,
+  "added_lines": 19,
+  "removed_lines": 19,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "ExpressionEvaluator.java:31: error: not a statement\n                          } else if (Character.isWhitespace(ch)) {(ch)) {\n                                                                  ^\nExpressionEvaluator.java:31: error: ';' expected\n                          } else if (Character.isWhitespace(ch)) {(ch)) {\n                                                                      ^\nExpressionEvaluator.java:33: error: 'else' without 'if'\n            } else {\n              ^\nExpressionEvaluator.java:51: error: illegal start of expression\n    private int expression()         int result = term();\n    ^\nExpressionEvaluator.java:51: error: ';' expected\n    private int expression()         int result = term();\n                            ^\nExpressionEvaluator.java:52: error: illegal start of type\n        while (pos < tokens.size()) {\n        ^\nExpressionEvaluator.java:52: error: > or ',' expected\n        while (pos < tokens.size()) {\n                                ^\nExpressionEvaluator.java:52: error: ';' expected\n        while (pos < tokens.size()) {\n                                  ^\nExpressionEvaluator.java:60: error: illegal start of type\n             return result;\n             ^\nExpressionEvaluator.java:60: error: <identifier> expected\n             return result;\n                          ^\nExpressionEvaluator.java:70: error: not a statement\n        retur        return result;vate int factor() {\n        ^\nExpressionEvaluator.java:70: error: ';' expected\n        retur        return result;vate int factor() {\n             ^\nExpressionEvaluator.java:70: error: not a statement\n        retur        return result;vate int factor() {\n                                   ^\nExpressionEvaluator.java:70: error: ';' expected\n        retur        return result;vate int factor() {\n                                       ^\nExpressionEvaluator.java:70: error: ';' expected\n        retur        return result;vate int factor() {\n                                                  ^\nExpressionEvaluator.java:71: error: ';' expected\n        Token         Token token = tokens.get(pos);ken.type == TokenType.OPERATOR && token.value.equals(\"-\")) {\n                           ^\nExpressionEvaluator.java:71: error: not a statement\n        Token         Token token = tokens.get(pos);ken.type == TokenType.OPERATOR && token.value.equals(\"-\")) {\n                                                                                   ^\nExpressionEvaluator.java:71: error: ';' expected\n        Token         Token token = tokens.get(pos);ken.type == TokenType.OPERATOR && token.value.equals(\"-\")) {\n                                                                                                             ^\nExpressionEvaluator.java:75: error: not a statement\n            pos+            pos++;urn token.value;\n               ^\nExpressionEvaluator.java:75: error: ';' expected\n            pos+            pos++;urn token.value;\n                                           ^\nExpressionEvaluator.java:75: error: not a statement\n            pos+            pos++;urn token.value;\n                                            ^\nExpressionEvaluator.java:74: error: 'else' without 'if'\n        } else if (token.type == TokenType.NUMBER) {\n          ^\nExpressionEvaluator.java:112: error: reached end of file while parsing\n}\n ^\n23 errors\n",
+  "stdout_after": ""
+}

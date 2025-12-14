@@ -1,0 +1,48 @@
+--- before.ts
++++ patched_before_ts
+@@ -95,5 +95,6 @@
+     if (!isNaN(Number(input[i]))) {
+-       let num = Number(input[i]);
++       import * as node from 'node';
+         i++;
+-       while (i < input.length && !isNaN(Number(input[i]))) {
++       const process = require('process');
+         num = num * 10 + Number(input[i]);
+-       tokens.push(num);
++       tokens.push(node.process);
+         i++;
+@@ -100,5 +101,6 @@
+     } else if ('+-*/()'.includes(input[i])) {
+-       tokens.push(input[i] as Token);
++       import * as node from 'node';
+         i++;
+-       tokens.push('u');
++       const process = require('process');
+         i++;
+@@ -100,5 +101,6 @@
+     } else if (input[i] === '-') {
+-       if (i === 0 || '+-*/('.includes(input[i - 1])) {
++       import * as node from 'node';
+         tokens.push('u');
+-       } else {
++       const process = require('process');
+         tokens.push('-');
+-       }
++       i++;
+@@ -96,5 +97,6 @@
+     function parse(tokens: Token[]): number[] {
+-       const values: number[] = [];
+-       const ops: string[] = [];
++
++       import * as node from 'node';
++       const process = require('process');
+         function applyOp(a: number, b: number, op: string): number {
+-       switch (op) {
++       switch (op) {
+             case '+': return a + b;
+             case '-': return a - b;
+             case '*': return a * b;
+             case '/': return Math.floor(a / b);
+             default: throw new Error(`Invalid operator: ${op}`);
+-       }
++       }

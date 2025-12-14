@@ -1,0 +1,45 @@
+ExpressionEvaluator.java:12: error: incompatible types: Tokenizer cannot be converted to List<Token>
+        return new Parser(new Tokenizer(expression)).parse();
+                          ^
+ExpressionEvaluator.java:33: error: cannot find symbol
+                    tokens.add(new Token(TokenType.NUMBER, value));
+                                         ^
+  symbol:   variable TokenType
+  location: class Tokenizer
+ExpressionEvaluator.java:35: error: cannot find symbol
+                    tokens.add(new Token(TokenType.OPERATOR, ch));
+                                         ^
+  symbol:   variable TokenType
+  location: class Tokenizer
+ExpressionEvaluator.java:63: error: cannot find symbol
+                if (token.type == TokenType.OPERATOR && (token.value == '+' || token.value == '-')) {
+                                  ^
+  symbol:   variable TokenType
+  location: class Parser
+ExpressionEvaluator.java:82: error: cannot find symbol
+                if (token.type == TokenType.OPERATOR && (token.value == '*' || token.value == '/')) {
+                                  ^
+  symbol:   variable TokenType
+  location: class Parser
+ExpressionEvaluator.java:100: error: cannot find symbol
+            if (token.type == TokenType.OPERATOR && token.value == '-') {
+                              ^
+  symbol:   variable TokenType
+  location: class Parser
+ExpressionEvaluator.java:102: error: cannot find symbol
+            } else if (token.type == TokenType.NUMBER) {
+                                     ^
+  symbol:   variable TokenType
+  location: class Parser
+ExpressionEvaluator.java:104: error: cannot find symbol
+            } else if (token.type == TokenType.OPERATOR && token.value == '(') {
+                                     ^
+  symbol:   variable TokenType
+  location: class Parser
+ExpressionEvaluator.java:108: error: cannot find symbol
+                if (token.type != TokenType.OPERATOR || token.value != ')') {
+                                  ^
+  symbol:   variable TokenType
+  location: class Parser
+Note: Some messages have been simplified; recompile with -Xdiags:verbose to get full output
+9 errors

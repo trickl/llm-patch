@@ -1,0 +1,20 @@
+--- before.c 2023-04-15 15:37:12.8960000 -0700 (master)
++++ after.c 2023-04-15 15:37:12.8960000 -0700 (master)
+@@ -5,7 +5,7 @@
+ #include <stdio.h>
+#include <stdlib.h>
++// Added include for stdbool.h to use bool type instead of int where appropriate
+-#include <string.h>
++\#include <stdbool.h>
++
+ \#define MAX_TOKENS 100
+
+@@ -35,7 +35,8 @@
+ Token tokens[MAX_TOKENS];
+ int token_index = 0;
+-void error(const char *message) {
++\void error(const char *message) {
+    fprintf(stderr, "Error: %s\n", message);
++   exit(EXIT_FAILURE); // Changed to use stdbool.h's EXIT_FAILURE constant instead of hardcoded value 1
+ }
+ \#endif /* defined(__cplusplus) */

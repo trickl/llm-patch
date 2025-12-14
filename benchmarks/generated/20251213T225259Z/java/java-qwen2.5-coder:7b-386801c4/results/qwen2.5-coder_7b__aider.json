@@ -1,0 +1,22 @@
+{
+  "case_id": "java-qwen2.5-coder:7b-386801c4",
+  "language": "java",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "aider",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "after_path": "after__qwen2.5-coder_7b__aider.java",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 1,
+  "errors_before": 3,
+  "errors_after": 3,
+  "first_error_removed": true,
+  "added_lines": 1,
+  "removed_lines": 1,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "ExpressionEvaluator.java:89: error: unnamed classes are a preview feature and are disabled by default.\n    private static Node applyOp(String op, Node a, Node b) {\n                   ^\n  (use --enable-preview to enable unnamed classes)\nExpressionEvaluator.java:126: error: class, interface, enum, or record expected\n}\n^\n2 errors\n",
+  "stdout_after": ""
+}

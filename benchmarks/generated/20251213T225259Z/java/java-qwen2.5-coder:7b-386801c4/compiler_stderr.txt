@@ -1,0 +1,11 @@
+ExpressionEvaluator.java:107: error: cannot find symbol
+        return new NumberNode(func.apply(a.getValue(), b.getValue()));
+                                          ^
+  symbol:   method getValue()
+  location: variable a of type Node
+ExpressionEvaluator.java:107: error: cannot find symbol
+        return new NumberNode(func.apply(a.getValue(), b.getValue()));
+                                                        ^
+  symbol:   method getValue()
+  location: variable b of type Node
+2 errors

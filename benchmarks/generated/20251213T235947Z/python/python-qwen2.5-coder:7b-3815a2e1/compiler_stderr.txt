@@ -1,0 +1,4 @@
+  File "expression_evaluator.py", line 15
+    elif self.position < len(self.input_string) and (self.input_string[self.position] == '+' or 
+    ^^^^
+SyntaxError: invalid syntax

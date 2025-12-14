@@ -1,0 +1,6 @@
+--- before.c
++++ patched_before.c
+@@ -21,7 +21,8 @@
+     int value;
+-    }
++    Token token = (Token){TOKEN_NUMBER, value};

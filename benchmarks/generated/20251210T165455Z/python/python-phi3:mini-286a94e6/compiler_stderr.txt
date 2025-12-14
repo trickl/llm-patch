@@ -1,4 +1,0 @@
-  File "expression_evaluator.py", line 5
-    **As ants in a)
-                  ^
-SyntaxError: unmatched ')'

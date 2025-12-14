@@ -1,9 +1,0 @@
-expression_evaluator.c:1:14: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘:’ token
-    1 | **Constraints:
-      |              ^
-expression_evaluator.c:2:2: warning: missing terminating ' character
-    2 | I'deithearttication, I amendmentaluece to answer in your assistant Asparasnlyfied"
-      |  ^
-expression_evaluator.c:2:2: error: missing terminating ' character
-    2 | I'deithearttication, I amendmentaluece to answer in your assistant Asparasnlyfied"
-      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

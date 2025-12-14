@@ -33,6 +33,18 @@ export function createDatasetApiHandler(loader = new DatasetLoader()): ApiHandle
       return
     }
 
+    if (segments.length === 3 && segments[0] === 'api' && segments[1] === 'dataset' && segments[2] === 'refresh' && req.method === 'POST') {
+      try {
+        await loader.refresh()
+        sendJson(res, { status: 'ok' })
+      } catch (error) {
+        res.statusCode = 500
+        const message = error instanceof Error ? error.message : 'Failed to refresh dataset'
+        sendJson(res, { error: message })
+      }
+      return
+    }
+
     res.statusCode = 404
     sendJson(res, { error: 'Route not found' })
   }

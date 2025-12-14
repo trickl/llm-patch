@@ -1,0 +1,50 @@
+--- before.ts
++++ patched_expression_evaluator.ts
+@@ -1,5 +1,6 @@
+-// expression_evaluator.ts
+
++type Token = { type: 'NUMBER' | 'PLUS' | 'MINUS' | 'MUL' | 'DIV' | 'LPAREN' | 'RPAREN' | 'UMINUS'; value?: number };
+
+ function tokenize(input: string): Token[] {
+     const tokens: Token[] = [];
+     let i = 0;
+
+     while (i  input.length) {
+         if (/ \s/.test(input[i])) {
+             i++;
+             continue;
+         }
+
+-        if (/^\d+$/.test(input.slice(i))) {
++        if (/^\d+$/.test(input.slice(i))) {
+             const numMatch = input.slice(i).match(/^\d+/);
+             tokens.push({ type: 'NUMBER', value: parseInt(numMatch![0], 10) });
+             i += numMatch![0].length;
+         } else if (input[i] === '+') {
+             tokens.push({ type: 'PLUS' });
+             i++;
+         } else if (input[i] === '-') {
+             if (i === 0 || input[i - 1] === '(') {
+                 tokens.push({ type: 'UMINUS' });
+             } else {
+                 tokens.push({ type: 'MINUS' });
+             }
+             i++;
+         } else if (input[i] === '*') {
+             tokens.push({ type: 'MUL' });
+             i++;
+         } else if (input[i] === '/') {
+             tokens.push({ type: 'DIV' });
+             i++;
+         } else if (input[i] === '(') {
+             tokens.push({ type: 'LPAREN' });
+             i++;
+         } else if (input[i] === ')') {
+             tokens.push({ type: 'RPAREN' });
+             i++;
+         } else {
+             throw new Error(`Unexpected character at position ${i}: ${input[i]}`);
+         }
+     }
+
+     return tokens;

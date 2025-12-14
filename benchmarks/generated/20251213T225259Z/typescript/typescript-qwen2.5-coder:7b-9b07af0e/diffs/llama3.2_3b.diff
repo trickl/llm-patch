@@ -1,0 +1,19 @@
+--- expression_evaluator.ts
++++ expression_evaluator.ts
+@@ -116,5 +116,7 @@
+     module.exports = require('module');
+ }
+ 
+-const process = require('process');
++import { process } from 'node';
+ 
+ function main() {
+     const input = process.argv.slice(2).join(' ');
+     try {
+         console.log(evaluateExpression(input));
+     } catch (error) {
+         console.error(`Error: ${error.message}`);
+     }
+ }
+ 
+ export default main;

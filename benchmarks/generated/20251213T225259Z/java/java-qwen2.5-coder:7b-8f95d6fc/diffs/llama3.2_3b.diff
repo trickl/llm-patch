@@ -1,0 +1,80 @@
+--- before.java
++++ after.java
+@@ -12,7 +12,7 @@
+     return new Parser(new Tokenizer(expression)).parse();
+ 
+-    public List<Token> tokenize() {
++    public List<Token> tokenize() {
+         List<Token> tokens = new ArrayList<>();
+         while (pos  input.length()) {
+             char ch = input.charAt(pos);
+-            if (Character.isDigit(ch)) {
++            if (Character.isDigit(ch)) {
+                 int numStart = pos;
+                 while (pos  input.length() && Character.isDigit(input.charAt(pos))) {
+                     pos++;
+                 }
+-                tokens.add(new Token(TokenType.NUMBER, Integer.parseInt(input.substring(numStart, pos))));
++                tokens.add(new Token(TokenType.NUMBER, Integer.parseInt(input.substring(numStart, pos))));
+             } else if (ch == '+' || ch == '-' || ch == '*' || ch == '/') {
+-                tokens.add(new Token(TokenType.OPERATOR, ch));
++                tokens.add(new Token(TokenType.OPERATOR, ch));
+                 pos++;
+             } else if (ch == '(') {
+-                tokens.add(new Token(TokenType.LPAREN, null));
++                tokens.add(new Token(TokenType.LPAREN, null));
+                 pos++;
+             } else if (ch == ')') {
+-                tokens.add(new Token(TokenType.RPAREN, null));
++                tokens.add(new Token(TokenType.RPAREN, null));
+                 pos++;
+             } else if (Character.isWhitespace(ch)) {
+                 pos++;
+             } else {
+-                throw new IllegalArgumentException("Unexpected character: " + ch);
++                throw new IllegalArgumentException("Unexpected character: " + ch);
+             }
+         }
+         return tokens;
+     }
+ 
+@@ -68,7 +68,7 @@
+         if (token.type == TokenType.OPERATOR && (token.value == '+' || token.value == '-')) {
+-            pos++;
++            pos++;
+             int nextTerm = term();
+             result += token.value == '+' ? nextTerm : -nextTerm;
+         } else {
+@@ -83,7 +83,7 @@
+         if (token.type == TokenType.OPERATOR && (token.value == '*' || token.value == '/')) {
+-            pos++;
++            pos++;
+             int nextFactor = factor();
+             result += token.value == '*' ? nextFactor : result / nextFactor;
+         } else {
+@@ -96,7 +96,7 @@
+         if (token.type == TokenType.LPAREN) {
+-            pos++;
++            pos++;
+             int result = expression();
+             if (pos  tokens.size() && tokens.get(pos).type == TokenType.RPAREN) {
+                 pos++;
+@@ -99,7 +99,7 @@
+         } else if (token.type == TokenType.OPERATOR && token.value == '-') {
+-            pos++;
++            pos++;
+             return -factor();
+         } else if (token.type == TokenType.NUMBER) {
+-            pos++;
++            pos++;
+             return token.value;
+         } else {
+@@ -105,7 +105,7 @@
+         } else if (token.type == TokenType.OPERATOR && token.value == '-') {
+-            pos++;
++            pos++;
+             }
+         } else if (token.type == TokenType.NUMBER) {
+-            pos++;
++            pos++;
+             }

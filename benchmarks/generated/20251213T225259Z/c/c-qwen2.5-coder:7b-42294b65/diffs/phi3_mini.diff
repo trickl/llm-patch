@@ -1,0 +1,22 @@
+--- expression_evaluator.c before after
++++ expression_evaluator.c patched
+@@ -81,7 +81 @@
+         else if (**input == '*') {
+-            (*input)++;
++            input += strlen(**input); // Increment the pointer to skip over a multiplication operator and its operand
+           return (Token){TOKEN_MULTIPLY, 0};
+         } else if (**input == '/') {
+-            (*input)++;
++            input += strlen(**input); // Increment the pointer to skip over a division operator and its operand
+           return (Token){TOKEN0.value; = apply_operator(a, b, operator);
+         }
+     } else if (**input == '(') {
+@@ -84,7 +84 @@
+             TokenType token = tokens[i];
+             if (token.type == TOKEN_NUMBER) {
+-                values[value_index++] = token.value; // Increment the value index after storing a number's value to avoid overwriting it with subsequent numbers or operators
++               continue; // Skip this iteration as we don't need to store individual digits of multi-digit numbers in 'values' array for expression evaluation, just their summed total. This change assumes that all tokens are already converted into a single integer token representing the entire number sequence (e.g., "123" becomes 123).
+             } else if (token.type == TOKEN_LPAREN) {
+@@ -90,7 +90 @@
+                 while (operators[operator_index] != TOKEN_RPAREN && operator_index >= 0) { // Ensure we don't go out of bounds and handle the case where there are more operators than parentheses. This change assumes that all tokens have been evaluated to a single integer value, so no further evaluation is needed within these brackets (e.g., "(1+2)" becomes just "3").
+                     int b = values[--value_index]; // Pop from the stack for right-associative operators like '*' and '/'. This change assumes that all tokens have been evaluated to a single integer value, so no further evaluation is needed within these brackets.

@@ -1,0 +1,22 @@
+{
+  "case_id": "java-qwen2.5-coder:7b-f3992538",
+  "language": "java",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "aider",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "after_path": "after__llama3.2_3b__aider.java",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 1,
+  "errors_before": 2,
+  "errors_after": 3,
+  "first_error_removed": false,
+  "added_lines": 1,
+  "removed_lines": 1,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "ExpressionEvaluator.java:36: error: incompatible types: char cannot be converted to Integer\n            tokens.add(new Token(TokenType.OPERATOR, ch));\n                                                     ^\nExpressionEvaluator.java:37: error: incompatible types: char cannot be converted to Integer\n        tokens.add(new Token(TokenType.OPERATOR, (char)ch));\n                                                 ^\nNote: Some messages have been simplified; recompile with -Xdiags:verbose to get full output\n2 errors\n",
+  "stdout_after": ""
+}

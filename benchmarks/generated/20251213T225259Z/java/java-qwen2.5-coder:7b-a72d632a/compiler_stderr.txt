@@ -1,0 +1,33 @@
+ExpressionEvaluator.java:31: error: cannot find symbol
+                .flatMap(token -> token.matches("-?\\d+") ? Stream.of(token) : Stream.of(token.split("")))
+                                                            ^
+  symbol:   variable Stream
+  location: class ExpressionEvaluator
+ExpressionEvaluator.java:31: error: cannot find symbol
+                .flatMap(token -> token.matches("-?\\d+") ? Stream.of(token) : Stream.of(token.split("")))
+                                                                               ^
+  symbol:   variable Stream
+  location: class ExpressionEvaluator
+ExpressionEvaluator.java:32: error: cannot find symbol
+                .filter(token -> !token.isEmpty())
+                                       ^
+  symbol:   method isEmpty()
+  location: variable token of type Object
+ExpressionEvaluator.java:33: error: incompatible types: inference variable T has incompatible bounds
+                .collect(Collectors.toList());
+                        ^
+    equality constraints: String
+    lower bounds: Object
+  where T is a type-variable:
+    T extends Object declared in method <T>toList()
+ExpressionEvaluator.java:79: error: cannot find symbol
+            values.push(new ValueNode(-(a.getValue() - b.getValue())));
+                                         ^
+  symbol:   method getValue()
+  location: variable a of type Node
+ExpressionEvaluator.java:79: error: cannot find symbol
+            values.push(new ValueNode(-(a.getValue() - b.getValue())));
+                                                        ^
+  symbol:   method getValue()
+  location: variable b of type Node
+6 errors

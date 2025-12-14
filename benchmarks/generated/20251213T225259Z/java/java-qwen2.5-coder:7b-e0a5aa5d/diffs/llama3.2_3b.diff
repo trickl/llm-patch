@@ -1,0 +1,39 @@
+--- before.java
++++ after.java
+@@ -76,7 +76,7 @@
+     private final List<Token> tokens;
+-    ^
++    private final List<Token> tokens = new ArrayList<>();
+@@ -79,7 +79,7 @@
+     public Parser(List<Token> tokens) {
+-    ^
++    public Parser(tokens) {
+         this.tokens = tokens;
+     }
+@@ -90,7 +90,7 @@
+             Token token = tokens.get(pos);
+-    ^
++    Token token = new Token(tokens.get(pos));
+@@ -91,7 +91,7 @@
+             if (token.type != TokenType.OPERATOR) break;
+-    ^
++    if (token.type != TokenType.OPERATOR) {
+                 pos++;
+@@ -107,7 +107,7 @@
+             Token token = tokens.get(pos);
+-    ^
++    Token token = new Token(tokens.get(pos));
+@@ -108,7 +108,7 @@
+             if (token.type != TokenType.OPERATOR) break;
+-    ^
++    if (token.type != TokenType.OPERATOR) {
+                 pos++;
+@@ -122,7 +122,7 @@
+             Token token = tokens.get(pos);
+-    ^
++    Token token = new Token(tokens.get(pos));
+@@ -123,7 +123,7 @@
+             if (token.type != TokenType.OPERATOR) break;
+-    ^
++    if (token.type != TokenType.OPERATOR) {
+                 pos++;

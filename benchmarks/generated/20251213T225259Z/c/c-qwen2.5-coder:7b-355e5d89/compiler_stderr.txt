@@ -1,0 +1,6 @@
+expression_evaluator.c: In function ‘evaluate_expression’:
+expression_evaluator.c:146:39: error: ‘token’ undeclared (first use in this function); did you mean ‘Token’?
+  146 |         operators[operator_index--] = token.type;
+      |                                       ^~~~~
+      |                                       Token
+expression_evaluator.c:146:39: note: each undeclared identifier is reported only once for each function it appears in

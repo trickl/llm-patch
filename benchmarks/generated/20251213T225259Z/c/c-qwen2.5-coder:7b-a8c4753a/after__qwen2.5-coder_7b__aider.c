@@ -1,0 +1,147 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+#define MAX_TOKENS 100
+
+typedef enum { TOKEN_NUMBER, TOKEN_PLUS, TOKEN_MINUS, TOKEN_MULTIPLY, TOKEN_DIVIDE, TOKEN_LPAREN, TOKEN_RPAREN } TokenType;
+
+typedef struct {
+    TokenType type;
+    int value;
+} Token;
+
+Token tokens[MAX_TOKENS];
+int token_count = 0;
+
+void tokenize(const char *expression) {
+    const char *p = expression;
+    while (*p != '\0') {
+        if (isspace(*p)) {
+            p++;
+            continue;
+        }
+        if (isdigit(*p)) {
+            int value = 0;
+            while (isdigit(*p)) {
+                value = value * 10 + (*p - '0');
+                p++;
+            }
+            tokens[token_count++] = (Token){TOKEN_NUMBER, value};
+        } else if (*p == '+') {
+            tokens[token_count++] = (Token){TOKEN_PLUS, 0};
+            p++;
+        } else if (*p == '-') {
+            if (token_count > 0 && tokens[token_count - 1].type == TOKEN_LPAREN) {
+                tokens[token_count++] = (Token){TOKEN_NUMBER, -1};
+            } else {
+                tokens[token_count++] = (Token){TOKEN_MINUS, 0};
+            }
+            p++;
+        } else if (*p == '*') {
+            tokens[token_count++] = (Token){TOKEN_MULTIPLY, 0};
+            p++;
+        } else if (*p == '/') {
+            tokens[token_count++] = (Token){TOKEN_DIVIDE, 0};
+            p++;
+        } else if (*p == '(') {
+            tokens[token_count++] = (Token){TOKEN_LPAREN, 0};
+            p++;
+        } else if (*p == ')') {
+            tokens[token_count++] = (Token){TOKEN_RPAREN, 0};
+            p++;
+        }
+    }
+}
+
+int precedence(TokenType type) {
+    switch (type) {
+        case TOKEN_MULTIPLY:
+        case TOKEN_DIVIDE:
+            return 2;
+        case TOKEN_PLUS:
+        case TOKEN_MINUS:
+            return 1;
+        default:
+            return 0;
+    }
+}
+
+int evaluate(int a, int b, TokenType op) {
+    switch (op) {
+        case TOKEN_PLUS:
+            return a + b;
+        case TOKEN_MINUS:
+            return a - b;
+        case TOKEN_MULTIPLY:
+            return a * b;
+        case TOKEN_DIVIDE:
+            if (b == 0) {
+                fprintf(stderr, "Error: Division by zero\n");
+                exit(1);
+            }
+            return a / b;
+        default:
+            fprintf(stderr, "Error: Invalid operator\n");
+            exit(1);
+    }
+}
+
+int parse_and_evaluate() {
+    int values[MAX_TOKENS] = {0};
+    TokenType ops[MAX_TOKENS] = {TOKEN_PLUS}; // Default to addition for empty expression
+    int value_index = 0;
+    int op_index = 1; // Initialize op_index to avoid undeclared variable error
+    for (int i = 0; i < token_count; i++) {
+        if (tokens[i].type == TOKEN_NUMBER) {
+            values[value_index++] = tokens[i].value;
+        } else if (tokens[i].type == TOKEN_PLUS || tokens[i].type == TOKEN_MINUS ||
+                   tokens[i].type == TOKEN_MULTIPLY || tokens[i].type == TOKEN_DIVIDE) {
+            while (op_index > 0 && precedence(ops[op_index - 1]) >= precedence(tokens[i].type)) {
+                int b = values[value_index - 1];
+                value_index--;
+                int a = values[value_index - 1];
+                value_index--;
+                ops[op_index--] = tokens[i].type;
+            }
+            ops[op_index++] = tokens[i].type;
+        } else if (tokens[i].type == TOKEN_LPAREN) {
+            ops[op_index++] = tokens[i].type;
+        } else if (tokens[i].type == TOKEN_RPAREN && op_index > 0) { // Add check to avoid out-of-bounds access
+            while (op_index > 0 && ops[op_index - 1] != TOKEN_LPAREN) {
+                int b = values[value_index - 1];
+                value_index--;
+                int a = values[value_index - 1];
+                value_index--;
+                ops[--op_index] = tokens[i].type;
+            }
+            op_index--; // Pop the '('
+        }
+    }
+    while (op_index > 1) { // Adjust loop condition to avoid out-of-bounds access
+        int b = values[value_index - 1];
+        value_index--;
+        int a = values[value_index - 1];
+        value_index--;
+        ops[--op_index] = tokens[i].type;
+    }
+
+    return values[0];
+}
+
+int main() {
+    tokenize("3 + 4 * (2 - 1)");
+    printf("%d\n", parse_and_evaluate()); // Output: 9
+
+    tokenize("2 * 3 + 4");
+    printf("%d\n", parse_and_evaluate()); // Output: 10
+
+    tokenize("2 * (3 + 4)");
+    printf("%d\n", parse_and_evaluate()); // Output: 14
+
+    tokenize("8 / 2 * (2 + 2)");
+    printf("%d\n", parse_and_evaluate()); // Output: 16
+
+    return 0;
+}

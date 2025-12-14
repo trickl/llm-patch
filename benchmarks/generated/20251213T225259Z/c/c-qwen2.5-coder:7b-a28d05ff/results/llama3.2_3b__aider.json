@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-a28d05ff",
+  "language": "c",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "aider",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "after_path": "after__llama3.2_3b__aider.c",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 2 hunks",
+  "compile_returncode": 1,
+  "errors_before": 2,
+  "errors_after": 6,
+  "first_error_removed": false,
+  "added_lines": 2,
+  "removed_lines": 2,
+  "hunks": 2,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "expression_evaluator.c: In function \u2018parse_and_evaluate\u2019:\nexpression_evaluator.c:108:35: error: incompatible types when assigning to type \u2018TokenType\u2019 from type \u2018Token\u2019\n  108 |                 ops[op_count--] = tokens[op_count];\n      |                                   ^~~~~~\nexpression_evaluator.c:120:21: error: incompatible types when assigning to type \u2018TokenType\u2019 from type \u2018Token\u2019\n  120 |   ops[op_count--] = tokens[op_count];\n      |                     ^~~~~~\nexpression_evaluator.c:118:13: warning: unused variable \u2018a\u2019 [-Wunused-variable]\n  118 |         int a = values[value_count - 1];\n      |             ^\nexpression_evaluator.c:116:13: warning: unused variable \u2018b\u2019 [-Wunused-variable]\n  116 |         int b = values[value_count - 1];\n      |             ^\nexpression_evaluator.c:122:42: error: \u2018a\u2019 undeclared (first use in this function)\n  122 |         values[value_count++] = evaluate(a, b, ops[op_count]);\n      |                                          ^\nexpression_evaluator.c:122:42: note: each undeclared identifier is reported only once for each function it appears in\nexpression_evaluator.c:122:45: error: \u2018b\u2019 undeclared (first use in this function)\n  122 |         values[value_count++] = evaluate(a, b, ops[op_count]);\n      |                                             ^\nexpression_evaluator.c: At top level:\nexpression_evaluator.c:125:5: error: expected identifier or \u2018(\u2019 before \u2018return\u2019\n  125 |     return values[0];\n      |     ^~~~~~\nexpression_evaluator.c:126:1: error: expected identifier or \u2018(\u2019 before \u2018}\u2019 token\n  126 | }\n      | ^\nexpression_evaluator.c: In function \u2018parse_and_evaluate\u2019:\nexpression_evaluator.c:123:5: warning: control reaches end of non-void function [-Wreturn-type]\n  123 |     }\n      |     ^\n",
+  "stdout_after": ""
+}

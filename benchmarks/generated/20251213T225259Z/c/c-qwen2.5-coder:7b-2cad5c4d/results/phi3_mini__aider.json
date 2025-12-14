@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-2cad5c4d",
+  "language": "c",
+  "model_slug": "phi3_mini",
+  "algorithm": "aider",
+  "diff_path": "diffs/phi3_mini.diff",
+  "after_path": "after__phi3_mini__aider.c",
+  "patch_applied": true,
+  "patch_diagnostics": "no hunks",
+  "compile_returncode": 1,
+  "errors_before": 1,
+  "errors_after": 1,
+  "first_error_removed": false,
+  "added_lines": 7,
+  "removed_lines": 1,
+  "hunks": 0,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "expression_evaluator.c: In function \u2018evaluate_expression\u2019:\nexpression_evaluator.c:97:45: error: incompatible type for argument 3 of \u2018apply_operator\u2019\n   97 |         result = apply_operator(a, b, tokens[j]);\n      |                                       ~~~~~~^~~\n      |                                             |\n      |                                             Token\nexpression_evaluator.c:57:44: note: expected \u2018TokenType\u2019 but argument is of type \u2018Token\u2019\n   57 | int apply_operator(int a, int b, TokenType operator) {\n      |                                  ~~~~~~~~~~^~~~~~~~\n",
+  "stdout_after": ""
+}

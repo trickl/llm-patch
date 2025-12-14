@@ -25,6 +25,9 @@ interface CaseSidebarProps {
   filters: FiltersState
   onSetFilterValues: (key: FilterKey, values: string[]) => void
   onClearFilters: () => void
+  datasetRefreshing: boolean
+  datasetRefreshError: string | null
+  onRefreshDataset: () => Promise<void>
 }
 
 interface AlgorithmGroup {
@@ -66,6 +69,9 @@ export function CaseSidebar({
   filters,
   onSetFilterValues,
   onClearFilters,
+  datasetRefreshing,
+  datasetRefreshError,
+  onRefreshDataset,
 }: CaseSidebarProps) {
   const suiteLabel = allCases[0]?.problemId ?? 'Test Cases'
   const filterActive =
@@ -110,6 +116,7 @@ export function CaseSidebar({
             <div>
               <span className="sidebar__item-title">{testCase.filePath}</span>
               <span className="sidebar__item-subtitle">{testCase.modelSlug}</span>
+              <span className="sidebar__item-subtitle">ID {testCase.fingerprint}</span>
             </div>
             <span className="sidebar__item-subtitle">{testCase.diffName}</span>
           </div>
@@ -239,10 +246,24 @@ export function CaseSidebar({
           <p className="sidebar__eyebrow">Dataset</p>
           <h2>{suiteLabel}</h2>
         </div>
-        <span className="sidebar__count" title={`${filteredCount} of ${totalCount} cases visible`}>
-          {filterActive ? `${filteredCount}/${totalCount}` : totalCount}
-        </span>
+        <div className="sidebar__header-controls">
+          <span className="sidebar__count" title={`${filteredCount} of ${totalCount} cases visible`}>
+            {filterActive ? `${filteredCount}/${totalCount}` : totalCount}
+          </span>
+          <Button
+            size="small"
+            variant="outlined"
+            onClick={() => {
+              void onRefreshDataset()
+            }}
+            disabled={datasetRefreshing}
+            sx={{ textTransform: 'none', whiteSpace: 'nowrap' }}
+          >
+            {datasetRefreshing ? 'Refreshing…' : 'Reload data'}
+          </Button>
+        </div>
       </div>
+      {datasetRefreshError && <p className="sidebar__status sidebar__status--error sidebar__status--compact">{datasetRefreshError}</p>}
       <div className="sidebar__filters-card">
         <div className="sidebar__filters-header">
           <div>

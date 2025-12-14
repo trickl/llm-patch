@@ -1,0 +1,50 @@
+--- before.c
++++ after.c
+@@ -32,7 +32,8 @@ Token next_token() {
+     if (token_index >= MAX_TOKENS) {
+         return (Token){TOKEN_TYPE_EOF};
+     }
+-    Token token = tokens[token_index++];
++    Token token = {TOKEN_TYPE_NUMBER, 0, '\0'};
++    token.type = tokens[token_index++].type;
+     return token;
+ }
+
+@@ -55,7 +56,8 @@ void tokenize(const char *expression) {
+             tokens[token_index++] = (Token){TOKEN_TYPE_NUMBER, num};
+         } else if (is_operator(expression[i])) {
+             tokens[token_index++] = (Token){TOKEN_TYPE_OPERATOR, 0, expression[i]};
+-            i++;
++            i += 2;
+         } else if (expression[i] == '(') {
+             tokens[token_index++] = (Token){TOKEN_TYPE_LPAREN};
+             i++;
+@@ -60,7 +62,8 @@ void tokenize(const char *expression) {
+         } else if (expression[i] == ')') {
+             tokens[token_index++] = (Token){TOKEN_TYPE_RPAREN};
+             i++;
+-        } else {
++        } else {
++            error("Invalid character");
+         }
+     }
+     tokens[token_index++] = (Token){TOKEN_TYPE_EOF};
+@@ -102,7 +105,8 @@ int evaluate(int *start, int *end) {
+     int value = (*start)->value;
+     char op = '\0';
+     for (int i = *start + 1; i <= *end; i++) {
+-        if (i->type == TOKEN_TYPE_OPERATOR) {
++        if (i->type == TOKEN_TYPE_OPERATOR && i->operator != '\0') {
+             op = i->operator;
+         } else if (i->type == TOKEN_TYPE_NUMBER) {
+             value = apply_operator(value, i->value, op);
+@@ -140,7 +144,8 @@ int parse_expression(int *start, int *end) {
+     if (*start > *end) return 0;
+
+     int left = evaluate(start, end);
+
+-    while (*start <= *end && tokens[*start].type == TOKEN_TYPE_OPERATOR) {
++    while (*start <= *end && (tokens[*start].type == TOKEN_TYPE_OPERATOR || tokens[*start].operator != '\0')) {
+         char op = tokens[*start].operator;
+         int right_start = *start + 1;
+         int right_end = *end;

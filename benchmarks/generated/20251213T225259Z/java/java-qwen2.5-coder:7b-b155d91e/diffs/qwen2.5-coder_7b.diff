@@ -1,0 +1,27 @@
+--- before.java	2023-04-10 12:34:56.000000000 +0800
++++ after.java	2023-04-10 12:35:07.000000000 +0800
+@@ -13,7 +13,7 @@
+     public static int evaluate(String expression) {
+         return new Parser(new Tokenizer(expression)).parse();
+     }
+-
++    private List<Object> tokenize(String expression) {
+     private static class Tokenizer {
+         private final String input;
+         private int pos = 0;
+@@ -76,12 +76,12 @@
+                 } else if (ch == '(') {
+                     tokens.add('(');
+                     pos++;
+-                } else if (token == ')') {
++                } else if (ch == ')') {
+                     tokens.add(')');
+                     pos++;
+                 } else if (Character.isWhitespace(ch)) {
+                     pos++;
+                 } else {
+                     throw new IllegalArgumentException("Unexpected character: " + ch);
+                 }
+             }
+             return tokens;
+         }

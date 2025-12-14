@@ -1,0 +1,8 @@
+--- before.c
++++ before.c
+@@ -130,7 +130,7 @@ int evaluate(const char *expression) {
+     tokenize(expression);
+-    int result = evaluate_expression(0, token_count - 2);
++    int result = evaluate_expression(&tokens[0], &tokens[token_count - 2]);
+     return result;
+ }

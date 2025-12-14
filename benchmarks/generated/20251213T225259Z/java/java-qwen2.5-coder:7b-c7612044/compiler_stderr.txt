@@ -1,0 +1,4 @@
+ExpressionEvaluator.java:57: error: cannot assign a value to final variable tokens
+            this.tokens = new Tokenizer(expression).tokenize();
+                ^
+1 error

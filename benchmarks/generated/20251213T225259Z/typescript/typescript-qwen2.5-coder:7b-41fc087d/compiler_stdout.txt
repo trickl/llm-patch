@@ -1,0 +1,16 @@
+expression_evaluator.ts(42,41): error TS18048: 'a' is possibly 'undefined'.
+expression_evaluator.ts(42,45): error TS18048: 'b' is possibly 'undefined'.
+expression_evaluator.ts(43,46): error TS18048: 'a' is possibly 'undefined'.
+expression_evaluator.ts(43,50): error TS18048: 'b' is possibly 'undefined'.
+expression_evaluator.ts(44,46): error TS18048: 'a' is possibly 'undefined'.
+expression_evaluator.ts(44,50): error TS18048: 'b' is possibly 'undefined'.
+expression_evaluator.ts(45,57): error TS18048: 'a' is possibly 'undefined'.
+expression_evaluator.ts(45,61): error TS18048: 'b' is possibly 'undefined'.
+expression_evaluator.ts(51,16): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ '+': number; '-': number; '*': number; '/': number; }'.
+  No index signature with a parameter of type 'string' was found on type '{ '+': number; '-': number; '*': number; '/': number; }'.
+expression_evaluator.ts(51,34): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ '+': number; '-': number; '*': number; '/': number; }'.
+  No index signature with a parameter of type 'string' was found on type '{ '+': number; '-': number; '*': number; '/': number; }'.
+expression_evaluator.ts(91,5): error TS2580: Cannot find name 'require'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.
+expression_evaluator.ts(91,22): error TS2580: Cannot find name 'module'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.
+expression_evaluator.ts(92,19): error TS2580: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.
+expression_evaluator.ts(96,33): error TS18046: 'error' is of type 'unknown'.

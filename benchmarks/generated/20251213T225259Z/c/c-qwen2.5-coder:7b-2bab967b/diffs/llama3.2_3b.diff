@@ -1,0 +1,25 @@
+--- before.c
++++ patched_before.c
+@@ -38,7 +38,7 @@
+   Token get_next_token(char **input) {
+-    skip_whitespace(input);
++    char *token = *input;
+     if (**input == '\0') {
+       return (Token){TOKEN_EOF, 0};
+     }
+
+@@ -88,7 +88,7 @@
+   int evaluate_expression(char **input) {
+-    skip_whitespace(input);
++    char *token = *input;
+     if (**input == '\0') {
+       return 0;
+     }
+
+@@ -153,7 +153,7 @@
+   int result = evaluate_expression(tokens);
+-    current_token = get_next_token(input);
++    Token current_token = get_next_token(token);
+     int result;
+
+     switch (current_token.type) {

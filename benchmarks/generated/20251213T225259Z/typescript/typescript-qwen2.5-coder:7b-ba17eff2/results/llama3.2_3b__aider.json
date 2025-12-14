@@ -1,0 +1,22 @@
+{
+  "case_id": "typescript-qwen2.5-coder:7b-ba17eff2",
+  "language": "typescript",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "aider",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "after_path": "after__llama3.2_3b__aider.ts",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 2,
+  "errors_before": 4,
+  "errors_after": 5,
+  "first_error_removed": true,
+  "added_lines": 8,
+  "removed_lines": 3,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "",
+  "stdout_after": "expression_evaluator.ts(17,24): error TS1005: ';' expected.\nexpression_evaluator.ts(17,36): error TS1005: ')' expected.\nexpression_evaluator.ts(17,41): error TS1005: ';' expected.\nexpression_evaluator.ts(22,11): error TS1128: Declaration or statement expected.\nexpression_evaluator.ts(40,1): error TS1128: Declaration or statement expected.\n"
+}

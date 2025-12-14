@@ -1,0 +1,22 @@
+{
+  "case_id": "typescript-qwen2.5-coder:7b-b070d144",
+  "language": "typescript",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "git",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "after_path": null,
+  "patch_applied": false,
+  "patch_diagnostics": "error: patch failed: expression_evaluator.ts:124\nerror: expression_evaluator.ts: patch does not apply",
+  "compile_returncode": null,
+  "errors_before": 2,
+  "errors_after": null,
+  "first_error_removed": false,
+  "added_lines": 1,
+  "removed_lines": 1,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": null,
+  "stdout_after": null
+}

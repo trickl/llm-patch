@@ -1,0 +1,22 @@
+{
+  "case_id": "java-qwen2.5-coder:7b-69fff240",
+  "language": "java",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "aider",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "after_path": "after__llama3.2_3b__aider.java",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 1,
+  "errors_before": 10,
+  "errors_after": 11,
+  "first_error_removed": true,
+  "added_lines": 5,
+  "removed_lines": 5,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "ExpressionEvaluator.java:23: error: illegal start of type\n    return new Parser(new Tokenizer(expression)).parse();\n    ^\nExpressionEvaluator.java:23: error: invalid method declaration; return type required\n    return new Parser(new Tokenizer(expression)).parse();\n               ^\nExpressionEvaluator.java:23: error: illegal start of type\n    return new Parser(new Tokenizer(expression)).parse();\n                      ^\nExpressionEvaluator.java:25: error: ';' expected\n    public List  Token> tokenize() {\n                      ^\nExpressionEvaluator.java:25: error: invalid method declaration; return type required\n    public List  Token> tokenize() {\n                        ^\nExpressionEvaluator.java:27: error: ')' expected\n        while (pos  input.length()) {\n                  ^\nExpressionEvaluator.java:27: error: ';' expected\n        while (pos  input.length()) {\n                                  ^\nExpressionEvaluator.java:31: error: ')' expected\n                while (pos  input.length() && Character.isDigit(input.charAt(pos))) {\n                          ^\nExpressionEvaluator.java:31: error: not a statement\n                while (pos  input.length() && Character.isDigit(input.charAt(pos))) {\n                                           ^\nExpressionEvaluator.java:31: error: ';' expected\n                while (pos  input.length() && Character.isDigit(input.charAt(pos))) {\n                                                                                  ^\n10 errors\n",
+  "stdout_after": ""
+}

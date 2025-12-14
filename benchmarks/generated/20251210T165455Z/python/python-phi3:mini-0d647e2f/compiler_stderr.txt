@@ -1,4 +1,0 @@
-  File "expression_evaluator.py", line 1
-    Your task: "The answer toasting 
-               ^
-SyntaxError: unterminated string literal (detected at line 1)

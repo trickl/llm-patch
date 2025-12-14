@@ -1,0 +1,21 @@
+expression_evaluator.c: In function ‘evaluateInfix’:
+expression_evaluator.c:108:36: error: passing argument 1 of ‘getNextToken’ from incompatible pointer type [-Wincompatible-pointer-types]
+  108 |         Token token = getNextToken(&input);
+      |                                    ^~~~~~
+      |                                    |
+      |                                    const char **
+expression_evaluator.c:36:27: note: expected ‘char **’ but argument is of type ‘const char **’
+   36 | Token getNextToken(char **input) {
+      |                    ~~~~~~~^~~~~
+expression_evaluator.c: In function ‘getNextToken’:
+expression_evaluator.c:59:1: warning: control reaches end of non-void function [-Wreturn-type]
+   59 | }
+      | ^
+expression_evaluator.c: In function ‘evaluate’:
+expression_evaluator.c:79:1: warning: control reaches end of non-void function [-Wreturn-type]
+   79 | }
+      | ^
+expression_evaluator.c: In function ‘parseExpression’:
+expression_evaluator.c:103:1: warning: control reaches end of non-void function [-Wreturn-type]
+  103 | }
+      | ^

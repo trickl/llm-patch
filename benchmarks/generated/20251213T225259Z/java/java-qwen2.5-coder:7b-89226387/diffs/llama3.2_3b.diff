@@ -1,0 +1,10 @@
+--- before.java
++++ after.java
+@@ -96,7 +96,7 @@
+ private final BiFunction<Integer, Integer, Integer> operation;
++import java.util.function.BiFunction;
+
+  public BinaryNode(Node left, Node right, BiFunction<Integer, Integer, Integer> operation) {
+     ^
+-2 errors
++1 error

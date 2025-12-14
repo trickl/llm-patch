@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-c3b28ff6",
+  "language": "c",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "aider",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "after_path": "after__qwen2.5-coder_7b__aider.c",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 3 hunks",
+  "compile_returncode": 1,
+  "errors_before": 2,
+  "errors_after": 3,
+  "first_error_removed": false,
+  "added_lines": 3,
+  "removed_lines": 2,
+  "hunks": 3,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "expression_evaluator.c: In function \u2018evaluate_expression\u2019:\nexpression_evaluator.c:59:18: error: implicit declaration of function \u2018evaluate_term\u2019 [-Wimplicit-function-declaration]\n   59 |     int result = evaluate_term();\n      |                  ^~~~~~~~~~~~~\nexpression_evaluator.c: In function \u2018evaluate_term\u2019:\nexpression_evaluator.c:72:18: error: implicit declaration of function \u2018evaluate_factor\u2019; did you mean \u2018evaluate_term\u2019? [-Wimplicit-function-declaration]\n   72 |     int result = evaluate_factor();\n      |                  ^~~~~~~~~~~~~~~\n      |                  evaluate_term\nexpression_evaluator.c: In function \u2018evaluate_factor\u2019:\nexpression_evaluator.c:105:12: error: \u2018result\u2019 undeclared (first use in this function)\n  105 |     return result;\n      |            ^~~~~~\nexpression_evaluator.c:105:12: note: each undeclared identifier is reported only once for each function it appears in\nexpression_evaluator.c:106:1: warning: control reaches end of non-void function [-Wreturn-type]\n  106 | }\n      | ^\n",
+  "stdout_after": ""
+}

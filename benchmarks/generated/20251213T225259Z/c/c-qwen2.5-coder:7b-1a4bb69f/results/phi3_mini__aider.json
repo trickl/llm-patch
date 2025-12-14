@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-1a4bb69f",
+  "language": "c",
+  "model_slug": "phi3_mini",
+  "algorithm": "aider",
+  "diff_path": "diffs/phi3_mini.diff",
+  "after_path": "after__phi3_mini__aider.c",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 2 hunks",
+  "compile_returncode": 1,
+  "errors_before": 1,
+  "errors_after": 3,
+  "first_error_removed": false,
+  "added_lines": 3,
+  "removed_lines": 1,
+  "hunks": 2,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "expression_evaluator.c: In function \u2018get_next_token\u2019:\nexpression_evaluator.c:63:15: warning: \"MAX_TOKENS\" redefined\n   63 |       #define MAX_TOKENS 10 // Added missing semicolon here for demonstration purposes only, as per the task instructions not to fix additional issues beyond a single error.\n      |               ^~~~~~~~~~\nexpression_evaluator.c:6:9: note: this is the location of the previous definition\n    6 | #define MAX_TOKENS 100\n      |         ^~~~~~~~~~\nexpression_evaluator.c:68:3: error: duplicate case value\n   68 |   case '(':\n      |   ^~~~\nexpression_evaluator.c:64:9: note: previously used here\n   64 |         case '(':\n      |         ^~~~\nexpression_evaluator.c: In function \u2018parse_factor\u2019:\nexpression_evaluator.c:107:26: error: implicit declaration of function \u2018parse_expression\u2019 [-Wimplicit-function-declaration]\n  107 |             int result = parse_expression();\n      |                          ^~~~~~~~~~~~~~~~\nexpression_evaluator.c:116:1: warning: control reaches end of non-void function [-Wreturn-type]\n  116 | }\n      | ^\n",
+  "stdout_after": ""
+}

@@ -42,9 +42,13 @@ export function CaseWorkspace({ detail, annotation }: CaseWorkspaceProps) {
     }
   }, [detail.summary.id])
 
-  const diagnostics = useMemo(
-    () => parseDiagnostics(detail.errors.stderr, detail.summary.language),
-    [detail.errors.stderr, detail.summary.language],
+  const diagnosticsBefore = useMemo(
+    () => parseDiagnostics(detail.errors.before.stderr, detail.summary.language),
+    [detail.errors.before.stderr, detail.summary.language],
+  )
+  const diagnosticsAfter = useMemo(
+    () => parseDiagnostics(detail.errors.after.stderr, detail.summary.language),
+    [detail.errors.after.stderr, detail.summary.language],
   )
   const patchFailed = !detail.summary.patchApplied
   const afterMissing = detail.derived.afterSource === 'missing'
@@ -52,7 +56,7 @@ export function CaseWorkspace({ detail, annotation }: CaseWorkspaceProps) {
   const afterPlaceholder = afterUnavailable ? (patchFailed ? 'Patch failed' : 'Not available') : undefined
   const afterValue = afterUnavailable ? '' : detail.after
   const diffLineCount = detail.diff.split('\n').length
-  const stderrLineCount = countNonEmptyLines(detail.errors.stderr)
+  const stderrLineCount = countNonEmptyLines(detail.errors.before.stderr)
   const hasAfterFile = !afterUnavailable
 
   const handleSourceReview = useCallback(
@@ -118,6 +122,7 @@ export function CaseWorkspace({ detail, annotation }: CaseWorkspaceProps) {
         </div>
         <div className="workspace__meta">
           <span>Case #{detail.summary.caseId}</span>
+          <span>Fingerprint {detail.summary.fingerprint}</span>
           <span className="workspace__language">{detail.summary.language}</span>
           <span>{detail.summary.modelSlug}</span>
           <span>{detail.summary.algorithm}</span>
@@ -133,7 +138,7 @@ export function CaseWorkspace({ detail, annotation }: CaseWorkspaceProps) {
                 language={monacoLanguage}
                 value={detail.before}
                 modelPath={modelPaths.before}
-                diagnostics={diagnostics}
+                diagnostics={diagnosticsBefore}
                 onEditorMount={handleBeforeMount}
                 headerActions={
                   <QualityReviewButtons
@@ -152,7 +157,7 @@ export function CaseWorkspace({ detail, annotation }: CaseWorkspaceProps) {
                 language={monacoLanguage}
                 value={afterValue}
                 modelPath={modelPaths.after}
-                diagnostics={diagnostics}
+                diagnostics={diagnosticsAfter}
                 placeholder={afterPlaceholder}
                 onEditorMount={handleAfterMount}
                 headerActions={
@@ -222,7 +227,7 @@ export function CaseWorkspace({ detail, annotation }: CaseWorkspaceProps) {
                   {detail.diff || 'No diff available.'}
                 </pre>
               ) : (
-                <ErrorsPanel stderr={detail.errors.stderr} stdout={detail.errors.stdout} />
+                <ErrorsPanel before={detail.errors.before} after={detail.errors.after} />
               )}
             </div>
           </section>
@@ -245,14 +250,55 @@ interface EditorSectionProps {
 
 type EditorDisposable = ReturnType<MonacoEditor.IStandaloneCodeEditor['onDidScrollChange']>
 
-function ErrorsPanel({ stderr, stdout }: { stderr: string; stdout: string }) {
+interface ErrorBlob {
+  stderr: string
+  stdout: string
+}
+
+function ErrorsPanel({ before, after }: { before: ErrorBlob; after: ErrorBlob }) {
+  const hasAfter = Boolean(after.stderr.trim().length || after.stdout.trim().length)
+  const [view, setView] = useState<'before' | 'after'>(hasAfter ? 'after' : 'before')
+
+  useEffect(() => {
+    setView((current) => {
+      if (!hasAfter && current === 'after') {
+        return 'before'
+      }
+      return current
+    })
+  }, [hasAfter])
+
+  const active = view === 'before' ? before : after
+  const stdoutLabel = view === 'before' ? 'compiler stdout (before)' : 'compiler stdout (after)'
+
   return (
     <div className="errors-view">
-      <pre className="errors-view__body">{stderr || 'No stderr captured.'}</pre>
-      {stdout && (
-        <details className="errors-view__stdout">
-          <summary>compiler stdout</summary>
-          <pre>{stdout}</pre>
+      <div className="errors-view__mode-toggle" role="tablist" aria-label="Select error output">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={view === 'before'}
+          className={clsx('errors-view__mode-button', view === 'before' && 'is-active')}
+          onClick={() => setView('before')}
+        >
+          Before errors
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={view === 'after'}
+          className={clsx('errors-view__mode-button', view === 'after' && 'is-active')}
+          onClick={() => setView('after')}
+          disabled={!hasAfter}
+        >
+          After errors
+        </button>
+      </div>
+      <pre className="errors-view__body">{active.stderr || 'No stderr captured.'}</pre>
+      {active.stdout && (
+        <details className="errors-view__stdout" open={view === 'after' && hasAfter}>
+          <summary>{stdoutLabel}</summary>
+          <pre>{active.stdout}</pre>
         </details>
       )}
     </div>

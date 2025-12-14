@@ -1,0 +1,44 @@
+--- before.java
++++ after.java
+
+@@ -12,7 +12,7 @@
+     return new Parser(new Tokenizer(expression)).parse();
+ }
+
+ private static class Tokenizer {
+-    private final String input;
++    private final String input;
+     private int pos = 0;
+
+     Tokenizer(String input) {
+         this.input = input;
+     }
+
+     List<Token> tokenize() {
+-        List<Token> tokens = new ArrayList<>();
++        List<Token> tokens = new ArrayList<>();
+         while (pos  input.length()) {
+             char ch = input.charAt(pos);
+             if (Character.isDigit(ch)) {
+                 tokens.add(new NumberToken(parseNumber()));
+             } else if (ch == '+' || ch == '-' || ch == '*' || ch == '/') {
+                 tokens.add(new OperatorToken(String.valueOf(ch)));
+             } else if (ch == '(') {
+                 tokens.add(new LeftParenthesisToken());
+             } else if (ch == ')') {
+                 tokens.add(new RightParenthesisToken());
+             }
+             pos++;
+         }
+-        return tokens;
++        return tokens;
+     }
+
+     private int parseNumber() {
+         int start = pos;
+         while (pos  input.length() && Character.isDigit(input.charAt(pos))) {
+             pos++;
+         }
+-        return Integer.parseInt(input.substring(start, pos));
++        return Integer.parseInt(input.substring(start, pos));
+     }

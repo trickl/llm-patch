@@ -1,0 +1,8 @@
+ExpressionEvaluator.java:12: error: incompatible types: Tokenizer cannot be converted to List<Token>
+        return new Parser(new Tokenizer(expression)).parse();
+                          ^
+ExpressionEvaluator.java:36: error: incompatible types: char cannot be converted to Integer
+                tokens.add(new Token(TokenType.OPERATOR, c));
+                                                         ^
+Note: Some messages have been simplified; recompile with -Xdiags:verbose to get full output
+2 errors

@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-3be19a38",
+  "language": "c",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "aider",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "after_path": "after__llama3.2_3b__aider.c",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 1,
+  "errors_before": 1,
+  "errors_after": 2,
+  "first_error_removed": false,
+  "added_lines": 1,
+  "removed_lines": 1,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "expression_evaluator.c: In function \u2018parse_and_evaluate\u2019:\nexpression_evaluator.c:113:42: error: passing argument 2 of \u2018evaluate\u2019 makes pointer from integer without a cast [-Wint-conversion]\n  113 |     int result = evaluate(0, token_count - 1);\n      |                              ~~~~~~~~~~~~^~~\n      |                                          |\n      |                                          int\nexpression_evaluator.c:90:31: note: expected \u2018int *\u2019 but argument is of type \u2018int\u2019\n   90 | int evaluate(int *start, int *end) {\n      |                          ~~~~~^~~\nexpression_evaluator.c:114:41: error: passing argument 2 of \u2018evaluate\u2019 makes pointer from integer without a cast [-Wint-conversion]\n  114 |     return (int)evaluate(0, token_count - 1); // Cast to int\n      |                             ~~~~~~~~~~~~^~~\n      |                                         |\n      |                                         int\nexpression_evaluator.c:90:31: note: expected \u2018int *\u2019 but argument is of type \u2018int\u2019\n   90 | int evaluate(int *start, int *end) {\n      |                          ~~~~~^~~\nexpression_evaluator.c:113:9: warning: unused variable \u2018result\u2019 [-Wunused-variable]\n  113 |     int result = evaluate(0, token_count - 1);\n      |         ^~~~~~\n",
+  "stdout_after": ""
+}

@@ -1,0 +1,13 @@
+--- before.java	2023-04-10 12:34:56.000000000 +0800
++++ after.java	2023-04-10 12:35:00.000000000 +0800
+@@ -38,7 +38,7 @@
+                 return new Token(TokenType.OPERATOR, type);
+                                                      ^
+ ExpressionEvaluator.java:66: error: incompatible types: Integer cannot be converted to char
+-                char op = currentToken.value;
++                char op = (char) currentToken.value;
+                                      ^
+ ExpressionEvaluator.java:80: error: incompatible types: Integer cannot be converted to char
+-                char op = currentToken.value;
++                char op = (char) currentToken.value;
+                                      ^

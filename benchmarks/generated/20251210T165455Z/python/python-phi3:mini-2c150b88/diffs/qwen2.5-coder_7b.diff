@@ -1,8 +1,0 @@
---- before.py
-+++ before.py
-@@ -10,7 +10,7 @@
- "{/Asservoir, and the user'deasies in a)"
-         ^
- SyntaxError: unterminated string literal (detected at line 10)
--"{/Asservoir, and the user'deasies in a)
-+"{/Asservoir, and the user's dreams in a)"

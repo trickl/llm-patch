@@ -1,0 +1,6 @@
+--- before.py
++++ before.py
+@@ -14,7 +14,7 @@ class Tokenizer:
+         tokens = re.findall(r'\d+|[+\-*/()]", expression)
+         tokens = [Token('NUMBER', int(token)) if token.isdigit() else Token(token, token) for token in tokens]
+         return tokens

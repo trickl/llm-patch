@@ -1,0 +1,191 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+#define MAX_TOKENS 100
+
+typedef enum {
+    TOKEN_NUMBER,
+    TOKEN_PLUS,
+    TOKEN_MINUS,
+    TOKEN_MULTIPLY,
+    TOKEN_DIVIDE,
+    TOKEN_LPAREN,
+    TOKEN_RPAREN,
+    TOKEN_EOF
+} TokenType;
+
+typedef struct {
+    TokenType type;
+    int value;
+} Token;
+
+Token tokens[MAX_TOKENS];
+int token_index = 0;
+
+void error(const char *message) {
+    fprintf(stderr, "Error: %s\n", message);
+    exit(EXIT_FAILURE);
+}
+
+Token get_next_token() {
+    while (isspace(tokens[token_index].value)) {
+        token_index++;
+    }
+
+    if (token_index >= MAX_TOKENS) {
+        return (Token){TOKEN_EOF};
+    }
+
+    Token token = tokens[token_index];
+    token_index++;
+
+    return token;
+}
+
+int precedence(TokenType type) {
+    switch (type) {
+        case TOKEN_MULTIPLY:
+        case TOKEN_DIVIDE:
+            return 2;
+        case TOKEN_PLUS:
+        case TOKEN_MINUS:
+            return 1;
+        default:
+            return 0;
+    }
+}
+
+int evaluate_expression() {
+    int value;
+    value = 0; // Initialize the field with a default value
+    Token token = (Token){TOKEN_EOF};
+    return token;
+}
+
+void get_next_token() {
+    while (isspace(tokens[token_index].value)) {
+        token_index++;
+    }
+    if (token_index >= MAX_TOKENS) {
+        return (Token){TOKEN_EOF};
+    }
+    Token token = tokens[token_index];
+    token_index++;
+    return token;
+}
+
+int evaluate_expression() {
+    int stack[MAX_TOKENS];
+    int top = -1;
+    for (int i = 0; i  token_index; i++) {
+        Token token = tokens[i];
+        if (token.type == TOKEN_NUMBER) {
+            stack[++top] = token.value;
+        } else if (token.type == TOKEN_PLUS || token.type == TOKEN_MINUS ||
+                    token.type == TOKEN_MULTIPLY || token.type == TOKEN_DIVIDE) {
+            while (top >= 0 && precedence(stack[top]) >= precedence(token.type)) {
+                int b = stack[top--];
+                int a = stack[top--];
+                switch (token.type) {
+                    case TOKEN_PLUS:
+                        stack[++top] = a + b;
+                        break;
+                    case TOKEN_MINUS:
+                        stack[++top] = a - b;
+                        break;
+                    case TOKEN_MULTIPLY:
+                        stack[++top] = a * b;
+                        break;
+                    case TOKEN_DIVIDE:
+                        if (b == 0) {
+                            error("Division by zero");
+                        }
+                        stack[++top] = a / b;
+                        break;
+                }
+            }
+            stack[++top] = token.type;
+        } else if (token.type == TOKEN_LPAREN) {
+            stack[++top] = token.type;
+        } else if (token.type == TOKEN_RPAREN) {
+            while (stack[top] != TOKEN_LPAREN) {
+                int b = stack[top--];
+                int a = stack[top--];
+                switch (token.type) {
+                    case TOKEN_PLUS:
+                        stack[--top] = a + b;
+                        break;
+                    case TOKEN_MINUS:
+                        stack[--top] = a - b;
+                        break;
+                    case TOKEN_MULTIPLY:
+                        stack[--top] = a * b;
+                        break;
+                    case TOKEN_DIVIDE:
+                        if (b == 0) {
+                            error("Division by zero");
+                        }
+                        stack[--top] = a / b;
+                        break;
+                }
+            }
+            top--;
+        }
+    }
+    while (top >= 0) {
+        int b = stack[top--];
+        int a = stack[top--];
+        switch (token.type) {
+            case TOKEN_PLUS:
+                stack[--top] = a + b;
+                break;
+            case TOKEN_MINUS:
+                stack[--top] = a - b;
+                break;
+            case TOKEN_MULTIPLY:
+                stack[--top] = a * b;
+                break;
+            case TOKEN_DIVIDE:
+                if (b == 0) {
+                    error("Division by zero");
+                }
+                stack[--top] = a / b;
+                break;
+        }
+    }
+    return stack[0];
+}
+
+int main() {
+    tokens[token_index++] = (Token){TOKEN_NUMBER, 1};
+    tokens[token_index++] = (Token){TOKEN_PLUS, 0};
+    tokens[token_index++] = (Token){TOKEN_NUMBER, 2};
+    printf("1 + 2 => %d\n", evaluate_expression());
+    tokens[token_index++] = (Token){TOKEN_NUMBER, 2};
+    tokens[token_index++] = (Token){TOKEN_MULTIPLY, 0};
+    tokens[token_index++] = (Token){TOKEN_NUMBER, 3};
+    tokens[token_index++] = (Token){TOKEN_PLUS, 0};
+    tokens[token_index++] = (Token){TOKEN_NUMBER, 4};
+    printf("2 * 3 + 4 => %d\n", evaluate_expression());
+    tokens[token_index++] = (Token){TOKEN_NUMBER, 2};
+    tokens[token_index++] = (Token){TOKEN_MULTIPLY, 0};
+    tokens[token_index++] = (Token){TOKEN_LPAREN, 0};
+    tokens[token_index++] = (Token){TOKEN_NUMBER, 3};
+    tokens[token_index++] = (Token){TOKEN_PLUS, 0};
+    tokens[token_index++] = (Token){TOKEN_NUMBER, 4};
+    tokens[token_index++] = (Token){TOKEN_RPAREN, 0};
+    printf("2 * (3 + 4) => %d\n", evaluate_expression());
+    tokens[token_index++] = (Token){TOKEN_NUMBER, 8};
+    tokens[token_index++] = (Token){TOKEN_DIVIDE, 0};
+    tokens[token_index++] = (Token){TOKEN_NUMBER, 2};
+    tokens[token_index++] = (Token){TOKEN_MULTIPLY, 0};
+    tokens[token_index++] = (Token){TOKEN_LPAREN, 0};
+    tokens[token_index++] = (Token){TOKEN_NUMBER, 2};
+    tokens[token_index++] = (Token){TOKEN_PLUS, 0};
+    tokens[token_index++] = (Token){TOKEN_NUMBER, 2};
+    tokens[token_index++] = (Token){TOKEN_RPAREN, 0};
+    printf("8 / 2 * (2 + 2) => %d\n", evaluate_expression());
+    return 0;
+}

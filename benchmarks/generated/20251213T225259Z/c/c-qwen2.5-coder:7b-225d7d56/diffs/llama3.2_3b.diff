@@ -1,0 +1,13 @@
+--- before.c
++++ patched_before.c
+@@ -73,7 +73,7 @@
+     while (**input) {
+-        if (isdigit(**input)) {
++        if (isdigit(**input) || (**input == '-' && isdigit((*input)[1]))) {
+             int i = 0;
+             do {
+                 token.value[i++] = **input++;
+             } while (**input && (isdigit(**input) || **input == '.'));
+-            token.type = TOKEN_TYPE_NUMBER;
++            token.type = TOKEN_TYPE_NUMBER;
+         }

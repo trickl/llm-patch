@@ -21,6 +21,9 @@ import {
   selectFetchCaseDetail,
   selectClearFilters,
   selectSetFilterValues,
+  selectDatasetRefreshing,
+  selectDatasetRefreshError,
+  selectRefreshDataset,
 } from './store/useReviewStore'
 
 function App() {
@@ -44,6 +47,9 @@ function App() {
   const fetchCaseDetail = useReviewStore(selectFetchCaseDetail)
   const clearFilters = useReviewStore(selectClearFilters)
   const setFilterValues = useReviewStore(selectSetFilterValues)
+  const datasetRefreshing = useReviewStore(selectDatasetRefreshing)
+  const datasetRefreshError = useReviewStore(selectDatasetRefreshError)
+  const refreshDataset = useReviewStore(selectRefreshDataset)
 
   useEffect(() => {
     fetchCases()
@@ -93,6 +99,9 @@ function App() {
           filters={filters}
           onSetFilterValues={setFilterValues}
           onClearFilters={clearFilters}
+          datasetRefreshing={datasetRefreshing}
+          datasetRefreshError={datasetRefreshError}
+          onRefreshDataset={refreshDataset}
         />
       </Panel>
       <PanelResizeHandle className="app-shell__handle" />

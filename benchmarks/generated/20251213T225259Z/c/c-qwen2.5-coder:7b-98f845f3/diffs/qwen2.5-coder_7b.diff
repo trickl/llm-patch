@@ -1,0 +1,12 @@
+--- before.c
++++ before.c
+@@ -60,7 +60,7 @@ int evaluate_expression(const char *expression) {
+     const char *input = expression;
+     int stack[MAX_TOKEN_LENGTH];
+     int top = -1;
+
+-    while (**input != '\0') {
++    while (*input != '\0') {
+         Token token = tokenize(&input);
+         if (token.type == NUMBER) {
+             stack[++top] = token.value;

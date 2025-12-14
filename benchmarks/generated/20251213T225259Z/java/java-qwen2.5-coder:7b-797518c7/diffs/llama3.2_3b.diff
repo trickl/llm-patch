@@ -1,0 +1,6 @@
+--- before.java
++++ after.java
+@@ -12,7 +12,7 @@
+     return new Parser(new Tokenizer(expression)).parse();
+-    }
++    List<Token> tokens = new ArrayList<>();

@@ -1,0 +1,27 @@
+--- before.c
++++ before.c
+@@ -75,6 +75,8 @@ int parseExpression() {
+     int result = parseTerm();
+     while (tokenIndex < MAX_TOKENS && (tokens[tokenIndex].type == TOKEN_PLUS || tokens[tokenIndex].type == TOKEN_MINUS)) {
+         TokenType operator = tokens[tokenIndex].type;
++        tokenIndex++;
+         int right = parseTerm();
+         result = evaluate(result, right, operator);
+     }
+@@ -86,6 +88,8 @@ int parseTerm() {
+     int result = parseFactor();
+     while (tokenIndex < MAX_TOKENS && (tokens[tokenIndex].type == TOKEN_MULTIPLY || tokens[tokenIndex].type == TOKEN_DIVIDE)) {
+         TokenType operator = tokens[tokenIndex].type;
++        tokenIndex++;
+         int right = parseFactor();
+         result = evaluate(result, right, operator);
+     }
+@@ -112,6 +116,7 @@ int parseFactor() {
+     Token token = getNextToken();
+     if (token.type == TOKEN_NUMBER) {
+         return token.value;
++    } else if (token.type == TOKEN_EOF) {
++        error("Unexpected end of expression");
+     } else if (token.type == TOKEN_PLUS) {
+         return parseExpression();
+     } else if (token.type == TOKEN_MINUS) {

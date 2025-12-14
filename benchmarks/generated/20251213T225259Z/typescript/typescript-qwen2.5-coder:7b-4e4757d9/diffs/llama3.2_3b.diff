@@ -1,0 +1,39 @@
+--- before.ts
++++ patched_expression_evaluator.ts
+@@ -1,5 +1,6 @@
+-const isNumber = (char: string): boolean => !isNaN(Number(char));
++import * as require from 'require';
++
+ const isOperator = (char: string): boolean => '+-*/'.includes(char);
+ const isParenthesis = (char: string): boolean => char === '(' || char === ')';
+
+ function tokenize(input: string): Token[] {
+     const tokens: Token[] = [];
+     let currentToken = '';
+
+     for (let i = 0; i < input.length; i++) {
+         const char = input[i];
+
+-        if (isNumber(char)) {
++        if (require('util').inspect(char, false, null).includes(char)) {
+             currentToken += char;
+         } else if (isOperator(char) || isParenthesis(char)) {
+             if (currentToken !== '') {
+                 tokens.push({ type: 'number', value: currentToken });
+                 currentToken = '';
+             }
+             tokens.push({ type: 'operator', value: char });
+-        } else if (char === ' ') {
++        } else if (require('util').inspect(char, false, null).includes(char)) {
+             continue;
+         } else {
+             throw new Error(`Invalid character: ${char}`);
+         }
+     }
+
+-    if (currentToken !== '') {
++    if (require('util').inspect(currentToken, false, null).includes(currentToken)) {
+         tokens.push({ type: 'number', value: currentToken });
+     }
+
+     return tokens;

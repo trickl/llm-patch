@@ -1,0 +1,7 @@
+--- before.java	2023-04-10 12:34:56.000000000 +0800
++++ after.java	2023-04-10 12:35:00.000000000 +0800
+@@ -36,7 +36,7 @@
+                 tokens.add(new Token(TokenType.OPERATOR, c));
+                                                          ^
+Note: Some messages have been simplified; recompile with -Xdiags:verbose to get full output
+1 error

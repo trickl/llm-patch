@@ -1,0 +1,6 @@
+--- before.java
++++ patched_before.java
+@@ -36,7 +36,7 @@
+             tokens.add(new Token(TokenType.OPERATOR, c));
+-        }
++        tokens.add(new Token(TokenType.OPERATOR, (int) c));

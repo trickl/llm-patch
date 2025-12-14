@@ -1,0 +1,11 @@
+--- before.ts
++++ before.ts
+@@ -93,5 +93,5 @@ export function evaluateExpression(input: string): number {
+     if (require.main === module) {
+         const input = process.argv.slice(2).join(' ');
+         try {
+-            console.log(evaluateExpression(input));
++            console.log(evaluateExpression(input));
+         } catch (error) {
+             console.error(`Error: ${error.message}`);
+         }

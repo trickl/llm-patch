@@ -1,0 +1,29 @@
+--- before.c
++++ before.c
+@@ -62,7 +62,7 @@ int evaluateExpression() {
+     int result = evaluateTerm();
+     while (tokens[tokenIndex].type == TOKEN_PLUS || tokens[tokenIndex].type == TOKEN_MINUS) {
+         Token op = getNextToken();
+-        if (op.type == TOKEN_PLUS) {
++        if (op.type == TOKEN_PLUS) { // Ensure the function is declared or defined before use
+             result += evaluateTerm();
+         } else {
+             result -= evaluateTerm();
+@@ -75,7 +75,7 @@ int evaluateTerm() {
+     int result = evaluateFactor();
+     while (tokens[tokenIndex].type == TOKEN_MULTIPLY || tokens[tokenIndex].type == TOKEN_DIVIDE) {
+         Token op = getNextToken();
+-        if (op.type == TOKEN_MULTIPLY) {
++        if (op.type == TOKEN_MULTIPLY) { // Ensure the function is declared or defined before use
+             result *= evaluateFactor();
+         } else {
+             int divisor = evaluateFactor();
+@@ -110,6 +110,7 @@ int evaluateFactor() {
+     return result;
+ }
+
++int evaluateTerm(); // Forward declaration to resolve implicit declaration error
++int evaluateExpression(); // Forward declaration to resolve implicit declaration error
+
+void tokenize(const char *expression) {
+    int i = 0, num = 0, sign = 1;

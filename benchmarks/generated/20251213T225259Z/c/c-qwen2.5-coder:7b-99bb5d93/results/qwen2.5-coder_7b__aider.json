@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-99bb5d93",
+  "language": "c",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "aider",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "after_path": "after__qwen2.5-coder_7b__aider.c",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 3 hunks",
+  "compile_returncode": 1,
+  "errors_before": 2,
+  "errors_after": 2,
+  "first_error_removed": false,
+  "added_lines": 4,
+  "removed_lines": 0,
+  "hunks": 3,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "expression_evaluator.c: In function \u2018parseExpression\u2019:\nexpression_evaluator.c:75:18: error: implicit declaration of function \u2018parseTerm\u2019 [-Wimplicit-function-declaration]\n   75 |     int result = parseTerm();\n      |                  ^~~~~~~~~\nexpression_evaluator.c: In function \u2018parseTerm\u2019:\nexpression_evaluator.c:86:18: error: implicit declaration of function \u2018parseFactor\u2019 [-Wimplicit-function-declaration]\n   86 |     int result = parseFactor();\n      |                  ^~~~~~~~~~~\nexpression_evaluator.c: In function \u2018evaluate\u2019:\nexpression_evaluator.c:72:1: warning: control reaches end of non-void function [-Wreturn-type]\n   72 | }\n      | ^\nexpression_evaluator.c: In function \u2018parseFactor\u2019:\nexpression_evaluator.c:114:1: warning: control reaches end of non-void function [-Wreturn-type]\n  114 | }\n      | ^\n",
+  "stdout_after": ""
+}

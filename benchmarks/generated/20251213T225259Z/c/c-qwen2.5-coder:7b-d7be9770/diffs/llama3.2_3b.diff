@@ -1,0 +1,6 @@
+--- before.c
++++ patched_before.c
+@@ -155,7 +155,8 @@
+     int result = evaluate_expression(&input);
++    printf("Result: %d\n", result);
+     return 0;

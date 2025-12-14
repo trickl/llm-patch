@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-42294b65",
+  "language": "c",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "aider",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "after_path": "after__llama3.2_3b__aider.c",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 1,
+  "errors_before": 1,
+  "errors_after": 2,
+  "first_error_removed": false,
+  "added_lines": 1,
+  "removed_lines": 1,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "expression_evaluator.c: In function \u2018evaluate\u2019:\nexpression_evaluator.c:81:12: error: invalid type argument of unary \u2018*\u2019 (have \u2018int\u2019)\n   81 |     while (**input != '\\0') {\n      |            ^~~~~~~\nexpression_evaluator.c:82:42: error: passing argument 1 of \u2018tokenize\u2019 from incompatible pointer type [-Wincompatible-pointer-types]\n   82 |         tokens[token_count++] = tokenize(input);\n      |                                          ^~~~~\n      |                                          |\n      |                                          const char *\nexpression_evaluator.c:24:29: note: expected \u2018const char **\u2019 but argument is of type \u2018const char *\u2019\n   24 | Token tokenize(const char **input) {\n      |                ~~~~~~~~~~~~~^~~~~\n",
+  "stdout_after": ""
+}

@@ -1,9 +1,0 @@
-ExpressionEvaluator.java:155: error: method evaluate(String) is already defined in class ExpressionEvaluator
-    private int evaluate(String expression) {
-                ^
-ExpressionEvaluator.java:138: error: cannot find symbol
-            return tokens.remove(0).value.intValue();
-                                         ^
-  symbol:   method intValue()
-  location: variable value of type Object
-2 errors

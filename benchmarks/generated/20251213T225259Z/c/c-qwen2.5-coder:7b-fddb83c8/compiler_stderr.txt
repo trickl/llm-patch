@@ -1,0 +1,19 @@
+expression_evaluator.c: In function ‘evaluate_expression’:
+expression_evaluator.c:59:18: error: implicit declaration of function ‘evaluate_term’ [-Wimplicit-function-declaration]
+   59 |     int result = evaluate_term();
+      |                  ^~~~~~~~~~~~~
+expression_evaluator.c:60:37: warning: suggest parentheses around ‘&&’ within ‘||’ [-Wparentheses]
+   60 |     while (token_index < MAX_TOKENS && tokens[token_index].type == TOKEN_PLUS || tokens[token_index].type == TOKEN_MINUS) {
+      |            ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+expression_evaluator.c: In function ‘evaluate_term’:
+expression_evaluator.c:72:18: error: implicit declaration of function ‘evaluate_factor’; did you mean ‘evaluate_term’? [-Wimplicit-function-declaration]
+   72 |     int result = evaluate_factor();
+      |                  ^~~~~~~~~~~~~~~
+      |                  evaluate_term
+expression_evaluator.c:73:37: warning: suggest parentheses around ‘&&’ within ‘||’ [-Wparentheses]
+   73 |     while (token_index < MAX_TOKENS && tokens[token_index].type == TOKEN_MULTIPLY || tokens[token_index].type == TOKEN_DIVIDE) {
+      |            ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+expression_evaluator.c: In function ‘evaluate_factor’:
+expression_evaluator.c:104:1: warning: control reaches end of non-void function [-Wreturn-type]
+  104 | }
+      | ^

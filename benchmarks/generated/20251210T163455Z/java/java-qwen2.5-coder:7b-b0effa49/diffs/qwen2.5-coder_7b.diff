@@ -1,8 +1,0 @@
---- before.java	2023-04-10 12:34:56.000000000 +0800
-+++ after.java	2023-04-10 12:35:07.000000000 +0800
-@@ -1,5 +1,6 @@
- import java.util.*;
-+import java.util.function.BiFunction;
- import java.util.stream.Collectors;
-
- public class ExpressionEvaluator {

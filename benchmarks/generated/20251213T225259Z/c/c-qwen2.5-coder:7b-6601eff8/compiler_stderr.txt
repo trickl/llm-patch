@@ -1,0 +1,69 @@
+expression_evaluator.c: In function ‘next_token’:
+expression_evaluator.c:32:9: warning: missing initializer for field ‘value’ of ‘Token’ [-Wmissing-field-initializers]
+   32 |         return (Token){TOKEN_TYPE_EOF};
+      |         ^~~~~~
+expression_evaluator.c:18:9: note: ‘value’ declared here
+   18 |     int value;
+      |         ^~~~~
+expression_evaluator.c: In function ‘tokenize’:
+expression_evaluator.c:55:13: warning: missing initializer for field ‘operator’ of ‘Token’ [-Wmissing-field-initializers]
+   55 |             tokens[token_index++] = (Token){TOKEN_TYPE_NUMBER, num};
+      |             ^~~~~~
+expression_evaluator.c:19:10: note: ‘operator’ declared here
+   19 |     char operator;
+      |          ^~~~~~~~
+expression_evaluator.c:60:13: warning: missing initializer for field ‘value’ of ‘Token’ [-Wmissing-field-initializers]
+   60 |             tokens[token_index++] = (Token){TOKEN_TYPE_LPAREN};
+      |             ^~~~~~
+expression_evaluator.c:18:9: note: ‘value’ declared here
+   18 |     int value;
+      |         ^~~~~
+expression_evaluator.c:63:13: warning: missing initializer for field ‘value’ of ‘Token’ [-Wmissing-field-initializers]
+   63 |             tokens[token_index++] = (Token){TOKEN_TYPE_RPAREN};
+      |             ^~~~~~
+expression_evaluator.c:18:9: note: ‘value’ declared here
+   18 |     int value;
+      |         ^~~~~
+expression_evaluator.c:69:5: warning: missing initializer for field ‘value’ of ‘Token’ [-Wmissing-field-initializers]
+   69 |     tokens[token_index++] = (Token){TOKEN_TYPE_EOF};
+      |     ^~~~~~
+expression_evaluator.c:18:9: note: ‘value’ declared here
+   18 |     int value;
+      |         ^~~~~
+expression_evaluator.c: In function ‘evaluate’:
+expression_evaluator.c:102:25: error: invalid type argument of ‘->’ (have ‘int’)
+  102 |     int value = (*start)->value;
+      |                         ^~
+expression_evaluator.c:105:14: error: invalid type argument of ‘->’ (have ‘int’)
+  105 |         if (i->type == TOKEN_TYPE_OPERATOR) {
+      |              ^~
+expression_evaluator.c:106:19: error: invalid type argument of ‘->’ (have ‘int’)
+  106 |             op = i->operator;
+      |                   ^~
+expression_evaluator.c:107:21: error: invalid type argument of ‘->’ (have ‘int’)
+  107 |         } else if (i->type == TOKEN_TYPE_NUMBER) {
+      |                     ^~
+expression_evaluator.c:108:44: error: invalid type argument of ‘->’ (have ‘int’)
+  108 |             value = apply_operator(value, i->value, op);
+      |                                            ^~
+expression_evaluator.c: In function ‘evaluate_expression’:
+expression_evaluator.c:140:29: error: passing argument 1 of ‘parse_expression’ from incompatible pointer type [-Wincompatible-pointer-types]
+  140 |     return parse_expression(tokens, tokens + token_index - 2);
+      |                             ^~~~~~
+      |                             |
+      |                             Token *
+expression_evaluator.c:114:27: note: expected ‘int *’ but argument is of type ‘Token *’
+  114 | int parse_expression(int *start, int *end) {
+      |                      ~~~~~^~~~~
+expression_evaluator.c:140:58: error: passing argument 2 of ‘parse_expression’ from incompatible pointer type [-Wincompatible-pointer-types]
+  140 |     return parse_expression(tokens, tokens + token_index - 2);
+      |                                     ~~~~~~~~~~~~~~~~~~~~~^~~
+      |                                                          |
+      |                                                          Token *
+expression_evaluator.c:114:39: note: expected ‘int *’ but argument is of type ‘Token *’
+  114 | int parse_expression(int *start, int *end) {
+      |                                  ~~~~~^~~
+expression_evaluator.c: In function ‘apply_operator’:
+expression_evaluator.c:99:1: warning: control reaches end of non-void function [-Wreturn-type]
+   99 | }
+      | ^

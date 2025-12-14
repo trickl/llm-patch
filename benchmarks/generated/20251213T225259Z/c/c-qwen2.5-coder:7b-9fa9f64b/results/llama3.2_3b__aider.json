@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-9fa9f64b",
+  "language": "c",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "aider",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "after_path": "after__llama3.2_3b__aider.c",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 1,
+  "errors_before": 2,
+  "errors_after": 4,
+  "first_error_removed": false,
+  "added_lines": 2,
+  "removed_lines": 3,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "expression_evaluator.c: In function \u2018evaluate\u2019:\nexpression_evaluator.c:73:9: warning: enumeration value \u2018TOKEN_NUMBER\u2019 not handled in switch [-Wswitch]\n   73 |         switch (tokens[max_index].type) {\n      |         ^~~~~~\nexpression_evaluator.c:73:9: warning: enumeration value \u2018TOKEN_LPAREN\u2019 not handled in switch [-Wswitch]\nexpression_evaluator.c:73:9: warning: enumeration value \u2018TOKEN_RPAREN\u2019 not handled in switch [-Wswitch]\nexpression_evaluator.c: In function \u2018main\u2019:\nexpression_evaluator.c:105:27: error: expected \u2018=\u2019, \u2018,\u2019, \u2018;\u2019, \u2018asm\u2019 or \u2018__attribute__\u2019 before \u2018:\u2019 token\n  105 |     for (const char *expr : expressions) {\n      |                           ^\nexpression_evaluator.c:106:18: error: \u2018expr\u2019 undeclared (first use in this function)\n  106 |         tokenize(expr);\n      |                  ^~~~\nexpression_evaluator.c:106:18: note: each undeclared identifier is reported only once for each function it appears in\nexpression_evaluator.c:111:26: error: expected \u2018;\u2019 before \u2018token_count\u2019\n  111 |         for (int i = 0; i  token_count; i++) {\n      |                          ^ ~~~~~~~~~~~\n      |                          ;\nexpression_evaluator.c:121:1: error: expected declaration or statement at end of input\n  121 | }\n      | ^\nexpression_evaluator.c:104:17: warning: unused variable \u2018expressions\u2019 [-Wunused-variable]\n  104 |     const char *expressions[] = {\"3 + 4 * (2 - 1)\", \"2 * 3 + 4\", \"2 * (3 + 4)\", \"8 / 2 * (2 + 2)\"};\n      |                 ^~~~~~~~~~~\n",
+  "stdout_after": ""
+}

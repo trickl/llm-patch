@@ -1,0 +1,12 @@
+--- before.py
++++ before.py
+@@ -5,7 +5,7 @@
+     return list(filter(None, re.split(r'(\d+|\+|-|\*|/|\(|\))', expression.strip())))
+ 
+ class Parser:
+-    def __init__(self, tokens):
++    def __init__(self, tokens):
+         self.tokens = tokens
+         self.pos = 0
+ 
+     def parse(self):

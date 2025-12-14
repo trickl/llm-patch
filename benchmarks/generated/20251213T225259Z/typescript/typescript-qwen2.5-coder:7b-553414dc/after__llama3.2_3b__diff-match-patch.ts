@@ -1,0 +1,106 @@
+import { strict as assert } from 'assert';
+
+import * as require from 'require';type Token = number | '+' | '-' | '*' | '/' | '(' | ')' | 'u-';
+
+function tokenize(input: string): Token[] {
+    const tokens: Token[] = [];
+    let i = 0;
+    while (i < input.length) {
+        if (input[i] === ' ') {
+            i++;
+            continue;
+        }
+        if (!isNaN(Number(input[i]))) {
+            let num = Number(input[i]);
+            i++;
+            while (i < input.length && !isNaN(Number(input[i]))) {
+                num = num * 10 + Number(input[i]);
+                i++;
+            }
+            tokens.push(num);
+        } else if ('+-*/()'.includes(input[i])) {
+            tokens.push(input[i] as Token);
+            i++;
+        } else if (input[i] === '-') {
+            if (i === 0 || input[i - 1] === '(') {
+                tokens.push('u-');
+            } else {
+                tokens.push('-');
+            }
+            i++;
+        } else {
+            throw new Error(`Unexpected character: ${input[i]}`);
+        }
+    }
+    return tokens;
+}
+
+function parse(tokens: Token[]): number[] {
+    const values: number[] = [];
+    const ops: string[] = [];
+
+    function applyOp(a: number, b: number, op: string): number {
+        switch (op) {
+            case '+': return a + b;
+            case '-': return a - b;
+            case '*': return a * b;
+            case '/': return Math.floor(a / b);
+            default: throw new Error(`Unknown operator: ${op}`);
+        }
+    }
+
+    function greaterPrecedence(op1: string, op2: string): boolean {
+        if (op2 === '(' || op2 === ')') return false;
+        if ((op1 === '*' || op1 === '/') && (op2 === '+' || op2 === '-')) return false;
+        return true;
+    }
+
+    for (let i = 0; i < tokens.length; i++) {
+        const token = tokens[i];
+
+        if (typeof token === 'number') {
+            values.push(token);
+        } else if (token === '(') {
+            ops.push(token);
+        } else if (token === ')') {
+            while (ops[ops.length - 1] !== '(') {
+                values.push(applyOp(values.pop()!, values.pop()!, ops.pop()!));
+            }
+            ops.pop();
+        } else if (token === 'u-') {
+            values.push(-values.pop()!);
+        } else {
+            while (ops.length && greaterPrecedence(ops[ops.length - 1], token)) {
+                values.push(applyOp(values.pop()!, values.pop()!, ops.pop()!));
+            }
+            ops.push(token);
+        }
+    }
+
+    while (ops.length) {
+        values.push(applyOp(values.pop()!, values.pop()!, ops.pop()!));
+    }
+
+    return values;
+}
+
+export function evaluateExpression(input: string): number {
+    const tokens = tokenize(input);
+    const result = parse(tokens);
+    if (result.length !== 1) throw new Error('Invalid expression');
+    return result[0];
+}
+
+// CLI example
+if (require.main === module) {
+    console.log(evaluateExpression("3 + 4 * (2 - 1)")); // Output: 9
+    console.log(evaluateExpression("2 * 3 + 4")); // Output: 10
+    console.log(evaluateExpression("2 * (3 + 4)")); // Output: 14
+    console.log(evaluateExpression("8 / 2 * (2 + 2)")); // Output: 16
+}
+
+// Unit tests
+assert.strictEqual(evaluateExpression("1 + 2"), 3);
+assert.strictEqual(evaluateExpression("2 * 3 + 4"), 10);
+assert.strictEqual(evaluateExpression("2 * (3 + 4)"), 14);
+assert.strictEqual(evaluateExpression("8 / 2 * (2 + 2)"), 16);

@@ -1,0 +1,33 @@
+--- before.ts
++++ after.ts
+@@ -110,7 +110,8 @@
+   const stack: number[] = [];
+
+-  for (const token of outputQueue) {
++  for (const token of outputQueue as string[]) {
+     if (!isNaN(parseInt(token, 10))) {
+       stack.push(parseInt(token, 10));
+     } else {
+       const b = stack.pop()!;
+       const a = stack.pop()!;
+
+-        switch (token) {
++        switch (token as string) {
+           case '+':
+             stack.push(a + b);
+             break;
+           case '-':
+             stack.push(a - b);
+             break;
+           case '*':
+             stack.push(a * b);
+             break;
+           case '/':
+             stack.push(parseInt(a / b.toString()));
+             break;
+-        }
++        }
+     }
+   }
+
+   return stack[0];

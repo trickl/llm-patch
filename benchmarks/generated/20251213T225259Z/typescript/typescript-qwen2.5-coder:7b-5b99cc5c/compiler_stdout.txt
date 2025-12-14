@@ -1,0 +1,10 @@
+expression_evaluator.ts(46,29): error TS18048: 'a' is possibly 'undefined'.
+expression_evaluator.ts(46,33): error TS18048: 'b' is possibly 'undefined'.
+expression_evaluator.ts(49,29): error TS18048: 'a' is possibly 'undefined'.
+expression_evaluator.ts(49,33): error TS18048: 'b' is possibly 'undefined'.
+expression_evaluator.ts(52,29): error TS18048: 'a' is possibly 'undefined'.
+expression_evaluator.ts(52,33): error TS18048: 'b' is possibly 'undefined'.
+expression_evaluator.ts(56,40): error TS18048: 'a' is possibly 'undefined'.
+expression_evaluator.ts(56,44): error TS18048: 'b' is possibly 'undefined'.
+expression_evaluator.ts(110,5): error TS2580: Cannot find name 'require'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.
+expression_evaluator.ts(110,22): error TS2580: Cannot find name 'module'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.

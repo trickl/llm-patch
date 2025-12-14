@@ -1,0 +1,20 @@
+--- before.ts
++++ patched_before_ts
+@@ -107,7 +107,8 @@
+     } else if (token.value === '(') {
+         operatorStack.push(token.value);
+     } else if (token.value === ')') {
+-        while (operatorStack.length > 0 && operatorStack[operatorStack.length - 1] !== '(') {
++        while (operatorStack.length > 0 && operatorStack[operatorStack.length - 1] !== '(' && operatorStack[operatorStack.length - 1] !== 'number') {
+             outputQueue.push(operatorStack.pop()!);
+         }
+         operatorStack.pop(); // Remove the '('
+     } else {
+-        while (
++        while (
+             operatorStack.length > 0 &&
+             precedence[token.value] <= precedence[operatorStack[operatorStack.length - 1]]
+         ) {
+             outputQueue.push(operatorStack.pop()!);
+         }
+         operatorStack.push(token.value);

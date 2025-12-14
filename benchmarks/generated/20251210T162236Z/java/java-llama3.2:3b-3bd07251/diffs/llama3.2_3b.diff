@@ -1,5 +1,0 @@
---- before.java
-+++ patched_before.java
-
--    private Expression new BinaryOperator(Expression left, String operator, Expression right) {
-+    private Expression new BinaryOperator(Expression left, String operator, Expression right) throws RuntimeException {

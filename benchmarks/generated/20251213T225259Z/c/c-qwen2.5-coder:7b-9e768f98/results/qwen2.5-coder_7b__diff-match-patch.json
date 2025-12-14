@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-9e768f98",
+  "language": "c",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "diff-match-patch",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "after_path": null,
+  "patch_applied": false,
+  "patch_diagnostics": "DMP parse error: Invalid patch string: @@ -74,7 +74,7 @@ expression_evaluator.c: In function \u2018parse_and_evaluate\u2019:",
+  "compile_returncode": null,
+  "errors_before": 1,
+  "errors_after": null,
+  "first_error_removed": false,
+  "added_lines": 1,
+  "removed_lines": 1,
+  "hunks": 2,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": null,
+  "stdout_after": null
+}

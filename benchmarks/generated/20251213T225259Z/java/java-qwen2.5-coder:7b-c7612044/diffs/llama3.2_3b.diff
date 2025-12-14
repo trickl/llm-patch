@@ -1,0 +1,7 @@
+--- before.java
++++ after.java
+@@ -56,7 +56,7 @@
+     this.tokens = new Tokenizer(expression).tokenize();
+-    return parseExpression();
++    tokens = new Tokenizer(expression).tokenize();
++    return parseExpression();

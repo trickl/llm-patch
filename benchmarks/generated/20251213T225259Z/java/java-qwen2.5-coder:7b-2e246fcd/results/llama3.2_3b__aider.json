@@ -1,0 +1,22 @@
+{
+  "case_id": "java-qwen2.5-coder:7b-2e246fcd",
+  "language": "java",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "aider",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "after_path": "after__llama3.2_3b__aider.java",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 1,
+  "errors_before": 2,
+  "errors_after": 16,
+  "first_error_removed": true,
+  "added_lines": 28,
+  "removed_lines": 28,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "ExpressionEvaluator.java:20: error: ')' expected\n        while (pos  input.length()) {\n                  ^\nExpressionEvaluator.java:20: error: ';' expected\n        while (pos  input.length()) {\n                                  ^\nExpressionEvaluator.java:24: error: ')' expected\n                while (pos  input.length() && Character.isDigit(input.charAt(pos))) {\n                          ^\nExpressionEvaluator.java:24: error: not a statement\n                while (pos  input.length() && Character.isDigit(input.charAt(pos))) {\n                                           ^\nExpressionEvaluator.java:24: error: ';' expected\n                while (pos  input.length() && Character.isDigit(input.charAt(pos))) {\n                                                                                  ^\nExpressionEvaluator.java:58: error: ')' expected\n        while (pos  tokens.size()) {\n                  ^\nExpressionEvaluator.java:58: error: ';' expected\n        while (pos  tokens.size()) {\n                                 ^\nExpressionEvaluator.java:76: error: ')' expected\n        while (pos  tokens.size()) {\n                  ^\nExpressionEvaluator.java:76: error: ';' expected\n        while (pos  tokens.size()) {\n                                 ^\nExpressionEvaluator.java:97: error: ')' expected\n            if (pos  tokens.size() && tokens.get(pos).type == TokenType.PARENTHESIS && tokens.get(pos).value == ')') {\n                   ^\nExpressionEvaluator.java:97: error: not a statement\n            if (pos  tokens.size() && tokens.get(pos).type == TokenType.PARENTHESIS && tokens.get(pos).value == ')') {\n                                                                                    ^\nExpressionEvaluator.java:97: error: ';' expected\n            if (pos  tokens.size() && tokens.get(pos).type == TokenType.PARENTHESIS && tokens.get(pos).value == ')') {\n                                                                                                                   ^\nExpressionEvaluator.java:100: error: 'else' without 'if'\n            } else {\n              ^\nExpressionEvaluator.java:134: error: illegal start of type\n                '}';\n                ^\nExpressionEvaluator.java:136: error: reached end of file while parsing\n}\n ^\n15 errors\n",
+  "stdout_after": ""
+}

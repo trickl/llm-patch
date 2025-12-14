@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-60134777",
+  "language": "c",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "aider",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "after_path": "after__llama3.2_3b__aider.c",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 4 hunks",
+  "compile_returncode": 1,
+  "errors_before": 4,
+  "errors_after": 7,
+  "first_error_removed": false,
+  "added_lines": 14,
+  "removed_lines": 0,
+  "hunks": 4,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "expression_evaluator.c: In function \u2018evaluate_expression\u2019:\nexpression_evaluator.c:88:31: warning: unused parameter \u2018get_token\u2019 [-Wunused-parameter]\n   88 | int evaluate_expression(int (*get_token)()) {\n      |                         ~~~~~~^~~~~~~~~~~~\nexpression_evaluator.c: In function \u2018main\u2019:\nexpression_evaluator.c:110:49: error: passing argument 1 of \u2018evaluate_expression\u2019 from incompatible pointer type [-Wincompatible-pointer-types]\n  110 |     printf(\"1 + 2 => %d\\n\", evaluate_expression(get_next_token));\n      |                                                 ^~~~~~~~~~~~~~\n      |                                                 |\n      |                                                 Token (*)()\nexpression_evaluator.c:88:31: note: expected \u2018int (*)()\u2019 but argument is of type \u2018Token (*)()\u2019\n   88 | int evaluate_expression(int (*get_token)()) {\n      |                         ~~~~~~^~~~~~~~~~~~\nexpression_evaluator.c:119:53: error: passing argument 1 of \u2018evaluate_expression\u2019 from incompatible pointer type [-Wincompatible-pointer-types]\n  119 |     printf(\"2 * 3 + 4 => %d\\n\", evaluate_expression(get_next_token));\n      |                                                     ^~~~~~~~~~~~~~\n      |                                                     |\n      |                                                     Token (*)()\nexpression_evaluator.c:88:31: note: expected \u2018int (*)()\u2019 but argument is of type \u2018Token (*)()\u2019\n   88 | int evaluate_expression(int (*get_token)()) {\n      |                         ~~~~~~^~~~~~~~~~~~\nexpression_evaluator.c:130:55: error: passing argument 1 of \u2018evaluate_expression\u2019 from incompatible pointer type [-Wincompatible-pointer-types]\n  130 |     printf(\"2 * (3 + 4) => %d\\n\", evaluate_expression(get_next_token));\n      |                                                       ^~~~~~~~~~~~~~\n      |                                                       |\n      |                                                       Token (*)()\nexpression_evaluator.c:88:31: note: expected \u2018int (*)()\u2019 but argument is of type \u2018Token (*)()\u2019\n   88 | int evaluate_expression(int (*get_token)()) {\n      |                         ~~~~~~^~~~~~~~~~~~\nexpression_evaluator.c:143:59: error: passing argument 1 of \u2018evaluate_expression\u2019 from incompatible pointer type [-Wincompatible-pointer-types]\n  143 |     printf(\"8 / 2 * (2 + 2) => %d\\n\", evaluate_expression(get_next_token));\n      |                                                           ^~~~~~~~~~~~~~\n      |                                                           |\n      |                                                           Token (*)()\nexpression_evaluator.c:88:31: note: expected \u2018int (*)()\u2019 but argument is of type \u2018Token (*)()\u2019\n   88 | int evaluate_expression(int (*get_token)()) {\n      |                         ~~~~~~^~~~~~~~~~~~\nexpression_evaluator.c: In function \u2018evaluate_expression\u2019:\nexpression_evaluator.c:146:19: error: too few arguments to function \u2018get_token\u2019\n  146 |     Token token = get_token();\n      |                   ^~~~~~~~~\nexpression_evaluator.c:155:17: error: too few arguments to function \u2018get_token\u2019\n  155 |         token = get_token();\n      |                 ^~~~~~~~~\nexpression_evaluator.c: In function \u2018main\u2019:\nexpression_evaluator.c:161:1: error: expected declaration or statement at end of input\n  161 | }\n      | ^\nexpression_evaluator.c: At top level:\nexpression_evaluator.c:145:5: warning: \u2018evaluate_expression\u2019 defined but not used [-Wunused-function]\n  145 | int evaluate_expression(int (*get_token)(Token *)) {\n      |     ^~~~~~~~~~~~~~~~~~~\n",
+  "stdout_after": ""
+}

@@ -1,6 +1,0 @@
---- before.java
-+++ after.java
-@@ -133,7 +133,8 @@
-   case Token.Type.MINUS:
--     result -= parseFactor();
-+     result = -parseFactor();

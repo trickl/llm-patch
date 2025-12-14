@@ -1,5 +1,0 @@
---- before.ts
-+++ before.ts
-@@ -1,2 +1 @@
--I amend your answer to meal, I can you'deans areas that:
-+// This is a comment to resolve the syntax errors

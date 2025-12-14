@@ -1,0 +1,22 @@
+{
+  "case_id": "java-qwen2.5-coder:7b-903b188e",
+  "language": "java",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "git",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "after_path": "after__qwen2.5-coder_7b__git.java",
+  "patch_applied": true,
+  "patch_diagnostics": "applied",
+  "compile_returncode": 1,
+  "errors_before": 12,
+  "errors_after": 15,
+  "first_error_removed": true,
+  "added_lines": 1,
+  "removed_lines": 0,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "ExpressionEvaluator.java:81: error: cannot find symbol\n    private final List<Token> tokens;\n                       ^\n  symbol:   class Token\n  location: class Parser\nExpressionEvaluator.java:84: error: cannot find symbol\n    public Parser(List<Token> tokens) {\n                       ^\n  symbol:   class Token\n  location: class Parser\nExpressionEvaluator.java:6: error: cannot find symbol\n        Token token = new Token(TokenType.NUMBER, 0); // Dummy declaration for compilation\n        ^\n  symbol:   class Token\n  location: class ExpressionEvaluator\nExpressionEvaluator.java:6: error: cannot find symbol\n        Token token = new Token(TokenType.NUMBER, 0); // Dummy declaration for compilation\n                          ^\n  symbol:   class Token\n  location: class ExpressionEvaluator\nExpressionEvaluator.java:6: error: cannot find symbol\n        Token token = new Token(TokenType.NUMBER, 0); // Dummy declaration for compilation\n                                ^\n  symbol:   variable TokenType\n  location: class ExpressionEvaluator\nExpressionEvaluator.java:95: error: cannot find symbol\n            Token token = tokens.get(pos);\n            ^\n  symbol:   class Token\n  location: class Parser\nExpressionEvaluator.java:96: error: package Token does not exist\n            if (token.type == Token.TokenType.OPERATOR && (token.value.equals(\"+\") || token.value.equals(\"-\"))) {\n                                   ^\nExpressionEvaluator.java:114: error: cannot find symbol\n            Token token = tokens.get(pos);\n            ^\n  symbol:   class Token\n  location: class Parser\nExpressionEvaluator.java:115: error: package Token does not exist\n            if (token.type == Token.TokenType.OPERATOR && (token.value.equals(\"*\") || token.value.equals(\"/\"))) {\n                                   ^\nExpressionEvaluator.java:131: error: cannot find symbol\n        Token token = tokens.get(pos);\n        ^\n  symbol:   class Token\n  location: class Parser\nExpressionEvaluator.java:133: error: package Token does not exist\n        if (token.type == Token.TokenType.LPAREN) {\n                               ^\nExpressionEvaluator.java:135: error: package Token does not exist\n            if (pos < tokens.size() && tokens.get(pos).type == Token.TokenType.RPAREN) {\n                                                                    ^\nExpressionEvaluator.java:141: error: package Token does not exist\n        } else if (token.type == Token.TokenType.NUMBER) {\n                                      ^\nExpressionEvaluator.java:143: error: package Token does not exist\n        } else if (token.type == Token.TokenType.OPERATOR && token.value.equals(\"-\")) {\n                                      ^\n14 errors\n",
+  "stdout_after": ""
+}

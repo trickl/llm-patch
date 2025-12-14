@@ -1,0 +1,18 @@
+--- before.c
++++ before.c
+@@ -91,6 +91,7 @@ expression_evaluator.c: In function ‘parse_and_evaluate’:
+     switch (token.type) {
+         case TOKEN_NUMBER:
+         case TOKEN_PLUS:
++        case TOKEN_MINUS:
+         case TOKEN_MULTIPLY:
+         case TOKEN_DIVIDE:
+         case TOKEN_LPAREN:
+@@ -125,6 +126,7 @@ expression_evaluator.c: In function ‘parse_and_evaluate’:
+     Token tokens[MAX_TOKEN_LENGTH];
+     int token_count = 0;
+
++    Token token;
+     const char *input = expression;
+     while (token_count < MAX_TOKEN_LENGTH && tokenize(&input).type != TOKEN_EOF) {
+         tokens[token_count++] = tokenize(&input);

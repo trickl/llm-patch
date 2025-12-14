@@ -1,0 +1,36 @@
+--- before.c
++++ patched_before.c
+@@ -74,7 +74,7 @@
+     while (**input != '\0') {
+-        tokens[token_count++] = tokenize(&input);
++        tokens[token_count++] = tokenize(input); // Pass input instead of &input
+      }
+
+@@ -84,9 +84,9 @@
+         case TOKEN_TYPE_EOF:
+             break;
+         default:
+-            switch (token.type) {
++            switch (**input) { // Use **input for the switch statement
+                 case '+':
+                     (*input)++;
+                     return (Token){TOKEN_TYPE_PLUS, 0};
+                 case '-':
+                     (*input)++;
+                     return (Token){TOKEN_TYPE_MINUS, 0};
+                 case '*':
+                     (*input)++;
+                     return (Token){TOKEN_TYPE_MULTIPLY, 0};
+                 case '/':
+                     (*input)++;
+                     return (Token){TOKEN_TYPE_DIVIDE, 0};
+                 case '(':
+                     (*input)++;
+                     return (Token){TOKEN_TYPE_LPAREN, 0};
+                 case ')':
+                     (*input)++;
+                     return (Token){TOKEN_TYPE_RPAREN, 0};
+-            default:
++            default:
+                 return (Token){TOKEN_TYPE_EOF, 0};
+             }

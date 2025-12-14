@@ -1,0 +1,36 @@
+ExpressionEvaluator.java:76: error: cannot find symbol
+    private final List<Token> tokens;
+                       ^
+  symbol:   class Token
+  location: class Parser
+ExpressionEvaluator.java:79: error: cannot find symbol
+    public Parser(List<Token> tokens) {
+                       ^
+  symbol:   class Token
+  location: class Parser
+ExpressionEvaluator.java:90: error: cannot find symbol
+            Token token = tokens.get(pos);
+            ^
+  symbol:   class Token
+  location: class Parser
+ExpressionEvaluator.java:91: error: cannot find symbol
+            if (token.type != TokenType.OPERATOR) break;
+                              ^
+  symbol:   variable TokenType
+  location: class Parser
+ExpressionEvaluator.java:107: error: cannot find symbol
+            Token token = tokens.get(pos);
+            ^
+  symbol:   class Token
+  location: class Parser
+ExpressionEvaluator.java:108: error: cannot find symbol
+            if (token.type != TokenType.OPERATOR) break;
+                              ^
+  symbol:   variable TokenType
+  location: class Parser
+ExpressionEvaluator.java:122: error: cannot find symbol
+        Token token = tokens.get(pos);
+        ^
+  symbol:   class Token
+  location: class Parser
+7 errors

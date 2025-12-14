@@ -1,0 +1,62 @@
+--- before.java	2023-04-10 12:34:56.000000000 +0800
++++ after.java	2023-04-10 12:35:07.000000000 +0800
+@@ -1,4 +1,4 @@
+ import java.util.*;
+-import java.util.regex.*;
+ 
+ public class ExpressionEvaluator {
+     public static void main(String[] args) {
+@@ -9,6 +9,7 @@
+         System.out.println(evaluate("2 * (3 + 4)")); // Expected: 14
+         System.out.println(evaluate("8 / 2 * (2 + 2)")); // Expected: 16
+     }
++
+     public static int evaluate(String expression) {
+         return new Parser(new Tokenizer(expression)).parse();
+     }
+@@ -75,6 +76,7 @@
+             if (token.type == Token.TokenType.OPERATOR && (token.value.equals("+") || token.value.equals("-"))) {
+                 pos++;
+                 int nextTerm = term();
++                result += token.value.equals("+") ? nextTerm : -nextTerm;
+             } else {
+                 break;
+             }
+@@ -89,6 +91,7 @@
+             if (token.type == Token.TokenType.OPERATOR && (token.value.equals("*") || token.value.equals("/"))) {
+                 pos++;
+                 int nextFactor = factor();
++                result += token.value.equals("*") ? nextFactor : result / nextFactor;
+             } else {
+                 break;
+             }
+@@ -103,6 +106,7 @@
+         Token token = tokens.get(pos);
+         if (token.type == Token.TokenType.LPAREN) {
+             pos++;
++            int result = expression();
+             if (tokens.get(pos).type != Token.TokenType.RPAREN) {
+                 throw new IllegalArgumentException("Expected ')'");
+             }
+@@ -109,6 +113,7 @@
+         } else if (token.type == Token.TokenType.OPERATOR && token.value.equals("-")) {
+             pos++;
++            return -factor();
+         } else if (token.type == Token.TokenType.NUMBER) {
+             int value = (int) token.value;
+             pos++;
+@@ -120,6 +125,7 @@
+     }
+ 
+     private static class Token {
++        final TokenType type;
++        final Object value;
++
+         Token(TokenType type, Object value) {
+-            this.type = type;
+-            this.value = value;
++            this.type = type;
++            this.value = value;
+         }
+ 
+         @Override

@@ -1,0 +1,6 @@
+--- before.c
++++ patched_before.c
+@@ -8,7 +8,7 @@
+     int value;
+-    return (Token){EOF};
++    return (Token){0, EOF}; // Initialize 'value' to 0

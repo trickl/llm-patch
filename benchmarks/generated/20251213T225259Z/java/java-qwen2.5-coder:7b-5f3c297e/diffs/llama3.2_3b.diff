@@ -1,0 +1,6 @@
+--- before.java
++++ after.java
+@@ -28,7 +28,7 @@
+ .flatMap(token -> token.matches("-?\\d+") ? Stream.of(token) : Stream.of(token.split("(?<=[-+*/()])|(?=[-+*/()])")))
+-Stream.of(token)
++java.util.stream.Stream.of(token)

@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-bcc4e144",
+  "language": "c",
+  "model_slug": "phi3_mini",
+  "algorithm": "git",
+  "diff_path": "diffs/phi3_mini.diff",
+  "after_path": "after__phi3_mini__git.c",
+  "patch_applied": true,
+  "patch_diagnostics": "applied",
+  "compile_returncode": 1,
+  "errors_before": 1,
+  "errors_after": 1,
+  "first_error_removed": false,
+  "added_lines": 0,
+  "removed_lines": 0,
+  "hunks": 0,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "expression_evaluator.c: In function \u2018evaluate\u2019:\nexpression_evaluator.c:128:53: error: passing argument 2 of \u2018evaluate_expression\u2019 makes pointer from integer without a cast [-Wint-conversion]\n  128 |     int result = evaluate_expression(0, token_count - 1);\n      |                                         ~~~~~~~~~~~~^~~\n      |                                                     |\n      |                                                     int\nexpression_evaluator.c:101:42: note: expected \u2018int *\u2019 but argument is of type \u2018int\u2019\n  101 | int evaluate_expression(int *start, int *end) {\n      |                                     ~~~~~^~~\n",
+  "stdout_after": ""
+}

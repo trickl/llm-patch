@@ -1,0 +1,106 @@
+// expression_evaluator.ts
+
+type Token = number | '+' | '-' | '*' | '/' | '(' | ')' | 'u';
+
+function tokenize(input: string): Token[] {
+    const tokens: Token[] = [];
+    let i = 0;
+
+    while (i < input.length) {
+        if (input[i] === ' ') {
+            i++;
+            continue;
+        }
+
+        if (!isNaN(parseInt(input[i], 10))) {
+            let num = parseInt(input[i], 10);
+            i++;
+            while (i < input.length) {
+                num = num * 10 + parseInt(input[i], 10);
+                i++;
+            }
+            tokens.push(num);
+        } else if ('+-*/()'.includes(input[i])) {
+            tokens.push(input[i] as Token);
+            i++;
+        } else if (input[i] === '-') {
+            if (i === 0 || '+-/*('.includes(input[i - 1])) {
+                tokens.push('u');
+            } else {
+                tokens.push('-');
+            }
+            i++;
+        } else {
+            throw new Error(`Invalid character: ${input[i]}`);
+        }
+    }
+
+    return tokens;
+}
+
+function precedence(op: Token): number {
+    if (op === '+' || op === '-') return 1;
+    if (op === '*' || op === '/') return 2;
+    return 0;
+}
+
+function applyOp(operators: Token[], values: number[]): number {
+    const operator = operators.pop()!;
+    const b = values.pop()!;
+    const a = values.pop()!;
+
+    switch (operator) {
+        case '+': return a + b;
+        case '-': return a - b;
+        case '*': return a * b;
+        case '/': return Math.floor(a / b);
+        default: throw new Error(`Invalid operator: ${operator}`);
+    }
+}
+
+function evaluateExpression(input: string): number {
+    const tokens = tokenize(input);
+    const values: number[] = [];
+    const operators: Token[] = [];
+
+    for (const token of tokens) {
+        if (typeof token === 'number') {
+            values.push(token);
+        } else if (token === '(') {
+            operators.push(token);
+        } else if (token === ')') {
+            while (operators.length && operators[operators.length - 1] !== '(') {
+                values.push(applyOp(operators, values));
+            }
+            operators.pop(); // Remove '('
+        } else if (token === 'u') {
+            values.push(-values.pop()!);
+        } else {
+            while (operators.length && precedence(operators[operators.length - 1]) >= precedence(token)) {
+                values.push(applyOp(operators, values));
+            }
+            operators.push(token);
+        }
+    }
+
+    while (operators.length) {
+        values.push(applyOp(operators, values));
+    }
+
+    return values.pop()!;
+}
+
+// CLI example
+if (require.main === module) {
+    const input = process.argv[2];
+    if (!input) {
+        console.log('Usage: node expression_evaluator.ts "expression"');
+    } else {
+        try {
+            const result = evaluateExpression(input);
+            console.log(`Result: ${result}`);
+        } catch (error) {
+            console.error(`Error: ${error.message}`);
+        }
+    }
+}

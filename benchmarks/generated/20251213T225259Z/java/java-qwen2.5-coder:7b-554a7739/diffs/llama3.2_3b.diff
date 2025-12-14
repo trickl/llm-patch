@@ -1,0 +1,6 @@
+--- before.java
++++ after.java
+@@ -57,7 +57,7 @@
+     this.tokens = new Tokenizer(expression).tokenize();
+-    this.pos = 0;
++    this.pos = 1; // Change pos to 1 instead of 0

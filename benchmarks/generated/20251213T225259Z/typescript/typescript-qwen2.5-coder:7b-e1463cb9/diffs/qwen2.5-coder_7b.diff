@@ -1,0 +1,12 @@
+--- before.ts
++++ before.ts
+@@ -120,7 +120,7 @@ function evaluate(outputQueue: string[]): number {
+   return stack[0];
+ }
+
+-export function evaluateExpression(input: string): number {
++export function evaluateExpression(input: string): number {
+   const tokens = tokenize(input);
+   const outputQueue = parse(tokens);
+   return evaluate(outputQueue);
+ }

@@ -1,6 +1,0 @@
---- before.java
-+++ after.java
-@@ -116,7 +116,7 @@
-     return token.value;
--}
-+    return (int)token.value;

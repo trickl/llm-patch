@@ -1,0 +1,11 @@
+--- before.c
++++ before.c
+@@ -57,7 +57,7 @@ int apply_operator(int a, int b, TokenType operator) {
+ int evaluate_expression(int start, int end) {
+     if (start > end) return 0;
+
+-    int i = start;
++    for (int i = start; i <= end && tokens[i].type != LPAREN; i++) {
+         if (tokens[i].type == NUMBER) {
+             i++;
+         } else if (tokens[i].type == MINUS) {

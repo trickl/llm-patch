@@ -1,0 +1,4 @@
+  File "expression_evaluator.py", line 5
+    return list(filter(None, re.split(r'(\d+|\s*[-+\*/()]\s*)', expression.strip()))
+               ^
+SyntaxError: '(' was never closed

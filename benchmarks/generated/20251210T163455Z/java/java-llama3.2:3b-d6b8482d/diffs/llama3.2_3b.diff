@@ -1,6 +1,0 @@
---- before.java
-+++ after.java
-@@ -13,7 +13,7 @@
-     Parser parser = new Parser(tokenizer);
--    return parser.parse();
-+    return (Expression)parser.parse();

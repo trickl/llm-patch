@@ -1,6 +1,0 @@
---- before.java	2023-04-10 12:34:56.000000000 +0800
-+++ after.java	2023-04-10 12:35:07.000000000 +0800
-@@ -12,7 +12,7 @@
-     public static int evaluate(String expression) {
-         return new Parser(new Tokenizer(expression).tokenize()).parse();
-     }

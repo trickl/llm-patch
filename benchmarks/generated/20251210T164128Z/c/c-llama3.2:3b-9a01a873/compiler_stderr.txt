@@ -1,8 +1,0 @@
-expression_evaluator.c: In function ‘lexer’:
-expression_evaluator.c:29:13: error: implicit declaration of function ‘isdigit’ [-Wimplicit-function-declaration]
-   29 |         if (isdigit(expression[i])) {
-      |             ^~~~~~~
-expression_evaluator.c:4:1: note: include ‘<ctype.h>’ or provide a declaration of ‘isdigit’
-    3 | #include <string.h>
-  +++ |+#include <ctype.h>
-    4 | 

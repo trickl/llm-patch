@@ -1,0 +1,12 @@
+--- before.ts
++++ patched_expression_evaluator.ts
+@@ -94,7 +94,7 @@
+         if (!isNaN(parseInt(input[i], 10))) {
+             let num = parseInt(input[i], 10);
+             i++;
+-            while (i < input.length && !isNaN(parseInt(input[i], 10))) {
++            while (i < input.length) {
+                 num = num * 10 + parseInt(input[i], 10);
+                 i++;
+             }
+             tokens.push(num);

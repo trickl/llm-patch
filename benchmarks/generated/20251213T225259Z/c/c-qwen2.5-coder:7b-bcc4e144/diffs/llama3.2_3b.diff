@@ -1,0 +1,29 @@
+--- before.c
++++ patched_c.c
+@@ -101,6 +101,7 @@
+ int evaluate_expression(int *start, int *end) {
++   if (*start > *end) {
+     return 0;
+   }
++
+   int value = tokens[*start].value;
+   TokenType operator = TOKEN_PLUS;
+   (*start)++;
+   while (*start <= *end) {
+     if (tokens[*start].type == TOKEN_NUMBER) {
+       value = apply_operator(value, tokens[*start++].value, operator);
+     } else if (tokens[*start].type == TOKEN_LPAREN) {
+-       int sub_value = evaluate_expression(start + 1, end - 1);
++       int sub_value = evaluate_expression(*start + 1, *end - 1);
+       value = apply_operator(value, sub_value, operator);
+       (*start)++;
+     } else if (tokens[*start].type == TOKEN_RPAREN) {
+       break;
+     } else {
+       operator = tokens[*start++].type;
+     }
+   }
+
+-   return value;
++   return evaluate_expression(*start, *end - 1);
+ }

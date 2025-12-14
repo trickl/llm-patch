@@ -1,0 +1,51 @@
+--- before.py
++++ patched_before.py
+@@ -72,7 +72,7 @@
+     result = self.term()
+     while self.index  len(self.tokens) and self.tokens[self.index] in '+-':
+-        operator = self.tokens[self.index]
++        # Remove the assignment operator
+         self.index += 1
+         right = self.term()
+         if operator == '+':
+             result += right
+-        else:
++        # Remove the subtraction operator
+             result -= right
+     return result
+
+@@ -73,7 +73,7 @@
+     def term(self):
+-        result = self.factor()
++        result = self.factor()  # No change needed here
+         while self.index  len(self.tokens) and self.tokens[self.index] in '*/':
+-            operator = self.tokens[self.index]
++            operator = self.tokens[self.index]  # No change needed here
+             self.index += 1
+             right = self.factor()
+             if operator == '*':
+                 result *= right
+-            else:
++            else:
+                 result //= right
+         return result
+
+@@ -74,7 +74,7 @@
+     def factor(self):
+-        token = self.tokens[self.index]
++        token = self.tokens[self.index]  # No change needed here
+         self.index += 1
+         if token.isdigit():
+             return int(token)
+-        elif token == '(':
++        elif token == '(':  # No change needed here
+             result = self.expression()
+             if self.tokens[self.index] != ')':
+                 raise ValueError("Expected )")
+             self.index += 1
+             return result
+-        elif token == '-':
++        elif token == '-':  # No change needed here
+             return -self.factor()
+         else:
+             raise ValueError(f"Unexpected token: {token}")

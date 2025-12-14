@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-a8c4753a",
+  "language": "c",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "aider",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "after_path": "after__llama3.2_3b__aider.c",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 0,
+  "errors_before": 1,
+  "errors_after": 0,
+  "first_error_removed": false,
+  "added_lines": 1,
+  "removed_lines": 0,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "expression_evaluator.c: In function \u2018parse_and_evaluate\u2019:\nexpression_evaluator.c:105:21: warning: unused variable \u2018a\u2019 [-Wunused-variable]\n  105 |                 int a = values[value_index - 1];\n      |                     ^\nexpression_evaluator.c:103:21: warning: unused variable \u2018b\u2019 [-Wunused-variable]\n  103 |                 int b = values[value_index - 1];\n      |                     ^\nexpression_evaluator.c:116:21: warning: unused variable \u2018a\u2019 [-Wunused-variable]\n  116 |                 int a = values[value_index - 1];\n      |                     ^\nexpression_evaluator.c:114:21: warning: unused variable \u2018b\u2019 [-Wunused-variable]\n  114 |                 int b = values[value_index - 1];\n      |                     ^\nexpression_evaluator.c:127:10: warning: unused variable \u2018a\u2019 [-Wunused-variable]\n  127 |      int a = values[value_index - 1];\n      |          ^\nexpression_evaluator.c:125:13: warning: unused variable \u2018b\u2019 [-Wunused-variable]\n  125 |         int b = values[value_index - 1];\n      |             ^\n",
+  "stdout_after": ""
+}

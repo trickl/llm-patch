@@ -1,0 +1,13 @@
+--- before.py
++++ patched_before.py
+@@ -18,7 +18,8 @@
+     while (stack and stack[-1] != '(' and
+           (token == '*' or token == '/' or
+            (token in '+-' and stack[-2] not in '(*')))):
+-        right = stack.pop()
++        # Add a missing closing parenthesis here
++        right = stack.pop()
+         left = stack.pop()
+         operator = stack.pop()
+         stack.append(self.apply_operator(left, operator, right))
+     stack.append(token)

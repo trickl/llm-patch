@@ -1,0 +1,13 @@
+expression_evaluator.c: In function ‘main’:
+expression_evaluator.c:155:38: error: passing argument 1 of ‘evaluate_expression’ from incompatible pointer type [-Wincompatible-pointer-types]
+  155 |     int result = evaluate_expression(&input);
+      |                                      ^~~~~~
+      |                                      |
+      |                                      char (*)[1024]
+expression_evaluator.c:107:32: note: expected ‘char **’ but argument is of type ‘char (*)[1024]’
+  107 | int evaluate_expression(char **input) {
+      |                         ~~~~~~~^~~~~
+expression_evaluator.c: In function ‘apply_operator’:
+expression_evaluator.c:105:1: warning: control reaches end of non-void function [-Wreturn-type]
+  105 | }
+      | ^

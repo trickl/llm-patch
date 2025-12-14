@@ -1,0 +1,10 @@
+--- before.c
++++ before.c
+@@ -95,7 +95,7 @@ int evaluate_expression(int start, int end) {
+     if (start > end) return 0;
+
+     int i = start;
+-    while (i <= end && tokens[i].type != TOKEN_LPAREN) {
++    while (i <= end && tokens[i].type != TOKEN_LPAREN) {
+         i++;
+     }

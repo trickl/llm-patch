@@ -1,0 +1,10 @@
+--- before.c
++++ before.c
+@@ -79,7 +79,7 @@ expression_evaluator.c: In function ‘evaluate_expression’:
+expression_evaluator.c:79:25: error: incompatible types when assigning to type ‘Token’ from type ‘int’
+   79 |             tokens[i] = apply_operator(a, b, tokens[i + 1].type);
+      |                         ^~~~~~~~~~~~~~
+expression_evaluator.c: In function ‘apply_operator’:
+expression_evaluator.c:71:1: warning: control reaches end of non-void function [-Wreturn-type]
+   71 | }
+      | ^

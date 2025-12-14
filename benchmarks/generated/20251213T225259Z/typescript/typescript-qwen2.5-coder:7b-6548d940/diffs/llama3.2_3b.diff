@@ -1,0 +1,14 @@
+--- before.ts
++++ patched_before_ts
+@@ -93,7 +93,7 @@
+     if (!isNaN(Number(input[i]))) {
+-        let num = Number(input[i]);
++        const num = Number(input[i]);
+         i++;
+-        while (i  input.length && !isNaN(Number(input[i]))) {
++        while (i  input.length && !isNaN(Number(input[i]))) {
+             num = num * 10 + Number(input[i]);
+             i++;
+-        }
++        }
+         tokens.push(num);

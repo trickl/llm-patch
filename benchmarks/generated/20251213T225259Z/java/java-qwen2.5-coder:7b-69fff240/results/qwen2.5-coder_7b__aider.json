@@ -1,0 +1,22 @@
+{
+  "case_id": "java-qwen2.5-coder:7b-69fff240",
+  "language": "java",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "aider",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "after_path": "after__qwen2.5-coder_7b__aider.java",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 8 hunks",
+  "compile_returncode": 1,
+  "errors_before": 10,
+  "errors_after": 11,
+  "first_error_removed": false,
+  "added_lines": 8,
+  "removed_lines": 8,
+  "hunks": 8,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "ExpressionEvaluator.java:12: error: incompatible types: Tokenizer cannot be converted to List<Token>\n        return new Parser(new Tokenizer(expression)).parse();\n                          ^\nExpressionEvaluator.java:33: error: cannot find symbol\n                    tokens.add(new Token(TokenType.NUMBER, value));\n                                         ^\n  symbol:   variable TokenType\n  location: class Tokenizer\nExpressionEvaluator.java:35: error: cannot find symbol\n                    tokens.add(new Token(TokenType.OPERATOR, ch));\n                                         ^\n  symbol:   variable TokenType\n  location: class Tokenizer\nExpressionEvaluator.java:63: error: cannot find symbol\n                if (token.type == TokenType.OPERATOR && (token.value == '+' || token.value == '-')) {\n                                  ^\n  symbol:   variable TokenType\n  location: class Parser\nExpressionEvaluator.java:82: error: cannot find symbol\n                if (token.type == TokenType.OPERATOR && (token.value == '*' || token.value == '/')) {\n                                  ^\n  symbol:   variable TokenType\n  location: class Parser\nExpressionEvaluator.java:100: error: cannot find symbol\n            if (token.type == TokenType.OPERATOR && token.value == '-') {\n                              ^\n  symbol:   variable TokenType\n  location: class Parser\nExpressionEvaluator.java:102: error: cannot find symbol\n            } else if (token.type == TokenType.NUMBER) {\n                                     ^\n  symbol:   variable TokenType\n  location: class Parser\nExpressionEvaluator.java:104: error: cannot find symbol\n            } else if (token.type == TokenType.OPERATOR && token.value == '(') {\n                                     ^\n  symbol:   variable TokenType\n  location: class Parser\nExpressionEvaluator.java:108: error: cannot find symbol\n                if (token.type != TokenType.OPERATOR || token.value != ')') {\n                                  ^\n  symbol:   variable TokenType\n  location: class Parser\nExpressionEvaluator.java:125: error: incompatible types: possible lossy conversion from int to char\n            this.value = value;\n                         ^\nNote: Some messages have been simplified; recompile with -Xdiags:verbose to get full output\n10 errors\n",
+  "stdout_after": ""
+}

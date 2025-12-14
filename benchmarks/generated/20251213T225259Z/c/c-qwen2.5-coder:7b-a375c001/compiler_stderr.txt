@@ -1,0 +1,11 @@
+expression_evaluator.c: In function ‘main’:
+expression_evaluator.c:113:27: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘:’ token
+  113 |     for (const char *expr : expressions) {
+      |                           ^
+expression_evaluator.c:114:18: error: ‘expr’ undeclared (first use in this function)
+  114 |         tokenize(expr);
+      |                  ^~~~
+expression_evaluator.c:114:18: note: each undeclared identifier is reported only once for each function it appears in
+expression_evaluator.c:112:17: warning: unused variable ‘expressions’ [-Wunused-variable]
+  112 |     const char *expressions[] = {"3 + 4 * (2 - 1)", "2 * 3 + 4", "2 * (3 + 4)", "8 / 2 * (2 + 2)"};
+      |                 ^~~~~~~~~~~

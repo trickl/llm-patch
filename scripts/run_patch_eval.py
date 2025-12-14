@@ -228,6 +228,8 @@ class AttemptResult:
     delete_only: bool
     success: bool
     notes: str
+    stderr_after: str | None
+    stdout_after: str | None
 
 
 def parse_args() -> argparse.Namespace:
@@ -318,7 +320,7 @@ def extract_first_error(stderr_text: str, stdout_text: str) -> str:
     return ""
 
 
-def count_error_lines(stderr_text: str, stdout_text: str) -> int:
+def count_error_lines(stderr_text: str, stdout_text: str, *, fallback_on_any_output: bool = True) -> int:
     lines = [line.strip() for line in (stderr_text + "\n" + stdout_text).splitlines()]
     count = 0
     for line in lines:
@@ -327,7 +329,7 @@ def count_error_lines(stderr_text: str, stdout_text: str) -> int:
         lowered = line.lower()
         if any(token in lowered for token in ERROR_TOKENS):
             count += 1
-    if count == 0:
+    if count == 0 and fallback_on_any_output:
         count = sum(1 for line in lines if line)
     return count
 
@@ -451,6 +453,7 @@ def should_mark_success(
     first_error_removed: bool,
     errors_before: int,
     errors_after: int | None,
+    compile_returncode: int | None,
 ) -> bool:
     if not patch_applied:
         return False
@@ -460,7 +463,9 @@ def should_mark_success(
         return False
     if errors_after is None:
         return False
-    return errors_after < errors_before
+    if compile_returncode is None or compile_returncode != 0:
+        return False
+    return errors_after == 0
 
 
 def evaluate_case(
@@ -535,11 +540,20 @@ def evaluate_case(
             compile_outcome: CompileOutcome | None = None
             errors_after: int | None = None
             first_error_removed = False
+            stderr_after_text: str | None = None
+            stdout_after_text: str | None = None
             if patch_applied:
                 after_abs_path.write_text(patched_code, encoding="utf-8")
                 after_relative_path = str(after_abs_path.relative_to(case_dir))
                 compile_outcome = run_compile(patched_code, language_cfg, compile_cmd)
-                errors_after = count_error_lines(compile_outcome.stderr, compile_outcome.stdout)
+                stderr_after_text = compile_outcome.stderr
+                stdout_after_text = compile_outcome.stdout
+                fallback_on_any_output = compile_outcome.returncode != 0
+                errors_after = count_error_lines(
+                    compile_outcome.stderr,
+                    compile_outcome.stdout,
+                    fallback_on_any_output=fallback_on_any_output,
+                )
                 if first_error:
                     combined = compile_outcome.stderr + compile_outcome.stdout
                     first_error_removed = first_error not in combined
@@ -550,6 +564,7 @@ def evaluate_case(
             notes = ""
             if stats.delete_only:
                 notes = "diff only deletes lines"
+            compile_returncode = None if compile_outcome is None else compile_outcome.returncode
             result = AttemptResult(
                 case_id=manifest["case_id"],
                 language=manifest["language"],
@@ -559,7 +574,7 @@ def evaluate_case(
                 after_path=after_relative_path,
                 patch_applied=patch_applied,
                 patch_diagnostics=diagnostics,
-                compile_returncode=None if compile_outcome is None else compile_outcome.returncode,
+                compile_returncode=compile_returncode,
                 errors_before=errors_before,
                 errors_after=errors_after,
                 first_error_removed=first_error_removed,
@@ -567,8 +582,17 @@ def evaluate_case(
                 removed_lines=stats.removed_lines,
                 hunks=stats.hunks,
                 delete_only=stats.delete_only,
-                success=should_mark_success(patch_applied, stats, first_error_removed, errors_before, errors_after),
+                success=should_mark_success(
+                    patch_applied,
+                    stats,
+                    first_error_removed,
+                    errors_before,
+                    errors_after,
+                    compile_returncode,
+                ),
                 notes=notes,
+                stderr_after=stderr_after_text,
+                stdout_after=stdout_after_text,
             )
             summary.record(
                 language=manifest["language"],

@@ -1,0 +1,19 @@
+--- before.ts
++++ patched_before_ts
+@@ -108,5 +108,7 @@
+   } else if (token.value === '(') {
+     operatorStack.push(token.value);
+   } else if (token.value === ')') {
+-    while (operatorStack.length > 0 && operatorStack[operatorStack.length - 1] !== '(') {
++    // Add a no-op to fix the error
++    const _ = operatorStack.pop()!;
+     outputQueue.push(operatorStack.pop()!);
+   }
+ }
+
+ while (operatorStack.length > 0) {
+   outputQueue.push(operatorStack.pop()!);
+ }
+
+-+++
++++ patched_before_ts

@@ -1,0 +1,22 @@
+{
+  "case_id": "java-qwen2.5-coder:7b-1d47abd2",
+  "language": "java",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "diff-match-patch",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "after_path": "after__llama3.2_3b__diff-match-patch.java",
+  "patch_applied": true,
+  "patch_diagnostics": "statuses=[True]",
+  "compile_returncode": 1,
+  "errors_before": 19,
+  "errors_after": 8,
+  "first_error_removed": true,
+  "added_lines": 10,
+  "removed_lines": 10,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "ExpressionEvaluator.java:30: error: '(' or '[' expected\n                       tokens.add(new T        return tokens;                throw new IllegalArgumentException(\"Unexpected character: \" + ch);                pos++;oken(TokenType.RPAREN, null));ken(TokenType.LPAREN, null));                tokens.add(new Token(TokenType.OPERATOR, ch));          tokens.add(new Token(TokenType.OPERATOR, ch));\n                                               ^\nExpressionEvaluator.java:30: error: ';' expected\n                       tokens.add(new T        return tokens;                throw new IllegalArgumentException(\"Unexpected character: \" + ch);                pos++;oken(TokenType.RPAREN, null));ken(TokenType.LPAREN, null));                tokens.add(new Token(TokenType.OPERATOR, ch));          tokens.add(new Token(TokenType.OPERATOR, ch));\n                                                                                                                                                                                                 ^\nExpressionEvaluator.java:30: error: ';' expected\n                       tokens.add(new T        return tokens;                throw new IllegalArgumentException(\"Unexpected character: \" + ch);                pos++;oken(TokenType.RPAREN, null));ken(TokenType.LPAREN, null));                tokens.add(new Token(TokenType.OPERATOR, ch));          tokens.add(new Token(TokenType.OPERATOR, ch));\n                                                                                                                                                                                                                              ^\nExpressionEvaluator.java:139: error: reached end of file while parsing\n}\n ^\n4 errors\n",
+  "stdout_after": ""
+}

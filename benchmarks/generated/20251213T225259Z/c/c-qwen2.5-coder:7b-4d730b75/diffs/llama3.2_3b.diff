@@ -1,0 +1,36 @@
+--- before.c
++++ patched_before.c
+@@ -66,7 +66,7 @@
+   int evaluate_expression(int (*get_token)()) {
+-    Token token = get_token();
++    Token token = (Token)get_token(); // Add cast to Token
+     if (token.type == TOKEN_NUMBER) {
+         int result = token.value;
+         token = get_token();
+         while (token.type != TOKEN_EOF) {
+             switch (token.type) {
+                 case TOKEN_PLUS:
+                     result += evaluate_expression(get_token);
+                     break;
+                 case TOKEN_MINUS:
+                     result -= evaluate_expression(get_token);
+                     break;
+                 default:
+                     error("Unexpected token");
+             }
+-            token = get_token();
++            token = (Token)get_token(); // Add cast to Token
+         }
+         return result;
+     } else if (token.type == TOKEN_LPAREN) {
+         int result = evaluate_expression(get_token);
+         if (get_token().type != TOKEN_RPAREN) {
+             error("Expected ')'");
+         }
+         return result;
+     } else if (token.type == TOKEN_MINUS) {
+         return -evaluate_expression(get_token);
+     } else {
+         error("Unexpected token");
+     }
+ }

@@ -1,0 +1,9 @@
+--- before.c
++++ patched_before.c
+@@ -125,7 +125,8 @@
+   ops[--op_top] = token.type;
+-  values[value_top++] = evaluate(a, b, ops[op_top]);
++  if (token.type == TOKEN_EOF) {
++    break;
++  }
+   values[value_top++] = evaluate(a, b, ops[op_top]);

@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-9cc0002a",
+  "language": "c",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "aider",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "after_path": "after__llama3.2_3b__aider.c",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 1,
+  "errors_before": 1,
+  "errors_after": 1,
+  "first_error_removed": false,
+  "added_lines": 1,
+  "removed_lines": 1,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "expression_evaluator.c: In function \u2018evaluate_expression\u2019:\nexpression_evaluator.c:79:3: error: conversion to non-scalar type requested\n   79 |   tokens[i] = (Token)apply_operator(a, b, tokens[i + 1].type);\n      |   ^~~~~~\nexpression_evaluator.c: In function \u2018apply_operator\u2019:\nexpression_evaluator.c:71:1: warning: control reaches end of non-void function [-Wreturn-type]\n   71 | }\n      | ^\n",
+  "stdout_after": ""
+}

@@ -1,0 +1,31 @@
+--- before.c
++++ before.c
+@@ -73,6 +73,10 @@ expression_evaluator.c: In function ‘evaluate’:
+     switch (tokens[max_index].type) {
+         case TOKEN_MULTIPLY:
+             result = values[max_index] * values[max_index + 1];
++            break;
+         case TOKEN_DIVIDE:
+             if (values[max_index + 1] == 0) {
+                 fprintf(stderr, "Error: Division by zero\n");
+@@ -83,6 +87,10 @@ expression_evaluator.c: In function ‘evaluate’:
+             result = values[max_index] / values[max_index + 1];
+         break;
+         case TOKEN_PLUS:
++            result = values[max_index] + values[max_index + 1];
++            break;
+         case TOKEN_MINUS:
++            result = values[max_index] - values[max_index + 1];
++            break;
+     }
+     for (int i = max_index; i < token_count - 2; i++) {
+         values[i] = values[i + 2];
+@@ -105,7 +113,7 @@ expression_evaluator.c: In function ‘main’:
+     const char *expressions[] = {"3 + 4 * (2 - 1)", "2 * 3 + 4", "2 * (3 + 4)", "8 / 2 * (2 + 2)"};
+     for (const char *expr : expressions) {
+         tokenize(expr);
+-        int values[token_count];
++        int values[100]; // Adjust size if necessary
+         int operators[token_count - 1];
+         int value_index = 0;
+         int operator_index = 0;

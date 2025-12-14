@@ -1,0 +1,5 @@
+--- before.java
++++ patched.java
+@@ -41,7 +41,8 @@
+ ? "0-" : token)
++? "0-" : token)

@@ -1,0 +1,6 @@
+--- before.c
++++ patched_before.c
+@@ -113,7 +113,7 @@
+   int result = evaluate(0, token_count - 1);
+-  return result;
++  return (int)evaluate(0, token_count - 1); // Cast to int

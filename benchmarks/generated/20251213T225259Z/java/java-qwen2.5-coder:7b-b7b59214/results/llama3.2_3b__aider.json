@@ -1,0 +1,22 @@
+{
+  "case_id": "java-qwen2.5-coder:7b-b7b59214",
+  "language": "java",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "aider",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "after_path": "after__llama3.2_3b__aider.java",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 1,
+  "errors_before": 12,
+  "errors_after": 11,
+  "first_error_removed": true,
+  "added_lines": 15,
+  "removed_lines": 15,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "ExpressionEvaluator.java:23: error: ')' expected\n        while (pos  input.length()) {\n                  ^\nExpressionEvaluator.java:23: error: ';' expected\n        while (pos  input.length()) {\n                                  ^\nExpressionEvaluator.java:27: error: ')' expected\n                while (pos  input.length() && Character.isDigit(input.charAt(pos))) {\n                          ^\nExpressionEvaluator.java:27: error: not a statement\n                while (pos  input.length() && Character.isDigit(input.charAt(pos))) {\n                                           ^\nExpressionEvaluator.java:27: error: ';' expected\n                while (pos  input.length() && Character.isDigit(input.charAt(pos))) {\n                                                                                  ^\nExpressionEvaluator.java:82: error: ')' expected\n        while (pos  tokens.size()) {\n                  ^\nExpressionEvaluator.java:82: error: ';' expected\n        while (pos  tokens.size()) {\n                                 ^\nExpressionEvaluator.java:100: error: ')' expected\n        while (pos  tokens.size()) {\n                  ^\nExpressionEvaluator.java:100: error: ';' expected\n        while (pos  tokens.size()) {\n                                 ^\nExpressionEvaluator.java:138: error: class, interface, enum, or record expected\n}\n^\n10 errors\n",
+  "stdout_after": ""
+}

@@ -1,0 +1,6 @@
+--- before.c
++++ patched_before.c
+@@ -18,7 +18,7 @@
+     int value;
+-    char operator;
++    char operator = '\0';

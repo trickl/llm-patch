@@ -1,6 +1,0 @@
---- before.java
-+++ after.java
-@@ -52,7 +52,7 @@
-             operands.add(new Operand(token.value));
--        }
-+        operands.add(new OperandImpl(token.value));

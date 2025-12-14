@@ -1,0 +1,22 @@
+{
+  "case_id": "java-qwen2.5-coder:7b-6abc6431",
+  "language": "java",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "aider",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "after_path": "after__qwen2.5-coder_7b__aider.java",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 1,
+  "errors_before": 2,
+  "errors_after": 8,
+  "first_error_removed": true,
+  "added_lines": 1,
+  "removed_lines": 1,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "ExpressionEvaluator.java:9: error: illegal start of expression\n                                                                                    ^\n                                                                                    ^\nExpressionEvaluator.java:10: error: ';' expected\n first type:  Object\n      ^\nExpressionEvaluator.java:11: error: ';' expected\n second type: char\n       ^\nExpressionEvaluator.java:11: error: variable declaration not allowed here\n second type: char\n ^\nExpressionEvaluator.java:12: error: ';' expected\n       System.out.println(evaluate(\"2 * (3 + 4)\")); // Expected: 14\n             ^\nExpressionEvaluator.java:12: error: variable declaration not allowed here\n       System.out.println(evaluate(\"2 * (3 + 4)\")); // Expected: 14\n       ^\nExpressionEvaluator.java:15: error: illegal start of expression\n   public static int evaluate(String expression) {\n   ^\n7 errors\n",
+  "stdout_after": ""
+}

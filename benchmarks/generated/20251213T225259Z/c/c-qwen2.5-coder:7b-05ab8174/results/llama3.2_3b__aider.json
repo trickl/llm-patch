@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-05ab8174",
+  "language": "c",
+  "model_slug": "llama3.2_3b",
+  "algorithm": "aider",
+  "diff_path": "diffs/llama3.2_3b.diff",
+  "after_path": "after__llama3.2_3b__aider.c",
+  "patch_applied": true,
+  "patch_diagnostics": "applied 1 hunks",
+  "compile_returncode": 1,
+  "errors_before": 1,
+  "errors_after": 4,
+  "first_error_removed": false,
+  "added_lines": 2,
+  "removed_lines": 2,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "expression_evaluator.c: In function \u2018apply_operator\u2019:\nexpression_evaluator.c:94:3: error: \u2018operators\u2019 undeclared (first use in this function); did you mean \u2018operator\u2019?\n   94 |   operators[--top_operator] = token.type;\n      |   ^~~~~~~~~\n      |   operator\nexpression_evaluator.c:94:3: note: each undeclared identifier is reported only once for each function it appears in\nexpression_evaluator.c:94:15: error: \u2018top_operator\u2019 undeclared (first use in this function); did you mean \u2018operator\u2019?\n   94 |   operators[--top_operator] = token.type;\n      |               ^~~~~~~~~~~~\n      |               operator\nexpression_evaluator.c:94:31: error: \u2018token\u2019 undeclared (first use in this function); did you mean \u2018Token\u2019?\n   94 |   operators[--top_operator] = token.type;\n      |                               ^~~~~\n      |                               Token\nexpression_evaluator.c: In function \u2018evaluate_expression\u2019:\nexpression_evaluator.c:104:9: warning: enumeration value \u2018TOKEN_EOF\u2019 not handled in switch [-Wswitch]\n  104 |         switch (token.type) {\n      |         ^~~~~~\nexpression_evaluator.c: In function \u2018apply_operator\u2019:\nexpression_evaluator.c:138:5: warning: \u2018main\u2019 is normally a non-static function [-Wmain]\n  138 | int main() {\n      |     ^~~~\nexpression_evaluator.c:175:1: error: expected declaration or statement at end of input\n  175 | }\n      | ^\nexpression_evaluator.c: In function \u2018get_next_token\u2019:\nexpression_evaluator.c:66:1: warning: control reaches end of non-void function [-Wreturn-type]\n   66 | }\n      | ^\nexpression_evaluator.c: In function \u2018apply_operator\u2019:\nexpression_evaluator.c:176: warning: control reaches end of non-void function [-Wreturn-type]\nexpression_evaluator.c: At top level:\nexpression_evaluator.c:138:5: warning: \u2018main\u2019 defined but not used [-Wunused-function]\n  138 | int main() {\n      |     ^~~~\n",
+  "stdout_after": ""
+}

@@ -1,0 +1,28 @@
+--- before.c
++++ before.c
+@@ -52,7 +52,7 @@ int evaluate_expression() {
+     int result = evaluate_term();
+     while (tokens[token_index].type == TOKEN_PLUS || tokens[token_index].type == TOKEN_MINUS) {
+         TokenType op = tokens[token_index++].type;
+-        int next_value = evaluate_term();
++        int next_value = evaluate_factor(); // Corrected function call
+         if (op == TOKEN_PLUS) {
+             result += next_value;
+         } else {
+@@ -66,7 +66,7 @@ int evaluate_term() {
+     int result = evaluate_factor();
+     while (tokens[token_index].type == TOKEN_MULTIPLY || tokens[token_index].type == TOKEN_DIVIDE) {
+         TokenType op = tokens[token_index++].type;
+-        int next_value = evaluate_factor();
++        int next_value = evaluate_term(); // Corrected function call
+         if (op == TOKEN_MULTIPLY) {
+             result *= next_value;
+         } else {
+@@ -97,6 +97,7 @@ int evaluate_factor() {
+     Token current = get_next_token();
+     switch (current.type) {
+         case TOKEN_NUMBER:
++            return current.value; // Added return statement
+         case TOKEN_PLUS:
+             return evaluate_expression();
+         case TOKEN_MINUS:

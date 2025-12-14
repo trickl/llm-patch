@@ -1,0 +1,180 @@
+import java.util.*;
+import java.util.function.Function;
+
+public class ExpressionEvaluator {
+    public static void main(String[] args) {
+        System.out.println(evaluate("1 + 2")); // Expected: 3
+        System.out.println(evaluate("2 * 3 + 4")); // Expected: 10
+        System.out.println(evaluate("2 * (3 + 4)")); // Expected: 14
+        System.out.println(evaluate("8 / 2 * (2 + 2)")); // Expected: 16
+    }
+
+    public static int evaluate(String expression) {
+        return new Parser(new Tokenizer(expression)).parse();
+    }
+
+    private static class Tokenizer {
+        private final String input;
+        private int pos = 0;
+
+        Tokenizer(String input) {
+            this.input = input;
+        }
+
+        List<Token> tokenize() {
+            List<Token> tokens = new ArrayList<>();
+            while (pos < input.length()) {
+                char ch = input.charAt(pos);
+                if (Character.isDigit(ch)) {
+                    tokens.add(new NumberToken(parseNumber()));
+                } else if (ch == '+' || ch == '-' || ch == '*' || ch == '/') {
+                    tokens.add(new OperatorToken(ch));
+                } else if (ch == '(') {
+                    tokens.add(new LeftParenthesis());
+                } else if (ch == ')') {
+                    tokens.add(new RightParenthesis());
+                }
+                pos++;
+            }
+            return tokens;
+        }
+
+        private int parseNumber() {
+            int start = pos;
+            while (pos < input.length() && Character.isDigit(input.charAt(pos))) {
+                pos++;
+            }
+            return Integer.parseInt(input.substring(start, pos));
+        }
+    }
+
+    private static class Parser {
+        private final List<Token> tokens;
+        private int pos = 0;
+
+        Parser(List<Token> tokens) {
+            this.tokens = tokens;
+        }
+
+        int parse() {
+            return parseExpression();
+        }
+
+        private int parseExpression() {
+            Stack<Integer> values = new Stack<>();
+            Stack<Character> ops = new Stack<>();
+
+            while (pos < tokens.size()) {
+                Token token = tokens.get(pos);
+                if (token instanceof NumberToken) {
+                    values.push(((NumberToken) token).value());
+                } else if (token instanceof OperatorToken) {
+                    OperatorToken operator = (OperatorToken) token;
+                    while (!ops.isEmpty() && hasPrecedence(ops.peek(), operator)) {
+                        values.push(applyOperation(values.pop(), ops.pop()));
+                    }
+                    ops.push(operator.value());
+                } else if (token instanceof LeftParenthesis) {
+                    pos++;
+                    values.push(parseExpression());
+                } else if (token instanceof RightParenthesis) {
+                    break;
+                }
+                pos++;
+            }
+
+            while (!ops.isEmpty()) {
+                values.push(applyOperation(values.pop(), ops.pop()));
+            }
+
+            return values.pop();
+        }
+
+        private boolean hasPrecedence(char op1, OperatorToken op2) {
+            if (op1 == '(' || op1 == ')') {
+                return false;
+            }
+            if ((op1 == '*' || op1 == '/') && (op2.value() == '+' || op2.value() == '-')) {
+                return false;
+            }
+            return true;
+        }
+
+        private int applyOperation(int b, char op) {
+            switch (op) {
+                case '+':
+                    return a + b;
+                case '-':
+                    return a - b;
+                case '*':
+                    return a * b;
+                case '/':
+                    if (b == 0) throw new ArithmeticException("Division by zero");
+                    return a / b;
+                default: // Add missing variable declarations
+                    throw new IllegalArgumentException("Unknown operator: " + op);
+            }
+        }
+    }
+
+    private static class Token {
+        abstract int precedence();
+    }
+
+    private static class NumberToken extends Token {
+        private final int value;
+
+        NumberToken(int value) {
+            this.value = value;
+        }
+
+        @Override
+        int precedence() {
+            return 0;
+        }
+
+        int value() {
+            return value;
+        }
+    }
+
+    private static class OperatorToken extends Token {
+        private final char value;
+
+        OperatorToken(char value) {
+            this.value = value;
+        }
+
+        @Override
+        int precedence() {
+            switch (value) {
+                case '+':
+                case '-':
+                    return 1;
+                case '*':
+                case '/':
+                    return 2;
+                default:
+                    throw new IllegalArgumentException("Unknown operator: " + value);
+            }
+        }
+
+        char value() {
+            return value;
+        }
+    }
+
+    private static class LeftParenthesis extends Token {
+        @Override
+        int precedence() {
+            return 0;
+        }
+    }
+
+    private static class RightParenthesis extends Token {
+        @Override
+        int precedence() {
+            return 0;
+        }
+    }
+}

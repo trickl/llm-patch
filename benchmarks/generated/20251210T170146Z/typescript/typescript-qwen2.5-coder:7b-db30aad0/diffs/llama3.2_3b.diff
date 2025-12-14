@@ -1,9 +1,0 @@
---- before.ts
-+++ patched_before_ts
-@@ -104,7 +104,8 @@
-         } else if (char === ' ') {
-             continue;
--        } else {
-+        } else {
-             throw new Error(`Invalid character: ${char}`);
--        }

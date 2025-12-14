@@ -1,0 +1,11 @@
+--- before.ts
++++ before.ts
+@@ -102,7 +102,7 @@ export function evaluateExpression(input: string): number {
+   const tokens = tokenize(input);
+   const rpn = parse(tokens);
+   return evaluateRPN(rpn);
+-}
++}
+
+ // CLI example
+ if (require.main === module) {

@@ -1,0 +1,118 @@
+--- before.c
++++ after.c
+@@ -100,7 +100,8 @@
+   case TOKEN_EOF:
+     break;
+-  default:
++  default:
++    fprintf(stderr, "Error: Unknown token type\n");
++    exit(1);
+ }
+ 
+ int evaluate_expression() {
+-  int values[MAX_TOKENS] = {0};
+-  TokenType operators[MAX_TOKENS] = {TOKEN_EOF};
+-  int value_index = 0;
+-  int operator_index = -1;
+
++  int values[MAX_TOKENS] = {0};
++  TokenType operators[MAX_TOKENS] = {TOKEN_EOF};
++  int value_index = 0;
++  int operator_index = -1;
+
+   while (tokens[token_index].type != TOKEN_EOF) {
+     Token token = tokens[token_index++];
+-    switch (token.type) {
+-      case TOKEN_NUMBER:
+-        values[value_index++] = token.value;
+-        break;
+-      case TOKEN_PLUS:
+-      case TOKEN_MINUS:
+-      case TOKEN_MULTIPLY:
+-      case TOKEN_DIVIDE:
+-        while (operator_index >= 0 && precedence(operators[operator_index]) >= precedence(token.type)) {
+-          int b = values[--value_index];
+-          int a = values[--value_index];
+-          operators[operator_index--] = token.type;
+-          values[value_index++] = apply_operator(a, b, operators[operator_index]);
+-        }
+-        operators[++operator_index] = token.type;
+-        break;
+-      case TOKEN_LPAREN:
+-        values[value_index++] = 0;
+-        operators[++operator_index] = TOKEN_LPAREN;
+-        break;
+-      case TOKEN_RPAREN:
+-        while (operators[operator_index] != TOKEN_LPAREN) {
+-          int b = values[--value_index];
+-          int a = values[--value_index];
+-          operators[operator_index--] = token.type;
+-          values[value_index++] = apply_operator(a, b, operators[operator_index]);
+-        }
+-        operator_index--;
+-        break;
++    switch (token.type) {
++      case TOKEN_NUMBER:
++        values[value_index++] = token.value;
++        break;
++      case TOKEN_PLUS:
++      case TOKEN_MINUS:
++      case TOKEN_MULTIPLY:
++      case TOKEN_DIVIDE:
++        while (operator_index >= 0 && precedence(operators[operator_index]) >= precedence(token.type)) {
++          int b = values[--value_index];
++          int a = values[--value_index];
++          operators[operator_index--] = token.type;
++          values[value_index++] = apply_operator(a, b, operators[operator_index]);
++        }
++        operators[++operator_index] = token.type;
++        break;
++      case TOKEN_LPAREN:
++        values[value_index++] = 0;
++        operators[++operator_index] = TOKEN_LPAREN;
++        break;
++      case TOKEN_RPAREN:
++        while (operators[operator_index] != TOKEN_LPAREN) {
++          int b = values[--value_index];
++          int a = values[--value_index];
++          operators[operator_index--] = token.type;
++          values[value_index++] = apply_operator(a, b, operators[operator_index]);
++        }
++        operator_index--;
++        break;
+   }
+
+-  while (operator_index >= 0) {
+-    int b = values[--value_index];
+-    int a = values[--value_index];
+-    operators[operator_index--] = token.type;
+-    values[value_index++] = apply_operator(a, b, operators[operator_index]);
++  while (operator_index >= 0) {
++    int b = values[--value_index];
++    int a = values[--value_index];
++    operators[operator_index--] = token.type;
++    values[value_index++] = apply_operator(a, b, operators[operator_index]);
+   }
+
+-  return values[0];
++  return values[0];
+ }
+ 
+ int main() {
+   tokenize("3 + 4 * (2 - 1)");
+   printf("%d\n", evaluate_expression()); // Output: 9
+
+-  tokenize("2 * 3 + 4");
++  tokenize("2 * 3 + 4");
+   printf("%d\n", evaluate_expression()); // Output: 10
+
+-  tokenize("2 * (3 + 4)");
++  tokenize("2 * (3 + 4)");
+   printf("%d\n", evaluate_expression()); // Output: 14
+
+-  tokenize("8 / 2 * (2 + 2)");
++  tokenize("8 / 2 * (2 + 2)");
+   printf("%d\n", evaluate_expression()); // Output: 16
+
+   return 0;
+ }

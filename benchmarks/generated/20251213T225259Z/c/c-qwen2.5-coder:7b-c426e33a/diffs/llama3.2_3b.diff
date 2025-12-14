@@ -1,0 +1,6 @@
+--- before.c
++++ patched_c
+@@ -130,7 +130,7 @@
+   int result = evaluate_expression(0, token_count - 2);
+-  return result;
++  return (int)evaluate_expression(0, token_count - 2);

@@ -1,0 +1,17 @@
+expression_evaluator.c: In function ‘evaluate’:
+expression_evaluator.c:73:9: warning: enumeration value ‘TOKEN_NUMBER’ not handled in switch [-Wswitch]
+   73 |         switch (tokens[max_index].type) {
+      |         ^~~~~~
+expression_evaluator.c:73:9: warning: enumeration value ‘TOKEN_LPAREN’ not handled in switch [-Wswitch]
+expression_evaluator.c:73:9: warning: enumeration value ‘TOKEN_RPAREN’ not handled in switch [-Wswitch]
+expression_evaluator.c: In function ‘main’:
+expression_evaluator.c:105:27: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘:’ token
+  105 |     for (const char *expr : expressions) {
+      |                           ^
+expression_evaluator.c:106:18: error: ‘expr’ undeclared (first use in this function)
+  106 |         tokenize(expr);
+      |                  ^~~~
+expression_evaluator.c:106:18: note: each undeclared identifier is reported only once for each function it appears in
+expression_evaluator.c:104:17: warning: unused variable ‘expressions’ [-Wunused-variable]
+  104 |     const char *expressions[] = {"3 + 4 * (2 - 1)", "2 * 3 + 4", "2 * (3 + 4)", "8 / 2 * (2 + 2)"};
+      |                 ^~~~~~~~~~~

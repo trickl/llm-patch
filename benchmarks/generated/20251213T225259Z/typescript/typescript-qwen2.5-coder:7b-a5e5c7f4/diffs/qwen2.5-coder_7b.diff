@@ -1,0 +1,10 @@
+--- before.ts
++++ before.ts
+@@ -123,6 +123,7 @@ function evaluateExpression(input: string): number {
+     const tokens = tokenize(input);
+     return evaluate(tokens);
+ }
++
+ // CLI example
+ if (require.main === module) {
+     const input = process.argv[2];

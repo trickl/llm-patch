@@ -1,0 +1,9 @@
+--- before.c
++++ patched_c
+@@ -125,13 +125,14 @@
+         int b = values[value_index - 1];
+      value_index--;
+      int a = values[value_index - 1];
++     int i = value_index;
+      value_index--;
+      ops[op_index--] = tokens[i].type;

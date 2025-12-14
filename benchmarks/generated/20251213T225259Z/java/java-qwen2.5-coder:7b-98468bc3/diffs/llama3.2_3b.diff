@@ -1,0 +1,9 @@
+--- before.java
++++ patched_before.java
+@@ -67,7 +67,7 @@
+             if (token.type == TokenType.OPERATOR && (token.value == '+' || token.value == '-')) {
+-                pos++;
++                pos = tokens.get(pos).pos;
+                 int nextTerm = term();
+                 if (token.value == '+') {
+                     result += nextTerm;

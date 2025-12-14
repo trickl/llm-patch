@@ -1,0 +1,17 @@
+--- before.c 2023-04-15 10:00:00.0000000 -0700
++++ after.c 2023-04-15 10:00:00.0000000 -0700
+@@ -6,8 +6,9 @@
+ int evaluate_expression() {
+    int result = evaluate_term();
++   while (tokens[token_index].type == TOKEN_PLUS || tokens[token_index].type == TOKEN_MINUS) {
+        TokenType op = tokens[token_index++].type;
+@@ -12,7 +13 @@
+ int evaluate_term() {
+    int result = evaluate_factor();
++   while (tokens[token_index].type == TOKEN_MULTIPLY || tokens[token_index].type == TOKEN_DIVIDE) {
+        TokenType op = tokens[token_index++].type;
+@@ -21,7 +24 @@
+ int evaluate_factor() {
+    Token current = get_next_token();
+-   switch (current.type) {
++   case TOKEN_NUMBER:

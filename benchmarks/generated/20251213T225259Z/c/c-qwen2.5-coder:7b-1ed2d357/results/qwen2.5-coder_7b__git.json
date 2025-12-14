@@ -1,0 +1,22 @@
+{
+  "case_id": "c-qwen2.5-coder:7b-1ed2d357",
+  "language": "c",
+  "model_slug": "qwen2.5-coder_7b",
+  "algorithm": "git",
+  "diff_path": "diffs/qwen2.5-coder_7b.diff",
+  "after_path": "after__qwen2.5-coder_7b__git.c",
+  "patch_applied": true,
+  "patch_diagnostics": "applied",
+  "compile_returncode": 1,
+  "errors_before": 5,
+  "errors_after": 1,
+  "first_error_removed": true,
+  "added_lines": 1,
+  "removed_lines": 0,
+  "hunks": 1,
+  "delete_only": false,
+  "success": false,
+  "notes": "",
+  "stderr_after": "expression_evaluator.c: In function \u2018parse_and_evaluate\u2019:\nexpression_evaluator.c:61:12: error: invalid type argument of unary \u2018*\u2019 (have \u2018int\u2019)\n   61 |     while (**input != '\\0') {\n      |            ^~~~~~~\nexpression_evaluator.c:71:26: warning: operation on \u2018top\u2019 may be undefined [-Wsequence-point]\n   71 |                 stack[top++] = evaluate(a, b, stack[--top]);\n      |                       ~~~^~\nexpression_evaluator.c:78:26: warning: operation on \u2018top\u2019 may be undefined [-Wsequence-point]\n   78 |                 stack[top++] = evaluate(a, b, stack[--top]);\n      |                       ~~~^~\nexpression_evaluator.c:87:18: warning: operation on \u2018top\u2019 may be undefined [-Wsequence-point]\n   87 |         stack[top++] = evaluate(a, b, stack[--top]);\n      |               ~~~^~\n",
+  "stdout_after": ""
+}
