@@ -31,6 +31,7 @@ export interface ResultRecord {
   notes?: string
   stderr_after?: string
   stdout_after?: string
+  strategy_trace?: StrategyTrace | null
   [key: string]: unknown
 }
 
@@ -75,6 +76,37 @@ export interface PatchDetailResponse {
       stdout: string
     }
   }
+  strategyTrace?: StrategyTrace | null
+}
+
+export interface StrategyTrace {
+  strategy: string
+  targetLanguage?: string | null
+  caseId?: string | null
+  buildCommand?: string | null
+  iterations: StrategyIteration[]
+  notes?: string | null
+}
+
+export interface StrategyIteration {
+  index: number
+  phases: StrategyPhaseArtifact[]
+  accepted: boolean
+  failureReason?: string | null
+  kind?: 'primary' | 'refine'
+  label?: string | null
+}
+
+export interface StrategyPhaseArtifact {
+  phase: string
+  status: 'planned' | 'running' | 'completed' | 'failed'
+  prompt: string
+  response?: string | null
+  machineChecks?: Record<string, unknown>
+  humanNotes?: string | null
+  metrics?: Record<string, number>
+  startedAt?: string | null
+  completedAt?: string | null
 }
 
 export type ApiHandler = (req: IncomingMessage, res: ServerResponse) => void

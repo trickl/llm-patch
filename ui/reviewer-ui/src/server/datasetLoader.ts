@@ -192,6 +192,7 @@ export class DatasetLoader {
           stdout: typeof record.result.stdout_after === 'string' ? record.result.stdout_after : '',
         },
       },
+      strategyTrace: (record.result.strategy_trace ?? null) as PatchDetailResponse['strategyTrace'],
     }
   }
 }

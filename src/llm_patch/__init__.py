@@ -10,5 +10,37 @@ __author__ = "trickl"
 
 from .patch_applier import PatchApplier, apply_patch
 from .fuzzy_matcher import FuzzyMatcher
+from .strategies import (
+	PatchRequest,
+	PatchResult,
+	PatchStrategy,
+	StrategyEvent,
+	StrategyEventKind,
+	StrategyObserver,
+)
+from .strategies.guided_loop import (
+	GuidedConvergenceStrategy,
+	GuidedLoopConfig,
+	GuidedLoopInputs,
+	GuidedLoopResult,
+	GuidedLoopTrace,
+	GuidedPhase,
+)
 
-__all__ = ["PatchApplier", "apply_patch", "FuzzyMatcher"]
+__all__ = [
+	"PatchApplier",
+	"apply_patch",
+	"FuzzyMatcher",
+	"PatchRequest",
+	"PatchResult",
+	"PatchStrategy",
+	"StrategyEvent",
+	"StrategyEventKind",
+	"StrategyObserver",
+	"GuidedConvergenceStrategy",
+	"GuidedLoopConfig",
+	"GuidedLoopInputs",
+	"GuidedLoopResult",
+	"GuidedLoopTrace",
+	"GuidedPhase",
+]

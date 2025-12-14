@@ -3,9 +3,20 @@ import clsx from 'clsx'
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
 import { Editor } from '@monaco-editor/react'
 import type { editor as MonacoEditor } from 'monaco-editor'
-import type { AnnotationState, CaseDetail, FinalOutcome, QualityFlag } from '../types'
+import type {
+  AnnotationState,
+  CaseDetail,
+  FinalOutcome,
+  Hypothesis,
+  HypothesisBuckets,
+  IterationTelemetry,
+  QualityFlag,
+  StrategyPhaseArtifact,
+  StrategyTrace,
+} from '../types'
 import { useReviewStore } from '../store/useReviewStore'
 import { parseDiagnostics, type CompilerDiagnostic } from '../utils/diagnostics'
+import { copyTextToClipboard } from '../utils/clipboard'
 
 type MonacoApi = typeof import('monaco-editor')
 
@@ -24,11 +35,14 @@ const languageMap: Record<string, string> = {
 }
 
 export function CaseWorkspace({ detail, annotation }: CaseWorkspaceProps) {
-  const [activeDockTab, setActiveDockTab] = useState<'diff' | 'errors'>('diff')
+  const [activeDockTab, setActiveDockTab] = useState<DockTabId>('diff')
+  const [requestedStageId, setRequestedStageId] = useState<string | null>(null)
+  const [flowCopyStatus, setFlowCopyStatus] = useState<'idle' | 'copied' | 'error'>('idle')
   const updateMetrics = useReviewStore((state) => state.updateMetrics)
   const [beforeEditor, setBeforeEditor] = useState<MonacoEditor.IStandaloneCodeEditor | null>(null)
   const [afterEditor, setAfterEditor] = useState<MonacoEditor.IStandaloneCodeEditor | null>(null)
   const scrollSyncGuard = useRef(false)
+  const flowCopyResetRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const monacoLanguage = useMemo(() => {
     const normalized = detail.summary.language.toLowerCase()
     return languageMap[normalized] ?? 'plaintext'
@@ -58,6 +72,60 @@ export function CaseWorkspace({ detail, annotation }: CaseWorkspaceProps) {
   const diffLineCount = detail.diff.split('\n').length
   const stderrLineCount = countNonEmptyLines(detail.errors.before.stderr)
   const hasAfterFile = !afterUnavailable
+  const iterationGroups = useMemo(() => buildIterationDescriptors(detail.strategyTrace), [detail.strategyTrace])
+  const stageTabs = useMemo(() => iterationGroups.flatMap((group) => group.stages), [iterationGroups])
+  const activeStageId = useMemo(() => {
+    if (!stageTabs.length) {
+      return null
+    }
+    if (requestedStageId && stageTabs.some((tab) => tab.id === requestedStageId)) {
+      return requestedStageId
+    }
+    return stageTabs[0].id
+  }, [stageTabs, requestedStageId])
+  const activeStageTab = useMemo(() => stageTabs.find((tab) => tab.id === activeStageId) ?? null, [stageTabs, activeStageId])
+  const activeIteration = useMemo(() => {
+    if (!iterationGroups.length) {
+      return null
+    }
+    if (!activeStageTab) {
+      return iterationGroups[0]
+    }
+    return iterationGroups.find((group) => group.iteration === activeStageTab.iteration) ?? iterationGroups[0]
+  }, [iterationGroups, activeStageTab])
+  const dockTabs: DockTabDescriptor[] = useMemo(
+    () => [
+      { id: 'diff', label: 'Diff', shortLabel: 'Diff' },
+      { id: 'errors', label: 'Errors', shortLabel: 'Errors' },
+      { id: 'guided', label: 'Guided Loop', shortLabel: 'Guided' },
+    ],
+    [],
+  )
+
+  const dockTitle =
+    activeDockTab === 'guided' && activeStageTab
+      ? activeStageTab.label
+      : activeDockTab === 'diff'
+        ? 'Unified Diff'
+        : activeDockTab === 'errors'
+          ? 'Compiler Errors'
+          : 'Guided Loop'
+
+  const dockSubtitle =
+    activeDockTab === 'guided' && activeStageTab
+      ? describeStageSubtitle(activeStageTab)
+      : activeDockTab === 'diff'
+        ? `${diffLineCount} lines · ${detail.summary.diffName}`
+        : activeDockTab === 'errors'
+          ? `${stderrLineCount} stderr lines`
+          : 'Select a guided loop stage to inspect prompts and responses.'
+  const canCopyFlow = Boolean(activeIteration && activeIteration.stages.length)
+  const flowCopyButtonLabel =
+    flowCopyStatus === 'copied'
+      ? 'Copied flow'
+      : flowCopyStatus === 'error'
+        ? 'Copy failed'
+        : 'Copy flow'
 
   const handleSourceReview = useCallback(
     (value: QualityFlag | null) => {
@@ -113,6 +181,37 @@ export function CaseWorkspace({ detail, annotation }: CaseWorkspaceProps) {
     }
   }, [beforeEditor, afterEditor])
 
+  useEffect(() => () => {
+    if (flowCopyResetRef.current) {
+      clearTimeout(flowCopyResetRef.current)
+      flowCopyResetRef.current = null
+    }
+  }, [])
+
+  const handleCopyFlow = useCallback(async () => {
+    if (!activeIteration) {
+      return
+    }
+    const payload = formatIterationFlowForClipboard(activeIteration)
+    if (!payload) {
+      return
+    }
+    try {
+      await copyTextToClipboard(payload)
+      setFlowCopyStatus('copied')
+    } catch (error) {
+      console.error('Failed to copy guided loop flow', error)
+      setFlowCopyStatus('error')
+    }
+    if (flowCopyResetRef.current) {
+      clearTimeout(flowCopyResetRef.current)
+    }
+    flowCopyResetRef.current = setTimeout(() => {
+      setFlowCopyStatus('idle')
+      flowCopyResetRef.current = null
+    }, 2000)
+  }, [activeIteration])
+
   return (
     <section className="workspace" aria-live="polite">
       <header className="workspace__header">
@@ -129,7 +228,7 @@ export function CaseWorkspace({ detail, annotation }: CaseWorkspaceProps) {
         </div>
       </header>
       <PanelGroup className="workspace__panels" direction="vertical">
-        <Panel minSize={40} defaultSize={65} order={1}>
+        <Panel minSize={20} defaultSize={60} order={1}>
           <PanelGroup direction="horizontal">
             <Panel minSize={30} defaultSize={50}>
               <EditorSection
@@ -174,17 +273,13 @@ export function CaseWorkspace({ detail, annotation }: CaseWorkspaceProps) {
           </PanelGroup>
         </Panel>
         <PanelResizeHandle className="resize-handle horizontal" />
-        <Panel minSize={25} defaultSize={35} order={2}>
+        <Panel minSize={20} defaultSize={40} order={2}>
           <section className="dock-panel">
             <div className="dock-panel__header">
               <div className="dock-panel__header-left">
                 <div>
-                  <h3>{activeDockTab === 'diff' ? 'Unified Diff' : 'Compiler Errors'}</h3>
-                  <p>
-                    {activeDockTab === 'diff'
-                      ? `${diffLineCount} lines · ${detail.summary.diffName}`
-                      : `${stderrLineCount} stderr lines`}
-                  </p>
+                  <h3>{dockTitle}</h3>
+                  <p>{dockSubtitle}</p>
                 </div>
                 {activeDockTab === 'diff' && detail.derived.afterSource === 'missing' && (
                   <span className="dock-panel__warning">After file unavailable; showing original</span>
@@ -199,25 +294,31 @@ export function CaseWorkspace({ detail, annotation }: CaseWorkspaceProps) {
                     size="sm"
                   />
                 )}
-                <div className="dock-panel__tabs" role="tablist" aria-label="Diff and errors toggle">
+                {activeDockTab === 'guided' && (
                   <button
                     type="button"
-                    role="tab"
-                    aria-selected={activeDockTab === 'diff'}
-                    className={activeDockTab === 'diff' ? 'dock-panel__tab dock-panel__tab--active' : 'dock-panel__tab'}
-                    onClick={() => setActiveDockTab('diff')}
+                    className="dock-panel__copy-flow"
+                    onClick={handleCopyFlow}
+                    disabled={!canCopyFlow}
+                    title="Copy every LLM prompt and response for this guided loop iteration"
                   >
-                    Diff
+                    {flowCopyButtonLabel}
                   </button>
-                  <button
-                    type="button"
-                    role="tab"
-                    aria-selected={activeDockTab === 'errors'}
-                    className={activeDockTab === 'errors' ? 'dock-panel__tab dock-panel__tab--active' : 'dock-panel__tab'}
-                    onClick={() => setActiveDockTab('errors')}
-                  >
-                    Errors
-                  </button>
+                )}
+                <div className="dock-panel__tabs" role="tablist" aria-label="Diff, errors, and guided loop stages">
+                  {dockTabs.map((tab) => (
+                    <button
+                      key={tab.id}
+                      type="button"
+                      role="tab"
+                      aria-selected={activeDockTab === tab.id}
+                      className={activeDockTab === tab.id ? 'dock-panel__tab dock-panel__tab--active' : 'dock-panel__tab'}
+                      onClick={() => setActiveDockTab(tab.id)}
+                      title={tab.label}
+                    >
+                      {tab.shortLabel}
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>
@@ -226,8 +327,31 @@ export function CaseWorkspace({ detail, annotation }: CaseWorkspaceProps) {
                 <pre className="diff-view" aria-label="Unified diff patch">
                   {detail.diff || 'No diff available.'}
                 </pre>
-              ) : (
+              ) : activeDockTab === 'errors' ? (
                 <ErrorsPanel before={detail.errors.before} after={detail.errors.after} />
+              ) : (
+                <div className="guided-loop-pane">
+                  <GuidedLoopTimeline
+                    groups={iterationGroups}
+                    activeStageId={activeStageId}
+                    onStageSelect={(stageId) => {
+                      setRequestedStageId(stageId)
+                      setActiveDockTab('guided')
+                    }}
+                    completionStatus={detail.summary.success ? 'success' : 'failure'}
+                  />
+                  {activeStageTab ? (
+                    <>
+                      <StrategyPhaseContent key={activeStageTab.id} descriptor={activeStageTab} />
+                      <div className="guided-loop-pane__insights">
+                        <HypothesisDeck iteration={activeIteration} />
+                        <IterationTelemetryPanel iteration={activeIteration} />
+                      </div>
+                    </>
+                  ) : (
+                    <div className="dock-panel__empty">Guided loop output unavailable.</div>
+                  )}
+                </div>
               )}
             </div>
           </section>
@@ -257,16 +381,8 @@ interface ErrorBlob {
 
 function ErrorsPanel({ before, after }: { before: ErrorBlob; after: ErrorBlob }) {
   const hasAfter = Boolean(after.stderr.trim().length || after.stdout.trim().length)
-  const [view, setView] = useState<'before' | 'after'>(hasAfter ? 'after' : 'before')
-
-  useEffect(() => {
-    setView((current) => {
-      if (!hasAfter && current === 'after') {
-        return 'before'
-      }
-      return current
-    })
-  }, [hasAfter])
+  const [requestedView, setRequestedView] = useState<'before' | 'after'>(hasAfter ? 'after' : 'before')
+  const view = requestedView === 'after' && !hasAfter ? 'before' : requestedView
 
   const active = view === 'before' ? before : after
   const stdoutLabel = view === 'before' ? 'compiler stdout (before)' : 'compiler stdout (after)'
@@ -279,7 +395,7 @@ function ErrorsPanel({ before, after }: { before: ErrorBlob; after: ErrorBlob })
           role="tab"
           aria-selected={view === 'before'}
           className={clsx('errors-view__mode-button', view === 'before' && 'is-active')}
-          onClick={() => setView('before')}
+          onClick={() => setRequestedView('before')}
         >
           Before errors
         </button>
@@ -288,7 +404,7 @@ function ErrorsPanel({ before, after }: { before: ErrorBlob; after: ErrorBlob })
           role="tab"
           aria-selected={view === 'after'}
           className={clsx('errors-view__mode-button', view === 'after' && 'is-active')}
-          onClick={() => setView('after')}
+          onClick={() => setRequestedView('after')}
           disabled={!hasAfter}
         >
           After errors
@@ -300,6 +416,135 @@ function ErrorsPanel({ before, after }: { before: ErrorBlob; after: ErrorBlob })
           <summary>{stdoutLabel}</summary>
           <pre>{active.stdout}</pre>
         </details>
+      )}
+    </div>
+  )
+}
+
+type IterationKind = 'primary' | 'refine'
+type DockTabId = 'diff' | 'errors' | 'guided'
+
+interface DockTabDescriptor {
+  id: DockTabId
+  label: string
+  shortLabel: string
+}
+
+interface StageTabDescriptor {
+  id: string
+  label: string
+  shortLabel: string
+  iteration: number
+  iterationLabel: string
+  iterationKind: IterationKind
+  artifact: StrategyPhaseArtifact
+}
+
+interface IterationGroupDescriptor {
+  iteration: number
+  label: string
+  kind: IterationKind
+  accepted: boolean
+  failureReason?: string | null
+  stages: StageTabDescriptor[]
+  hypotheses?: HypothesisBuckets | null
+  selectedHypothesisId?: string | null
+  telemetry?: IterationTelemetry | null
+}
+
+function StrategyPhaseContent({ descriptor }: { descriptor: StageTabDescriptor }) {
+  const [view, setView] = useState<'prompt' | 'response'>('prompt')
+  const [copyStatus, setCopyStatus] = useState<'idle' | 'copied' | 'error'>('idle')
+  const copyResetRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const responseAvailable = Boolean(descriptor.artifact.response && descriptor.artifact.response.trim().length)
+  const promptText = descriptor.artifact.prompt || 'Prompt not recorded.'
+  const responseText = responseAvailable ? descriptor.artifact.response!.trim() : 'Response not captured yet.'
+  const timestampLabel = formatTimestampRange(descriptor.artifact.startedAt, descriptor.artifact.completedAt)
+  const displayedText = view === 'prompt' ? promptText : responseText
+  const copyDisabled = view === 'response' && !responseAvailable
+  const copyButtonLabel =
+    copyStatus === 'copied'
+      ? 'Copied'
+      : copyStatus === 'error'
+        ? 'Copy failed'
+        : view === 'prompt'
+          ? 'Copy request'
+          : 'Copy response'
+
+  useEffect(() => () => {
+    if (copyResetRef.current) {
+      clearTimeout(copyResetRef.current)
+      copyResetRef.current = null
+    }
+  }, [])
+
+  const handleCopy = useCallback(async () => {
+    if (copyDisabled) {
+      return
+    }
+    try {
+      await copyTextToClipboard(displayedText)
+      setCopyStatus('copied')
+    } catch (error) {
+      console.error('Failed to copy guided loop content', error)
+      setCopyStatus('error')
+    }
+    if (copyResetRef.current) {
+      clearTimeout(copyResetRef.current)
+    }
+    copyResetRef.current = setTimeout(() => {
+      setCopyStatus('idle')
+      copyResetRef.current = null
+    }, 2000)
+  }, [copyDisabled, displayedText])
+
+  return (
+    <div className="strategy-phase" aria-live="polite">
+      <div className="strategy-phase__header-bar">
+        <div>
+          <p className="strategy-phase__meta">{descriptor.iterationLabel}</p>
+          <p className="strategy-phase__status">
+            {formatPhaseName(descriptor.artifact.phase)} · {humanizeStatus(descriptor.artifact.status)}
+          </p>
+          {timestampLabel && <p className="strategy-phase__timestamps">{timestampLabel}</p>}
+        </div>
+        <div className="strategy-phase__actions">
+          <div className="strategy-phase__view-toggle" role="tablist" aria-label="Select LLM content view">
+            <button
+              type="button"
+              className={clsx('strategy-phase__view-button', view === 'prompt' && 'is-active')}
+              aria-selected={view === 'prompt'}
+              onClick={() => setView('prompt')}
+            >
+              LLM Request
+            </button>
+            <button
+              type="button"
+              className={clsx('strategy-phase__view-button', view === 'response' && 'is-active')}
+              aria-selected={view === 'response'}
+              onClick={() => setView('response')}
+              disabled={!responseAvailable}
+            >
+              LLM Response
+            </button>
+          </div>
+          <button
+            type="button"
+            className={clsx('strategy-phase__copy', copyStatus === 'copied' && 'is-success', copyStatus === 'error' && 'is-error')}
+            onClick={handleCopy}
+            disabled={copyDisabled}
+            aria-label="Copy the currently visible LLM content to the clipboard"
+          >
+            {copyButtonLabel}
+          </button>
+        </div>
+      </div>
+      <pre className="strategy-phase__body">{displayedText}</pre>
+      {descriptor.artifact.humanNotes && (
+        <div className="strategy-phase__notes">
+          <h4>Notes</h4>
+          <p>{descriptor.artifact.humanNotes}</p>
+        </div>
       )}
     </div>
   )
@@ -370,7 +615,10 @@ function EditorSection({ title, value, language, modelPath, diagnostics, placeho
 
   useEffect(() => {
     lineLeaderRef.current = selectLineLeaders(diagnostics)
-    updateBadgePositions()
+    const frame = requestAnimationFrame(() => {
+      updateBadgePositions()
+    })
+    return () => cancelAnimationFrame(frame)
   }, [diagnostics, updateBadgePositions])
 
 
@@ -443,6 +691,491 @@ function EditorSection({ title, value, language, modelPath, diagnostics, placeho
       </div>
     </section>
   )
+}
+
+function buildIterationDescriptors(trace?: StrategyTrace | null): IterationGroupDescriptor[] {
+  if (!trace || !trace.iterations?.length) {
+    return []
+  }
+  return trace.iterations
+    .slice()
+    .sort((a, b) => a.index - b.index)
+    .map((iteration) => {
+      const label = iteration.label ?? `Iteration ${iteration.index}`
+      const kind: IterationKind = iteration.kind === 'refine' ? 'refine' : 'primary'
+      const stages: StageTabDescriptor[] = iteration.phases.map((artifact, phaseIndex) => {
+        const phaseLabel = formatPhaseName(artifact.phase)
+        return {
+          id: `stage-${iteration.index}-${phaseIndex}-${artifact.phase}`,
+          label: `${phaseLabel} · ${label}`,
+          shortLabel: phaseLabel,
+          iteration: iteration.index,
+          iterationLabel: label,
+          iterationKind: kind,
+          artifact,
+        }
+      })
+      return {
+        iteration: iteration.index,
+        label,
+        kind,
+        accepted: iteration.accepted,
+        failureReason: iteration.failureReason ?? null,
+        stages,
+        hypotheses: iteration.hypotheses ?? null,
+        selectedHypothesisId: iteration.selectedHypothesisId ?? null,
+        telemetry: iteration.telemetry ?? null,
+      }
+    })
+}
+
+interface GuidedLoopTimelineProps {
+  groups: IterationGroupDescriptor[]
+  activeStageId: string | null
+  onStageSelect: (stageId: string) => void
+  completionStatus: 'success' | 'failure'
+}
+
+function GuidedLoopTimeline({ groups, activeStageId, onStageSelect, completionStatus }: GuidedLoopTimelineProps) {
+  if (!groups.length) {
+    return <div className="loop-timeline loop-timeline--empty">No guided loop iterations recorded.</div>
+  }
+  const completionIcon = completionStatus === 'success' ? '✔' : '✖'
+  const completionLabel = completionStatus === 'success' ? 'Guided loop completed successfully' : 'Guided loop failed to converge'
+  const completionClass = clsx(
+    'loop-stage',
+    'loop-stage--complete',
+    completionStatus === 'success' ? 'loop-stage--complete-success' : 'loop-stage--complete-failure',
+  )
+  return (
+    <div className="loop-timeline" aria-label="Guided loop timeline">
+      {groups.map((group, index) => {
+        const failureLabel = formatFailureReason(group.failureReason) ?? group.failureReason
+        const hasStall = Boolean(group.telemetry?.stall?.length)
+        return (
+          <div
+            key={group.iteration}
+            className={clsx('loop-timeline__row', hasStall && 'loop-timeline__row--stall')}
+          >
+            <div className="loop-timeline__label-block">
+              <span className="loop-timeline__label">{group.label}</span>
+              <div className="loop-timeline__signals">
+                {group.selectedHypothesisId && (
+                  <span className="loop-timeline__alert loop-timeline__alert--focus">
+                    Focus {group.selectedHypothesisId}
+                  </span>
+                )}
+                {hasStall ? (
+                  <span className="loop-timeline__alert loop-timeline__alert--stall" role="status">
+                    ⚠ Stall detected
+                  </span>
+                ) : (
+                  failureLabel && (
+                    <span className="loop-timeline__alert loop-timeline__alert--failure">{failureLabel}</span>
+                  )
+                )}
+              </div>
+            </div>
+          <div className="loop-timeline__stages">
+            {group.stages.map((stage) => {
+              const statusClass = `loop-stage--${stage.artifact.status}`
+              return (
+                <button
+                  type="button"
+                  key={stage.id}
+                  className={clsx('loop-stage', statusClass, activeStageId === stage.id && 'is-active')}
+                  aria-pressed={activeStageId === stage.id}
+                  onClick={() => onStageSelect(stage.id)}
+                >
+                  {stage.shortLabel}
+                </button>
+              )
+            })}
+            {index === 0 && (
+              <span className={completionClass} aria-label={completionLabel} role="status">
+                <span aria-hidden="true">{completionIcon}</span> Complete
+              </span>
+            )}
+          </div>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+const MAX_HYPOTHESES_PER_BUCKET = 3
+type HypothesisBucketKey = 'active' | 'falsified' | 'rejected' | 'archived' | 'expired'
+type HypothesisSectionTone = 'accent' | 'warning' | 'danger' | 'muted'
+
+interface HypothesisSectionConfig {
+  key: HypothesisBucketKey
+  label: string
+  icon: string
+  tone: HypothesisSectionTone
+}
+
+const HYPOTHESIS_SECTIONS: HypothesisSectionConfig[] = [
+  { key: 'active', label: 'Active hypotheses', icon: '🧠', tone: 'accent' },
+  { key: 'falsified', label: 'Falsified', icon: '✖', tone: 'danger' },
+  { key: 'rejected', label: 'Rejected', icon: '⚠', tone: 'warning' },
+  { key: 'archived', label: 'Archived', icon: '📦', tone: 'muted' },
+  { key: 'expired', label: 'Expired', icon: '⏳', tone: 'muted' },
+]
+
+function HypothesisDeck({ iteration }: { iteration: IterationGroupDescriptor | null }) {
+  const hypotheses = iteration?.hypotheses
+  const focusId = iteration?.selectedHypothesisId ?? null
+
+  const visibleSections = HYPOTHESIS_SECTIONS.map((section) => {
+    const bucket = hypotheses?.[section.key] as Hypothesis[] | undefined
+    if (!bucket || !bucket.length) {
+      return null
+    }
+    const trimmed = bucket.slice(0, MAX_HYPOTHESES_PER_BUCKET)
+    const remaining = Math.max(0, bucket.length - trimmed.length)
+    return {
+      ...section,
+      entries: trimmed,
+      remaining,
+    }
+  }).filter(Boolean) as Array<{
+    key: HypothesisBucketKey
+    label: string
+    icon: string
+    tone: HypothesisSectionTone
+    entries: Hypothesis[]
+    remaining: number
+  }>
+
+  return (
+    <section className="hypothesis-panel" aria-live="polite">
+      <header className="hypothesis-panel__header">
+        <div>
+          <p className="hypothesis-panel__eyebrow">Hypotheses</p>
+          <h4>{iteration?.label ?? 'No iteration selected'}</h4>
+        </div>
+        {focusId && <span className="hypothesis-panel__focus">Focus · {focusId}</span>}
+      </header>
+      {!iteration ? (
+        <p className="hypothesis-panel__empty">Select a guided-loop stage to review hypotheses.</p>
+      ) : !hypotheses ? (
+        <p className="hypothesis-panel__empty">Hypothesis telemetry not recorded for this iteration.</p>
+      ) : visibleSections.length ? (
+        <div className="hypothesis-panel__grid">
+          {visibleSections.map((section) => (
+            <div key={section.key} className={clsx('hypothesis-panel__section', `hypothesis-panel__section--${section.tone}`)}>
+              <div className="hypothesis-panel__section-header">
+                <span>
+                  <span aria-hidden="true">{section.icon}</span> {section.label}
+                </span>
+                <span className="hypothesis-panel__count">{section.entries.length + section.remaining}</span>
+              </div>
+              <div className="hypothesis-panel__cards">
+                {section.entries.map((hypothesis) => (
+                  <HypothesisCard key={hypothesis.id} hypothesis={hypothesis} isFocus={focusId === hypothesis.id} />
+                ))}
+              </div>
+              {section.remaining > 0 && (
+                <p className="hypothesis-panel__more">+{section.remaining} additional items tracked</p>
+              )}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="hypothesis-panel__empty">No hypotheses recorded for this loop yet.</p>
+      )}
+    </section>
+  )
+}
+
+interface HypothesisCardProps {
+  hypothesis: Hypothesis
+  isFocus: boolean
+}
+
+function HypothesisCard({ hypothesis, isFocus }: HypothesisCardProps) {
+  const confidenceLabel = formatConfidence(hypothesis.confidence)
+  const falsificationNote = hypothesis.falsificationNotes?.[0]
+  return (
+    <article className={clsx('hypothesis-card', isFocus && 'hypothesis-card--focus')}>
+      <header className="hypothesis-card__header">
+        <span className="hypothesis-card__id">{hypothesis.id}</span>
+        {confidenceLabel && <span className="hypothesis-card__confidence">{confidenceLabel}</span>}
+      </header>
+      <p className="hypothesis-card__claim">{hypothesis.claim}</p>
+      {hypothesis.affectedRegion && <p className="hypothesis-card__region">{hypothesis.affectedRegion}</p>}
+      {hypothesis.structuralChange && <p className="hypothesis-card__structure">Δ {hypothesis.structuralChange}</p>}
+      {hypothesis.expectedEffect && <p className="hypothesis-card__effect">{hypothesis.expectedEffect}</p>}
+      <div className="hypothesis-card__badges">
+        {typeof hypothesis.retryCount === 'number' && hypothesis.retryCount > 0 && (
+          <span className="hypothesis-card__badge">Retries {hypothesis.retryCount}</span>
+        )}
+        {falsificationNote && (
+          <span className="hypothesis-card__badge hypothesis-card__badge--warning">{falsificationNote}</span>
+        )}
+      </div>
+    </article>
+  )
+}
+
+type TelemetryTone = 'info' | 'warning' | 'success' | 'danger' | 'muted'
+
+interface TelemetryEventDescriptor {
+  key: string
+  title: string
+  detail?: string
+  meta?: string
+  icon: string
+  tone: TelemetryTone
+}
+
+const MAX_TELEMETRY_EVENTS = 6
+
+function IterationTelemetryPanel({ iteration }: { iteration: IterationGroupDescriptor | null }) {
+  const events = gatherTelemetryEvents(iteration).slice(0, MAX_TELEMETRY_EVENTS)
+  return (
+    <section className="telemetry-panel">
+      <header className="telemetry-panel__header">
+        <p className="telemetry-panel__eyebrow">Loop signals</p>
+        <h4>{iteration?.label ?? 'Timeline telemetry'}</h4>
+      </header>
+      {events.length ? (
+        <ul className="telemetry-panel__list">
+          {events.map((event) => (
+            <li key={event.key} className={clsx('telemetry-event', `telemetry-event--${event.tone}`)}>
+              <span className="telemetry-event__icon" aria-hidden="true">
+                {event.icon}
+              </span>
+              <div>
+                <p className="telemetry-event__title">{event.title}</p>
+                {event.detail && <p className="telemetry-event__detail">{event.detail}</p>}
+                {event.meta && <p className="telemetry-event__meta">{event.meta}</p>}
+              </div>
+            </li>
+          ))}
+        </ul>
+      ) : iteration ? (
+        <p className="telemetry-panel__empty">No telemetry recorded for this iteration yet.</p>
+      ) : (
+        <p className="telemetry-panel__empty">Select an iteration to view telemetry.</p>
+      )}
+    </section>
+  )
+}
+
+function gatherTelemetryEvents(iteration: IterationGroupDescriptor | null): TelemetryEventDescriptor[] {
+  if (!iteration) {
+    return []
+  }
+  const telemetry = iteration.telemetry
+  const events: TelemetryEventDescriptor[] = []
+  const prefix = `iteration-${iteration.iteration}`
+  const push = (event: Omit<TelemetryEventDescriptor, 'key'> & { key?: string }) => {
+    const key = event.key ?? `${prefix}-${events.length}`
+    events.push({ ...event, key })
+  }
+
+  telemetry?.stall?.forEach((entry, index) => {
+    push({
+      key: `${prefix}-stall-${index}`,
+      title: 'Stall detected',
+      detail: entry?.errorMessage || 'Diff span and error signature repeated.',
+      meta: entry?.hypothesisId ? `Hypothesis ${entry.hypothesisId}` : undefined,
+      icon: '⚠',
+      tone: 'warning',
+    })
+  })
+
+  telemetry?.falsification?.forEach((entry, index) => {
+    const observed = entry?.observed?.[0]
+    const pending = entry?.pending?.[0]
+    const summary = entry?.summary
+    push({
+      key: `${prefix}-falsify-${index}`,
+      title: entry?.status === 'rejected' ? `Hypothesis ${entry?.hypothesisId} falsified` : `Falsification review · ${entry?.hypothesisId}`,
+      detail: observed || pending || summary || 'No contradictions reported.',
+      meta: entry?.remaining != null ? `${entry.remaining} hypotheses remaining` : undefined,
+      icon: entry?.status === 'rejected' ? '✖' : '🧪',
+      tone: entry?.status === 'rejected' ? 'danger' : 'info',
+    })
+  })
+
+  telemetry?.retries?.forEach((entry, index) => {
+    push({
+      key: `${prefix}-retry-${index}`,
+      title: `Retry ${entry.retryCount} · ${entry.hypothesisId}`,
+      detail: entry.reason || 'Retry triggered by controller.',
+      icon: '🔁',
+      tone: entry.retryCount >= 2 ? 'warning' : 'info',
+    })
+  })
+
+  telemetry?.unchangedError?.forEach((entry, index) => {
+    push({
+      key: `${prefix}-unchanged-${index}`,
+      title: 'Error output unchanged',
+      detail: entry.previous === entry.current ? 'Error fingerprint identical between iterations.' : 'Error signature repeated.',
+      meta: entry.hypothesisId ? `Hypothesis ${entry.hypothesisId}` : undefined,
+      icon: '♻',
+      tone: 'warning',
+    })
+  })
+
+  telemetry?.hypothesisStatuses?.forEach((entry, index) => {
+    push({
+      key: `${prefix}-status-${index}`,
+      title: `Hypothesis ${entry.id} → ${formatFailureReason(entry.status) ?? entry.status}`,
+      detail: entry.reason ?? undefined,
+      icon: '🗂',
+      tone: entry.status === 'archived' || entry.status === 'expired' ? 'muted' : 'info',
+    })
+  })
+
+  telemetry?.hypothesesCreated?.forEach((entry, index) => {
+    const ids = entry.ids?.slice(0, 3).join(', ')
+    const remainder = (entry.ids?.length ?? 0) - Math.min(3, entry.ids?.length ?? 0)
+    push({
+      key: `${prefix}-created-${index}`,
+      title: `Logged ${entry.count ?? entry.ids?.length ?? 0} new hypotheses`,
+      detail: ids ? `${ids}${remainder > 0 ? `, +${remainder} more` : ''}` : undefined,
+      icon: '➕',
+      tone: 'success',
+    })
+  })
+
+  if (iteration.accepted) {
+    push({
+      key: `${prefix}-accepted`,
+      title: 'Patch accepted',
+      detail: 'Loop converged during this iteration.',
+      icon: '✔',
+      tone: 'success',
+    })
+  } else if (iteration.failureReason && !telemetry?.stall?.length) {
+    push({
+      key: `${prefix}-failure`,
+      title: 'Iteration blocked',
+      detail: formatFailureReason(iteration.failureReason) ?? iteration.failureReason,
+      icon: '⛔',
+      tone: 'danger',
+    })
+  }
+
+  return events
+}
+
+function describeStageSubtitle(descriptor: StageTabDescriptor | null): string {
+  if (!descriptor) {
+    return 'Select a stage to inspect guided loop progress.'
+  }
+  const parts = [
+    descriptor.iterationLabel,
+    humanizeStatus(descriptor.artifact.status),
+  ]
+  const timeRange = formatTimestampRange(descriptor.artifact.startedAt, descriptor.artifact.completedAt)
+  if (timeRange) {
+    parts.push(timeRange)
+  }
+  return parts.join(' · ')
+}
+
+function formatFailureReason(reason?: string | null): string | null {
+  if (!reason) {
+    return null
+  }
+  return reason
+    .split(/[-_\s]+/)
+    .filter(Boolean)
+    .map((token) => token.charAt(0).toUpperCase() + token.slice(1))
+    .join(' ')
+}
+
+function formatConfidence(value?: number | null): string | null {
+  if (value === null || value === undefined) {
+    return null
+  }
+  if (typeof value !== 'number' || Number.isNaN(value)) {
+    return null
+  }
+  const normalized = value <= 1 ? value * 100 : value
+  const percent = Math.min(100, Math.max(0, Math.round(normalized)))
+  return `${percent}%`
+}
+
+const STATUS_LABELS: Record<string, string> = {
+  planned: 'Planned',
+  running: 'Running',
+  completed: 'Completed',
+  failed: 'Failed',
+}
+
+function humanizeStatus(status: string): string {
+  return STATUS_LABELS[status] ?? status
+}
+
+const PHASE_LABELS: Record<string, string> = {
+  interpret: 'Interpret',
+  plan: 'Plan',
+  draft: 'Draft',
+  reflect: 'Reflect',
+  verify: 'Verify',
+}
+
+function formatPhaseName(phase: string): string {
+  const normalized = phase.toLowerCase()
+  if (PHASE_LABELS[normalized]) {
+    return PHASE_LABELS[normalized]
+  }
+  return normalized
+    .split(/[-_\s]+/)
+    .filter(Boolean)
+    .map((token) => token.charAt(0).toUpperCase() + token.slice(1))
+    .join(' ')
+}
+
+function formatIterationFlowForClipboard(iteration: IterationGroupDescriptor | null): string | null {
+  if (!iteration) {
+    return null
+  }
+  const lines: string[] = []
+  const header = iteration.label || `Iteration ${iteration.iteration}`
+  lines.push(`Guided Loop Flow · ${header}`)
+  iteration.stages.forEach((stage) => {
+    const phaseName = formatPhaseName(stage.artifact.phase)
+    const prompt = (stage.artifact.prompt || '').trim()
+    const response = (stage.artifact.response || '').trim()
+    lines.push('')
+    lines.push(`[${phaseName}]`)
+    lines.push('LLM Request:')
+    lines.push(prompt || '(prompt unavailable)')
+    lines.push('')
+    lines.push('LLM Response:')
+    lines.push(response || '(response unavailable)')
+  })
+  return lines.join('\n').trim()
+}
+
+function formatTimestampRange(start?: string | null, end?: string | null): string | null {
+  if (!start && !end) {
+    return null
+  }
+  const format = (value?: string | null) => {
+    if (!value) return '—'
+    const date = new Date(value)
+    if (Number.isNaN(date.getTime())) return '—'
+    return date.toLocaleTimeString(undefined, {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    })
+  }
+  const startLabel = format(start)
+  const endLabel = format(end)
+  if (startLabel === '—' && endLabel === '—') {
+    return null
+  }
+  return `${startLabel} – ${endLabel}`
 }
 
 interface QualityReviewButtonsProps {

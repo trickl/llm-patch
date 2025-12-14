@@ -16,7 +16,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, Iterable, Iterator, List, Optional
 
-from scripts.generate_failures import LANGUAGE_CONFIGS, call_ollama
+from llm_patch.clients import call_ollama
+from scripts.generate_failures import LANGUAGE_CONFIGS
 
 LOGGER = logging.getLogger(__name__)
 

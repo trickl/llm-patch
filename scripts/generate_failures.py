@@ -24,8 +24,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable, Dict, Iterable, Sequence
-from urllib.error import HTTPError, URLError
-from urllib.request import Request, urlopen
+from llm_patch.clients import call_ollama
 
 LOGGER = logging.getLogger(__name__)
 
@@ -264,35 +263,6 @@ def render_prompt(problem: ProblemSpec, language: LanguageConfig) -> str:
         """
     ).strip()
 
-
-def call_ollama(model: str, prompt: str, temperature: float) -> str:
-    host = os.environ.get("OLLAMA_HOST", "http://localhost:11434").rstrip("/")
-    url = f"{host}/api/generate"
-    payload = {
-        "model": model,
-        "prompt": prompt,
-        "options": {"temperature": temperature},
-        "stream": True,
-    }
-    request = Request(url, data=json.dumps(payload).encode("utf-8"), headers={"Content-Type": "application/json"})
-    chunks: list[str] = []
-    try:
-        with urlopen(request) as response:  # noqa: S310 (trusted local endpoint)
-            for raw_line in response:
-                line = raw_line.decode("utf-8").strip()
-                if not line:
-                    continue
-                data = json.loads(line)
-                chunk = data.get("response")
-                if chunk:
-                    chunks.append(chunk)
-                if data.get("done"):
-                    break
-    except (HTTPError, URLError) as err:  # noqa: F841
-        raise RuntimeError(f"Failed to contact Ollama at {url}: {err}") from err
-    if not chunks:
-        raise RuntimeError("Ollama returned an empty response")
-    return "".join(chunks).strip()
 
 
 def extract_code(generation: str) -> str:

@@ -49,6 +49,53 @@ class TestPatchApplier:
         assert success is True
         assert isinstance(result, str)
 
+    def test_apply_unified_diff_patch(self):
+        """PatchApplier should accept unified diffs."""
+        applier = PatchApplier()
+        source = "line1\nline2\nline3\n"
+        diff = (
+            "--- before.txt\n"
+            "+++ before.txt\n"
+            "@@ -1,3 +1,3 @@\n"
+            " line1\n"
+            "-line2\n"
+            "+line2_modified\n"
+            " line3\n"
+        )
+        result, success = applier.apply(source, diff)
+        assert success is True
+        assert "line2_modified" in result
+
+    def test_apply_addition_only_hunk(self):
+        """Insertion-only hunks should append content when necessary."""
+        applier = PatchApplier()
+        source = ""
+        diff = (
+            "--- before.txt\n"
+            "+++ before.txt\n"
+            "@@ -0,0 +1,2 @@\n"
+            "+alpha\n"
+            "+beta\n"
+        )
+        result, success = applier.apply(source, diff)
+        assert success is True
+        assert result.strip().splitlines() == ["alpha", "beta"]
+
+    def test_apply_unified_diff_failure(self):
+        """PatchApplier should return failure when context cannot be located."""
+        applier = PatchApplier()
+        source = "lineA\nlineB\n"
+        diff = (
+            "--- before.txt\n"
+            "+++ before.txt\n"
+            "@@ -1,1 +1,1 @@\n"
+            "-missing\n"
+            "+replacement\n"
+        )
+        result, success = applier.apply(source, diff)
+        assert success is False
+        assert result == source
+
     def test_find_context_empty_lists(self):
         """Test finding context with empty lists."""
         applier = PatchApplier()
