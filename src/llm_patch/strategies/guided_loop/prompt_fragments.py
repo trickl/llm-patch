@@ -38,6 +38,11 @@ DIAGNOSE_INSTRUCTIONS_FRAGMENT = dedent(
     Given the compiler output, prior interpretation, and the focused code window, identify the precise construct causing the
     failure. Cite the relevant line numbers from the snippet and explain why the construct is invalid in {language}. Do not
     propose fixes or emit new code; focus solely on diagnosis.
+
+    Enumerate hypothesis *types*, not paraphrases. Always include at least one hypothesis that attributes the failure to
+    incorrect expression grouping or operator precedence, and at least one that attributes it to missing or misplaced tokens
+    (terminators, delimiters, keywords). After enumerating, explicitly choose exactly one active hypothesis and explain why
+    the compiler diagnostic favors it over the alternatives.
     """
 )
 
@@ -88,10 +93,23 @@ INTERPRET_JSON_SCHEMA_FRAGMENT = dedent(
 
 DIAGNOSE_JSON_SCHEMA_FRAGMENT = dedent(
     """
-    Respond using the same JSON schema as before with "interpretation" and "explanation" plus a "hypotheses" array. Each
-    hypothesis entry must include: "claim", "affected_region", "expected_effect", "structural_change" (if known),
-    "confidence" (0-1), and a short "explanation". Output at least two mutually exclusive hypotheses whenever none have
-    been accepted yet.
+    Respond using JSON with the following fields:
+    - "interpretation" and "explanation" (as before).
+    - "hypotheses": an array where each entry has:
+        * "id": stable identifier (e.g., "H1").
+        * "claim": structural statement of the hypothesis.
+        * "kind": one of "grouping_precedence", "token_absence", or "other".
+        * "affected_region": span or construct the hypothesis binds to.
+        * "expected_effect": what will change observably if the hypothesis holds.
+        * "structural_change" (if known).
+        * "confidence" between 0 and 1.
+        * short "explanation" referencing the snippet.
+    - "selection": object with:
+        * "hypothesis_id": the "id" of the chosen hypothesis (must match one entry above).
+        * "rationale": why this hypothesis best fits the diagnostic compared to the others.
+        * optional "binding_region" describing the expanded structural span the loop must respect.
+    Output at least two mutually exclusive hypotheses when none have been accepted yet, covering both grouping/precedence
+    and token-absence categories.
     """
 )
 

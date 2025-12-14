@@ -40,21 +40,33 @@ def interpretation_payload(label: str) -> str:
 def diagnosis_payload(label: str, count: int = 2) -> str:
     hypotheses = []
     for idx in range(max(1, count)):
+        entry_id = f"{label}-H{idx + 1}"
+        kind = "grouping_precedence" if idx % 2 == 0 else "token_absence"
+        binding_region = f"{label} binding region {idx + 1}"
         hypotheses.append(
             {
+                "id": entry_id,
                 "claim": f"{label} hypothesis {idx + 1}",
+                "kind": kind,
                 "affected_region": f"lines {idx + 1}-{idx + 2}",
+                "binding_region": binding_region,
                 "expected_effect": f"{label} effect {idx + 1}",
                 "structural_change": f"{label} structural change {idx + 1}",
                 "confidence": max(0.1, 0.8 - idx * 0.2),
                 "explanation": f"{label} evidence {idx + 1}",
             }
         )
+    selection_id = hypotheses[0]["id"]
     return json.dumps(
         {
             "interpretation": f"{label} structural diagnosis",
             "explanation": f"{label} diagnosis rationale",
             "hypotheses": hypotheses,
+            "selection": {
+                "hypothesis_id": selection_id,
+                "rationale": f"{label} selection favors {selection_id}",
+                "binding_region": hypotheses[0]["binding_region"],
+            },
         },
         indent=2,
     )

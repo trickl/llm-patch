@@ -1382,6 +1382,9 @@ class GuidedConvergenceStrategy(PatchStrategy):
         interpretation = self._coerce_string(structured.get("interpretation"))
         explanation = self._coerce_string(structured.get("explanation"))
         created_ids: List[str] = []
+        label_lookup: Dict[str, str] = {}
+        claim_lookup: Dict[str, str] = {}
+        selection_label, selection_rationale, selection_binding = self._extract_selection_fields(structured)
         for entry in parsed_entries:
             hypothesis = self._hypothesis_manager.create(
                 claim=entry["claim"],
@@ -1391,8 +1394,15 @@ class GuidedConvergenceStrategy(PatchStrategy):
                 explanation=entry.get("explanation") or explanation,
                 structural_change=entry.get("structural_change"),
                 confidence=entry.get("confidence"),
+                kind=entry.get("kind"),
+                binding_region=entry.get("binding_region"),
             )
             created_ids.append(hypothesis.id)
+            if hypothesis.claim:
+                claim_lookup[self._selection_key(hypothesis.claim)] = hypothesis.id
+            identifier = entry.get("identifier")
+            if identifier:
+                label_lookup[self._selection_key(identifier)] = hypothesis.id
         if created_ids:
             events.append(
                 self._event(
@@ -1409,7 +1419,20 @@ class GuidedConvergenceStrategy(PatchStrategy):
                 append=True,
             )
         iteration.hypotheses = self._hypothesis_manager.snapshot()
-        self._select_active_hypothesis(iteration, preferred_ids=created_ids)
+        if selection_label:
+            selection_event = self._activate_selected_hypothesis(
+                iteration,
+                selection_label,
+                selection_rationale,
+                selection_binding,
+                label_lookup=label_lookup,
+                claim_lookup=claim_lookup,
+                created_ids=created_ids,
+            )
+            if selection_event:
+                events.append(selection_event)
+        if not iteration.selected_hypothesis_id:
+            self._select_active_hypothesis(iteration, preferred_ids=created_ids)
         return events
 
     def _normalize_hypothesis_entry(self, entry: Any) -> Optional[Dict[str, Any]]:
@@ -1418,6 +1441,14 @@ class GuidedConvergenceStrategy(PatchStrategy):
         claim = self._coerce_string(entry.get("claim") or entry.get("hypothesis"))
         if not claim:
             return None
+        identifier = self._coerce_string(
+            entry.get("id")
+            or entry.get("hypothesis_id")
+            or entry.get("hypothesisId")
+            or entry.get("label")
+            or entry.get("key")
+        )
+        kind = self._canonical_hypothesis_kind(entry.get("kind"))
         affected_region = self._coerce_string(
             entry.get("affected_region") or entry.get("region") or entry.get("scope")
         ) or "Unspecified region"
@@ -1427,6 +1458,7 @@ class GuidedConvergenceStrategy(PatchStrategy):
         structural_change = self._coerce_string(entry.get("structural_change") or entry.get("structuralDelta"))
         explanation = self._coerce_string(entry.get("explanation") or entry.get("evidence") or entry.get("rationale"))
         confidence = self._coerce_confidence(entry.get("confidence") or entry.get("plausibility"))
+        binding_region = self._coerce_string(entry.get("binding_region") or entry.get("bindingRegion"))
         return {
             "claim": claim,
             "affected_region": affected_region,
@@ -1434,7 +1466,129 @@ class GuidedConvergenceStrategy(PatchStrategy):
             "structural_change": structural_change,
             "explanation": explanation,
             "confidence": confidence,
+            "identifier": identifier,
+            "kind": kind,
+            "binding_region": binding_region,
         }
+
+    def _extract_selection_fields(self, structured: Mapping[str, Any]) -> tuple[Optional[str], Optional[str], Optional[str]]:
+        selection_label = self._coerce_string(
+            structured.get("selected_hypothesis_id")
+            or structured.get("selectedHypothesisId")
+            or structured.get("selected_hypothesis")
+        )
+        selection_rationale = self._coerce_string(
+            structured.get("selection_rationale") or structured.get("selectionRationale")
+        )
+        binding_region = self._coerce_string(
+            structured.get("binding_region") or structured.get("bindingRegion")
+        )
+        selection_payload = structured.get("selection")
+        if isinstance(selection_payload, Mapping):
+            selection_label = self._coerce_string(
+                selection_payload.get("hypothesis_id")
+                or selection_payload.get("hypothesisId")
+                or selection_payload.get("id")
+                or selection_payload.get("label")
+            ) or selection_label
+            selection_rationale = (
+                self._coerce_string(selection_payload.get("rationale") or selection_payload.get("reason"))
+                or selection_rationale
+            )
+            binding_region = (
+                self._coerce_string(selection_payload.get("binding_region") or selection_payload.get("bindingRegion"))
+                or binding_region
+            )
+        return selection_label, selection_rationale, binding_region
+
+    def _activate_selected_hypothesis(
+        self,
+        iteration: GuidedIterationArtifact,
+        selection_label: str,
+        selection_rationale: Optional[str],
+        selection_binding: Optional[str],
+        *,
+        label_lookup: Mapping[str, str],
+        claim_lookup: Mapping[str, str],
+        created_ids: Sequence[str],
+    ) -> Optional[StrategyEvent]:
+        if not self._hypothesis_manager:
+            return None
+        candidate_id = self._resolve_selected_hypothesis_id(
+            selection_label,
+            label_lookup=label_lookup,
+            claim_lookup=claim_lookup,
+            created_ids=created_ids,
+        )
+        if not candidate_id:
+            return self._event(
+                kind=StrategyEventKind.NOTE,
+                message="Diagnose selection did not match any hypothesis",
+                iteration=iteration.index,
+                data={"selection": selection_label},
+            )
+        hypothesis = self._hypothesis_manager.get(candidate_id)
+        if not hypothesis:
+            return None
+        self._active_hypothesis_id = candidate_id
+        iteration.selected_hypothesis_id = candidate_id
+        if selection_rationale:
+            hypothesis.selection_rationale = selection_rationale
+        if selection_binding:
+            hypothesis.binding_region = selection_binding
+        self._record_iteration_telemetry(
+            iteration,
+            "hypothesisSelection",
+            {
+                "id": candidate_id,
+                "rationale": selection_rationale,
+                "bindingRegion": selection_binding,
+            },
+            append=True,
+        )
+        return self._event(
+            kind=StrategyEventKind.NOTE,
+            message="Diagnose selected active hypothesis",
+            iteration=iteration.index,
+            data={
+                "hypothesisId": candidate_id,
+                "rationale": selection_rationale,
+                "bindingRegion": selection_binding,
+            },
+        )
+
+    def _resolve_selected_hypothesis_id(
+        self,
+        selection_label: str,
+        *,
+        label_lookup: Mapping[str, str],
+        claim_lookup: Mapping[str, str],
+        created_ids: Sequence[str],
+    ) -> Optional[str]:
+        normalized = self._selection_key(selection_label)
+        if not normalized:
+            return None
+        if self._hypothesis_manager:
+            direct = self._hypothesis_manager.get(selection_label)
+            if direct:
+                return direct.id
+        if normalized in label_lookup:
+            return label_lookup[normalized]
+        if normalized in claim_lookup:
+            return claim_lookup[normalized]
+        if normalized.startswith("h") and normalized[1:].isdigit():
+            candidate_id = selection_label
+            if self._hypothesis_manager and self._hypothesis_manager.get(candidate_id):
+                return candidate_id
+        if normalized.isdigit():
+            index = int(normalized) - 1
+            if 0 <= index < len(created_ids):
+                return created_ids[index]
+        return None
+
+    @staticmethod
+    def _selection_key(value: str) -> str:
+        return value.strip().lower()
 
     @staticmethod
     def _coerce_string(value: Any) -> Optional[str]:
@@ -1481,6 +1635,18 @@ class GuidedConvergenceStrategy(PatchStrategy):
             numeric = numeric / 100.0
         numeric = max(0.0, min(1.0, numeric))
         return numeric
+
+    @staticmethod
+    def _canonical_hypothesis_kind(value: Any) -> Optional[str]:
+        text = GuidedConvergenceStrategy._coerce_string(value)
+        if not text:
+            return None
+        normalized = text.lower().replace("-", "_").strip()
+        if "group" in normalized or "preced" in normalized:
+            return "grouping_precedence"
+        if "token" in normalized or "semicolon" in normalized or "delimiter" in normalized:
+            return "token_absence"
+        return normalized
 
     def _ensure_active_hypothesis(self, iteration: GuidedIterationArtifact | None) -> Optional[Hypothesis]:
         hypothesis = self._active_hypothesis()
@@ -1559,9 +1725,14 @@ class GuidedConvergenceStrategy(PatchStrategy):
                 "hypothesis_effect": self._hypothesis_effect_placeholder(),
                 "hypothesis_structure": self._hypothesis_structure_placeholder(),
             }
+        region_text = (
+            hypothesis.binding_region
+            or hypothesis.affected_region
+            or self._hypothesis_region_placeholder()
+        )
         return {
             "hypothesis_claim": hypothesis.claim or self._hypothesis_claim_placeholder(),
-            "hypothesis_region": hypothesis.affected_region or self._hypothesis_region_placeholder(),
+            "hypothesis_region": region_text,
             "hypothesis_effect": hypothesis.expected_effect or self._hypothesis_effect_placeholder(),
             "hypothesis_structure": hypothesis.structural_change or self._hypothesis_structure_placeholder(),
         }
@@ -2031,7 +2202,8 @@ class GuidedConvergenceStrategy(PatchStrategy):
     ) -> bool:
         if diff_span is None or hypothesis is None:
             return True
-        region_span = self._parse_region_span(hypothesis.affected_region)
+        region_descriptor = hypothesis.binding_region or hypothesis.affected_region
+        region_span = self._parse_region_span(region_descriptor)
         if region_span is None:
             return True
         diff_start, diff_end = diff_span

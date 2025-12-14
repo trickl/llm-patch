@@ -45,6 +45,11 @@ Deliverable: deterministic storage of structural interpretations detached from n
    - Before `PROPOSE`, select the highest-ranked non-falsified hypothesis and inject only its data into downstream prompts.
    - Track which hypothesis each patch attempt references.
 
+3. **Diagnose commitment contract**
+   - Update the `DIAGNOSE` prompt/schema so it always emits both a grouping/precedence hypothesis and a missing-token hypothesis before any have been accepted.
+   - Require the model to select exactly one of those hypotheses (with rationale and an expanded binding region) so that `FALSIFY` never runs without a committed framing.
+   - Persist the selected hypothesis ID + rationale into the iteration telemetry so downstream enforcement (scope validation, retries) can cite the same commitment.
+
 Deliverable: explicit hypothesis list plus selection controls per iteration.
 
 ---

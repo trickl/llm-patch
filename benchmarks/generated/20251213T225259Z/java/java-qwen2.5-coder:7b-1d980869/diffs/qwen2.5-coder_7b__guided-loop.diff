@@ -1,12 +1,12 @@
 ```json
 {
-  "interpretation": "A missing semicolon is causing a syntax error on line 41 in the `map` function.",
-  "explanation": "The ternary operator's condition and result are not properly terminated with a semicolon, leading to a syntax error."
+  "interpretation": "A semicolon is missing at the end of a lambda expression in the `evaluate` method.",
+  "explanation": "The compiler error indicates that a semicolon is expected after the lambda expression on line 41."
 }
 ```
 
 **Proposal summary:**
-Add a missing semicolon after the ternary operator on line 41 to resolve the syntax error.
+Add a missing semicolon at the end of the lambda expression to resolve the syntax error.
 
 **Compiler error:**
 ExpressionEvaluator.java:41: error: ';' expected
@@ -15,35 +15,37 @@ ExpressionEvaluator.java:41: error: ';' expected
 1 error
 
 **Diagnosis summary (structural only):**
-The compiler error indicates that a semicolon is expected after the ternary operator on line 41.
+The compiler error indicates that a semicolon is expected after the lambda expression on line 41.
 
 **Diagnosis rationale (discard after this iteration):**
-The ternary operator in Java requires a semicolon at the end of its expression, but it appears to be missing. This causes a syntax error during compilation.
+The lambda expression is not properly terminated with a semicolon, leading to a syntax error.
 
 **Active hypothesis claim (must remain isolated):**
-There might be an issue with the ternary operator syntax.
+Incorrect grouping or operator precedence in the lambda expression on line 41 causes the syntax error.
 
 **Affected region mandated by this hypothesis:**
-ExpressionEvaluator.java:41
+Line 41, within the lambda expression
 
 **Expected observable effect if successful:**
-The code should compile without errors.
+Correcting the grouping and operator precedence will resolve the syntax error.
 
 **Previously recorded structural change (if any):**
-Inserting a semicolon at the end of the ternary expression.
+Grouping
 
 **Context:**
-  36 |         if (inNumber) {
-  37 |             tokens.add(sb.toString());
-  38 |         }
-  39 |         return tokens.stream()
-  40 |                 .map(token -> token.equals("-") && (tokens.isEmpty() || tokens.get(tokens.size() - 1).matches("[\\(+-]")))
-  41 |                         ? "0-" : token)
-  42 |                 .collect(Collectors.toList());
-  43 |     }
-  44 | 
-  45 |     private static Node parse(List<String> tokens) {
-  46 |         Deque<Node> values = new ArrayDeque<>();
+```java
+36 |         if (inNumber) {
+37 |             tokens.add(sb.toString());
+38 |         }
+39 |         return tokens.stream()
+40 |                 .map(token -> token.equals("-") && (tokens.isEmpty() || tokens.get(tokens.size() - 1).matches("[\\(+-]")))
+41 |                         ? "0-" : token)
+42 |                 .collect(Collectors.toList());
+43 |     }
+44 | 
+45 |     private static Node parse(List<String> tokens) {
+46 |         Deque<Node> values = new ArrayDeque<>();
+```
 
 **Constraints:**
 - Do not reformat unrelated code.
@@ -53,13 +55,17 @@ Inserting a semicolon at the end of the ternary expression.
 
 **Example unified diff:**
 ```diff
---- ExpressionEvaluator.java	2023-04-01 12:00:00.000000000 +0800
-+++ ExpressionEvaluator.java	2023-04-01 12:01:00.000000000 +0800
+--- ExpressionEvaluator.java	2023-04-10 12:34:56.789012345 +0000
++++ ExpressionEvaluator.java.new	2023-04-10 12:35:07.654321987 +0000
 @@ -41,7 +41,7 @@
-                 .map(token -> token.equals("-") && (tokens.isEmpty() || tokens.get(tokens.size() - 1).matches("[\\(+-]")))
                          ? "0-" : token)
--                        .collect(Collectors.toList());
-+                        .collect(Collectors.toList()); // Add missing semicolon
+                 .collect(Collectors.toList());
+     }
+-
++    ;
+
+     private static Node parse(List<String> tokens) {
+         Deque<Node> values = new ArrayDeque<>();
 ```
 
 **Validation summary:**
@@ -68,13 +74,13 @@ Diff edits extend beyond the hypothesis region.
 **Most recent diff attempt:**
 ```json
 {
-  "interpretation": "A missing semicolon is causing a syntax error on line 41 in the `map` function.",
-  "explanation": "The ternary operator's condition and result are not properly terminated with a semicolon, leading to a syntax error."
+  "interpretation": "A semicolon is missing at the end of a lambda expression in the `evaluate` method.",
+  "explanation": "The compiler error indicates that a semicolon is expected after the lambda expression on line 41."
 }
 ```
 
 **Proposal summary:**
-Add a missing semicolon after the ternary operator on line 41 to resolve the syntax error.
+Add a missing semicolon at the end of the lambda expression to resolve the syntax error.
 
 **Compiler error:**
 ExpressionEvaluator.java:41: error: ';' expected
@@ -83,19 +89,55 @@ ExpressionEvaluator.java:41: error: ';' expected
 1 error
 
 **Diagnosis summary (structural only):**
-The failure is due to a missing semicolon after the ternary operator on line 41.
+The compiler error indicates that a semicolon is expected after the lambda expression on line 41.
 
 **Diagnosis rationale (discard after this iteration):**
-The compiler expects a semicolon at the end of the statement, but it is missing. This results in a syntax error.
+The lambda expression is not properly terminated with a semicolon, leading to a syntax error.
 
 **Active hypothesis claim (must remain isolated):**
-There might be an issue with the ternary operator syntax.
+Incorrect grouping or operator precedence in the lambda expression on line 41 causes the syntax error.
 
 **Affected region mandated by this hypothesis:**
-ExpressionEvaluator.java:41
+Line 41, within the lambda expression
 
 **Expected observable effect if successful:**
-The code should compile without errors.
+Correcting the grouping and operator precedence will resolve the syntax error.
 
 **Previously recorded structural change (if any):**
-Insertion of a semicolon
+Grouping
+
+**Context:**
+```java
+36 |         if (inNumber) {
+37 |             tokens.add(sb.toString());
+38 |         }
+39 |         return tokens.stream()
+40 |                 .map(token -> token.equals("-") && (tokens.isEmpty() || tokens.get(tokens.size() - 1).matches("[\\(+-]")))
+41 |                         ? "0-" : token)
+42 |                 .collect(Collectors.toList());
+43 |     }
+44 | 
+45 |     private static Node parse(List<String> tokens) {
+46 |         Deque<Node> values = new ArrayDeque<>();
+```
+
+**Constraints:**
+- Do not reformat unrelated code.
+- Do not rename symbols.
+- Change only within this method unless strictly necessary.
+- Prefer the smallest valid diff.
+
+**Example unified diff:**
+```diff
+--- ExpressionEvaluator.java	2023-04-10 12:34:56.789012345 +0000
++++ ExpressionEvaluator.java.new	2023-04-10 12:35:07.654321987 +0000
+@@ -41,7 +41,7 @@
+                         ? "0-" : token)
+                 .collect(Collectors.toList());
+     }
+-
++    ;
+
+     private static Node parse(List<String> tokens) {
+         Deque<Node> values = new ArrayDeque<>();
+```

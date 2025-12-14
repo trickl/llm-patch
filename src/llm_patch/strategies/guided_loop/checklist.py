@@ -21,6 +21,8 @@ GUIDED_LOOP_CHECKLIST = {
                 "Reference the interpretation summary when explaining the construct.",
                 "Produce at least two mutually exclusive hypotheses until one is accepted.",
                 "Each hypothesis must describe its affected region, expected effect, and structural delta.",
+                "Cover both grouping/precedence and token-absence failure modes whenever diagnosing a new issue.",
+                "Select exactly one active hypothesis (before Falsify) and justify why it best matches the compiler diagnostic.",
             ],
         },
         {

@@ -25,10 +25,13 @@ class Hypothesis:
     claim: str
     affected_region: str
     expected_effect: str
+    kind: Optional[str] = None
     interpretation: Optional[str] = None
     explanation: Optional[str] = None
     structural_change: Optional[str] = None
     confidence: Optional[float] = None
+    binding_region: Optional[str] = None
+    selection_rationale: Optional[str] = None
     status: HypothesisStatus = HypothesisStatus.ACTIVE
     retry_count: int = 0
     falsification_notes: List[str] = field(default_factory=list)
@@ -46,10 +49,13 @@ class Hypothesis:
             claim=self.claim,
             affected_region=self.affected_region,
             expected_effect=self.expected_effect,
+            kind=self.kind,
             interpretation=self.interpretation,
             explanation=self.explanation,
             structural_change=self.structural_change,
             confidence=self.confidence,
+            binding_region=self.binding_region,
+            selection_rationale=self.selection_rationale,
             status=self.status,
             retry_count=self.retry_count,
             falsification_notes=list(self.falsification_notes),
@@ -61,10 +67,13 @@ class Hypothesis:
             "claim": self.claim,
             "affectedRegion": self.affected_region,
             "expectedEffect": self.expected_effect,
+            "kind": self.kind,
             "interpretation": self.interpretation,
             "explanation": self.explanation,
             "structuralChange": self.structural_change,
             "confidence": self.confidence,
+            "bindingRegion": self.binding_region,
+            "selectionRationale": self.selection_rationale,
             "status": self.status.value,
             "retryCount": self.retry_count,
             "falsificationNotes": list(self.falsification_notes),
@@ -111,10 +120,13 @@ class HypothesisManager:
         claim: str,
         affected_region: str,
         expected_effect: str,
+        kind: Optional[str] = None,
         interpretation: Optional[str] = None,
         explanation: Optional[str] = None,
         structural_change: Optional[str] = None,
         confidence: Optional[float] = None,
+        binding_region: Optional[str] = None,
+        selection_rationale: Optional[str] = None,
         hypothesis_id: Optional[str] = None,
     ) -> Hypothesis:
         identifier = hypothesis_id or self._allocate_id()
@@ -123,10 +135,13 @@ class HypothesisManager:
             claim=claim,
             affected_region=affected_region,
             expected_effect=expected_effect,
+            kind=kind,
             interpretation=interpretation,
             explanation=explanation,
             structural_change=structural_change,
             confidence=confidence,
+            binding_region=binding_region,
+            selection_rationale=selection_rationale,
         )
         self._active[identifier] = hypothesis
         return hypothesis
