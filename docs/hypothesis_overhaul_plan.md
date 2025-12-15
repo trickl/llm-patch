@@ -22,16 +22,18 @@ Deliverable: new data structures wired into trace artifacts (no behavior change 
 
 ---
 
-## Phase 1 – Diagnosis Split (Interpretation vs Explanation)
+## Phase 1 – Diagnosis Summary & Rationale
 
 1. **Prompt & response schema**
-   - Modify `PROMPT_TEMPLATES` for `INTERPRET` and `DIAGNOSE` to solicit separate `interpretation` (structural element) and `explanation` (reasoning) sections.
-   - Update post-processing to parse outputs into structured fields stored on `Hypothesis` objects.
+   - Simplify `PROMPT_TEMPLATES` so the loop opens with `DIAGNOSE` (the Interpret phase was removed entirely).
+   - Require Diagnose responses to emit both a `diagnosis` field (structural summary) and a `rationale` field (evidence).
+   - Update post-processing to parse those fields into `Hypothesis` objects so downstream prompts can reference them directly.
+   - Enforce the rule in prompts, schema validation, and telemetry so Diagnose stays structural—ownership, scope, ordering, and dependency vocabulary only.
 
 2. **Persistence rules**
-   - When preparing prompts for later phases, carry forward only the interpretation field; explanations stay within the current iteration.
+   - When preparing prompts for later phases, carry forward the diagnosis summary but keep the rationale scoped to the current iteration to reduce narrative ossification.
 
-Deliverable: deterministic storage of structural interpretations detached from narrative rationale.
+Deliverable: deterministic storage of structural diagnoses detached from descriptive rationale.
 
 ---
 
@@ -42,7 +44,7 @@ Deliverable: deterministic storage of structural interpretations detached from n
    - Parse and rank them; create `Hypothesis` entries with `expected_effect` descriptions.
 
 2. **Hypothesis selection gate**
-   - Before `PROPOSE`, select the highest-ranked non-falsified hypothesis and inject only its data into downstream prompts.
+   - Before `PROPOSE`, select the highest-ranked active hypothesis and inject only its data into downstream prompts.
    - Track which hypothesis each patch attempt references.
 
 3. **Diagnose commitment contract**
@@ -50,34 +52,54 @@ Deliverable: deterministic storage of structural interpretations detached from n
    - Require the model to select exactly one of those hypotheses (with rationale and an expanded binding region) so that `FALSIFY` never runs without a committed framing.
    - Persist the selected hypothesis ID + rationale into the iteration telemetry so downstream enforcement (scope validation, retries) can cite the same commitment.
 
+4. **Feasibility gate**
+   - After enumerating hypotheses inside `DIAGNOSE`, require an explicit feasibility verdict for each one answering, “Can this structural change be applied entirely within the affected_region?”
+   - Record the verdict alongside the hypothesis so telemetry can prove whether a later patch overran the region.
+   - Hypotheses that require edits outside their declared region are immediately marked non-selectable; only region-contained options (e.g., grouping) can advance while spillover candidates (e.g., token_absence) are disqualified automatically.
+   - Selection logic in the controller MUST refuse to activate any hypothesis that fails this check; enforcement cannot rely on prompt compliance alone. This ensures Diagnose automatically lands on the grouping hypothesis in the motivating case.
+
 Deliverable: explicit hypothesis list plus selection controls per iteration.
 
 ---
 
-## Phase 3 – Falsification & Validation Mechanics
+## Phase 3 – Validation Mechanics (Deferred Falsification)
 
-1. **Add falsification phase**
-   - Insert a new phase `GuidedPhase.FALSIFY` (between `DIAGNOSE` and `PROPOSE`).
-   - Prompt the model to enumerate observable contradictions for the active hypothesis.
-   - Auto-check against prior iteration history (compile results, patch application failures). If any listed contradiction already occurred, mark hypothesis `rejected`.
+1. **Future falsification hook**
+   - Document the contradiction-checking heuristics we eventually want, but keep the dedicated `GuidedPhase.FALSIFY` removed until the telemetry is ready.
+   - In the interim, rely on deterministic signals (patch apply failures, unchanged error fingerprints, compile diagnostics) to reject or archive hypotheses.
 
 2. **Patch effect validation**
    - Extend `IterationOutcome` to store previous vs. current error fingerprints (message, location, classification).
    - After compile/test, compute diff; if unchanged, downgrade the hypothesis reliability or reject after threshold.
 
-Deliverable: loop refuses to proceed with hypotheses that fail their own falsification criteria.
+Deliverable: loop refuses to proceed with hypotheses that fail deterministic validation, with a placeholder for future falsification prompts.
 
 ---
 
 ## Phase 4 – Patch Constraints & Structural Justification
 
-1. **One hypothesis per patch**
+1. **Structured affected regions**
+   - Replace string-based regions with a fixed enum: `lambda_body`, `conditional_expression`, `enclosing_call_expression`, or `statement_boundary`.
+   - Store both the region kind and referenced node span so downstream validators can reason about AST structure, not raw text snippets.
+   - Enforce invariants: `grouping_precedence` hypotheses must bind at least a `conditional_expression`, and `token_absence` hypotheses must bind a `statement_boundary`, preventing impossible bindings.
+
+2. **One hypothesis per patch**
    - During `PROPOSE`/`GENERATE_PATCH`, validate that the diff only touches lines inside `hypothesis.affected_region`.
    - If multiple regions are touched, reject the patch and request a narrowed proposal.
 
-2. **Structural change justification**
-   - Update `PROPOSE` prompt to ask for a concise “structural delta” statement (grouping/nesting/order/scope/ownership).
-   - Persist the justification next to the hypothesis attempt; highlight in critique events if missing.
+3. **Structural change justification**
+    - Replace the free-text “structural delta” with a structured payload:
+       ```json
+       {
+         "structural_change": {
+           "type": "grouping",
+           "operation": "introduce_parentheses"
+         }
+       }
+       ```
+    - Define the enum so `type ∈ {grouping, scope, ordering, ownership}` and each type has a tightly scoped `operation` list (e.g., grouping → `{introduce_parentheses, remove_parentheses, rebind_operator}`).
+    - Enforce the invariant that grouping changes MUST NOT introduce or remove statement terminators; schema validation should reject any attempt to smuggle token edits under a grouping claim.
+    - Persist the structured justification next to the hypothesis attempt; highlight in critique events if missing.
 
 Deliverable: concrete enforcement that diffs are scoped and explained structurally.
 
@@ -92,6 +114,17 @@ Deliverable: concrete enforcement that diffs are scoped and explained structural
 2. **No-new-information detector**
    - Compare `(error_message, error_location, diff_span)` with the previous iteration.
    - If identical, emit a stall event, mark the hypothesis as invalid, and branch back to Phase 2 logic to create competing hypotheses.
+
+3. **Feasibility auto flip**
+   - If a hypothesis clears `DIAGNOSE` but `GENERATE_PATCH` fails solely because the patch would exceed the allowed scope, archive the hypothesis immediately as “structurally infeasible.”
+   - Automatically select the next highest-ranked feasible hypothesis (or trigger new generation) so the loop cannot oscillate on a repeatedly disqualified idea.
+   - Record the flip in telemetry to explain why scope violations end a hypothesis’ lifetime.
+
+4. **Scope violation kill switch**
+   - Treat every scope violation reported by `GENERATE_PATCH` as definitive evidence that the active hypothesis cannot be fulfilled; immediately archive it and force `DIAGNOSE` to select a different, feasible hypothesis within the same loop.
+   - Reset retries and log the eviction reason so future analytics can trace how often hypotheses die due to region overshoots.
+   - Re-enter the Diagnose phase with the remaining hypothesis list (or trigger regeneration if empty) so the loop never stalls on a dead hypothesis.
+   - This prevents oscillation when the model keeps proposing out-of-bounds edits.
 
 Deliverable: enforced exploration when progress metrics flatline.
 
@@ -119,7 +152,7 @@ Deliverable: transparency hooks for downstream analytics and UI.
 
 Deliverable: maintainable prompt codebase and lightweight checklists for future agents.
 
-Status: ✅ Implemented via `prompt_fragments.py` (shared sections + JSON schema reminders) and `docs/guided_loop_checklist.json`, which is also embedded directly into each prompt to keep lifecycle rules front and center.
+Status: ✅ Implemented via `prompt_fragments.py` (shared sections + JSON schema reminders) and `docs/guided_loop_checklist.json`; as of 2025-12-15 the checklist remains documented but is no longer embedded verbatim in every prompt to avoid unnecessary token overhead.
 
 ---
 

@@ -1,8 +1,8 @@
 # Guided Convergence Loop Strategy
 
 The [Guided Convergence Loop](https://github.com/trickl/llm-guided-convergence-loop) replaces one-shot
-patch generation with explicit, inspectable phases (Interpret → Diagnose → Propose → Constrain → Patch →
-Critique → Refine → Converge). This document captures how the pattern will be implemented within
+patch generation with explicit, inspectable phases (Diagnose → Propose → Generate Patch → Critique →
+Refine → Converge). This document captures how the pattern will be implemented within
 `llm-patch`, how we will visualise it in the reviewer UI, and how observability remains consistent with
 existing strategies.
 

@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import hashlib
-import json
 import re
 import subprocess
 import tempfile
@@ -11,36 +10,31 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional, Protocol, Sequence, Tuple
 
-from llm_patch.patch_applier import PatchApplier
+from llm_patch.patch_applier import PatchApplier, normalize_replacement_block
 PATCH_CONSTRAINTS_TEXT = "\n".join(
     [
         "- Do not reformat unrelated code.",
         "- Do not rename symbols.",
         "- Change only within this method unless strictly necessary.",
-        "- Prefer the smallest valid diff.",
+        "- Prefer the smallest valid replacement and include only the lines that must change.",
     ]
 )
 
 PATCH_EXAMPLE_DIFF = (
-    "--- lao\t2002-02-21 23:30:39.942229878 -0800\n"
-    "+++ tzu\t2002-02-21 23:30:50.442260588 -0800\n"
-    "@@ -1,7 +1,6 @@\n"
-    "-The Way that can be told of is not the eternal Way;\n"
-    "-The name that can be named is not the eternal name.\n"
-    " The Nameless is the origin of Heaven and Earth;\n"
-    "-The Named is the mother of all things.\n"
-    "+The named is the mother of all things.\n"
-    "+\n"
-    " Therefore let there always be non-being,\n"
-    "   so we may see their subtlety,\n"
-    " And let there always be being,\n"
-    "@@ -9,3 +8,6 @@\n"
-    " The two are the same,\n"
-    " But after they are produced,\n"
-    "   they have different names.\n"
-    "+They both may be called deep and profound.\n"
-    "+Deeper and more profound,\n"
-    "+The door of all subtleties!"
+    "ORIGINAL LINES:\n"
+    "return tokens.stream()\n"
+    "        .map(token -> token.equals(\"-\") && inPrefixContext(previous))\n"
+    "                ? \"0-\" : token);\n"
+    "NEW LINES:\n"
+    "return tokens.stream()\n"
+    "        .map(token -> token.equals(\"-\") && inPrefixContext(previous)\n"
+    "                ? \"0-\" : token)\n"
+    "        .collect(Collectors.toList());\n"
+)
+
+REPLACEMENT_BLOCK_PATTERN = re.compile(
+    r"ORIGINAL LINES:\s*\n(?P<original>.*?)\nNEW LINES:\s*\n(?P<updated>.*?)(?=(?:\nORIGINAL LINES:|\Z))",
+    re.DOTALL,
 )
 
 from ..base import PatchRequest, PatchResult, PatchStrategy, StrategyEvent, StrategyEventKind
@@ -53,30 +47,23 @@ from .phases import (
     PhaseStatus,
 )
 from .prompt_fragments import (
-    CHECKLIST_FRAGMENT,
     CONSTRAINTS_FRAGMENT,
     CONTEXT_FRAGMENT,
     CRITIQUE_FRAGMENT,
     DIAGNOSE_INSTRUCTIONS_FRAGMENT,
-    DIAGNOSE_JSON_SCHEMA_FRAGMENT,
     DIAGNOSIS_RATIONALE_FRAGMENT,
     DIAGNOSIS_SUMMARY_FRAGMENT,
     ERROR_FRAGMENT,
-    EXAMPLE_DIFF_FRAGMENT,
-    FALSIFY_INSTRUCTIONS_FRAGMENT,
-    FALSIFY_JSON_SCHEMA_FRAGMENT,
+    EXAMPLE_REPLACEMENT_FRAGMENT,
     GENERATE_PATCH_INSTRUCTIONS_FRAGMENT,
     HISTORY_FRAGMENT,
     HYPOTHESIS_CONTEXT_FRAGMENT,
-    INTERPRET_JSON_SCHEMA_FRAGMENT,
-    INTERPRETATION_RATIONALE_FRAGMENT,
-    INTERPRETATION_SUMMARY_FRAGMENT,
     PATCH_DIAGNOSTICS_FRAGMENT,
+    PRIOR_HYPOTHESIS_FRAGMENT,
+    PRIOR_PATCH_FRAGMENT,
     PREVIOUS_DIFF_FRAGMENT,
     PROPOSE_INSTRUCTIONS_FRAGMENT,
     PROPOSAL_SUMMARY_FRAGMENT,
-    PROPOSE_JSON_SCHEMA_FRAGMENT,
-    STRUCTURAL_REASONING_FRAGMENT,
     compose_prompt,
 )
 
@@ -142,7 +129,6 @@ class IterationOutcome:
     hypothesis_id: Optional[str] = None
     error_fingerprint: Optional[str] = None
     previous_error_fingerprint: Optional[str] = None
-    falsification_summary: Optional[str] = None
     diff_span: Optional[Tuple[int, int]] = None
     error_message: Optional[str] = None
     error_location: Optional[int] = None
@@ -158,52 +144,33 @@ class GuidedConvergenceStrategy(PatchStrategy):
     name = "guided-loop"
 
     PROMPT_TEMPLATES: Mapping[GuidedPhase, str] = {
-        GuidedPhase.INTERPRET: compose_prompt(
-            CHECKLIST_FRAGMENT,
-            STRUCTURAL_REASONING_FRAGMENT,
-            HISTORY_FRAGMENT,
-            ERROR_FRAGMENT,
-            CRITIQUE_FRAGMENT,
-            INTERPRET_JSON_SCHEMA_FRAGMENT,
-        ),
         GuidedPhase.DIAGNOSE: compose_prompt(
-            CHECKLIST_FRAGMENT,
             DIAGNOSE_INSTRUCTIONS_FRAGMENT,
             HISTORY_FRAGMENT,
+            PRIOR_HYPOTHESIS_FRAGMENT,
+            PRIOR_PATCH_FRAGMENT,
             CRITIQUE_FRAGMENT,
             ERROR_FRAGMENT,
-            INTERPRETATION_SUMMARY_FRAGMENT,
-            INTERPRETATION_RATIONALE_FRAGMENT,
             CONTEXT_FRAGMENT,
-            DIAGNOSE_JSON_SCHEMA_FRAGMENT,
         ),
         GuidedPhase.PROPOSE: compose_prompt(
-            CHECKLIST_FRAGMENT,
             PROPOSE_INSTRUCTIONS_FRAGMENT,
             HISTORY_FRAGMENT,
+            PRIOR_HYPOTHESIS_FRAGMENT,
+            PRIOR_PATCH_FRAGMENT,
             CRITIQUE_FRAGMENT,
             PREVIOUS_DIFF_FRAGMENT,
             ERROR_FRAGMENT,
             DIAGNOSIS_SUMMARY_FRAGMENT,
             DIAGNOSIS_RATIONALE_FRAGMENT,
             HYPOTHESIS_CONTEXT_FRAGMENT,
-            CONTEXT_FRAGMENT,
-            PROPOSE_JSON_SCHEMA_FRAGMENT,
-        ),
-        GuidedPhase.FALSIFY: compose_prompt(
-            CHECKLIST_FRAGMENT,
-            FALSIFY_INSTRUCTIONS_FRAGMENT,
-            HISTORY_FRAGMENT,
-            CRITIQUE_FRAGMENT,
-            PATCH_DIAGNOSTICS_FRAGMENT,
-            HYPOTHESIS_CONTEXT_FRAGMENT,
-            CONTEXT_FRAGMENT,
-            FALSIFY_JSON_SCHEMA_FRAGMENT,
+            CONTEXT_FRAGMENT
         ),
         GuidedPhase.GENERATE_PATCH: compose_prompt(
-            CHECKLIST_FRAGMENT,
             GENERATE_PATCH_INSTRUCTIONS_FRAGMENT,
             HISTORY_FRAGMENT,
+            PRIOR_HYPOTHESIS_FRAGMENT,
+            PRIOR_PATCH_FRAGMENT,
             CRITIQUE_FRAGMENT,
             PREVIOUS_DIFF_FRAGMENT,
             PROPOSAL_SUMMARY_FRAGMENT,
@@ -213,13 +180,10 @@ class GuidedConvergenceStrategy(PatchStrategy):
             HYPOTHESIS_CONTEXT_FRAGMENT,
             CONTEXT_FRAGMENT,
             CONSTRAINTS_FRAGMENT,
-            EXAMPLE_DIFF_FRAGMENT,
+            EXAMPLE_REPLACEMENT_FRAGMENT,
         ),
         GuidedPhase.CRITIQUE: (
-            "Critique the diff. Does it respect the constraints? Identify non-minimal or risky edits."
-        ),
-        GuidedPhase.CONVERGE: (
-            "Decide whether to accept the patch. Mention remaining risks or blockers."
+            "Critique the replacement block(s). Do they respect the constraints? Identify non-minimal or risky edits."
         ),
     }
 
@@ -430,23 +394,13 @@ class GuidedConvergenceStrategy(PatchStrategy):
         return trace
 
     def _phase_order(self, *, kind: str = "primary") -> List[GuidedPhase]:
-        if kind == "refine":
-            return [
-                GuidedPhase.DIAGNOSE,
-                GuidedPhase.FALSIFY,
-                GuidedPhase.PROPOSE,
-                GuidedPhase.GENERATE_PATCH,
-                GuidedPhase.CRITIQUE,
-            ]
-        return [
-            GuidedPhase.INTERPRET,
+        phases = [
             GuidedPhase.DIAGNOSE,
-            GuidedPhase.FALSIFY,
             GuidedPhase.PROPOSE,
             GuidedPhase.GENERATE_PATCH,
             GuidedPhase.CRITIQUE,
-            GuidedPhase.CONVERGE,
         ]
+        return phases
 
     def _render_prompt(
         self,
@@ -464,10 +418,8 @@ class GuidedConvergenceStrategy(PatchStrategy):
             "error": request.error_text or "(error unavailable)",
             "context": context,
             "filename": filename,
-            "interpretation": self._interpretation_placeholder(),
-            "interpretation_explanation": self._explanation_placeholder(),
             "diagnosis": self._diagnosis_placeholder(),
-            "diagnosis_explanation": self._explanation_placeholder(),
+            "diagnosis_explanation": self._diagnosis_explanation_placeholder(),
             "proposal": self._proposal_placeholder(),
             "hypothesis_claim": self._hypothesis_claim_placeholder(),
             "hypothesis_region": self._hypothesis_region_placeholder(),
@@ -479,6 +431,8 @@ class GuidedConvergenceStrategy(PatchStrategy):
             "previous_diff": self._previous_diff_placeholder(),
             "patch_diagnostics": "",
             "history_context": self._history_placeholder(),
+            "prior_hypothesis": self._prior_hypothesis_placeholder(),
+            "prior_patch_summary": self._prior_patch_placeholder(),
         }
         if extra:
             data.update({key: value for key, value in extra.items() if value is not None})
@@ -491,15 +445,16 @@ class GuidedConvergenceStrategy(PatchStrategy):
             cls._history_placeholder(),
             cls._critique_placeholder(),
             cls._previous_diff_placeholder(),
-            cls._interpretation_placeholder(),
-            cls._explanation_placeholder(),
             cls._diagnosis_placeholder(),
+            cls._diagnosis_explanation_placeholder(),
             cls._proposal_placeholder(),
             cls._hypothesis_claim_placeholder(),
             cls._hypothesis_region_placeholder(),
             cls._hypothesis_effect_placeholder(),
             cls._hypothesis_structure_placeholder(),
             cls._patch_diagnostics_placeholder(),
+            cls._prior_hypothesis_placeholder(),
+            cls._prior_patch_placeholder(),
         }
 
     def _strip_placeholder_sections(self, text: str) -> str:
@@ -541,6 +496,11 @@ class GuidedConvergenceStrategy(PatchStrategy):
         history_context: str,
     ) -> tuple[List[StrategyEvent], IterationOutcome | None]:
         events: List[StrategyEvent] = []
+        if iteration.kind == "refine":
+            reset_events = self._reset_for_refinement(iteration)
+            for event in reset_events:
+                self.emit(event)
+            events.extend(reset_events)
         outcome: IterationOutcome | None = None
         continue_execution = True
         previous_error_fingerprint = prior_outcome.error_fingerprint if prior_outcome else self._baseline_error_fingerprint
@@ -555,24 +515,9 @@ class GuidedConvergenceStrategy(PatchStrategy):
                     prior_outcome=prior_outcome,
                     history_context=history_context,
                 )
-            if artifact.phase == GuidedPhase.INTERPRET:
-                events.extend(self._execute_interpret(artifact, iteration.index, request))
-                continue_execution = artifact.status == PhaseStatus.COMPLETED
-            elif artifact.phase == GuidedPhase.DIAGNOSE:
+            if artifact.phase == GuidedPhase.DIAGNOSE:
                 if continue_execution:
                     events.extend(self._execute_diagnose(artifact, iteration, iteration.index, request))
-                    continue_execution = artifact.status == PhaseStatus.COMPLETED
-            elif artifact.phase == GuidedPhase.FALSIFY:
-                if continue_execution:
-                    events.extend(
-                        self._execute_falsify(
-                            artifact,
-                            iteration,
-                            iteration.index,
-                            request,
-                            prior_outcome=prior_outcome,
-                        )
-                    )
                     continue_execution = artifact.status == PhaseStatus.COMPLETED
             elif artifact.phase == GuidedPhase.PROPOSE:
                 if continue_execution:
@@ -596,58 +541,21 @@ class GuidedConvergenceStrategy(PatchStrategy):
             outcome.hypothesis_id = iteration.selected_hypothesis_id
         return events, outcome
 
-    def _execute_interpret(
-        self,
-        artifact: PhaseArtifact,
-        iteration_index: int,
-        request: GuidedLoopInputs,
-    ) -> List[StrategyEvent]:
-        if self._client is None:
-            raise RuntimeError("GuidedConvergenceStrategy requires an LLM client to execute phases")
+    def _reset_for_refinement(self, iteration: GuidedIterationArtifact) -> List[StrategyEvent]:
         events: List[StrategyEvent] = []
-        artifact.status = PhaseStatus.RUNNING
-        artifact.started_at = self._now()
-        start_event = self._event(
-            kind=StrategyEventKind.PHASE_TRANSITION,
-            message="Starting Interpret phase",
-            phase=artifact.phase.value,
-            iteration=iteration_index,
-        )
-        self.emit(start_event)
-        events.append(start_event)
-        try:
-            response = self._client.complete(
-                prompt=artifact.prompt,
-                temperature=self._config.temperature,
-                model=self._config.interpreter_model,
-            )
-        except Exception as exc:  # pragma: no cover - transport level failure
-            artifact.status = PhaseStatus.FAILED
-            artifact.completed_at = self._now()
-            artifact.human_notes = f"Interpret phase failed: {exc}"
-            failure_event = self._event(
-                kind=StrategyEventKind.NOTE,
-                message="Interpret phase failed",
-                phase=artifact.phase.value,
-                iteration=iteration_index,
-                data={"error": str(exc)},
-            )
-            self.emit(failure_event)
-            events.append(failure_event)
+        if not self._hypothesis_manager:
+            self._active_hypothesis_id = None
             return events
-        artifact.response = response.strip()
-        self._store_structured_sections(artifact, artifact.response)
-        artifact.status = PhaseStatus.COMPLETED
-        artifact.completed_at = self._now()
-        completion_event = self._event(
-            kind=StrategyEventKind.PHASE_TRANSITION,
-            message="Interpret phase completed",
-            phase=artifact.phase.value,
-            iteration=iteration_index,
-            data={"characters": len(artifact.response)},
-        )
-        self.emit(completion_event)
-        events.append(completion_event)
+        expired_ids = self._hypothesis_manager.expire_active("Refinement iteration resetting hypotheses")
+        self._active_hypothesis_id = None
+        if expired_ids:
+            event = self._event(
+                kind=StrategyEventKind.NOTE,
+                message="Refinement iteration cleared prior hypotheses",
+                iteration=iteration.index,
+                data={"expired": expired_ids},
+            )
+            events.append(event)
         return events
 
     def _execute_diagnose(
@@ -691,8 +599,11 @@ class GuidedConvergenceStrategy(PatchStrategy):
             events.append(failure_event)
             return events
         artifact.response = response.strip()
-        structured = self._store_structured_sections(artifact, artifact.response)
-        hypothesis_events = self._ingest_hypotheses(iteration, structured)
+        analysis = self._analyze_diagnose_response(artifact.response)
+        if analysis:
+            machine_checks = self._ensure_machine_checks_dict(artifact)
+            machine_checks["analysis"] = analysis
+        hypothesis_events = self._ingest_hypotheses(iteration, analysis)
         for event in hypothesis_events:
             self.emit(event)
             events.append(event)
@@ -704,93 +615,6 @@ class GuidedConvergenceStrategy(PatchStrategy):
             phase=artifact.phase.value,
             iteration=iteration_index,
             data={"characters": len(artifact.response)},
-        )
-        self.emit(completion_event)
-        events.append(completion_event)
-        return events
-
-    def _execute_falsify(
-        self,
-        artifact: PhaseArtifact,
-        iteration: GuidedIterationArtifact,
-        iteration_index: int,
-        request: GuidedLoopInputs,
-        *,
-        prior_outcome: IterationOutcome | None,
-    ) -> List[StrategyEvent]:
-        if self._client is None:
-            raise RuntimeError("GuidedConvergenceStrategy requires an LLM client to execute phases")
-        events: List[StrategyEvent] = []
-        artifact.status = PhaseStatus.RUNNING
-        artifact.started_at = self._now()
-        start_event = self._event(
-            kind=StrategyEventKind.PHASE_TRANSITION,
-            message="Starting Falsify phase",
-            phase=artifact.phase.value,
-            iteration=iteration_index,
-        )
-        self.emit(start_event)
-        events.append(start_event)
-
-        hypothesis = self._ensure_active_hypothesis(iteration)
-        if hypothesis is None:
-            artifact.status = PhaseStatus.FAILED
-            artifact.completed_at = self._now()
-            artifact.human_notes = "No active hypothesis available for falsification."
-            failure_event = self._event(
-                kind=StrategyEventKind.NOTE,
-                message="Falsify phase failed: no active hypothesis",
-                phase=artifact.phase.value,
-                iteration=iteration_index,
-            )
-            self.emit(failure_event)
-            events.append(failure_event)
-            return events
-
-        try:
-            response = self._client.complete(
-                prompt=artifact.prompt,
-                temperature=self._config.temperature,
-                model=self._config.interpreter_model,
-            )
-        except Exception as exc:  # pragma: no cover - transport level failure
-            artifact.status = PhaseStatus.FAILED
-            artifact.completed_at = self._now()
-            artifact.human_notes = f"Falsify phase failed: {exc}"
-            failure_event = self._event(
-                kind=StrategyEventKind.NOTE,
-                message="Falsify phase failed",
-                phase=artifact.phase.value,
-                iteration=iteration_index,
-                data={"error": str(exc)},
-            )
-            self.emit(failure_event)
-            events.append(failure_event)
-            return events
-
-        artifact.response = response.strip()
-        structured = self._store_structured_sections(artifact, artifact.response)
-        summary, has_viable, falsify_events = self._apply_falsification_results(
-            iteration,
-            hypothesis,
-            structured,
-            prior_outcome=prior_outcome,
-        )
-        for extra_event in falsify_events:
-            self.emit(extra_event)
-            events.append(extra_event)
-        machine_checks = self._ensure_machine_checks_dict(artifact)
-        machine_checks["falsification"] = summary
-        artifact.status = PhaseStatus.COMPLETED if has_viable else PhaseStatus.FAILED
-        artifact.completed_at = self._now()
-        if not has_viable:
-            artifact.human_notes = "All hypotheses were rejected by falsification; regenerate diagnoses."
-        completion_event = self._event(
-            kind=StrategyEventKind.PHASE_TRANSITION,
-            message="Falsify phase completed" if has_viable else "Falsify phase rejected all hypotheses",
-            phase=artifact.phase.value,
-            iteration=iteration_index,
-            data={"status": summary.get("status"), "remainingHypotheses": summary.get("remaining")},
         )
         self.emit(completion_event)
         events.append(completion_event)
@@ -837,16 +661,23 @@ class GuidedConvergenceStrategy(PatchStrategy):
             events.append(failure_event)
             return events
         artifact.response = response.strip()
-        structured = self._store_structured_sections(artifact, artifact.response)
-        intent = self._coerce_string(structured.get("intent") if structured else None)
-        structural_change = self._coerce_string(structured.get("structural_change") if structured else None)
-        if not intent or not structural_change:
+        summary = self._summarize_proposal_response(artifact.response)
+        if summary:
+            machine_checks = self._ensure_machine_checks_dict(artifact)
+            machine_checks["proposal"] = summary
+        intent = self._coerce_string(summary.get("intent") if summary else None)
+        structural_change = self._coerce_string(summary.get("structural_change") if summary else None)
+        if not structural_change:
+            structural_change = artifact.response
+        if not intent:
+            intent = structural_change
+        if not structural_change.strip():
             artifact.status = PhaseStatus.FAILED
             artifact.completed_at = self._now()
-            artifact.human_notes = "Proposal must return JSON with 'intent' and 'structural_change'."
+            artifact.human_notes = "Proposal response did not describe any change."
             failure_event = self._event(
                 kind=StrategyEventKind.NOTE,
-                message="Propose phase failed: malformed JSON",
+                message="Propose phase failed: empty response",
                 phase=artifact.phase.value,
                 iteration=iteration_index,
             )
@@ -989,12 +820,13 @@ class GuidedConvergenceStrategy(PatchStrategy):
             "diff_hunks": float(diff_stats["hunks"]),
         }
 
-        diagnosis_struct = self._structured_value(iteration, GuidedPhase.DIAGNOSE, "interpretation")
+        analysis_payload = self._phase_machine_payload(iteration, GuidedPhase.DIAGNOSE, "analysis")
+        diagnosis_struct = self._coerce_string(analysis_payload.get("diagnosis"))
         diagnosis_fallback = self._find_phase_response(iteration, GuidedPhase.DIAGNOSE)
         diagnosis_text = diagnosis_struct or diagnosis_fallback or self._diagnosis_placeholder()
         error_text = request.error_text or "(error unavailable)"
         history_context = iteration.history_context or self._history_placeholder()
-        pre_span, post_span = self._diff_spans(diff_text)
+        pre_span, post_span = self._diff_spans(diff_text, source_text=request.source_text)
         before_snippet = self._critique_snippet(
             request.source_text,
             pre_span,
@@ -1002,41 +834,6 @@ class GuidedConvergenceStrategy(PatchStrategy):
         )
         outcome = IterationOutcome(diff_text=diff_text, critique_feedback=artifact.response)
         outcome.diff_span = pre_span
-
-        active_hypothesis = None
-        if self._hypothesis_manager and iteration.selected_hypothesis_id:
-            active_hypothesis = self._hypothesis_manager.get(iteration.selected_hypothesis_id)
-        if not self._validate_patch_scope(pre_span, active_hypothesis):
-            artifact.status = PhaseStatus.FAILED
-            artifact.completed_at = self._now()
-            artifact.human_notes = "Diff edits extend beyond the active hypothesis region."
-            iteration.failure_reason = "scope-violation"
-            failure_event = self._event(
-                kind=StrategyEventKind.NOTE,
-                message="Critique failed: patch violates hypothesis scope",
-                phase=artifact.phase.value,
-                iteration=iteration_index,
-                data={"hypothesis": active_hypothesis.to_dict() if active_hypothesis else None},
-            )
-            self.emit(failure_event)
-            events.append(failure_event)
-            outcome.patch_diagnostics = "Diff edits extend beyond the hypothesis region."
-            after_snippet = "Patched output unavailable because the diff violated the hypothesis scope."
-            self._finalize_critique_response(
-                artifact,
-                iteration_index,
-                events,
-                applied=False,
-                history_context=history_context,
-                error_text=error_text,
-                diagnosis_text=diagnosis_text,
-                before_snippet=before_snippet,
-                after_snippet=after_snippet,
-                diff_text=diff_text,
-                diff_stats=diff_stats,
-                outcome=outcome,
-            )
-            return events, outcome
 
         if diff_stats["hunks"] == 0:
             artifact.status = PhaseStatus.FAILED
@@ -1239,53 +1036,45 @@ class GuidedConvergenceStrategy(PatchStrategy):
         )
         prev_diagnostics = prior_outcome.patch_diagnostics if prior_outcome else ""
         context_override = self._focused_context_window(request)
+        prior_hypothesis_text = self._format_prior_hypothesis(prior_outcome)
+        prior_patch_summary = self._format_prior_patch_summary(prior_outcome)
+        is_refine_iteration = iteration.kind == "refine"
+        if is_refine_iteration:
+            prior_hypothesis_text = self._prior_hypothesis_placeholder()
+            prior_patch_summary = self._prior_patch_placeholder()
+        limited_phase = is_refine_iteration and artifact.phase in {
+            GuidedPhase.PROPOSE,
+            GuidedPhase.GENERATE_PATCH,
+        }
+        phase_history_context = history_context if not limited_phase else self._history_placeholder()
+        phase_previous_diff = previous_diff if not limited_phase else self._previous_diff_placeholder()
+        phase_critique_feedback = (
+            critique_feedback if not limited_phase else self._critique_placeholder()
+        )
+        phase_prior_hypothesis = (
+            prior_hypothesis_text if not limited_phase else self._prior_hypothesis_placeholder()
+        )
+        phase_prior_patch_summary = (
+            prior_patch_summary if not limited_phase else self._prior_patch_placeholder()
+        )
 
-        if artifact.phase == GuidedPhase.INTERPRET:
-            artifact.prompt = self._render_prompt(
-                GuidedPhase.INTERPRET,
-                request,
-                extra={
-                    "critique_feedback": critique_feedback,
-                    "previous_diff": previous_diff,
-                    "patch_diagnostics": prev_diagnostics or "",
-                    "history_context": history_context,
-                },
-            )
-        elif artifact.phase == GuidedPhase.DIAGNOSE:
-            interpretation_struct = self._structured_value(iteration, GuidedPhase.INTERPRET, "interpretation")
-            interpretation_explanation = self._structured_value(iteration, GuidedPhase.INTERPRET, "explanation")
-            interpretation_fallback = self._find_phase_response(iteration, GuidedPhase.INTERPRET)
+        if artifact.phase == GuidedPhase.DIAGNOSE:
             artifact.prompt = self._render_prompt(
                 GuidedPhase.DIAGNOSE,
                 request,
                 context_override=context_override,
                 extra={
-                    "interpretation": interpretation_struct
-                    or interpretation_fallback
-                    or self._interpretation_placeholder(),
-                    "interpretation_explanation": interpretation_explanation or self._explanation_placeholder(),
-                    "critique_feedback": critique_feedback,
-                    "previous_diff": previous_diff,
-                    "history_context": history_context,
-                },
-            )
-        elif artifact.phase == GuidedPhase.FALSIFY:
-            self._ensure_active_hypothesis(iteration)
-            hypothesis_fields = self._hypothesis_prompt_fields()
-            artifact.prompt = self._render_prompt(
-                GuidedPhase.FALSIFY,
-                request,
-                context_override=context_override,
-                extra={
-                    "critique_feedback": critique_feedback,
-                    "history_context": history_context,
-                    "patch_diagnostics": prev_diagnostics or self._patch_diagnostics_placeholder(),
-                    **hypothesis_fields,
+                    "critique_feedback": phase_critique_feedback,
+                    "previous_diff": phase_previous_diff,
+                    "history_context": phase_history_context,
+                    "prior_hypothesis": phase_prior_hypothesis,
+                    "prior_patch_summary": phase_prior_patch_summary,
                 },
             )
         elif artifact.phase == GuidedPhase.PROPOSE:
-            diagnosis_struct = self._structured_value(iteration, GuidedPhase.DIAGNOSE, "interpretation")
-            diagnosis_explanation = self._structured_value(iteration, GuidedPhase.DIAGNOSE, "explanation")
+            analysis_payload = self._phase_machine_payload(iteration, GuidedPhase.DIAGNOSE, "analysis")
+            diagnosis_struct = self._coerce_string(analysis_payload.get("diagnosis"))
+            diagnosis_explanation = self._coerce_string(analysis_payload.get("rationale"))
             diagnosis_fallback = self._find_phase_response(iteration, GuidedPhase.DIAGNOSE)
             self._ensure_active_hypothesis(iteration)
             hypothesis_fields = self._hypothesis_prompt_fields()
@@ -1295,18 +1084,22 @@ class GuidedConvergenceStrategy(PatchStrategy):
                 context_override=context_override,
                 extra={
                     "diagnosis": diagnosis_struct or diagnosis_fallback or self._diagnosis_placeholder(),
-                    "diagnosis_explanation": diagnosis_explanation or self._explanation_placeholder(),
-                    "critique_feedback": critique_feedback,
-                    "history_context": history_context,
-                    "previous_diff": previous_diff,
+                    "diagnosis_explanation": diagnosis_explanation or self._diagnosis_explanation_placeholder(),
+                    "critique_feedback": phase_critique_feedback,
+                    "history_context": phase_history_context,
+                    "previous_diff": phase_previous_diff,
+                    "prior_hypothesis": phase_prior_hypothesis,
+                    "prior_patch_summary": phase_prior_patch_summary,
                     **hypothesis_fields,
                 },
             )
         elif artifact.phase == GuidedPhase.GENERATE_PATCH:
-            diagnosis_struct = self._structured_value(iteration, GuidedPhase.DIAGNOSE, "interpretation")
-            diagnosis_explanation = self._structured_value(iteration, GuidedPhase.DIAGNOSE, "explanation")
+            analysis_payload = self._phase_machine_payload(iteration, GuidedPhase.DIAGNOSE, "analysis")
+            diagnosis_struct = self._coerce_string(analysis_payload.get("diagnosis"))
+            diagnosis_explanation = self._coerce_string(analysis_payload.get("rationale"))
             diagnosis_fallback = self._find_phase_response(iteration, GuidedPhase.DIAGNOSE)
-            proposal_struct = self._structured_value(iteration, GuidedPhase.PROPOSE, "intent")
+            proposal_payload = self._phase_machine_payload(iteration, GuidedPhase.PROPOSE, "proposal")
+            proposal_struct = self._coerce_string(proposal_payload.get("structural_change"))
             proposal_summary = proposal_struct or self._find_phase_response(iteration, GuidedPhase.PROPOSE)
             self._ensure_active_hypothesis(iteration)
             hypothesis_fields = self._hypothesis_prompt_fields()
@@ -1316,14 +1109,54 @@ class GuidedConvergenceStrategy(PatchStrategy):
                 context_override=context_override,
                 extra={
                     "diagnosis": diagnosis_struct or diagnosis_fallback or self._diagnosis_placeholder(),
-                    "diagnosis_explanation": diagnosis_explanation or self._explanation_placeholder(),
+                    "diagnosis_explanation": diagnosis_explanation or self._diagnosis_explanation_placeholder(),
                     "proposal": proposal_summary or self._proposal_placeholder(),
-                    "critique_feedback": critique_feedback,
-                    "history_context": history_context,
-                    "previous_diff": previous_diff,
+                    "critique_feedback": phase_critique_feedback,
+                    "history_context": phase_history_context,
+                    "previous_diff": phase_previous_diff,
+                    "prior_hypothesis": phase_prior_hypothesis,
+                    "prior_patch_summary": phase_prior_patch_summary,
                     **hypothesis_fields,
                 },
             )
+
+    def _format_prior_hypothesis(self, prior_outcome: IterationOutcome | None) -> str:
+        placeholder = self._prior_hypothesis_placeholder()
+        if not prior_outcome or not prior_outcome.hypothesis_id or not self._hypothesis_manager:
+            return placeholder
+        hypothesis = self._hypothesis_manager.get(prior_outcome.hypothesis_id)
+        if not hypothesis:
+            return placeholder
+        lines: list[str] = []
+        lines.append(f"ID: {hypothesis.id}")
+        if hypothesis.claim:
+            lines.append(f"Claim: {hypothesis.claim}")
+        if hypothesis.affected_region:
+            lines.append(f"Affected region: {hypothesis.affected_region}")
+        if hypothesis.expected_effect:
+            lines.append(f"Expected effect: {hypothesis.expected_effect}")
+        if hypothesis.selection_rationale:
+            lines.append(f"Selection rationale: {hypothesis.selection_rationale}")
+        if hypothesis.structural_change:
+            lines.append(f"Suggested structural change: {hypothesis.structural_change}")
+        return "\n".join(lines) if lines else placeholder
+
+    def _format_prior_patch_summary(self, prior_outcome: IterationOutcome | None, *, max_chars: int = 4000) -> str:
+        placeholder = self._prior_patch_placeholder()
+        if not prior_outcome:
+            return placeholder
+        if prior_outcome.diff_text:
+            diff_text = prior_outcome.diff_text.strip()
+            if not diff_text:
+                return placeholder
+            if len(diff_text) > max_chars:
+                truncated = diff_text[:max_chars].rstrip()
+                return f"{truncated}\n…"
+            return diff_text
+        diagnostics = (prior_outcome.patch_diagnostics or "").strip()
+        if diagnostics:
+            return diagnostics
+        return placeholder
 
     def _find_phase_response(self, iteration: GuidedIterationArtifact, phase: GuidedPhase) -> Optional[str]:
         for artifact in iteration.phases:
@@ -1331,95 +1164,90 @@ class GuidedConvergenceStrategy(PatchStrategy):
                 return artifact.response
         return None
 
-    def _structured_value(self, iteration: GuidedIterationArtifact, phase: GuidedPhase, field: str) -> Optional[str]:
-        payload = self._structured_payload(iteration, phase)
-        value = payload.get(field)
-        if isinstance(value, str):
-            stripped = value.strip()
-            return stripped or None
-        return None
-
-    def _structured_payload(self, iteration: GuidedIterationArtifact, phase: GuidedPhase) -> Mapping[str, Any]:
-        for artifact in iteration.phases:
-            if artifact.phase != phase:
-                continue
-            machine_checks = getattr(artifact, "machine_checks", None)
-            if not isinstance(machine_checks, Mapping):
-                continue
-            payload = machine_checks.get("structured")
-            if isinstance(payload, Mapping):
-                return payload
-        return {}
-
     def _ingest_hypotheses(
         self,
         iteration: GuidedIterationArtifact,
-        structured: Mapping[str, Any],
+        analysis: Mapping[str, Any] | None,
     ) -> List[StrategyEvent]:
         events: List[StrategyEvent] = []
-        if not structured or self._hypothesis_manager is None:
+        if not analysis or self._hypothesis_manager is None:
             return events
-        raw_entries = structured.get("hypotheses")
-        if not isinstance(raw_entries, list):
-            return events
+        raw_entries = analysis.get("hypotheses") if isinstance(analysis, Mapping) else None
         parsed_entries: List[Dict[str, Any]] = []
-        for entry in raw_entries:
-            normalized = self._normalize_hypothesis_entry(entry)
-            if normalized:
-                parsed_entries.append(normalized)
-        if not parsed_entries:
-            return events
-        require_multiple = self._hypothesis_manager.active_count() == 0
-        if require_multiple and len(parsed_entries) < 2:
-            events.append(
-                self._event(
-                    kind=StrategyEventKind.NOTE,
-                    message="Diagnose produced fewer than two hypotheses; requesting broader exploration.",
-                    iteration=iteration.index,
-                    data={"count": len(parsed_entries)},
-                )
-            )
-        interpretation = self._coerce_string(structured.get("interpretation"))
-        explanation = self._coerce_string(structured.get("explanation"))
+        if isinstance(raw_entries, list):
+            for entry in raw_entries:
+                normalized = self._normalize_hypothesis_entry(entry)
+                if normalized:
+                    parsed_entries.append(normalized)
+        diagnosis_summary = self._coerce_string(analysis.get("diagnosis"))
+        rationale = self._coerce_string(analysis.get("rationale"))
         created_ids: List[str] = []
         label_lookup: Dict[str, str] = {}
         claim_lookup: Dict[str, str] = {}
-        selection_label, selection_rationale, selection_binding = self._extract_selection_fields(structured)
-        for entry in parsed_entries:
-            hypothesis = self._hypothesis_manager.create(
-                claim=entry["claim"],
-                affected_region=entry["affected_region"],
-                expected_effect=entry["expected_effect"],
-                interpretation=interpretation,
-                explanation=entry.get("explanation") or explanation,
-                structural_change=entry.get("structural_change"),
-                confidence=entry.get("confidence"),
-                kind=entry.get("kind"),
-                binding_region=entry.get("binding_region"),
-            )
-            created_ids.append(hypothesis.id)
-            if hypothesis.claim:
-                claim_lookup[self._selection_key(hypothesis.claim)] = hypothesis.id
-            identifier = entry.get("identifier")
-            if identifier:
-                label_lookup[self._selection_key(identifier)] = hypothesis.id
+        fallback_created = False
+        selection_label = self._coerce_string(analysis.get("selected_hypothesis"))
+        selection_rationale = self._coerce_string(analysis.get("selection_rationale"))
+        selection_binding = self._coerce_string(analysis.get("binding_region"))
+        if parsed_entries:
+            require_multiple = self._hypothesis_manager.active_count() == 0
+            if require_multiple and len(parsed_entries) < 2:
+                events.append(
+                    self._event(
+                        kind=StrategyEventKind.NOTE,
+                        message="Diagnose produced fewer than two hypotheses; requesting broader exploration.",
+                        iteration=iteration.index,
+                        data={"count": len(parsed_entries)},
+                    )
+                )
+            for entry in parsed_entries:
+                hypothesis = self._hypothesis_manager.create(
+                    claim=entry["claim"],
+                    affected_region=entry["affected_region"],
+                    expected_effect=entry["expected_effect"],
+                    diagnosis=diagnosis_summary,
+                    rationale=entry.get("explanation")
+                    or entry.get("rationale")
+                    or rationale,
+                    structural_change=entry.get("structural_change"),
+                    confidence=entry.get("confidence"),
+                    kind=entry.get("kind"),
+                    binding_region=entry.get("binding_region"),
+                )
+                created_ids.append(hypothesis.id)
+                if hypothesis.claim:
+                    claim_lookup[self._selection_key(hypothesis.claim)] = hypothesis.id
+                identifier = entry.get("identifier")
+                if identifier:
+                    label_lookup[self._selection_key(identifier)] = hypothesis.id
+        elif self._hypothesis_manager.active_count() == 0:
+            fallback = self._synthesize_hypothesis_from_analysis(diagnosis_summary, rationale)
+            if fallback:
+                created_ids.append(fallback.id)
+                if fallback.claim:
+                    claim_lookup[self._selection_key(fallback.claim)] = fallback.id
+                fallback_created = True
         if created_ids:
             events.append(
                 self._event(
                     kind=StrategyEventKind.NOTE,
                     message="Recorded structural hypotheses",
                     iteration=iteration.index,
-                    data={"hypotheses": created_ids},
+                    data={"hypotheses": created_ids, "synthetic": fallback_created},
                 )
             )
+            telemetry_payload = {"ids": created_ids, "count": len(created_ids)}
+            if fallback_created:
+                telemetry_payload["synthetic"] = True
             self._record_iteration_telemetry(
                 iteration,
                 "hypothesesCreated",
-                {"ids": created_ids, "count": len(created_ids)},
+                telemetry_payload,
                 append=True,
             )
+        else:
+            return events
         iteration.hypotheses = self._hypothesis_manager.snapshot()
-        if selection_label:
+        if selection_label and not fallback_created:
             selection_event = self._activate_selected_hypothesis(
                 iteration,
                 selection_label,
@@ -1471,35 +1299,30 @@ class GuidedConvergenceStrategy(PatchStrategy):
             "binding_region": binding_region,
         }
 
-    def _extract_selection_fields(self, structured: Mapping[str, Any]) -> tuple[Optional[str], Optional[str], Optional[str]]:
-        selection_label = self._coerce_string(
-            structured.get("selected_hypothesis_id")
-            or structured.get("selectedHypothesisId")
-            or structured.get("selected_hypothesis")
+    def _synthesize_hypothesis_from_analysis(
+        self,
+        diagnosis_summary: Optional[str],
+        rationale: Optional[str],
+    ) -> Optional[Hypothesis]:
+        if self._hypothesis_manager is None:
+            return None
+        basis = self._coerce_string(diagnosis_summary) or self._coerce_string(rationale)
+        if not basis:
+            return None
+        headline = basis.strip().splitlines()[0].strip()
+        if not headline:
+            return None
+        if len(headline) > 160:
+            headline = f"{headline[:160].rstrip()}…"
+        hypothesis = self._hypothesis_manager.create(
+            claim=headline,
+            affected_region="Unspecified region",
+            expected_effect=headline,
+            diagnosis=diagnosis_summary or headline,
+            rationale=rationale or "Synthesized from diagnosis details.",
         )
-        selection_rationale = self._coerce_string(
-            structured.get("selection_rationale") or structured.get("selectionRationale")
-        )
-        binding_region = self._coerce_string(
-            structured.get("binding_region") or structured.get("bindingRegion")
-        )
-        selection_payload = structured.get("selection")
-        if isinstance(selection_payload, Mapping):
-            selection_label = self._coerce_string(
-                selection_payload.get("hypothesis_id")
-                or selection_payload.get("hypothesisId")
-                or selection_payload.get("id")
-                or selection_payload.get("label")
-            ) or selection_label
-            selection_rationale = (
-                self._coerce_string(selection_payload.get("rationale") or selection_payload.get("reason"))
-                or selection_rationale
-            )
-            binding_region = (
-                self._coerce_string(selection_payload.get("binding_region") or selection_payload.get("bindingRegion"))
-                or binding_region
-            )
-        return selection_label, selection_rationale, binding_region
+        hypothesis.add_falsification_note("Synthesized from diagnosis due to missing structured hypotheses.")
+        return hypothesis
 
     def _activate_selected_hypothesis(
         self,
@@ -1737,115 +1560,6 @@ class GuidedConvergenceStrategy(PatchStrategy):
             "hypothesis_structure": hypothesis.structural_change or self._hypothesis_structure_placeholder(),
         }
 
-    def _apply_falsification_results(
-        self,
-        iteration: GuidedIterationArtifact,
-        hypothesis: Hypothesis,
-        structured: Mapping[str, Any],
-        *,
-        prior_outcome: IterationOutcome | None,
-    ) -> tuple[Dict[str, Any], bool, List[StrategyEvent]]:
-        contradictions = self._extract_contradictions(structured)
-        auto_contradictions = self._auto_contradictions(hypothesis, prior_outcome)
-        observed: List[str] = []
-        pending: List[str] = []
-        for entry in contradictions:
-            note = entry.get("observation")
-            if not note:
-                continue
-            status = (entry.get("status") or "pending").lower()
-            evidence = entry.get("evidence")
-            text = note if not evidence else f"{note} ({evidence})"
-            if status == "observed":
-                observed.append(text)
-            else:
-                pending.append(text)
-        observed.extend(auto_contradictions.get("observed", []))
-        pending.extend(auto_contradictions.get("pending", []))
-        summary: Dict[str, Any] = {
-            "hypothesisId": hypothesis.id,
-            "observed": observed,
-            "pending": pending,
-            "auto": auto_contradictions,
-            "summary": structured.get("summary"),
-        }
-        for note in observed + pending:
-            hypothesis.add_falsification_note(note)
-
-        extra_events: List[StrategyEvent] = []
-        if observed:
-            rejection_reason = observed[0]
-            rejection_event = self._mark_hypothesis_status(
-                hypothesis,
-                HypothesisStatus.FALSIFIED,
-                iteration=iteration,
-                reason=f"Falsified: {rejection_reason}",
-            )
-            if rejection_event:
-                extra_events.append(rejection_event)
-            summary["status"] = "rejected"
-        else:
-            summary["status"] = "viable"
-
-        remaining = self._hypothesis_manager.active_count() if self._hypothesis_manager else 0
-        summary["remaining"] = remaining
-        self._record_iteration_telemetry(iteration, "falsification", summary, append=True)
-
-        if summary["status"] == "rejected":
-            # Select a replacement hypothesis immediately, if possible.
-            self._select_active_hypothesis(iteration)
-
-        has_viable = self._active_hypothesis() is not None
-        return summary, has_viable, extra_events
-
-    def _extract_contradictions(self, structured: Mapping[str, Any]) -> List[Dict[str, str]]:
-        raw = structured.get("contradictions") if structured else None
-        if not isinstance(raw, list):
-            return []
-        contradictions: List[Dict[str, str]] = []
-        for item in raw:
-            if isinstance(item, Mapping):
-                observation = self._coerce_string(
-                    item.get("observation") or item.get("description") or item.get("statement")
-                )
-                if not observation:
-                    continue
-                status = self._coerce_string(item.get("status")) or "pending"
-                evidence = self._coerce_string(item.get("evidence") or item.get("proof") or "")
-            elif isinstance(item, str):
-                observation = item.strip()
-                if not observation:
-                    continue
-                status = "pending"
-                evidence = None
-            else:
-                continue
-            contradictions.append(
-                {
-                    "observation": observation,
-                    "status": status.lower(),
-                    "evidence": evidence,
-                }
-            )
-        return contradictions
-
-    def _auto_contradictions(
-        self,
-        hypothesis: Hypothesis,
-        prior_outcome: IterationOutcome | None,
-    ) -> Dict[str, List[str]]:
-        contradictions: Dict[str, List[str]] = {"observed": [], "pending": []}
-        if not prior_outcome or prior_outcome.hypothesis_id != hypothesis.id:
-            return contradictions
-        if not prior_outcome.patch_applied:
-            note = prior_outcome.patch_diagnostics or "Patch could not be applied."
-            contradictions["pending"].append(f"Previous patch attempt failed: {note}")
-        elif prior_outcome.compile_returncode not in (None, 0):
-            contradictions["pending"].append(
-                "Previous patch applied but compile/test still failed"
-            )
-        return contradictions
-
     def _mark_hypothesis_status(
         self,
         hypothesis: Hypothesis,
@@ -2032,13 +1746,22 @@ class GuidedConvergenceStrategy(PatchStrategy):
                 self.emit(expire_event)
             self._select_active_hypothesis(iteration)
 
-    def _store_structured_sections(self, artifact: PhaseArtifact, text: str) -> Mapping[str, Any]:
-        structured = self._parse_structured_sections(text)
-        if not structured:
-            return structured
-        machine_checks = self._ensure_machine_checks_dict(artifact)
-        machine_checks["structured"] = structured
-        return structured
+    def _phase_machine_payload(
+        self,
+        iteration: GuidedIterationArtifact,
+        phase: GuidedPhase,
+        key: str,
+    ) -> Mapping[str, Any]:
+        for artifact in iteration.phases:
+            if artifact.phase != phase:
+                continue
+            machine_checks = getattr(artifact, "machine_checks", None)
+            if not isinstance(machine_checks, Mapping):
+                continue
+            payload = machine_checks.get(key)
+            if isinstance(payload, Mapping):
+                return payload
+        return {}
 
     @staticmethod
     def _ensure_machine_checks_dict(artifact: PhaseArtifact) -> Dict[str, Any]:
@@ -2048,30 +1771,116 @@ class GuidedConvergenceStrategy(PatchStrategy):
         artifact.machine_checks = materialized
         return materialized
 
-    def _parse_structured_sections(self, text: str) -> Mapping[str, Any]:
+    def _analyze_diagnose_response(self, text: str) -> Mapping[str, Any]:
         if not text:
             return {}
-        candidate = self._extract_json_candidate(text)
-        if candidate is None:
+        analysis: Dict[str, Any] = {"diagnosis": text.strip()}
+        hypotheses = self._extract_plain_hypotheses(text)
+        if hypotheses:
+            analysis["hypotheses"] = hypotheses
+        selection_label, selection_rationale = self._active_hypothesis_from_text(text)
+        if selection_label:
+            analysis["selected_hypothesis"] = selection_label
+            if selection_rationale:
+                analysis["selection_rationale"] = selection_rationale
+                analysis.setdefault("rationale", selection_rationale)
+            normalized = self._selection_key(selection_label)
+            for entry in hypotheses:
+                identifier = entry.get("identifier")
+                if identifier and self._selection_key(identifier) == normalized:
+                    region = entry.get("affected_region")
+                    if region:
+                        analysis["binding_region"] = region
+                    break
+        return analysis
+
+    def _summarize_proposal_response(self, text: str) -> Mapping[str, Any]:
+        summary = self._coerce_string(text)
+        if not summary:
             return {}
-        try:
-            parsed = json.loads(candidate)
-        except json.JSONDecodeError:
-            return {}
-        if not isinstance(parsed, Mapping):
-            return {}
-        return dict(parsed)
+        intent = self._first_sentence(summary) or summary
+        return {
+            "intent": intent,
+            "structural_change": summary,
+        }
 
     @staticmethod
-    def _extract_json_candidate(text: str) -> Optional[str]:
-        fenced = re.search(r"```(?:json)?\s*(\{.*?\})\s*```", text, re.DOTALL)
-        if fenced:
-            return fenced.group(1)
-        first = text.find("{")
-        last = text.rfind("}")
-        if first == -1 or last == -1 or last <= first:
+    def _first_sentence(text: str) -> Optional[str]:
+        if not text:
             return None
-        return text[first : last + 1]
+        match = re.search(r"(.+?[.!?])(\s|$)", text, re.DOTALL)
+        if match:
+            return match.group(1).strip()
+        lines = text.splitlines()
+        return lines[0].strip() if lines else text.strip()
+
+    def _extract_plain_hypotheses(self, text: str) -> List[Dict[str, Any]]:
+        entries: List[Dict[str, Any]] = []
+        if not text:
+            return entries
+        pattern = re.compile(r"\*\*(H\d+[^*]*)\*\*(.*?)(?=\n\s*\*\*H\d+|\Z)", re.S)
+        matches = list(pattern.finditer(text))
+        if not matches:
+            pattern = re.compile(r"(H\d+[^:]*):(.*?)(?=\n\s*H\d+|\Z)", re.S)
+            matches = list(pattern.finditer(text))
+        for match in matches:
+            label = match.group(1).strip()
+            block = match.group(2).strip()
+            claim = self._extract_markdown_field(block, "Structural Claim")
+            if not claim:
+                first_line = block.splitlines()[0].strip() if block else label
+                claim = re.sub(r"^[-•\s]+", "", first_line)
+            affected = self._extract_markdown_field(block, "Affected Code Region") or "Unspecified region"
+            effect = self._extract_markdown_field(block, "Expected Effect")
+            evidence = (
+                self._extract_markdown_field(block, "Evidence")
+                or self._extract_markdown_field(block, "Explanation")
+                or self._extract_markdown_field(block, "Rationale")
+            )
+            expected_effect = effect or evidence or claim
+            confidence_text = self._extract_markdown_field(block, "Confidence")
+            confidence = self._coerce_confidence(confidence_text) if confidence_text else None
+            entries.append(
+                {
+                    "claim": claim,
+                    "affected_region": affected,
+                    "expected_effect": expected_effect,
+                    "explanation": evidence,
+                    "identifier": label,
+                    "confidence": confidence,
+                }
+            )
+        return entries
+
+    @staticmethod
+    def _extract_markdown_field(block: str, label: str) -> Optional[str]:
+        if not block:
+            return None
+        pattern = re.compile(rf"{re.escape(label)}\s*[:|-]\s*(.+)", re.IGNORECASE)
+        for raw_line in block.splitlines():
+            line = raw_line.strip()
+            if not line:
+                continue
+            line = line.lstrip("-*•").strip()
+            line = re.sub(r"[\*_`]", "", line)
+            match = pattern.match(line)
+            if match:
+                return match.group(1).strip()
+        return None
+
+    def _active_hypothesis_from_text(self, text: str) -> tuple[Optional[str], Optional[str]]:
+        if not text:
+            return None, None
+        match = re.search(r"Active Hypothesis[^:]*:\s*(.+)", text, re.IGNORECASE)
+        if not match:
+            return None, None
+        label_text = match.group(1).strip()
+        label_match = re.search(r"(H\d+)", label_text, re.IGNORECASE)
+        label = label_match.group(1).upper() if label_match else label_text
+        remainder = text[match.end():]
+        justification_match = re.search(r"Justification\s*[:|-]\s*(.+?)(?:\n\s*\n|$)", remainder, re.IGNORECASE | re.DOTALL)
+        rationale = justification_match.group(1).strip() if justification_match else remainder.strip()
+        return label, rationale or None
 
     @staticmethod
     def _error_fingerprint(text: Optional[str]) -> Optional[str]:
@@ -2083,16 +1892,12 @@ class GuidedConvergenceStrategy(PatchStrategy):
         return hashlib.sha256(normalized.encode("utf-8")).hexdigest()
 
     @staticmethod
-    def _interpretation_placeholder() -> str:
-        return "Interpretation not available yet; run the Interpret phase first."
-
-    @staticmethod
-    def _explanation_placeholder() -> str:
-        return "Explanation not available yet; capture it during the relevant phase."
-
-    @staticmethod
     def _diagnosis_placeholder() -> str:
         return "Diagnosis not available yet; run the Diagnose phase first."
+
+    @staticmethod
+    def _diagnosis_explanation_placeholder() -> str:
+        return "Diagnosis rationale not available yet; run the Diagnose phase first."
 
     @staticmethod
     def _proposal_placeholder() -> str:
@@ -2124,7 +1929,15 @@ class GuidedConvergenceStrategy(PatchStrategy):
 
     @staticmethod
     def _previous_diff_placeholder() -> str:
-        return "No previous diff attempt has been recorded."
+        return "No previous replacement attempt has been recorded."
+
+    @staticmethod
+    def _prior_hypothesis_placeholder() -> str:
+        return "No prior hypothesis has been recorded yet."
+
+    @staticmethod
+    def _prior_patch_placeholder() -> str:
+        return "No prior suggested patch is available yet."
 
     @staticmethod
     def _history_placeholder() -> str:
@@ -2170,8 +1983,12 @@ class GuidedConvergenceStrategy(PatchStrategy):
             line_no += 1
         return "\n".join(formatted) if formatted else "Source unavailable."
 
-    @staticmethod
-    def _diff_spans(diff_text: str) -> tuple[tuple[int, int] | None, tuple[int, int] | None]:
+    def _diff_spans(
+        self,
+        diff_text: str,
+        *,
+        source_text: str | None = None,
+    ) -> tuple[tuple[int, int] | None, tuple[int, int] | None]:
         pattern = re.compile(r"@@ -(?P<start_a>\d+)(?:,(?P<len_a>\d+))? \+(?P<start_b>\d+)(?:,(?P<len_b>\d+))? @@")
         spans_a: List[tuple[int, int]] = []
         spans_b: List[tuple[int, int]] = []
@@ -2186,47 +2003,57 @@ class GuidedConvergenceStrategy(PatchStrategy):
             spans_a.append((start_a, start_a + max(len_a, 1) - 1))
             spans_b.append((start_b, start_b + max(len_b, 1) - 1))
 
-        def _aggregate(spans: List[tuple[int, int]]) -> tuple[int, int] | None:
-            if not spans:
-                return None
-            start = min(span[0] for span in spans)
-            end = max(span[1] for span in spans)
-            return start, end
+        if spans_a or spans_b:
+            return self._aggregate_spans(spans_a), self._aggregate_spans(spans_b)
 
-        return _aggregate(spans_a), _aggregate(spans_b)
+        if source_text and "ORIGINAL LINES:" in diff_text and "NEW LINES:" in diff_text:
+            return self._replacement_diff_spans(diff_text, source_text)
 
-    def _validate_patch_scope(
-        self,
-        diff_span: tuple[int, int] | None,
-        hypothesis: Hypothesis | None,
-    ) -> bool:
-        if diff_span is None or hypothesis is None:
-            return True
-        region_descriptor = hypothesis.binding_region or hypothesis.affected_region
-        region_span = self._parse_region_span(region_descriptor)
-        if region_span is None:
-            return True
-        diff_start, diff_end = diff_span
-        region_start, region_end = region_span
-        return region_start <= diff_start and diff_end <= region_end
+        return None, None
 
-    def _parse_region_span(self, descriptor: Optional[str]) -> Optional[tuple[int, int]]:
-        if not descriptor:
+    @staticmethod
+    def _aggregate_spans(spans: List[tuple[int, int]]) -> tuple[int, int] | None:
+        if not spans:
             return None
-        numbers = re.findall(r"\d+", descriptor)
-        if not numbers:
-            return None
-        try:
-            values = [int(num) for num in numbers]
-        except ValueError:
-            return None
-        if len(values) == 1:
-            value = values[0]
-            return value, value
-        start, end = values[0], values[1]
-        if start > end:
-            start, end = end, start
+        start = min(span[0] for span in spans)
+        end = max(span[1] for span in spans)
         return start, end
+
+    def _replacement_diff_spans(
+        self,
+        diff_text: str,
+        source_text: str,
+    ) -> tuple[tuple[int, int] | None, tuple[int, int] | None]:
+        before_spans: List[tuple[int, int]] = []
+        after_spans: List[tuple[int, int]] = []
+        source_lines = source_text.splitlines()
+        blocks = self._parse_replacement_blocks(diff_text)
+        for original_lines, updated_lines in blocks:
+            if not original_lines:
+                continue
+            index = self._patch_applier.find_context(source_lines, original_lines)
+            if index is None:
+                continue
+            start_line = index + 1
+            before_span = (start_line, start_line + max(len(original_lines), 1) - 1)
+            after_span = (start_line, start_line + max(len(updated_lines), 1) - 1)
+            before_spans.append(before_span)
+            after_spans.append(after_span)
+        return self._aggregate_spans(before_spans), self._aggregate_spans(after_spans)
+
+    @staticmethod
+    def _parse_replacement_blocks(diff_text: str) -> List[tuple[List[str], List[str]]]:
+        blocks: List[tuple[List[str], List[str]]] = []
+        text = diff_text.strip()
+        for match in REPLACEMENT_BLOCK_PATTERN.finditer(text):
+            original_lines = GuidedConvergenceStrategy._split_block_lines(match.group("original"))
+            updated_lines = GuidedConvergenceStrategy._split_block_lines(match.group("updated"))
+            blocks.append((original_lines, updated_lines))
+        return blocks
+
+    @staticmethod
+    def _split_block_lines(block: str | None) -> List[str]:
+        return normalize_replacement_block(block)
 
     def _critique_snippet(
         self,
@@ -2261,9 +2088,9 @@ class GuidedConvergenceStrategy(PatchStrategy):
         validation_summary: str,
     ) -> str:
         header = (
-            "Critique the following unified diff that was successfully applied to this source code."
+            "Critique the replacement block(s) that were successfully applied to this source code."
             if applied
-            else "Critique the following unified diff. The patch diagnostics are provided below."
+            else "Critique the proposed replacement block(s). The patch diagnostics are provided below."
         )
         checklist = (
             "1) Does it appear to solve and fix the original problem?\n"
@@ -2277,9 +2104,9 @@ class GuidedConvergenceStrategy(PatchStrategy):
             f"Recent iteration history:\n{history_context}",
             f"Original error:\n{error_text}",
             f"Original Diagnosis Summary:\n{diagnosis_text}",
-            "Original Code before suggested diff was applied:\n" + (before_snippet or "Source unavailable."),
-            "Unified Diff that was applied:\n" + diff_text.strip(),
-            "Updated Code after suggested diff was applied:\n" + (after_snippet or "Source unavailable."),
+            "Original Code before suggested replacement was applied:\n" + (before_snippet or "Source unavailable."),
+            "Replacement block(s) that were applied:\n" + diff_text.strip(),
+            "Updated Code after suggested replacement was applied:\n" + (after_snippet or "Source unavailable."),
             f"Validation summary:\n{validation_summary}",
         ]
         return "\n\n".join(sections).strip()
@@ -2383,6 +2210,8 @@ class GuidedConvergenceStrategy(PatchStrategy):
     # ------------------------------------------------------------------
     @staticmethod
     def _summarize_diff(diff_text: str) -> Dict[str, Any]:
+        if "ORIGINAL LINES:" in diff_text and "NEW LINES:" in diff_text:
+            return GuidedConvergenceStrategy._summarize_replacement_blocks(diff_text)
         added = 0
         removed = 0
         hunks = 0
@@ -2403,6 +2232,19 @@ class GuidedConvergenceStrategy(PatchStrategy):
             "delete_only": added == 0 and removed > 0,
         }
 
+    @staticmethod
+    def _summarize_replacement_blocks(diff_text: str) -> Dict[str, Any]:
+        blocks = GuidedConvergenceStrategy._parse_replacement_blocks(diff_text)
+        hunks = len(blocks)
+        added = sum(len(updated) for _, updated in blocks)
+        removed = sum(len(original) for original, _ in blocks)
+        return {
+            "added_lines": added,
+            "removed_lines": removed,
+            "hunks": hunks,
+            "delete_only": added == 0 and removed > 0,
+        }
+
     def _run_compile(self, request: GuidedLoopInputs, patched_text: str) -> Dict[str, Any]:
         command = list(request.compile_command or [])
         if not command:
@@ -2410,8 +2252,10 @@ class GuidedConvergenceStrategy(PatchStrategy):
         try:
             with tempfile.TemporaryDirectory(prefix="llm_patch_guided_") as tmpdir:
                 tmp_path = Path(tmpdir)
-                source_file = tmp_path / request.source_path.name
-                source_file.write_text(patched_text, encoding="utf-8")
+                for rel_path in self._compile_target_paths(request, command):
+                    destination = tmp_path / rel_path
+                    destination.parent.mkdir(parents=True, exist_ok=True)
+                    destination.write_text(patched_text, encoding="utf-8")
                 proc = subprocess.run(
                     command,
                     cwd=str(tmp_path),
@@ -2432,6 +2276,28 @@ class GuidedConvergenceStrategy(PatchStrategy):
                 "stdout": "",
                 "stderr": str(exc),
             }
+
+    def _compile_target_paths(self, request: GuidedLoopInputs, command: Sequence[str]) -> List[Path]:
+        """Return the relative file paths that should contain the patched source."""
+
+        source_suffix = Path(request.source_path.name).suffix.lower()
+        targets: List[Path] = []
+        for token in command:
+            if not token or token.startswith("-"):
+                continue
+            candidate = Path(token)
+            suffix = candidate.suffix.lower()
+            if not suffix or (source_suffix and suffix != source_suffix):
+                continue
+            if candidate.is_absolute():
+                relative_candidate = Path(candidate.name)
+            else:
+                relative_candidate = candidate
+            if relative_candidate not in targets:
+                targets.append(relative_candidate)
+        if not targets:
+            targets.append(Path(request.source_path.name))
+        return targets
 
     @staticmethod
     def _format_critique_summary(diff_stats: Mapping[str, Any], outcome: IterationOutcome) -> str:

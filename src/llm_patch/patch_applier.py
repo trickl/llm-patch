@@ -1,4 +1,4 @@
-"""Core functionality for applying unified diffs using fuzzy matching."""
+"""Core functionality for applying minimal patches using fuzzy matching."""
 
 from __future__ import annotations
 
@@ -10,11 +10,19 @@ from .fuzzy_matcher import FuzzyMatcher
 
 
 HUNK_HEADER_RE = re.compile(r"@@ -(?P<orig_start>\d+)(?:,(?P<orig_count>\d+))? \+(?P<new_start>\d+)(?:,(?P<new_count>\d+))? @@")
+REPLACEMENT_BLOCK_RE = re.compile(
+    r"ORIGINAL LINES:\s*\n(?P<original>.*?)\nNEW LINES:\s*\n(?P<updated>.*?)(?=(?:\nORIGINAL LINES:|\Z))",
+    re.DOTALL,
+)
+
+LINE_NUMBER_PIPE_RE = re.compile(r"^\s*\d+\s*\|\s?(?P<content>.*)$")
+LINE_NUMBER_GENERIC_RE = re.compile(r"^\s*\d+\s*(?:[:>\).¦‖│])\s*(?P<content>.*)$")
+CODE_FENCE_RE = re.compile(r"^\s*(?:```|~~~)")
 
 
 @dataclass(slots=True)
 class ParsedHunk:
-    """Lightweight representation of a unified diff hunk."""
+    """Lightweight representation of a structured patch hunk."""
 
     original_lines: List[str]
     updated_lines: List[str]
@@ -23,7 +31,7 @@ class ParsedHunk:
 
 
 class PatchApplier:
-    """Apply unified diff hunks against a source string using fuzzy matching."""
+    """Apply structured replacements (diffs or ORIGINAL/NEW blocks) using fuzzy matching."""
 
     def __init__(self, similarity_threshold: float = 0.8):
         if not 0 <= similarity_threshold <= 1:
@@ -33,18 +41,21 @@ class PatchApplier:
 
     # ------------------------------------------------------------------
     def apply(self, source: str, patch: str) -> Tuple[str, bool]:
-        """Apply ``patch`` (unified diff or replacement text) to ``source``."""
+        """Apply ``patch`` (replacement blocks or unified diff) to ``source``."""
 
         if not patch:
             return source, True
 
-        # Maintain backwards compatibility with legacy callers that pass the
-        # "after" text instead of a diff by returning the patch verbatim when no
-        # diff markers are detected.
-        if not self._looks_like_unified_diff(patch):
+        hunks: List[ParsedHunk] | None = None
+        if self._looks_like_replacement_patch(patch):
+            hunks = self._parse_replacement_blocks(patch)
+        elif self._looks_like_unified_diff(patch):
+            hunks = self._parse_unified_diff(patch)
+        else:
+            # Maintain backwards compatibility with callers that still pass the
+            # "after" text instead of a structured patch.
             return patch, True
 
-        hunks = self._parse_unified_diff(patch)
         if not hunks:
             return source, False
 
@@ -71,6 +82,10 @@ class PatchApplier:
     def _looks_like_unified_diff(patch: str) -> bool:
         markers = ("\n@@", "@@ ", "\n+", "\n-", "--- ", "+++ ")
         return any(marker in patch for marker in markers)
+
+    @staticmethod
+    def _looks_like_replacement_patch(patch: str) -> bool:
+        return "ORIGINAL LINES:" in patch and "NEW LINES:" in patch
 
     @staticmethod
     def _split_preserving_trailing_newline(source: str) -> tuple[List[str], bool]:
@@ -158,7 +173,7 @@ class PatchApplier:
             if raw_line.startswith("-"):
                 current_original.append(raw_line[1:])
                 continue
-            if raw_line.startswith(" "):
+            if raw_line.startswith("+"):
                 text = raw_line[1:]
                 current_original.append(text)
                 current_updated.append(text)
@@ -168,6 +183,56 @@ class PatchApplier:
         flush()
         return hunks
 
+    def _parse_replacement_blocks(self, patch: str) -> List[ParsedHunk]:
+        hunks: List[ParsedHunk] = []
+        text = patch.strip()
+        for match in REPLACEMENT_BLOCK_RE.finditer(text):
+            original_lines = self._block_to_lines(match.group("original"))
+            updated_lines = self._block_to_lines(match.group("updated"))
+            hunks.append(
+                ParsedHunk(
+                    original_lines=original_lines,
+                    updated_lines=updated_lines,
+                )
+            )
+        return hunks
+
+    @staticmethod
+    def _block_to_lines(block: Optional[str]) -> List[str]:
+        return normalize_replacement_block(block)
+
+
+def _strip_numbered_prefix(line: str) -> str:
+    if not line:
+        return line
+    match = LINE_NUMBER_PIPE_RE.match(line)
+    if match:
+        return match.group("content")
+    match = LINE_NUMBER_GENERIC_RE.match(line)
+    if match:
+        return match.group("content")
+    return line
+
+
+def normalize_replacement_block(block: Optional[str]) -> List[str]:
+    """Normalize ORIGINAL/NEW block text by stripping fences and numbering."""
+
+    if not block:
+        return []
+    stripped = block.strip("\n")
+    if not stripped:
+        return []
+    normalized: List[str] = []
+    for raw_line in stripped.splitlines():
+        line = raw_line.rstrip("\r")
+        content = _strip_numbered_prefix(line)
+        candidate = content if content is not None else ""
+        trimmed = candidate.strip()
+        if CODE_FENCE_RE.match(trimmed):
+            continue
+        normalized.append(candidate)
+    return normalized
+
 
 def apply_patch(source: str, patch: str, similarity_threshold: float = 0.8) -> Tuple[str, bool]:
     """
@@ -175,7 +240,7 @@ def apply_patch(source: str, patch: str, similarity_threshold: float = 0.8) -> T
 
     Args:
         source: The original source code as a string.
-        patch: The unified diff patch as a string.
+        patch: Replacement block(s) or unified diff patch as a string.
         similarity_threshold: Minimum similarity ratio (0-1) for matching contexts.
 
     Returns:

@@ -36,10 +36,9 @@ public class ExpressionEvaluator {
         if (inNumber) {
             tokens.add(sb.toString());
         }
-                .map(token -> token.equals("-") && (tokens.isEmpty() || tokens.get(tokens.size() - 1).matches("[\\(+-]")))
-                        ? "0-" : token)
+        return tokens.stream()
+                .map(token -> token.equals("-") && (tokens.isEmpty() || tokens.get(tokens.size() - 1).matches("[\\(+-]")) ? "0-" : token)
                 .collect(Collectors.toList());
-        return tokens.stream();
     }
 
     private static Node parse(List<String> tokens) {

@@ -7,30 +7,13 @@ from textwrap import indent
 GUIDED_LOOP_CHECKLIST = {
     "phases": [
         {
-            "step": "interpret",
-            "description": "Describe the failure strictly in terms of structure and observable program regions.",
-            "rules": [
-                "Use ownership, scope, dependency, or ordering vocabulary instead of speculative fixes.",
-                "Return JSON with only 'interpretation' and 'explanation' fields.",
-            ],
-        },
-        {
             "step": "diagnose",
             "description": "Map the structural failure to concrete constructs and enumerate competing hypotheses.",
             "rules": [
-                "Reference the interpretation summary when explaining the construct.",
                 "Produce at least two mutually exclusive hypotheses until one is accepted.",
                 "Each hypothesis must describe its affected region, expected effect, and structural delta.",
                 "Cover both grouping/precedence and token-absence failure modes whenever diagnosing a new issue.",
-                "Select exactly one active hypothesis (before Falsify) and justify why it best matches the compiler diagnostic.",
-            ],
-        },
-        {
-            "step": "falsify",
-            "description": "Stress-test the active hypothesis before proposing code.",
-            "rules": [
-                "List possible contradictions and mark any that already occurred in history.",
-                "Reject the hypothesis if a contradiction is already observed.",
+                "Select exactly one active hypothesis and justify why it best matches the compiler diagnostic.",
             ],
         },
         {
@@ -39,6 +22,7 @@ GUIDED_LOOP_CHECKLIST = {
             "rules": [
                 "Stay within the active hypothesis region and intent.",
                 "Provide a 'structural_change' statement covering grouping, scope, ordering, or ownership.",
+                "Write purely in English; no code or pseudo-code.",
             ],
         },
         {
@@ -47,6 +31,14 @@ GUIDED_LOOP_CHECKLIST = {
             "rules": [
                 "Only modify files/lines promised by the hypothesis.",
                 "Keep the diff minimal and avoid refactors outside the scope.",
+            ],
+        },
+        {
+            "step": "critique",
+            "description": "Validate the diff by applying it, running tests, and capturing feedback for refinements.",
+            "rules": [
+                "Surface compile/test output verbatim when failures persist.",
+                "Record any scope violations or application failures as blockers for the next loop.",
             ],
         },
     ],

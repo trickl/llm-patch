@@ -12,13 +12,10 @@ if TYPE_CHECKING:  # pragma: no cover - typing helper
 class GuidedPhase(str, Enum):
     """Canonical ordered phases described in the pattern documentation."""
 
-    INTERPRET = "interpret"
     DIAGNOSE = "diagnose"
-    FALSIFY = "falsify"
     PROPOSE = "propose"
     GENERATE_PATCH = "generate-patch"
     CRITIQUE = "critique"
-    CONVERGE = "converge"
 
 
 class PhaseStatus(str, Enum):
@@ -60,7 +57,7 @@ class PhaseArtifact:
 
 @dataclass(slots=True)
 class GuidedIterationArtifact:
-    """One full loop (Interpret → Converge) worth of artifacts."""
+    """One full loop (Diagnose → Critique) worth of artifacts."""
 
     index: int
     phases: List[PhaseArtifact] = field(default_factory=list)

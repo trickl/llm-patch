@@ -27,16 +27,6 @@ class StubLLMClient:
         return self._responses.pop(0)
 
 
-def interpretation_payload(label: str) -> str:
-    return json.dumps(
-        {
-            "interpretation": f"{label} structural interpretation",
-            "explanation": f"{label} interpretation rationale",
-        },
-        indent=2,
-    )
-
-
 def diagnosis_payload(label: str, count: int = 2) -> str:
     hypotheses = []
     for idx in range(max(1, count)):
@@ -59,8 +49,8 @@ def diagnosis_payload(label: str, count: int = 2) -> str:
     selection_id = hypotheses[0]["id"]
     return json.dumps(
         {
-            "interpretation": f"{label} structural diagnosis",
-            "explanation": f"{label} diagnosis rationale",
+            "diagnosis": f"{label} structural diagnosis",
+            "rationale": f"{label} diagnosis rationale",
             "hypotheses": hypotheses,
             "selection": {
                 "hypothesis_id": selection_id,
@@ -75,27 +65,8 @@ def diagnosis_payload(label: str, count: int = 2) -> str:
 def diagnosis_payload_without_hypotheses(label: str) -> str:
     return json.dumps(
         {
-            "interpretation": f"{label} structural diagnosis",
-            "explanation": f"{label} diagnosis rationale",
-        },
-        indent=2,
-    )
-
-
-def falsify_payload(label: str, *, observed: bool = False) -> str:
-    contradictions = []
-    if observed:
-        contradictions.append(
-            {
-                "observation": f"{label} observed contradiction",
-                "status": "observed",
-                "evidence": f"{label} evidence",
-            }
-        )
-    return json.dumps(
-        {
-            "summary": f"{label} falsification summary",
-            "contradictions": contradictions,
+            "diagnosis": f"{label} structural diagnosis",
+            "rationale": f"{label} diagnosis rationale",
         },
         indent=2,
     )
@@ -108,6 +79,15 @@ def proposal_payload(label: str) -> str:
             "structural_change": f"{label} structural change",
         },
         indent=2,
+    )
+
+
+def replacement_block(original: str, new: str) -> str:
+    return (
+        "ORIGINAL LINES:\n"
+        f"{original.rstrip()}\n"
+        "NEW LINES:\n"
+        f"{new.rstrip()}\n"
     )
 
 
@@ -137,17 +117,9 @@ def build_request(before_path: Path, compile_command: list[str]) -> GuidedLoopIn
 
 
 def test_guided_loop_applies_and_compiles(sample_before_file: Path) -> None:
-    diff = (
-        "--- sample.py\n"
-        "+++ sample.py\n"
-        "@@ -1,1 +1,1 @@\n"
-        "-print('hello')\n"
-        "+print('patched')\n"
-    )
+    diff = replacement_block("print('hello')", "print('patched')")
     client = StubLLMClient([
-        interpretation_payload("pass-1"),
         diagnosis_payload("pass-1"),
-        falsify_payload("pass-1"),
         proposal_payload("pass-1"),
         diff,
         "Critique looks good overall.",
@@ -173,11 +145,6 @@ def test_guided_loop_applies_and_compiles(sample_before_file: Path) -> None:
     assert "patched" in result.after_text
     assert result.diff_text and result.diff_text.strip() == diff.strip()
     first_iteration = result.trace.iterations[0]
-    interpret_phase = next(
-        phase
-        for phase in first_iteration.phases
-        if phase.phase.value == "interpret"
-    )
     critique_phase = next(
         phase
         for phase in first_iteration.phases
@@ -192,38 +159,31 @@ def test_guided_loop_applies_and_compiles(sample_before_file: Path) -> None:
     patch_check = critique_phase.machine_checks.get("patchApplication")
     assert patch_check and patch_check["applied"] is True
     assert critique_phase.prompt is not None
-    assert critique_phase.prompt.startswith("Critique the following unified diff")
-    assert "Original Code before suggested diff was applied" in critique_phase.prompt
-    assert "Unified Diff that was applied" in critique_phase.prompt
+    assert critique_phase.prompt.startswith(
+        "Critique the replacement block(s) that were successfully applied to this source code."
+    )
+    assert "Original Code before suggested replacement was applied" in critique_phase.prompt
+    assert "Replacement block(s) that were applied" in critique_phase.prompt
     assert "Validation summary" in critique_phase.prompt
     assert "Is the initial analysis correct or flawed" in critique_phase.prompt
     assert "Can the code be simplified to help analysis of the error" in critique_phase.prompt
     assert "Critique looks good overall." in critique_phase.response
     assert "Validation summary" in critique_phase.response
     assert "The diff was applied and compile/test succeeded." in critique_phase.response
-    assert "No prior iterations have run yet." not in interpret_phase.prompt
     assert "No prior critique feedback yet; this is the initial attempt." not in propose_phase.prompt
     assert "No previous diff attempt has been recorded." not in propose_phase.prompt
     assert first_iteration.history_context is not None
     assert "iterations" in first_iteration.history_context.lower()
     assert first_iteration.history_entry is not None
     telemetry = first_iteration.telemetry
-    assert "falsification" in telemetry
-    assert telemetry["falsification"][0]["status"] == "viable"
+    assert "hypothesesCreated" in telemetry
+    assert telemetry["hypothesesCreated"][0]["count"] >= 1
 
 
 def test_guided_loop_compile_failure(sample_before_file: Path) -> None:
-    diff = (
-        "--- sample.py\n"
-        "+++ sample.py\n"
-        "@@ -1,1 +1,1 @@\n"
-        "-print('hello')\n"
-        "+print('patched')\n"
-    )
+    diff = replacement_block("print('hello')", "print('patched')")
     client = StubLLMClient([
-        interpretation_payload("compile-fail"),
         diagnosis_payload("compile-fail"),
-        falsify_payload("compile-fail"),
         proposal_payload("compile-fail"),
         diff,
         "Compile still failing after patch.",
@@ -265,30 +225,15 @@ def test_guided_loop_compile_failure(sample_before_file: Path) -> None:
 
 
 def test_guided_loop_multiple_iterations_succeed(sample_before_file: Path) -> None:
-    bad_diff = (
-        "--- sample.py\n"
-        "+++ sample.py\n"
-        "@@ -1,1 +1,1 @@\n"
-        "-print('nonexistent')\n"
-        "+print('still wrong')\n"
-    )
-    good_diff = (
-        "--- sample.py\n"
-        "+++ sample.py\n"
-        "@@ -1,1 +1,1 @@\n"
-        "-print('hello')\n"
-        "+print('refined')\n"
-    )
+    bad_diff = replacement_block("print('nonexistent')", "print('still wrong')")
+    good_diff = replacement_block("print('hello')", "print('refined')")
     client = StubLLMClient(
         [
-            interpretation_payload("loop1"),
             diagnosis_payload("loop1"),
-            falsify_payload("loop1"),
             proposal_payload("propose-pass-1"),
             bad_diff,
             "critique-pass-1",
             diagnosis_payload("loop2"),
-            falsify_payload("loop2"),
             proposal_payload("propose-pass-2"),
             good_diff,
             "critique-pass-2",
@@ -318,20 +263,19 @@ def test_guided_loop_multiple_iterations_succeed(sample_before_file: Path) -> No
     assert second_iteration.phases[0].phase.value == "diagnose"
     assert second_iteration.history_context is not None
     assert second_iteration.history_entry is not None
+    diagnose_phase = next(phase for phase in second_iteration.phases if phase.phase.value == "diagnose")
+    assert diagnose_phase.prompt is not None
+    assert "Prior hypothesis (if any):" not in diagnose_phase.prompt
+    assert "loop1 hypothesis 1" not in diagnose_phase.prompt
+    assert "Prior suggested patch (if any):" not in diagnose_phase.prompt
+    assert "still wrong" not in diagnose_phase.prompt
+    assert "Recent iteration history" in diagnose_phase.prompt
 
 
 def test_guided_loop_history_seed_in_prompts(sample_before_file: Path) -> None:
-    diff = (
-        "--- sample.py\n"
-        "+++ sample.py\n"
-        "@@ -1,1 +1,1 @@\n"
-        "-print('hello')\n"
-        "+print('seeded')\n"
-    )
+    diff = replacement_block("print('hello')", "print('seeded')")
     client = StubLLMClient([
-        interpretation_payload("seeded"),
         diagnosis_payload("seeded"),
-        falsify_payload("seeded"),
         proposal_payload("seeded"),
         diff,
         "Critique for seeded history.",
@@ -365,24 +309,15 @@ def test_guided_loop_history_seed_in_prompts(sample_before_file: Path) -> None:
     assert result.trace.iterations[0].history_entry is not None
 
 
-def test_hypothesis_expires_after_two_retries(sample_before_file: Path) -> None:
-    bad_diff = (
-        "--- sample.py\n"
-        "+++ sample.py\n"
-        "@@ -1,1 +1,1 @@\n"
-        "-print('missing context')\n"
-        "+print('still missing')\n"
-    )
+def test_hypothesis_reset_before_refinement(sample_before_file: Path) -> None:
+    bad_diff = replacement_block("print('missing context')", "print('still missing')")
     client = StubLLMClient(
         [
-            interpretation_payload("retry-1"),
             diagnosis_payload("retry-1"),
-            falsify_payload("retry-1"),
             proposal_payload("retry-1"),
             bad_diff,
             "critique-retry-1",
             diagnosis_payload_without_hypotheses("retry-2"),
-            falsify_payload("retry-2"),
             proposal_payload("retry-2"),
             bad_diff,
             "critique-retry-2",
@@ -404,32 +339,28 @@ def test_hypothesis_expires_after_two_retries(sample_before_file: Path) -> None:
     second_iteration = result.trace.iterations[1]
     hypotheses = second_iteration.hypotheses
     assert hypotheses is not None
-    assert len(hypotheses.expired) >= 1
-    assert any(h.retry_count >= 2 for h in hypotheses.expired)
-    telemetry = second_iteration.telemetry
-    assert "retries" in telemetry
-    assert any(entry["retryCount"] >= 2 for entry in telemetry["retries"])
+    expired = list(hypotheses.expired)
+    assert expired, "expected prior hypotheses to expire when entering refine iteration"
+    assert any(
+        any("Refinement iteration" in note for note in hyp.falsification_notes)
+        for hyp in expired
+    )
+    telemetry = second_iteration.telemetry or {}
+    retries = telemetry.get("retries")
+    assert retries, "expected retry telemetry during refinement"
+    assert any(entry["retryCount"] >= 1 for entry in retries)
 
 
 def test_stall_detection_archives_hypothesis(sample_before_file: Path) -> None:
-    repeated_diff = (
-        "--- sample.py\n"
-        "+++ sample.py\n"
-        "@@ -1,1 +1,1 @@\n"
-        "-print('hello')\n"
-        "+print('looped change')\n"
-    )
+    repeated_diff = replacement_block("print('hello')", "print('looped change')")
     compile_command = compile_command_with_error(f"{sample_before_file.name}:1: boom")
     client = StubLLMClient(
         [
-            interpretation_payload("stall-1"),
             diagnosis_payload("stall-1"),
-            falsify_payload("stall-1"),
             proposal_payload("stall-1"),
             repeated_diff,
             "critique-stall-1",
             diagnosis_payload_without_hypotheses("stall-2"),
-            falsify_payload("stall-2"),
             proposal_payload("stall-2"),
             repeated_diff,
             "critique-stall-2",
@@ -454,7 +385,7 @@ def test_stall_detection_archives_hypothesis(sample_before_file: Path) -> None:
     assert hypotheses is not None
     inactive = list(hypotheses.archived) + list(hypotheses.expired)
     assert inactive, "expected hypothesis to be removed from active pool"
-    assert any(h.retry_count >= 2 for h in inactive)
+    assert any(h.retry_count >= 1 for h in inactive)
     telemetry = second_iteration.telemetry
     assert "stall" in telemetry
     assert telemetry["stall"][0]["errorLocation"] == 1

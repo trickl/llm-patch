@@ -3,11 +3,6 @@ from __future__ import annotations
 
 from textwrap import dedent
 
-from .checklist import GUIDED_LOOP_CHECKLIST_JSON
-
-
-def _escape_braces(text: str) -> str:
-    return text.replace("{", "{{").replace("}", "}}")
 
 
 def compose_prompt(*segments: str) -> str:
@@ -23,52 +18,54 @@ def compose_prompt(*segments: str) -> str:
     return "\n\n".join(normalized)
 
 
-CHECKLIST_FRAGMENT = (
-    "Guided loop lifecycle checklist (JSON — never violate these rules when responding):\n"
-    f"{_escape_braces(GUIDED_LOOP_CHECKLIST_JSON)}"
-)
-
-STRUCTURAL_REASONING_FRAGMENT = (
-    "Explain what the following compiler/test error means in {language} using structural language only."
-    " Reference only scopes, ownership, ordering, or dependency relationships."
-)
-
 DIAGNOSE_INSTRUCTIONS_FRAGMENT = dedent(
     """
-    Given the compiler output, prior interpretation, and the focused code window, identify the precise construct causing the
-    failure. Cite the relevant line numbers from the snippet and explain why the construct is invalid in {language}. Do not
-    propose fixes or emit new code; focus solely on diagnosis.
+    Given the compiler/test output and the focused code window, identify the precise construct causing the failure. Cite the
+    relevant line numbers from the snippet and explain why the construct is invalid in {language}. Do not propose fixes or emit new code—focus solely on diagnosis.
 
-    Enumerate hypothesis *types*, not paraphrases. Always include at least one hypothesis that attributes the failure to
-    incorrect expression grouping or operator precedence, and at least one that attributes it to missing or misplaced tokens
-    (terminators, delimiters, keywords). After enumerating, explicitly choose exactly one active hypothesis and explain why
-    the compiler diagnostic favors it over the alternatives.
+    Enumerate at least three mutually exclusive hypotheses that could explain the observed failure. Treat the compiler message as potentially incomplete or misleading.
+    For each hypothesis, respond in plain English (paragraphs or bullet points) and include:
+      • A stable label such as "H1" / "H2".
+      • A structural claim describing the suspected issue.
+      • Evidence from the snippet or diagnostics supporting the claim.
+      • The code region or construct affected if the hypothesis holds.
+
+    After listing the hypotheses, clearly name the single active hypothesis you want to pursue next and justify why it best fits the evidence compared to the alternatives.
+    Do not return JSON, code fences, or tables—use prose and simple bullet lists only.
     """
 )
 
 PROPOSE_INSTRUCTIONS_FRAGMENT = (
-    "Propose the cleanest, simplest fix that resolves the diagnosed issue, taking into account prior attempts and diagnoses."
-    " Respond with intent and structural justification only."
+    "Propose the cleanest, simplest fix that might resolve the diagnosed issue, assuming the active hypothesis is correct and taking into account prior attempts and diagnoses."
+    " Respond with a few sentences in plain English describing the intent and the structural change, where the change should be made and how the change should fix the issue; respond in plain English without code or pseudo-code, but" \
+    " with enough detail that a competent engineer could implement the change precisely. Consider any effects on surrounding code and constraints from prior attempts."
 )
 
-FALSIFY_INSTRUCTIONS_FRAGMENT = (
-    "Before proposing code, stress-test the active hypothesis by attempting to falsify it."
-    " List observable outcomes that would prove it wrong and mark whether each has already occurred."
-)
+GENERATE_PATCH_INSTRUCTIONS_FRAGMENT = dedent(
+    """
+    Produce the patch as plain text using the following template for each edit. Do not add code fences, commentary, or diagnostics outside
+    the template, and keep every block as small as possible so fuzzy matching stays accurate.
 
-GENERATE_PATCH_INSTRUCTIONS_FRAGMENT = (
-    "Produce a unified diff implementing exactly the approved proposal while honoring every constraint."
+    ORIGINAL LINES:
+    <verbatim snippet exactly as it appears now>
+
+    NEW LINES:
+    <replacement snippet>
+
+    If multiple replacements are required, repeat the template with a blank line between blocks. The applier will locate ORIGINAL LINES via
+    diff-match-patch style search, so only include the lines that truly need to change.
+    """
 )
 
 HISTORY_FRAGMENT = "Recent iteration history:\n{history_context}"
+PRIOR_HYPOTHESIS_FRAGMENT = "Prior hypothesis (if any):\n{prior_hypothesis}"
+PRIOR_PATCH_FRAGMENT = "Prior suggested patch (if any):\n{prior_patch_summary}"
 CRITIQUE_FRAGMENT = "Prior critique insights (if any):\n{critique_feedback}"
 ERROR_FRAGMENT = "Compiler error:\n{error}"
-INTERPRETATION_SUMMARY_FRAGMENT = "Interpretation summary (structural only):\n{interpretation}"
-INTERPRETATION_RATIONALE_FRAGMENT = "Interpretation rationale (discard after this iteration):\n{interpretation_explanation}"
 DIAGNOSIS_SUMMARY_FRAGMENT = "Diagnosis summary (structural only):\n{diagnosis}"
 DIAGNOSIS_RATIONALE_FRAGMENT = "Diagnosis rationale (discard after this iteration):\n{diagnosis_explanation}"
-PATCH_DIAGNOSTICS_FRAGMENT = "Latest patch diagnostics or diff outcome:\n{patch_diagnostics}"
-PREVIOUS_DIFF_FRAGMENT = "Most recent diff attempt:\n{previous_diff}"
+PATCH_DIAGNOSTICS_FRAGMENT = "Latest patch diagnostics or replacement outcome:\n{patch_diagnostics}"
+PREVIOUS_DIFF_FRAGMENT = "Most recent replacement attempt:\n{previous_diff}"
 PROPOSAL_SUMMARY_FRAGMENT = "Proposal summary:\n{proposal}"
 CONTEXT_FRAGMENT = "Context:\n{context}"
 
@@ -80,70 +77,17 @@ HYPOTHESIS_CONTEXT_FRAGMENT = (
 )
 
 CONSTRAINTS_FRAGMENT = "Constraints:\n{constraints}"
-EXAMPLE_DIFF_FRAGMENT = "Example unified diff:\n{example_diff}"
-
-INTERPRET_JSON_SCHEMA_FRAGMENT = dedent(
-    """
-    Return a JSON object with exactly two fields:
-    - "interpretation": describe the structural element or relationship that is failing (no fixes, no narration).
-    - "explanation": cite the evidence or reasoning that supports this interpretation.
-    Interpretation must stay minimal—reference only observable structure or regions.
-    """
-)
-
-DIAGNOSE_JSON_SCHEMA_FRAGMENT = dedent(
-    """
-    Respond using JSON with the following fields:
-    - "interpretation" and "explanation" (as before).
-    - "hypotheses": an array where each entry has:
-        * "id": stable identifier (e.g., "H1").
-        * "claim": structural statement of the hypothesis.
-        * "kind": one of "grouping_precedence", "token_absence", or "other".
-        * "affected_region": span or construct the hypothesis binds to.
-        * "expected_effect": what will change observably if the hypothesis holds.
-        * "structural_change" (if known).
-        * "confidence" between 0 and 1.
-        * short "explanation" referencing the snippet.
-    - "selection": object with:
-        * "hypothesis_id": the "id" of the chosen hypothesis (must match one entry above).
-        * "rationale": why this hypothesis best fits the diagnostic compared to the others.
-        * optional "binding_region" describing the expanded structural span the loop must respect.
-    Output at least two mutually exclusive hypotheses when none have been accepted yet, covering both grouping/precedence
-    and token-absence categories.
-    """
-)
-
-PROPOSE_JSON_SCHEMA_FRAGMENT = dedent(
-    """
-    Respond with a JSON object containing two fields:
-    - "intent": 1-2 sentences describing the change.
-    - "structural_change": a short phrase describing the structural relationship being modified (grouping, nesting,
-      ordering, scope, or ownership).
-    Do not emit code, diffs, or pseudo-code.
-    """
-)
-
-FALSIFY_JSON_SCHEMA_FRAGMENT = dedent(
-    """
-    Respond with JSON containing:
-    - "hypothesis_id" (default to the active hypothesis if omitted)
-    - "contradictions": an array where each item has "observation", "status" (observed|pending), and optional "evidence"
-    - optional "summary" string describing remaining validation steps
-    """
-)
+EXAMPLE_REPLACEMENT_FRAGMENT = "Example replacement block:\n{example_diff}"
 
 __all__ = [
-    "CHECKLIST_FRAGMENT",
-    "STRUCTURAL_REASONING_FRAGMENT",
     "DIAGNOSE_INSTRUCTIONS_FRAGMENT",
     "PROPOSE_INSTRUCTIONS_FRAGMENT",
-    "FALSIFY_INSTRUCTIONS_FRAGMENT",
     "GENERATE_PATCH_INSTRUCTIONS_FRAGMENT",
     "HISTORY_FRAGMENT",
+    "PRIOR_HYPOTHESIS_FRAGMENT",
+    "PRIOR_PATCH_FRAGMENT",
     "CRITIQUE_FRAGMENT",
     "ERROR_FRAGMENT",
-    "INTERPRETATION_SUMMARY_FRAGMENT",
-    "INTERPRETATION_RATIONALE_FRAGMENT",
     "DIAGNOSIS_SUMMARY_FRAGMENT",
     "DIAGNOSIS_RATIONALE_FRAGMENT",
     "PATCH_DIAGNOSTICS_FRAGMENT",
@@ -152,10 +96,6 @@ __all__ = [
     "CONTEXT_FRAGMENT",
     "HYPOTHESIS_CONTEXT_FRAGMENT",
     "CONSTRAINTS_FRAGMENT",
-    "EXAMPLE_DIFF_FRAGMENT",
-    "INTERPRET_JSON_SCHEMA_FRAGMENT",
-    "DIAGNOSE_JSON_SCHEMA_FRAGMENT",
-    "PROPOSE_JSON_SCHEMA_FRAGMENT",
-    "FALSIFY_JSON_SCHEMA_FRAGMENT",
+    "EXAMPLE_REPLACEMENT_FRAGMENT",
     "compose_prompt",
 ]

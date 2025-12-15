@@ -96,6 +96,40 @@ class TestPatchApplier:
         assert success is False
         assert result == source
 
+    def test_apply_replacement_block_patch(self):
+        """PatchApplier should accept ORIGINAL/NEW block format."""
+        applier = PatchApplier()
+        source = "line1\nline2\nline3\n"
+        replacement = (
+            "ORIGINAL LINES:\n"
+            "line2\n"
+            "NEW LINES:\n"
+            "line2_modified\n"
+        )
+        result, success = applier.apply(source, replacement)
+        assert success is True
+        assert "line2_modified" in result
+
+    def test_apply_replacement_block_strips_fences_and_numbers(self):
+        """Replacement blocks should ignore markdown fences and numbered prefixes."""
+        applier = PatchApplier()
+        source = "alpha\nbeta\ngamma\n"
+        replacement = (
+            "ORIGINAL LINES:\n"
+            "```java\n"
+            "2 | beta\n"
+            "```\n"
+            "NEW LINES:\n"
+            "```java\n"
+            "2 | beta_modified\n"
+            "```\n"
+        )
+        result, success = applier.apply(source, replacement)
+        assert success is True
+        assert "beta_modified" in result
+        assert "```" not in result
+        assert "2 |" not in result
+
     def test_find_context_empty_lists(self):
         """Test finding context with empty lists."""
         applier = PatchApplier()

@@ -22,14 +22,14 @@ Enforce hypothesis lifecycle discipline that prioritizes falsifiability over nar
    - Represent each diagnosis as `Hypothesis { id, claim, affected_region, expected_effect }`.
    - Store / compare / retire hypotheses explicitly rather than embedding them in prose strings.
 
-2. **Separate Error Interpretation vs. Explanation**
-   - Interpretation answers _what_ structural element failed.
-   - Explanation captures _why_ the model believes it failed.
-   - Persist only the interpretation between iterations to avoid narrative ossification.
+2. **Diagnosis Summary vs. Rationale**
+   - The Diagnose phase itself now answers _what_ structural element failed.
+   - A paired rationale captures _why_ the model believes it failed.
+   - Persist only the structural diagnosis between iterations to avoid narrative ossification.
 
-3. **Mandatory Falsification Phase**
-   - Before proposing a patch, articulate at least one observable outcome that would contradict the hypothesis.
-   - Compare with prior iterations; if contradictions already exist, reject before coding.
+3. **Deterministic Validation Before Patching**
+   - Use observable outcomes (patch application, compile/test fingerprints, scope checks) to contradict the hypothesis before coding further.
+   - A dedicated falsification prompt can return later, but the guardrails live in telemetry today.
 
 4. **One Hypothesis per Patch**
    - Each diff must map to exactly one hypothesis and must touch only the region that hypothesis references.

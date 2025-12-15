@@ -26,8 +26,8 @@ class Hypothesis:
     affected_region: str
     expected_effect: str
     kind: Optional[str] = None
-    interpretation: Optional[str] = None
-    explanation: Optional[str] = None
+    diagnosis: Optional[str] = None
+    rationale: Optional[str] = None
     structural_change: Optional[str] = None
     confidence: Optional[float] = None
     binding_region: Optional[str] = None
@@ -50,8 +50,8 @@ class Hypothesis:
             affected_region=self.affected_region,
             expected_effect=self.expected_effect,
             kind=self.kind,
-            interpretation=self.interpretation,
-            explanation=self.explanation,
+            diagnosis=self.diagnosis,
+            rationale=self.rationale,
             structural_change=self.structural_change,
             confidence=self.confidence,
             binding_region=self.binding_region,
@@ -68,8 +68,8 @@ class Hypothesis:
             "affectedRegion": self.affected_region,
             "expectedEffect": self.expected_effect,
             "kind": self.kind,
-            "interpretation": self.interpretation,
-            "explanation": self.explanation,
+            "diagnosis": self.diagnosis,
+            "rationale": self.rationale,
             "structuralChange": self.structural_change,
             "confidence": self.confidence,
             "bindingRegion": self.binding_region,
@@ -121,8 +121,8 @@ class HypothesisManager:
         affected_region: str,
         expected_effect: str,
         kind: Optional[str] = None,
-        interpretation: Optional[str] = None,
-        explanation: Optional[str] = None,
+        diagnosis: Optional[str] = None,
+        rationale: Optional[str] = None,
         structural_change: Optional[str] = None,
         confidence: Optional[float] = None,
         binding_region: Optional[str] = None,
@@ -136,8 +136,8 @@ class HypothesisManager:
             affected_region=affected_region,
             expected_effect=expected_effect,
             kind=kind,
-            interpretation=interpretation,
-            explanation=explanation,
+            diagnosis=diagnosis,
+            rationale=rationale,
             structural_change=structural_change,
             confidence=confidence,
             binding_region=binding_region,
@@ -206,6 +206,28 @@ class HypothesisManager:
         yield from self._rejected.values()
         yield from self._archived.values()
         yield from self._expired.values()
+
+    def reject_active(self, reason: Optional[str] = None) -> List[str]:
+        """Mark all active hypotheses as rejected and optionally attach a note."""
+
+        rejected_ids: List[str] = []
+        for hypothesis in list(self._active.values()):
+            if reason:
+                hypothesis.add_falsification_note(reason)
+            self.set_status(hypothesis.id, HypothesisStatus.REJECTED)
+            rejected_ids.append(hypothesis.id)
+        return rejected_ids
+
+    def expire_active(self, reason: Optional[str] = None) -> List[str]:
+        """Expire all active hypotheses, optionally annotating the reason."""
+
+        expired_ids: List[str] = []
+        for hypothesis in list(self._active.values()):
+            if reason:
+                hypothesis.add_falsification_note(reason)
+            self.set_status(hypothesis.id, HypothesisStatus.EXPIRED)
+            expired_ids.append(hypothesis.id)
+        return expired_ids
 
     def _bucket_for_status(self, status: HypothesisStatus) -> Dict[str, Hypothesis]:
         if status is HypothesisStatus.ACTIVE:
