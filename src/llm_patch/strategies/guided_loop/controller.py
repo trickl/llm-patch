@@ -154,7 +154,7 @@ class GuidedConvergenceStrategy(PatchStrategy):
             ERROR_FRAGMENT,
             CONTEXT_FRAGMENT,
         ),
-        GuidedPhase.EXPERIMENT: compose_prompt(
+        GuidedPhase.PLANNING: compose_prompt(
             EXPERIMENT_INSTRUCTIONS_FRAGMENT,
             DIAGNOSIS_OUTPUT_FRAGMENT,
             CRITIQUE_OUTPUT_FRAGMENT,
@@ -394,14 +394,14 @@ class GuidedConvergenceStrategy(PatchStrategy):
     def _phase_order(self, *, kind: str = "primary") -> List[GuidedPhase]:
         if kind == "refine":
             return [
-                GuidedPhase.EXPERIMENT,
+                GuidedPhase.PLANNING,
                 GuidedPhase.PROPOSE,
                 GuidedPhase.GENERATE_PATCH,
                 GuidedPhase.CRITIQUE,
             ]
         return [
             GuidedPhase.DIAGNOSE,
-            GuidedPhase.EXPERIMENT,
+            GuidedPhase.PLANNING,
             GuidedPhase.PROPOSE,
             GuidedPhase.GENERATE_PATCH,
             GuidedPhase.CRITIQUE,
@@ -522,9 +522,9 @@ class GuidedConvergenceStrategy(PatchStrategy):
                 if continue_execution:
                     events.extend(self._execute_diagnose(artifact, iteration, iteration.index, request))
                     continue_execution = artifact.status == PhaseStatus.COMPLETED
-            elif artifact.phase == GuidedPhase.EXPERIMENT:
+            elif artifact.phase == GuidedPhase.PLANNING:
                 if continue_execution:
-                    events.extend(self._execute_experiment(artifact, iteration, iteration.index, request))
+                    events.extend(self._execute_planning(artifact, iteration, iteration.index, request))
                     continue_execution = artifact.status == PhaseStatus.COMPLETED
             elif artifact.phase == GuidedPhase.PROPOSE:
                 if continue_execution:
@@ -626,7 +626,7 @@ class GuidedConvergenceStrategy(PatchStrategy):
         events.append(completion_event)
         return events
 
-    def _execute_experiment(
+    def _execute_planning(
         self,
         artifact: PhaseArtifact,
         iteration: GuidedIterationArtifact,
@@ -640,7 +640,7 @@ class GuidedConvergenceStrategy(PatchStrategy):
         artifact.started_at = self._now()
         start_event = self._event(
             kind=StrategyEventKind.PHASE_TRANSITION,
-            message="Starting Experiment phase",
+            message="Starting Planning phase",
             phase=artifact.phase.value,
             iteration=iteration_index,
         )
@@ -655,10 +655,10 @@ class GuidedConvergenceStrategy(PatchStrategy):
         except Exception as exc:  # pragma: no cover - transport level failure
             artifact.status = PhaseStatus.FAILED
             artifact.completed_at = self._now()
-            artifact.human_notes = f"Experiment phase failed: {exc}"
+            artifact.human_notes = f"Planning phase failed: {exc}"
             failure_event = self._event(
                 kind=StrategyEventKind.NOTE,
-                message="Experiment phase failed",
+                message="Planning phase failed",
                 phase=artifact.phase.value,
                 iteration=iteration_index,
                 data={"error": str(exc)},
@@ -671,10 +671,10 @@ class GuidedConvergenceStrategy(PatchStrategy):
         if not artifact.response:
             artifact.status = PhaseStatus.FAILED
             artifact.completed_at = self._now()
-            artifact.human_notes = "Experiment phase returned an empty response."
+            artifact.human_notes = "Planning phase returned an empty response."
             failure_event = self._event(
                 kind=StrategyEventKind.NOTE,
-                message="Experiment phase failed: empty response",
+                message="Planning phase failed: empty response",
                 phase=artifact.phase.value,
                 iteration=iteration_index,
             )
@@ -684,12 +684,12 @@ class GuidedConvergenceStrategy(PatchStrategy):
             return events
 
         machine_checks = self._ensure_machine_checks_dict(artifact)
-        machine_checks["experiment_notes"] = artifact.response
+        machine_checks["planning_notes"] = artifact.response
         artifact.status = PhaseStatus.COMPLETED
         artifact.completed_at = self._now()
         completion_event = self._event(
             kind=StrategyEventKind.PHASE_TRANSITION,
-            message="Experiment phase completed",
+            message="Planning phase completed",
             phase=artifact.phase.value,
             iteration=iteration_index,
             data={"characters": len(artifact.response)},
@@ -873,7 +873,7 @@ class GuidedConvergenceStrategy(PatchStrategy):
             "diff_hunks": float(diff_stats["hunks"]),
         }
 
-        experiment_summary = self._coerce_string(self._find_phase_response(iteration, GuidedPhase.EXPERIMENT))
+        experiment_summary = self._coerce_string(self._find_phase_response(iteration, GuidedPhase.PLANNING))
         active_hypothesis_text = experiment_summary or self._experiment_summary_placeholder()
         error_text = request.error_text or "(error unavailable)"
         history_context = iteration.history_context or self._history_placeholder()
@@ -1109,13 +1109,13 @@ class GuidedConvergenceStrategy(PatchStrategy):
                     "prior_patch_summary": phase_prior_patch_summary,
                 },
             )
-        elif artifact.phase == GuidedPhase.EXPERIMENT:
+        elif artifact.phase == GuidedPhase.PLANNING:
             diagnosis_output = self._find_phase_response(iteration, GuidedPhase.DIAGNOSE)
             if not diagnosis_output:
                 diagnosis_output = self._latest_diagnosis_output
             critique_transcript = self._critique_history_text()
             artifact.prompt = self._render_prompt(
-                GuidedPhase.EXPERIMENT,
+                GuidedPhase.PLANNING,
                 request,
                 context_override=context_override,
                 extra={
@@ -1124,7 +1124,7 @@ class GuidedConvergenceStrategy(PatchStrategy):
                 },
             )
         elif artifact.phase == GuidedPhase.PROPOSE:
-            experiment_result = self._coerce_string(self._find_phase_response(iteration, GuidedPhase.EXPERIMENT))
+            experiment_result = self._coerce_string(self._find_phase_response(iteration, GuidedPhase.PLANNING))
             artifact.prompt = self._render_prompt(
                 GuidedPhase.PROPOSE,
                 request,
@@ -1139,17 +1139,16 @@ class GuidedConvergenceStrategy(PatchStrategy):
                 },
             )
         elif artifact.phase == GuidedPhase.GENERATE_PATCH:
-            diagnosis_fallback = self._find_phase_response(iteration, GuidedPhase.DIAGNOSE)
-            diagnosis_struct = self._coerce_string(diagnosis_fallback)
-            diagnosis_explanation = diagnosis_struct
+            planning_result = self._coerce_string(self._find_phase_response(iteration, GuidedPhase.PLANNING))
+            active_hypothesis_text = planning_result or self._experiment_summary_placeholder()
             proposal_summary = self._coerce_string(self._find_phase_response(iteration, GuidedPhase.PROPOSE))
             artifact.prompt = self._render_prompt(
                 GuidedPhase.GENERATE_PATCH,
                 request,
                 context_override=context_override,
                 extra={
-                    "diagnosis": diagnosis_struct or self._diagnosis_placeholder(),
-                    "diagnosis_explanation": diagnosis_explanation or self._diagnosis_explanation_placeholder(),
+                    "diagnosis": active_hypothesis_text,
+                    "diagnosis_explanation": active_hypothesis_text,
                     "proposal": proposal_summary or self._proposal_placeholder(),
                     "critique_feedback": phase_critique_feedback,
                     "history_context": phase_history_context,
@@ -1520,7 +1519,7 @@ class GuidedConvergenceStrategy(PatchStrategy):
             "Address each item in order:\n"
             "1) Outcome summary — Did the patch resolve the issue? Mention compile/test status.\n"
             "2) Could the patch be applied? — If not, explain why.\n"
-            "3) If there are any issues with the patch, state the hypothesis label and state the hypothesis as 'REJECTED'."
+            "3) If the patch could not be applied or it did not fix the original error, state the hypothesis name and declare it to be 'REJECTED' ."
         )
         sections = [
             header,

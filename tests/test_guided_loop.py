@@ -12,6 +12,7 @@ from llm_patch.strategies.guided_loop import (
     GuidedConvergenceStrategy,
     GuidedLoopConfig,
     GuidedLoopInputs,
+    GuidedPhase,
 )
 
 
@@ -82,7 +83,7 @@ def proposal_payload(label: str) -> str:
     )
 
 
-def experiment_payload(label: str, reason: str | None = None) -> str:
+def planning_payload(label: str, reason: str | None = None) -> str:
     justification = reason or f"Continuing with {label}."
     return f"Active hypothesis: {label}\nJustification: {justification}"
 
@@ -125,7 +126,7 @@ def test_guided_loop_applies_and_compiles(sample_before_file: Path) -> None:
     diff = replacement_block("print('hello')", "print('patched')")
     client = StubLLMClient([
         diagnosis_payload("pass-1"),
-        experiment_payload("pass-1-H1"),
+        planning_payload("pass-1-H1"),
         proposal_payload("pass-1"),
         diff,
         "Critique looks good overall.",
@@ -151,25 +152,30 @@ def test_guided_loop_applies_and_compiles(sample_before_file: Path) -> None:
     assert "patched" in result.after_text
     assert result.diff_text and result.diff_text.strip() == diff.strip()
     first_iteration = result.trace.iterations[0]
-    experiment_phase = next(
+    planning_phase = next(
         phase
         for phase in first_iteration.phases
-        if phase.phase.value == "experiment"
+        if phase.phase.value == "planning"
     )
     critique_phase = next(
         phase
         for phase in first_iteration.phases
         if phase.phase.value == "critique"
     )
+    generate_phase = next(
+        phase
+        for phase in first_iteration.phases
+        if phase.phase == GuidedPhase.GENERATE_PATCH
+    )
     propose_phase = next(
         phase
         for phase in first_iteration.phases
         if phase.phase.value == "propose"
     )
-    assert experiment_phase.prompt.startswith(
+    assert planning_phase.prompt.startswith(
         "You are at the experiment-planning stage. Use the most recent Diagnose narrative"
     )
-    assert '"diagnosis": "pass-1 structural diagnosis"' in experiment_phase.prompt
+    assert '"diagnosis": "pass-1 structural diagnosis"' in planning_phase.prompt
     assert critique_phase.status.value == "completed"
     patch_check = critique_phase.machine_checks.get("patchApplication")
     assert patch_check and patch_check["applied"] is True
@@ -183,6 +189,8 @@ def test_guided_loop_applies_and_compiles(sample_before_file: Path) -> None:
     assert "pass-1 structural diagnosis" not in critique_phase.prompt
     assert "Active hypothesis: pass-1-H1" in critique_phase.prompt
     assert "Validation summary" in critique_phase.prompt
+    assert "Active hypothesis: pass-1-H1" in generate_phase.prompt
+    assert "pass-1 structural diagnosis" not in generate_phase.prompt
     assert "Critique looks good overall." in critique_phase.response
     assert "Validation summary" in critique_phase.response
     assert "The diff was applied and compile/test succeeded." in critique_phase.response
@@ -201,7 +209,7 @@ def test_guided_loop_compile_failure(sample_before_file: Path) -> None:
     diff = replacement_block("print('hello')", "print('patched')")
     client = StubLLMClient([
         diagnosis_payload("compile-fail"),
-        experiment_payload("compile-fail-H1"),
+        planning_payload("compile-fail-H1"),
         proposal_payload("compile-fail"),
         diff,
         "Compile still failing after patch.",
@@ -248,11 +256,11 @@ def test_guided_loop_multiple_iterations_succeed(sample_before_file: Path) -> No
     client = StubLLMClient(
         [
             diagnosis_payload("loop1"),
-            experiment_payload("loop1-H1"),
+            planning_payload("loop1-H1"),
             proposal_payload("propose-pass-1"),
             bad_diff,
             "critique-pass-1",
-            experiment_payload("loop1-H2", "Trying the remaining hypothesis."),
+            planning_payload("loop1-H2", "Trying the remaining hypothesis."),
             proposal_payload("propose-pass-2"),
             good_diff,
             "critique-pass-2",
@@ -279,20 +287,20 @@ def test_guided_loop_multiple_iterations_succeed(sample_before_file: Path) -> No
     critique_phase = next(phase for phase in second_iteration.phases if phase.phase.value == "critique")
     assert critique_phase.status.value == "completed"
     assert second_iteration.kind == "refine"
-    assert second_iteration.phases[0].phase.value == "experiment"
+    assert second_iteration.phases[0].phase.value == "planning"
     assert second_iteration.history_context is not None
     assert second_iteration.history_entry is not None
-    experiment_phase = second_iteration.phases[0]
-    assert '"diagnosis": "loop1 structural diagnosis"' in experiment_phase.prompt
-    assert "critique-pass-1" in experiment_phase.prompt
-    assert "Validation summary" in experiment_phase.prompt
+    planning_phase = second_iteration.phases[0]
+    assert '"diagnosis": "loop1 structural diagnosis"' in planning_phase.prompt
+    assert "critique-pass-1" in planning_phase.prompt
+    assert "Validation summary" in planning_phase.prompt
 
 
 def test_guided_loop_history_seed_in_prompts(sample_before_file: Path) -> None:
     diff = replacement_block("print('hello')", "print('seeded')")
     client = StubLLMClient([
         diagnosis_payload("seeded"),
-        experiment_payload("seeded-H1"),
+        planning_payload("seeded-H1"),
         proposal_payload("seeded"),
         diff,
         "Critique for seeded history.",
@@ -331,11 +339,11 @@ def test_hypothesis_reset_before_refinement(sample_before_file: Path) -> None:
     client = StubLLMClient(
         [
             diagnosis_payload("retry-1"),
-            experiment_payload("retry-1-H1"),
+            planning_payload("retry-1-H1"),
             proposal_payload("retry-1"),
             bad_diff,
             "critique-retry-1",
-            experiment_payload("retry-1-H2", "Switching hypotheses for refinement."),
+            planning_payload("retry-1-H2", "Switching hypotheses for refinement."),
             proposal_payload("retry-2"),
             bad_diff,
             "critique-retry-2",
@@ -357,10 +365,10 @@ def test_hypothesis_reset_before_refinement(sample_before_file: Path) -> None:
     second_iteration = result.trace.iterations[1]
     assert second_iteration.kind == "refine"
     assert second_iteration.hypotheses is None
-    experiment_phase = second_iteration.phases[0]
-    assert experiment_phase.phase.value == "experiment"
-    assert '"diagnosis": "retry-1 structural diagnosis"' in experiment_phase.prompt
-    assert "critique-retry-1" in experiment_phase.prompt
+    planning_phase = second_iteration.phases[0]
+    assert planning_phase.phase.value == "planning"
+    assert '"diagnosis": "retry-1 structural diagnosis"' in planning_phase.prompt
+    assert "critique-retry-1" in planning_phase.prompt
     assert any(
         event.message.startswith("Refinement iteration skipping Diagnose")
         for event in result.events
@@ -374,11 +382,11 @@ def test_stall_detection_archives_hypothesis(sample_before_file: Path) -> None:
     client = StubLLMClient(
         [
             diagnosis_payload("stall-1"),
-            experiment_payload("stall-1-H1"),
+            planning_payload("stall-1-H1"),
             proposal_payload("stall-1"),
             repeated_diff,
             "critique-stall-1",
-            experiment_payload("stall-1-H2", "Retrying with the alternate hypothesis."),
+            planning_payload("stall-1-H2", "Retrying with the alternate hypothesis."),
             proposal_payload("stall-2"),
             repeated_diff,
             "critique-stall-2",
