@@ -33,6 +33,25 @@ export function createDatasetApiHandler(loader = new DatasetLoader()): ApiHandle
       return
     }
 
+    if (
+      segments.length === 4 &&
+      segments[0] === 'api' &&
+      segments[1] === 'cases' &&
+      segments[3] === 'rerun' &&
+      req.method === 'POST'
+    ) {
+      const caseId = decodeURIComponent(segments[2])
+      try {
+        const result = await loader.rerunCase(caseId)
+        sendJson(res, result)
+      } catch (error) {
+        res.statusCode = 500
+        const message = error instanceof Error ? error.message : 'Failed to rerun guided loop'
+        sendJson(res, { error: message })
+      }
+      return
+    }
+
     if (segments.length === 3 && segments[0] === 'api' && segments[1] === 'dataset' && segments[2] === 'refresh' && req.method === 'POST') {
       try {
         await loader.refresh()

@@ -14,7 +14,7 @@ import type {
   StrategyPhaseArtifact,
   StrategyTrace,
 } from '../types'
-import { useReviewStore } from '../store/useReviewStore'
+import { useReviewStore, selectCaseRerunState, selectRerunCase } from '../store/useReviewStore'
 import { parseDiagnostics, type CompilerDiagnostic } from '../utils/diagnostics'
 import { copyTextToClipboard } from '../utils/clipboard'
 
@@ -44,6 +44,9 @@ export function CaseWorkspace({ detail, annotation }: CaseWorkspaceProps) {
   const [afterEditor, setAfterEditor] = useState<MonacoEditor.IStandaloneCodeEditor | null>(null)
   const scrollSyncGuard = useRef(false)
   const flowCopyResetRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const rerunStateSelector = useMemo(() => selectCaseRerunState(detail.summary.caseId), [detail.summary.caseId])
+  const rerunState = useReviewStore(rerunStateSelector)
+  const rerunCase = useReviewStore(selectRerunCase)
   const monacoLanguage = useMemo(() => {
     const normalized = detail.summary.language.toLowerCase()
     return languageMap[normalized] ?? 'plaintext'
@@ -131,6 +134,24 @@ export function CaseWorkspace({ detail, annotation }: CaseWorkspaceProps) {
       : flowCopyStatus === 'error'
         ? 'Copy failed'
         : 'Copy flow'
+  const rerunInFlight = rerunState.running
+  const lastRerunResult = rerunState.lastResult
+  const rerunStatusMessage = (() => {
+    if (rerunState.error) {
+      return rerunState.error
+    }
+    if (rerunInFlight) {
+      return 'Re-running guided loop…'
+    }
+    if (lastRerunResult) {
+      const timestamp = formatTimestamp(lastRerunResult.finishedAt)
+      const prefix = lastRerunResult.success ? 'Last rerun succeeded' : 'Last rerun failed'
+      const exitCode = typeof lastRerunResult.exitCode === 'number' ? lastRerunResult.exitCode.toString() : 'n/a'
+      return `${prefix} (exit ${exitCode})${timestamp ? ` · ${timestamp}` : ''}`
+    }
+    return null
+  })()
+  const rerunButtonLabel = rerunInFlight ? 'Re-running…' : 'Rerun guided loop'
 
   const handleSourceReview = useCallback(
     (value: QualityFlag | null) => {
@@ -218,19 +239,46 @@ export function CaseWorkspace({ detail, annotation }: CaseWorkspaceProps) {
     }, 2000)
   }, [activeIteration])
 
+  const handleRerunClick = useCallback(() => {
+    void rerunCase(detail.summary.caseId)
+  }, [rerunCase, detail.summary.caseId])
+
   return (
     <section className="workspace" aria-live="polite">
       <header className="workspace__header">
-        <div>
+        <div className="workspace__header-left">
           <p className="workspace__eyebrow">{detail.summary.problemId}</p>
           <h1>{detail.summary.filePath}</h1>
         </div>
-        <div className="workspace__meta">
-          <span>Case #{detail.summary.caseId}</span>
-          <span>Fingerprint {detail.summary.fingerprint}</span>
-          <span className="workspace__language">{detail.summary.language}</span>
-          <span>{detail.summary.modelSlug}</span>
-          <span>{detail.summary.algorithm}</span>
+        <div className="workspace__header-right">
+          <div className="workspace__meta">
+            <span>Case #{detail.summary.caseId}</span>
+            <span>Fingerprint {detail.summary.fingerprint}</span>
+            <span className="workspace__language">{detail.summary.language}</span>
+            <span>{detail.summary.modelSlug}</span>
+            <span>{detail.summary.algorithm}</span>
+          </div>
+          <div className="workspace__actions">
+            <button
+              type="button"
+              className="workspace__action-button"
+              onClick={handleRerunClick}
+              disabled={rerunInFlight}
+            >
+              {rerunButtonLabel}
+            </button>
+            {rerunStatusMessage && (
+              <span
+                className={clsx(
+                  'workspace__rerun-status',
+                  rerunState.error && 'workspace__rerun-status--error',
+                  !rerunState.error && lastRerunResult?.success && 'workspace__rerun-status--success',
+                )}
+              >
+                {rerunStatusMessage}
+              </span>
+            )}
+          </div>
         </div>
       </header>
       <PanelGroup className="workspace__panels" direction="vertical">

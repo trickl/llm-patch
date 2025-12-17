@@ -1,10 +1,11 @@
 import { createContext, createElement, useCallback, useContext, useMemo, useReducer, type ReactNode } from 'react'
-import { fetchCaseDetail, fetchCaseSummaries, refreshDatasetCache } from '../api/client'
+import { fetchCaseDetail, fetchCaseSummaries, refreshDatasetCache, rerunCaseRequest } from '../api/client'
 import type {
   AnnotationState,
   CaseDetail,
   CaseSummary,
   CaseMetrics,
+  CaseRerunResponse,
   FinalOutcome,
 } from '../types'
 import { defaultAnnotation } from '../types'
@@ -41,6 +42,13 @@ interface ReviewDataState {
   filters: FiltersState
   datasetRefreshing: boolean
   datasetRefreshError: string | null
+  caseReruns: Record<string, CaseRerunState>
+}
+
+interface CaseRerunState {
+  running: boolean
+  error: string | null
+  lastResult: CaseRerunResponse | null
 }
 
 interface ReviewActions {
@@ -52,6 +60,7 @@ interface ReviewActions {
   setFilterValues: <K extends FilterKey>(key: K, values: FiltersState[K]) => void
   clearFilters: () => void
   refreshDataset: () => Promise<void>
+  rerunCase: (caseId: string) => Promise<void>
 }
 
 type ReviewContextValue = ReviewDataState & ReviewActions
@@ -68,6 +77,7 @@ const initialState: ReviewDataState = {
   filters: createEmptyFilters(),
   datasetRefreshing: false,
   datasetRefreshError: null,
+  caseReruns: {},
 }
 
 type ReviewAction =
@@ -85,6 +95,9 @@ type ReviewAction =
   | { type: 'DATASET_REFRESH_SUCCESS' }
   | { type: 'DATASET_REFRESH_FAILURE'; error: string }
   | { type: 'CLEAR_CASE_DETAILS' }
+  | { type: 'CASE_RERUN_REQUEST'; caseId: string }
+  | { type: 'CASE_RERUN_SUCCESS'; caseId: string; result: CaseRerunResponse }
+  | { type: 'CASE_RERUN_FAILURE'; caseId: string; error: string }
 
 function reviewReducer(state: ReviewDataState, action: ReviewAction): ReviewDataState {
   switch (action.type) {
@@ -166,6 +179,42 @@ function reviewReducer(state: ReviewDataState, action: ReviewAction): ReviewData
         caseDetails: {},
         detailsLoading: {},
         detailsError: {},
+      }
+    case 'CASE_RERUN_REQUEST':
+      return {
+        ...state,
+        caseReruns: {
+          ...state.caseReruns,
+          [action.caseId]: {
+            running: true,
+            error: null,
+            lastResult: null,
+          },
+        },
+      }
+    case 'CASE_RERUN_SUCCESS':
+      return {
+        ...state,
+        caseReruns: {
+          ...state.caseReruns,
+          [action.caseId]: {
+            running: false,
+            error: null,
+            lastResult: action.result,
+          },
+        },
+      }
+    case 'CASE_RERUN_FAILURE':
+      return {
+        ...state,
+        caseReruns: {
+          ...state.caseReruns,
+          [action.caseId]: {
+            running: false,
+            error: action.error,
+            lastResult: null,
+          },
+        },
       }
     default:
       return state
@@ -250,6 +299,24 @@ export function ReviewProvider({ children }: { children: ReactNode }) {
     }
   }, [fetchCases, fetchCaseDetailAction, selectedCaseId])
 
+  const rerunCase = useCallback(
+    async (caseId: string) => {
+      dispatch({ type: 'CASE_RERUN_REQUEST', caseId })
+      try {
+        const result = await rerunCaseRequest(caseId)
+        dispatch({ type: 'CASE_RERUN_SUCCESS', caseId, result })
+        await refreshDataset()
+      } catch (error) {
+        dispatch({
+          type: 'CASE_RERUN_FAILURE',
+          caseId,
+          error: error instanceof Error ? error.message : 'Failed to rerun case',
+        })
+      }
+    },
+    [refreshDataset],
+  )
+
   const contextValue = useMemo<ReviewContextValue>(
     () => ({
       ...state,
@@ -261,6 +328,7 @@ export function ReviewProvider({ children }: { children: ReactNode }) {
       setFilterValues,
       clearFilters,
       refreshDataset,
+      rerunCase,
     }),
     [
       state,
@@ -272,6 +340,7 @@ export function ReviewProvider({ children }: { children: ReactNode }) {
       setFilterValues,
       clearFilters,
       refreshDataset,
+      rerunCase,
     ],
   )
 
@@ -356,3 +425,6 @@ export const selectSetFilterValues = (state: ReviewContextValue) => state.setFil
 export const selectDatasetRefreshing = (state: ReviewContextValue) => state.datasetRefreshing
 export const selectDatasetRefreshError = (state: ReviewContextValue) => state.datasetRefreshError
 export const selectRefreshDataset = (state: ReviewContextValue) => state.refreshDataset
+export const selectCaseRerunState = (caseId: string | null) => (state: ReviewContextValue) =>
+  caseId ? state.caseReruns[caseId] ?? { running: false, error: null, lastResult: null } : { running: false, error: null, lastResult: null }
+export const selectRerunCase = (state: ReviewContextValue) => state.rerunCase

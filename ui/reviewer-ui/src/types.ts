@@ -173,3 +173,5 @@ export interface StrategyPhaseArtifact {
   startedAt?: string | null
   completedAt?: string | null
 }
+
+export type { CaseRerunResponse } from './shared/apiTypes'

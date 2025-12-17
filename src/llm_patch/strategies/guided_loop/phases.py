@@ -13,6 +13,7 @@ class GuidedPhase(str, Enum):
     """Canonical ordered phases described in the pattern documentation."""
 
     DIAGNOSE = "diagnose"
+    EXPERIMENT = "experiment"
     PROPOSE = "propose"
     GENERATE_PATCH = "generate-patch"
     CRITIQUE = "critique"

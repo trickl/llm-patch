@@ -37,7 +37,7 @@ public class ExpressionEvaluator {
             tokens.add(sb.toString());
         }
         return tokens.stream()
-                .map(token -> token.equals("-") && (tokens.isEmpty() || tokens.get(tokens.size() - 1).matches("[\\(+-]")) ? "0-" : token)
+.map(token -> token.equals("-") && (tokens.isEmpty() || tokens.get(tokens.size() - 1).matches("[\\(+-]")) ? "0-" : token)
                 .collect(Collectors.toList());
     }
 

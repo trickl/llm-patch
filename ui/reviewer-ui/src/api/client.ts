@@ -1,4 +1,4 @@
-import type { CaseDetail, CaseSummary } from '../types'
+import type { CaseDetail, CaseRerunResponse, CaseSummary } from '../types'
 
 async function handleResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
@@ -27,4 +27,15 @@ export async function refreshDatasetCache(): Promise<{ status: string }> {
     body: '{}',
   })
   return handleResponse<{ status: string }>(response)
+}
+
+export async function rerunCaseRequest(caseId: string): Promise<CaseRerunResponse> {
+  const response = await fetch(`/api/cases/${encodeURIComponent(caseId)}/rerun`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: '{}',
+  })
+  return handleResponse<CaseRerunResponse>(response)
 }

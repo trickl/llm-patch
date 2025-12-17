@@ -1,7 +1,9 @@
+import { spawn } from 'node:child_process'
 import { access, readFile } from 'node:fs/promises'
 import { createHash } from 'node:crypto'
 import path from 'node:path'
 import fg from 'fast-glob'
+import type { CaseRerunResponse } from '../shared/apiTypes'
 import type {
   ManifestRecord,
   PatchDetailResponse,
@@ -26,6 +28,11 @@ interface PatchRecordInternal {
     stderr: string
     stdout: string
   }
+}
+
+interface RerunOptions {
+  pythonExecutable?: string
+  extraArgs?: string[]
 }
 
 export class DatasetLoader {
@@ -137,6 +144,57 @@ export class DatasetLoader {
     }
 
     this.isLoaded = true
+  }
+
+  async rerunCase(caseId: string, options: RerunOptions = {}): Promise<CaseRerunResponse> {
+    await this.ensureLoaded()
+    const record = this.summaries.find((entry) => entry.summary.caseId === caseId)
+    if (!record) {
+      throw new Error(`Case ${caseId} is not loaded; refresh the dataset and try again.`)
+    }
+
+    const repoRoot = path.resolve(this.datasetRoot, '..', '..')
+    const pythonExecutable =
+      options.pythonExecutable ??
+      process.env.REVIEWER_PYTHON_BIN ??
+      process.env.REVIEWER_PYTHON ??
+      process.env.PYTHON ??
+      'python3'
+    const scriptPath = path.resolve(repoRoot, 'scripts', 'run_guided_loop.py')
+    const args = [scriptPath, record.summary.caseId, '--dataset-root', this.datasetRoot]
+    const modelOverride = process.env.REVIEWER_GUIDED_LOOP_MODEL
+    if (modelOverride) {
+      args.push('--model', modelOverride)
+    }
+    if (Array.isArray(options.extraArgs) && options.extraArgs.length) {
+      args.push(...options.extraArgs)
+    }
+
+    const startedAt = new Date()
+    const runResult = await runCommand(pythonExecutable, args, repoRoot)
+    const finishedAt = new Date()
+
+    let datasetReloaded = true
+    try {
+      await this.refresh()
+    } catch (error) {
+      datasetReloaded = false
+      console.warn('Failed to refresh dataset after rerun', error)
+    }
+
+    return {
+      caseId,
+      command: [pythonExecutable, ...args],
+      pythonExecutable,
+      exitCode: runResult.exitCode,
+      stdout: runResult.stdout,
+      stderr: runResult.stderr,
+      startedAt: startedAt.toISOString(),
+      finishedAt: finishedAt.toISOString(),
+      durationMs: finishedAt.getTime() - startedAt.getTime(),
+      success: runResult.exitCode === 0,
+      datasetReloaded,
+    }
   }
 
   listSummaries(): PatchSummaryPublic[] {
@@ -252,4 +310,33 @@ function coerceNumber(value: unknown): number | null {
 function getRunId(datasetRoot: string, baseDir: string): string {
   const relative = path.relative(datasetRoot, baseDir)
   return relative.split(path.sep)[0] ?? 'unknown-run'
+}
+
+function runCommand(
+  command: string,
+  args: string[],
+  cwd: string,
+): Promise<{ exitCode: number | null; stdout: string; stderr: string }> {
+  return new Promise((resolve, reject) => {
+    const child = spawn(command, args, {
+      cwd,
+      env: process.env,
+      stdio: ['ignore', 'pipe', 'pipe'],
+    })
+
+    let stdout = ''
+    let stderr = ''
+    child.stdout?.on('data', (chunk) => {
+      stdout += chunk.toString()
+    })
+    child.stderr?.on('data', (chunk) => {
+      stderr += chunk.toString()
+    })
+    child.on('error', (error) => {
+      reject(error)
+    })
+    child.on('close', (code) => {
+      resolve({ exitCode: code, stdout, stderr })
+    })
+  })
 }
