@@ -420,12 +420,12 @@ class GuidedConvergenceStrategy(PatchStrategy):
             return summary
         snippet_lines = [
             summary,
-            "In the following snippet, the position of the error is denoted by £HERE£",
+            "In the following snippet, the position of the error is denoted by  <ERROR> ",
             marked_line,
         ]
         return "\n".join(snippet_lines)
 
-    def _line_with_marker(self, code_line: str, caret_index: int, marker: str = "£HERE£") -> str:
+    def _line_with_marker(self, code_line: str, caret_index: int, marker: str = " <ERROR> ") -> str:
         tab_size = 4
         column = 0
         for idx, char in enumerate(code_line):

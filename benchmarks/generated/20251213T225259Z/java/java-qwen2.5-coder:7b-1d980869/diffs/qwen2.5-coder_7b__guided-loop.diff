@@ -1,5 +1,5 @@
 ORIGINAL LINES:
-41 |                         ? "0-" : token)
+                        ? "0-" : token)
 
 CHANGED LINES:
-41 |                         ? "0-" : token)
+                        ? "0-" : token);

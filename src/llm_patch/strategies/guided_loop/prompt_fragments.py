@@ -30,7 +30,7 @@ DIAGNOSE_INSTRUCTIONS_FRAGMENT = dedent(
      When you believe the message is referencing a strict grammar construct, state the exact construct and why the compiler would flag the error at that reported location, even if you suspect the root cause lives earlier in the file.
 
     Do however, pay particular attention to the current token that the compiler is flagging as erroneous. 
-    The position of the error within the line is often a crucial clue.
+    Play particular attention to the position of the error within the line and any significance of the previous and current tokens.
     Analyze the current token's role in the surrounding code and grammar, and explain why it might be invalid or unexpected in this context.
 
     Enumerate at least four mutually exclusive hypotheses that could explain the observed failure. Treat the compiler message as potentially incomplete or misleading.

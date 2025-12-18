@@ -119,7 +119,7 @@ HelloWorld.java:11: error: not a statement
     assert "Position of error on line" in processed
     assert "previous token" in processed
     assert "current token" in processed
-    assert "£HERE£" in processed
+    assert " <ERROR> " in processed
 
 
 def test_compile_error_preprocessing_c_trims_warnings_and_adds_pointer_summary() -> None:
@@ -139,7 +139,7 @@ expression_evaluator.c:29:9: warning: missing initializer for field 'value' of '
     assert "warning" not in processed
     assert "Position of error on line" in processed
     assert "expression_evaluator.c:29" not in processed
-    assert "£HERE£" in processed
+    assert " <ERROR> " in processed
 
 
 def test_compile_error_preprocessing_non_target_language_is_noop() -> None:
@@ -175,7 +175,7 @@ def test_ensure_inputs_reprocesses_error_text_for_guided_inputs(tmp_path: Path) 
     assert processed_inputs.error_text != raw_error
     assert "Position of error on line" in processed_inputs.error_text
     assert processed_inputs.raw_error_text == raw_error
-    assert "£HERE£" in processed_inputs.error_text
+    assert " <ERROR> " in processed_inputs.error_text
 
 
 @pytest.fixture()
