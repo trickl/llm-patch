@@ -1715,10 +1715,11 @@ class GuidedConvergenceStrategy(PatchStrategy):
             else "Summarize concerns about the proposed patch before it is applied."
         )
         checklist = (
-            "Address each item in order:\n"
+            "Start with a header stating the hypothesis label and title.\n"
+            "Then address each item in order:\n"
             "1) Outcome summary — Did the patch resolve the issue? Mention compile/test status.\n"
             "2) Could the patch be applied? — If not, explain why.\n"
-            "3) If the patch could not be applied or it did not fix the original error, state the hypothesis name and declare it to be 'REJECTED' ."
+            "3) In one word was the outcome successful? If not, declare the hypothesis to be 'REJECTED' ."
         )
         sections = [
             header,
