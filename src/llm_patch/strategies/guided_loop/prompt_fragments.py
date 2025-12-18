@@ -67,6 +67,7 @@ EXPERIMENT_INSTRUCTIONS_FRAGMENT = dedent(
 
     Rules:
         • Focus on the freshest evidence from Diagnose; do not invent new structured fields or catalogs.
+        • You must not select any hypotheses where any prior critique explicitly rejected or falsified it. 
         • Reference the critique feedback or iteration history when explaining why this experiment might succeed.
         • Reference every prior critique response (not just the most recent). Explicitly mention each hypothesis label and critique decision so failed ideas are not repeated.
         * Do not repeat any experiments that have already been attempted in prior iterations.

@@ -1,16 +1,5 @@
 ORIGINAL LINES:
-```java
-return tokens.stream()
-        .map(token -> token.equals("-") && (tokens.isEmpty() || tokens.get(tokens.size() - 1).matches("[\\(+-]")))
-                ? "0-" : token);
-```
+41 |                         ? "0-" : token)
 
 CHANGED LINES:
-```java
-return tokens.stream()
-        .map(token -> {
-            boolean condition = token.equals("-") && (tokens.isEmpty() || tokens.get(tokens.size() - 1).matches("[\\(+-]")));
-            return condition ? "0-" : token;
-        })
-        .collect(Collectors.toList());
-```
+41 |                         ? "0-" : token)

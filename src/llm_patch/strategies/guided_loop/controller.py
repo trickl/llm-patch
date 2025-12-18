@@ -174,9 +174,6 @@ class GuidedConvergenceStrategy(PatchStrategy):
         ),
         GuidedPhase.GENERATE_PATCH: compose_prompt(
             GENERATE_PATCH_INSTRUCTIONS_FRAGMENT,
-            HISTORY_FRAGMENT,
-            CRITIQUE_FRAGMENT,
-            PREVIOUS_DIFF_FRAGMENT,
             PROPOSAL_SUMMARY_FRAGMENT,
             ERROR_FRAGMENT,
             DIAGNOSIS_SUMMARY_FRAGMENT,
@@ -1349,8 +1346,6 @@ class GuidedConvergenceStrategy(PatchStrategy):
                     "diagnosis": active_hypothesis_text,
                     "diagnosis_explanation": active_hypothesis_text,
                     "proposal": proposal_summary or self._proposal_placeholder(),
-                    "critique_feedback": phase_critique_feedback,
-                    "history_context": phase_history_context,
                     "previous_diff": phase_previous_diff,
                     "prior_patch_summary": phase_prior_patch_summary,
                     "refinement_context": refinement_context_text,
