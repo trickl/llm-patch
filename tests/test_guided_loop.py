@@ -102,6 +102,82 @@ def compile_command_with_error(message: str) -> list[str]:
     return [sys.executable, "-c", script]
 
 
+def test_compile_error_preprocessing_java_pointer_summary() -> None:
+    raw_error = """HelloWorld.java:10: error: ';' expected
+        return value
+               ^
+HelloWorld.java:11: error: not a statement
+    return 42
+           ^
+"""
+    strategy = GuidedConvergenceStrategy(client=None, config=GuidedLoopConfig())
+
+    processed = strategy._prepare_compile_error_text(raw_error, "java")
+
+    assert "HelloWorld.java:10: error" in processed
+    assert "HelloWorld.java:11" not in processed
+    assert "Position of error on line" in processed
+    assert "previous token" in processed
+    assert "current token" in processed
+    assert "£HERE£" in processed
+
+
+def test_compile_error_preprocessing_c_trims_warnings_and_adds_pointer_summary() -> None:
+    raw_error = """In file included from expression_evaluator.c:1:
+expression_evaluator.c:8:63: error: expected identifier before '(' token
+    8 | typedef enum { NUMBER, PLUS, MINUS, MUL } TokenType;
+      |                                             ^~~
+expression_evaluator.c: In function 'getNextToken':
+expression_evaluator.c:29:9: warning: missing initializer for field 'value' of 'Token' [-Wmissing-field-initializers]
+   29 |         return (Token){EOF};
+      |         ^~~~~~
+"""
+    strategy = GuidedConvergenceStrategy(client=None, config=GuidedLoopConfig())
+
+    processed = strategy._prepare_compile_error_text(raw_error, "c")
+
+    assert "warning" not in processed
+    assert "Position of error on line" in processed
+    assert "expression_evaluator.c:29" not in processed
+    assert "£HERE£" in processed
+
+
+def test_compile_error_preprocessing_non_target_language_is_noop() -> None:
+    raw_error = "sample.py:1: error: boom\nsecond line"
+    strategy = GuidedConvergenceStrategy(client=None, config=GuidedLoopConfig())
+
+    processed = strategy._prepare_compile_error_text(raw_error, "python")
+
+    assert processed == raw_error
+
+
+def test_ensure_inputs_reprocesses_error_text_for_guided_inputs(tmp_path: Path) -> None:
+    raw_error = """ExpressionEvaluator.java:41: error: ';' expected
+                        ? \"0-\" : token)
+                                      ^
+1 error
+"""
+    source_path = tmp_path / "ExpressionEvaluator.java"
+    source_path.write_text("class ExpressionEvaluator {}\n", encoding="utf-8")
+    request = GuidedLoopInputs(
+        case_id="java-case",
+        language="java",
+        source_path=source_path,
+        source_text=source_path.read_text(encoding="utf-8"),
+        error_text=raw_error,
+        manifest={},
+    )
+    strategy = GuidedConvergenceStrategy(client=None, config=GuidedLoopConfig())
+
+    processed_inputs = strategy._ensure_inputs(request)
+
+    assert processed_inputs is request
+    assert processed_inputs.error_text != raw_error
+    assert "Position of error on line" in processed_inputs.error_text
+    assert processed_inputs.raw_error_text == raw_error
+    assert "£HERE£" in processed_inputs.error_text
+
+
 @pytest.fixture()
 def sample_before_file(tmp_path: Path) -> Path:
     before_path = tmp_path / "sample.py"

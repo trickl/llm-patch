@@ -25,27 +25,37 @@ DIAGNOSE_INSTRUCTIONS_FRAGMENT = dedent(
 
     The diagnosis must not imply a specific edit (for example: "add", "remove", or "move" code). Describe observations and structural defects only.
 
-    If a compiler message mentions a token, do not interpret the token literally unless you can name the concrete grammar rule being violated. When you believe the message is referencing a strict grammar construct, state the exact construct and why the compiler would flag the error at that reported location, even if you suspect the root cause lives earlier in the file.
+    If a compiler message mentions an expected or missing token, do not interpret this literally unless you can name 
+    the concrete grammar rule being violated. Often the root cause is a different construct that leads to the token error downstream.
+     When you believe the message is referencing a strict grammar construct, state the exact construct and why the compiler would flag the error at that reported location, even if you suspect the root cause lives earlier in the file.
 
-    Enumerate at least three mutually exclusive hypotheses that could explain the observed failure. Treat the compiler message as potentially incomplete or misleading.
+    Do however, pay particular attention to the current token that the compiler is flagging as erroneous. 
+    The position of the error within the line is often a crucial clue.
+    Analyze the current token's role in the surrounding code and grammar, and explain why it might be invalid or unexpected in this context.
+
+    Enumerate at least four mutually exclusive hypotheses that could explain the observed failure. Treat the compiler message as potentially incomplete or misleading.
     For each hypothesis, respond in plain English (paragraphs or bullet points) and include:
         • A stable label such as "H1" / "H2".
         • A structural claim describing the suspected issue.
         • Evidence from the snippet or diagnostics supporting the claim.
         • The code region or construct affected if the hypothesis holds.
+        * The position of the error within the line, describing the previous and current tokens.
         * Do not write any code or diffs.
         * Do not propose any possible fix or solution in words or pseudo-code.
         * Do not propose any actions or structural changes, such as "add", "remove", or "move" code.
         * Only describe a root cause that may manifest the observed failure.
 
     Do not return JSON, code fences, or tables—use prose and simple bullet lists only.
+
+    After enumerating the hypotheses, add a brief section that explains—in plain English—the intention of the code surrounding the error. Describe what the code is trying to accomplish conceptually.
     """
 )
 
 PROPOSE_INSTRUCTIONS_FRAGMENT = (
     "Propose the cleanest, simplest fix that might resolve the diagnosed issue, incorporating lessons from prior attempts and critiques."
     " Respond with a few sentences in plain English describing the intent and the structural change, where the change should be made, and how the change should fix the issue; respond in plain English without code or pseudo-code, but"
-    " with enough detail that a competent engineer could implement the change precisely. Consider any effects on surrounding code and constraints from prior attempts."
+    " with enough detail that a competent engineer could implement the change precisely. Consider any effects on surrounding code and constraints from prior attempts. Any change should maintain the original intent of the code and must not alter its behavior."
+    " Be sure to explain why the issue occurs in the original code with reference to the original source."
 )
 
 EXPERIMENT_SUMMARY_FRAGMENT = "Latest experiment notes:\n{experiment_summary}"
@@ -58,6 +68,7 @@ EXPERIMENT_INSTRUCTIONS_FRAGMENT = dedent(
     Rules:
         • Focus on the freshest evidence from Diagnose; do not invent new structured fields or catalogs.
         • Reference the critique feedback or iteration history when explaining why this experiment might succeed.
+        • Reference every prior critique response (not just the most recent). Explicitly mention each hypothesis label and critique decision so failed ideas are not repeated.
         * Do not repeat any experiments that have already been attempted in prior iterations.
         • If there is insufficient information to proceed, explicitly request a new Diagnose phase rather than guessing.
         * Do not propose code changes or patches at this stage—focus solely on which hypothesis to test next.
@@ -69,6 +80,7 @@ EXPERIMENT_INSTRUCTIONS_FRAGMENT = dedent(
 
     Respond in prose (no tables or JSON) and include these elements:
         • The active hypothesis to test, citing its stable label from Diagnose along with it's complete description.
+        • A concise statement reiterating the intention of the code around the error to show you understand the surrounding logic.
     """
 )
 
@@ -84,8 +96,12 @@ GENERATE_PATCH_INSTRUCTIONS_FRAGMENT = dedent(
     ORIGINAL LINES:
     <verbatim snippet exactly as it appears now>
 
-    NEW LINES:
+    CHANGED LINES:
     <replacement snippet>
+
+    Constraints:
+    * The ORIGINAL LINES must match exactly a contiguous block in the source code.
+    * The CHANGED LINES must implement the structural change described in the proposal, they must not contain unchanged lines.
 
     If multiple replacements are required, repeat the template with a blank line between blocks. The applier will locate ORIGINAL LINES via
     diff-match-patch style search, so only include the lines that truly need to change.

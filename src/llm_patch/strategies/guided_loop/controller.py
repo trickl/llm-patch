@@ -5,10 +5,11 @@ import hashlib
 import re
 import subprocess
 import tempfile
+from textwrap import dedent
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Mapping, Optional, Protocol, Sequence, Tuple
+from typing import Any, Dict, List, Mapping, Match, Optional, Protocol, Sequence, Tuple
 
 from llm_patch.patch_applier import PatchApplier, normalize_replacement_block
 PATCH_CONSTRAINTS_TEXT = "\n".join(
@@ -103,6 +104,11 @@ class GuidedLoopInputs(PatchRequest):
     additional_context: Mapping[str, Any] = field(default_factory=dict)
     history_seed: Sequence[str] = field(default_factory=tuple)
     initial_outcome: Optional[Mapping[str, Any]] = None
+    raw_error_text: Optional[str] = None
+
+    def __post_init__(self) -> None:  # pragma: no cover - trivial wiring
+        if self.raw_error_text is None:
+            self.raw_error_text = self.error_text
 
 
 @dataclass(slots=True)
@@ -162,18 +168,13 @@ class GuidedConvergenceStrategy(PatchStrategy):
         GuidedPhase.PROPOSE: compose_prompt(
             PROPOSE_INSTRUCTIONS_FRAGMENT,
             REFINEMENT_CONTEXT_FRAGMENT,
-            HISTORY_FRAGMENT,
-            PRIOR_PATCH_FRAGMENT,
-            CRITIQUE_FRAGMENT,
-            PREVIOUS_DIFF_FRAGMENT,
             ERROR_FRAGMENT,
             EXPERIMENT_SUMMARY_FRAGMENT,
-            CONTEXT_FRAGMENT
+            CONTEXT_FRAGMENT,
         ),
         GuidedPhase.GENERATE_PATCH: compose_prompt(
             GENERATE_PATCH_INSTRUCTIONS_FRAGMENT,
             HISTORY_FRAGMENT,
-            PRIOR_PATCH_FRAGMENT,
             CRITIQUE_FRAGMENT,
             PREVIOUS_DIFF_FRAGMENT,
             PROPOSAL_SUMMARY_FRAGMENT,
@@ -184,10 +185,21 @@ class GuidedConvergenceStrategy(PatchStrategy):
             CONSTRAINTS_FRAGMENT,
             EXAMPLE_REPLACEMENT_FRAGMENT,
         ),
-        GuidedPhase.CRITIQUE: (
-            "Critique the replacement block(s). Do they respect the constraints? Identify non-minimal or risky edits."
+        GuidedPhase.CRITIQUE: dedent(
+            """
+            Begin with a Markdown heading that states the hypothesis label and its description (for example: "### H2 – Missing comma in enum").
+            Critique the replacement block(s). Do they respect the constraints? Identify non-minimal or risky edits.
+            Tie your observations back to the named hypothesis so later phases can cite this critique verbatim.
+            """
         ),
     }
+
+    POINTER_SUMMARY_LANGUAGES = {"java", "c"}
+    ERROR_LINE_PATTERN = re.compile(r"\berror\s*:", re.IGNORECASE)
+    WARNING_LINE_PATTERN = re.compile(r"\bwarning\s*:", re.IGNORECASE)
+    NOTE_LINE_PATTERN = re.compile(r"\bnote\s*:", re.IGNORECASE)
+    POINTER_ALLOWED_CHARS = frozenset({"^", "~", "|", "│"})
+    TOKEN_PATTERN = re.compile(r"\"(?:\\.|[^\"])*\"|'(?:\\.|[^'])*'|\w+|[^\s\w]", re.UNICODE)
 
     def __init__(
         self,
@@ -207,7 +219,8 @@ class GuidedConvergenceStrategy(PatchStrategy):
         inputs = self._ensure_inputs(request)
         self._latest_diagnosis_output = None
         self._critique_transcripts = []
-        self._baseline_error_fingerprint = self._error_fingerprint(inputs.error_text)
+        baseline_source = inputs.raw_error_text or inputs.error_text
+        self._baseline_error_fingerprint = self._error_fingerprint(baseline_source)
         trace = self._plan_trace(inputs)
         planning_event = self._event(
             kind=StrategyEventKind.NOTE,
@@ -269,6 +282,11 @@ class GuidedConvergenceStrategy(PatchStrategy):
     # ------------------------------------------------------------------
     def _ensure_inputs(self, request: PatchRequest) -> GuidedLoopInputs:
         if isinstance(request, GuidedLoopInputs):
+            processed_error = self._prepare_compile_error_text(
+                request.raw_error_text or request.error_text,
+                request.language,
+            )
+            request.error_text = processed_error
             return request
         extra_context: Mapping[str, Any] = dict(request.extra or {})
         history_seed_value = extra_context.get("history_seed", [])
@@ -280,18 +298,199 @@ class GuidedConvergenceStrategy(PatchStrategy):
             history_seed = tuple()
         initial_outcome_value = extra_context.get("initial_outcome")
         initial_outcome = initial_outcome_value if isinstance(initial_outcome_value, Mapping) else None
+        processed_error = self._prepare_compile_error_text(request.error_text, request.language)
         return GuidedLoopInputs(
             case_id=request.case_id,
             language=request.language,
             source_path=request.source_path,
             source_text=request.source_text,
-            error_text=request.error_text,
+            error_text=processed_error,
             manifest=request.manifest,
             extra=request.extra,
+            raw_error_text=request.error_text,
             additional_context=extra_context,
             history_seed=history_seed,
             initial_outcome=initial_outcome,
         )
+
+    def _prepare_compile_error_text(self, error_text: Optional[str], language: Optional[str]) -> str:
+        raw_text = error_text or ""
+        text = raw_text.strip()
+        if not text:
+            return ""
+        language_key = (language or "").lower()
+        if language_key not in self.POINTER_SUMMARY_LANGUAGES:
+            return raw_text
+        block = self._extract_first_error_block(text)
+        lines = block.splitlines() if block else text.splitlines()
+        pointer_summary = self._pointer_summary(lines, language_key)
+        cleaned_lines = self._trim_trailing_blanks(lines)
+        if pointer_summary:
+            cleaned_lines = cleaned_lines + ["", pointer_summary]
+        return "\n".join(cleaned_lines).strip()
+
+    def _extract_first_error_block(self, error_text: str) -> str:
+        lines = error_text.splitlines()
+        start_idx = None
+        for idx, line in enumerate(lines):
+            if self.ERROR_LINE_PATTERN.search(line):
+                start_idx = idx
+                break
+        if start_idx is None:
+            return error_text.strip()
+        end_idx = self._error_block_end_index(lines, start_idx)
+        prefix_lines: list[str] = []
+        prefix_idx = start_idx - 1
+        while prefix_idx >= 0 and len(prefix_lines) < 3:
+            candidate = lines[prefix_idx].strip()
+            if not candidate:
+                break
+            if candidate.endswith(":") or candidate.lower().startswith("in "):
+                prefix_lines.insert(0, lines[prefix_idx])
+                prefix_idx -= 1
+                continue
+            break
+        block_lines = prefix_lines + lines[start_idx:end_idx]
+        trimmed = self._trim_trailing_blanks(block_lines)
+        cleaned = self._strip_trailing_context_headers(trimmed)
+        return "\n".join(cleaned).strip()
+
+    def _error_block_end_index(self, lines: Sequence[str], start_idx: int) -> int:
+        pointer_relative_idx = self._find_pointer_line(lines[start_idx:])
+        if pointer_relative_idx is not None:
+            return start_idx + pointer_relative_idx + 1
+        for idx in range(start_idx + 1, len(lines)):
+            line = lines[idx]
+            if self.ERROR_LINE_PATTERN.search(line) or self._is_warning_or_note_line(line):
+                return idx
+        return len(lines)
+
+    @staticmethod
+    def _trim_trailing_blanks(lines: Sequence[str]) -> list[str]:
+        trimmed = list(lines)
+        while trimmed and not trimmed[-1].strip():
+            trimmed.pop()
+        while trimmed and not trimmed[0].strip():
+            trimmed.pop(0)
+        return trimmed
+
+    def _strip_trailing_context_headers(self, lines: Sequence[str]) -> list[str]:
+        cleaned = list(lines)
+        while cleaned and cleaned[-1].strip().endswith(":") and "error" not in cleaned[-1].lower():
+            cleaned.pop()
+        return cleaned
+
+    def _is_warning_or_note_line(self, line: str) -> bool:
+        return bool(self.WARNING_LINE_PATTERN.search(line) or self.NOTE_LINE_PATTERN.search(line))
+
+    def _pointer_summary(self, lines: Sequence[str], language: Optional[str]) -> Optional[str]:
+        if not language or language.lower() not in self.POINTER_SUMMARY_LANGUAGES:
+            return None
+        pointer_index = self._find_pointer_line(lines)
+        if pointer_index is None or pointer_index == 0:
+            return None
+        code_line = lines[pointer_index - 1]
+        pointer_line = lines[pointer_index]
+        return self._describe_pointer_context(code_line, pointer_line)
+
+    def _find_pointer_line(self, lines: Sequence[str]) -> Optional[int]:
+        allowed = self.POINTER_ALLOWED_CHARS
+        for idx, line in enumerate(lines):
+            if "^" not in line:
+                continue
+            normalized = line.replace("│", "|")
+            stripped = normalized.strip()
+            if not stripped:
+                continue
+            filtered = "".join(ch for ch in stripped if not ch.isspace())
+            remainder = "".join(ch for ch in filtered if ch not in allowed)
+            if not remainder:
+                return idx
+        return None
+
+    def _describe_pointer_context(self, code_line: str, pointer_line: str) -> Optional[str]:
+        pointer_expanded = pointer_line.expandtabs(4)
+        caret_index = pointer_expanded.find("^")
+        if caret_index == -1:
+            return None
+        code_expanded = code_line.expandtabs(4)
+        context = self._token_context_descriptions(code_expanded, caret_index)
+        prev_desc = context["previous"]
+        current_desc = context["current"]
+        summary = f"Position of error on line - previous token: {prev_desc}; current token: {current_desc}."
+        marked_line = self._line_with_marker(code_line, caret_index)
+        if not marked_line:
+            return summary
+        snippet_lines = [
+            summary,
+            "In the following snippet, the position of the error is denoted by £HERE£",
+            marked_line,
+        ]
+        return "\n".join(snippet_lines)
+
+    def _line_with_marker(self, code_line: str, caret_index: int, marker: str = "£HERE£") -> str:
+        tab_size = 4
+        column = 0
+        for idx, char in enumerate(code_line):
+            if char == "\t":
+                remainder = column % tab_size
+                step = tab_size - remainder if remainder else tab_size
+            else:
+                step = 1
+            if caret_index < column + step:
+                return f"{code_line[:idx]}{marker}{code_line[idx:]}"
+            column += step
+        return f"{code_line}{marker}"
+
+    def _token_context_descriptions(self, code_line: str, caret_index: int) -> Mapping[str, str]:
+        tokens = list(self.TOKEN_PATTERN.finditer(code_line))
+        prev_match = None
+        current_match = None
+        next_match = None
+        for match in tokens:
+            start, end = match.span()
+            if end <= caret_index:
+                prev_match = match
+                continue
+            if start <= caret_index < end:
+                current_match = match
+                continue
+            if start > caret_index:
+                next_match = match
+                break
+        current_desc = self._describe_token(current_match, default="a whitespace column")
+        prev_desc = self._describe_token(prev_match, default="start of line")
+        next_desc = self._describe_token(next_match, default="end of line")
+        return {"current": current_desc, "previous": prev_desc, "next": next_desc}
+
+    @staticmethod
+    def _describe_token(match: Match[str] | None, *, default: str) -> str:
+        if match is None:
+            return default
+        token = match.group()
+        if not token:
+            return default
+        if token.isidentifier():
+            return f"identifier {token!r}"
+        if token.replace("_", "").isdigit():
+            return f"number {token!r}"
+        if token.startswith(("\"", "'")):
+            return f"literal {token}"
+        return f"symbol {token!r}"
+
+    @staticmethod
+    def _symbol_label(symbol: Optional[str], *, default: str) -> str:
+        if symbol is None:
+            return default
+        if symbol == " ":
+            return "a space"
+        if symbol == "\t":
+            return "a tab"
+        if symbol == "\n":
+            return "a newline"
+        if symbol.isprintable():
+            return repr(symbol)
+        return f"U+{ord(symbol):04X}"
 
     def _seed_prior_outcome(self, inputs: GuidedLoopInputs) -> IterationOutcome | None:
         payload = inputs.initial_outcome or inputs.additional_context.get("initial_outcome")

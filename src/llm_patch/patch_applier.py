@@ -98,7 +98,14 @@ class PatchApplier:
     def _apply_hunk(self, lines: List[str], hunk: ParsedHunk) -> Tuple[bool, List[str]]:
         if not hunk.original_lines:
             insert_at = self._insertion_index(lines, hunk)
-            updated = lines[:insert_at] + list(hunk.updated_lines) + lines[insert_at:]
+            before = list(lines[:insert_at])
+            after = list(lines[insert_at:])
+            cleaned_block = self._dedupe_block(
+                before[-1] if before else None,
+                list(hunk.updated_lines),
+                after[0] if after else None,
+            )
+            updated = before + cleaned_block + after
             return True, updated
 
         index = self.find_context(lines, hunk.original_lines)
@@ -107,10 +114,30 @@ class PatchApplier:
         if index < 0 or index > len(lines):
             return False, lines
 
-        updated_lines = list(lines[:index])
-        updated_lines.extend(hunk.updated_lines)
-        updated_lines.extend(lines[index + len(hunk.original_lines) :])
+        before = list(lines[:index])
+        after = list(lines[index + len(hunk.original_lines) :])
+        cleaned_block = self._dedupe_block(
+            before[-1] if before else None,
+            list(hunk.updated_lines),
+            after[0] if after else None,
+        )
+        updated_lines = before + cleaned_block + after
         return True, updated_lines
+
+    @staticmethod
+    def _dedupe_block(prev_line: Optional[str], block: List[str], next_line: Optional[str]) -> List[str]:
+        """Remove consecutive duplicates introduced by the replacement block."""
+
+        cleaned: List[str] = []
+        last_line = prev_line
+        for candidate in block:
+            if last_line is not None and candidate == last_line:
+                continue
+            cleaned.append(candidate)
+            last_line = candidate
+        if cleaned and next_line is not None and cleaned[-1] == next_line:
+            cleaned.pop()
+        return cleaned
 
     def _insertion_index(self, lines: Sequence[str], hunk: ParsedHunk) -> int:
         hint = self._line_number_hint(hunk, len(lines))

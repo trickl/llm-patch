@@ -1,6 +1,18 @@
 ORIGINAL LINES:
-.map(token -> token.equals("-") && (tokens.isEmpty() || tokens.get(tokens.size() - 1).matches("[\\(+-]")))
-? "0-" : token)
+```java
+39 |         return tokens.stream()
+40 |                 .map(token -> token.equals("-") && (tokens.isEmpty() || tokens.get(tokens.size() - 1).matches("[\\(+-]")))
+41 |                         ? "0-" : token)
+```
 
-NEW LINES:
-.map(token -> token.equals("-") && (tokens.isEmpty() || tokens.get(tokens.size() - 1).matches("[\\(+-]")) ? "0-" : token)
+CHANGED LINES:
+```java
+39 |         return tokens.stream()
+40 |                 .map((token) -> {
+41 |                     if (token.equals("-") && (tokens.isEmpty() || tokens.get(tokens.size() - 1).matches("[\\(+-]"))) {
+42 |                         return "0-";
+43 |                     } else {
+44 |                         return token;
+45 |                     }
+46 |                 })
+```
