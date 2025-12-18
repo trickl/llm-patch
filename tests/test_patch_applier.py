@@ -110,6 +110,20 @@ class TestPatchApplier:
         assert success is True
         assert "line2_modified" in result
 
+    def test_apply_replacement_block_with_changed_label(self):
+        """PatchApplier should also accept CHANGED LINES blocks."""
+        applier = PatchApplier()
+        source = "line1\nline2\nline3\n"
+        replacement = (
+            "ORIGINAL LINES:\n"
+            "line2\n"
+            "CHANGED LINES:\n"
+            "line2_changed\n"
+        )
+        result, success = applier.apply(source, replacement)
+        assert success is True
+        assert "line2_changed" in result
+
     def test_apply_replacement_block_strips_fences_and_numbers(self):
         """Replacement blocks should ignore markdown fences and numbered prefixes."""
         applier = PatchApplier()

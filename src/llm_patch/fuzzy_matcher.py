@@ -70,8 +70,8 @@ class FuzzyMatcher:
             return 0.0
 
         # Join lines and use SequenceMatcher
-        text1 = "\n".join(lines1)
-        text2 = "\n".join(lines2)
+        text1 = self._normalize_text("\n".join(lines1))
+        text2 = self._normalize_text("\n".join(lines2))
 
         matcher = difflib.SequenceMatcher(None, text1, text2)
         return matcher.ratio()
@@ -90,5 +90,11 @@ class FuzzyMatcher:
         if not text1 or not text2:
             return 0.0
 
-        matcher = difflib.SequenceMatcher(None, text1, text2)
+        matcher = difflib.SequenceMatcher(None, self._normalize_text(text1), self._normalize_text(text2))
         return matcher.ratio()
+
+    @staticmethod
+    def _normalize_text(text: str) -> str:
+        """Trim leading/trailing whitespace before similarity comparison."""
+
+        return text.strip()

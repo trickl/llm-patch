@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import re
+import shutil
 import subprocess
 import tempfile
 from textwrap import dedent
@@ -10,6 +11,8 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, Match, Optional, Protocol, Sequence, Tuple
+
+from diff_match_patch import diff_match_patch
 
 from llm_patch.patch_applier import PatchApplier, normalize_replacement_block
 PATCH_CONSTRAINTS_TEXT = "\n".join(
@@ -34,7 +37,7 @@ PATCH_EXAMPLE_DIFF = (
 )
 
 REPLACEMENT_BLOCK_PATTERN = re.compile(
-    r"ORIGINAL LINES:\s*\n(?P<original>.*?)\nNEW LINES:\s*\n(?P<updated>.*?)(?=(?:\nORIGINAL LINES:|\Z))",
+    r"ORIGINAL LINES:\s*\n(?P<original>.*?)\n(?:CHANGED|NEW) LINES:\s*\n(?P<updated>.*?)(?=(?:\nORIGINAL LINES:|\Z))",
     re.DOTALL,
 )
 
@@ -197,6 +200,9 @@ class GuidedConvergenceStrategy(PatchStrategy):
     NOTE_LINE_PATTERN = re.compile(r"\bnote\s*:", re.IGNORECASE)
     POINTER_ALLOWED_CHARS = frozenset({"^", "~", "|", "│"})
     TOKEN_PATTERN = re.compile(r"\"(?:\\.|[^\"])*\"|'(?:\\.|[^'])*'|\w+|[^\s\w]", re.UNICODE)
+    CONTEXT_RADIUS = 5
+    SUFFIX_COLLAPSE_MAX_LINES = 8
+    SUFFIX_COLLAPSE_SIMILARITY = 0.97
 
     def __init__(
         self,
@@ -208,6 +214,7 @@ class GuidedConvergenceStrategy(PatchStrategy):
         self._client = client
         self._config = config or GuidedLoopConfig()
         self._patch_applier = PatchApplier()
+        self._dmp = diff_match_patch()
         self._baseline_error_fingerprint: Optional[str] = None
         self._latest_diagnosis_output: Optional[str] = None
         self._critique_transcripts: list[str] = []
@@ -1060,6 +1067,7 @@ class GuidedConvergenceStrategy(PatchStrategy):
             )
 
         diff_stats = self._summarize_diff(diff_text)
+        replacement_blocks = self._parse_replacement_blocks(diff_text)
         artifact.machine_checks = {
             "diffStats": diff_stats,
         }
@@ -1114,8 +1122,14 @@ class GuidedConvergenceStrategy(PatchStrategy):
             )
             return events, outcome
 
-        patched_text, applied = self._patch_applier.apply(request.source_text, diff_text)
-        patch_message = "Patch applied successfully" if applied else "Patch applier could not locate context"
+        patched_text, applied, patch_message, span_override = self._apply_diff_text(
+            request,
+            diff_text,
+            replacement_blocks,
+        )
+        if span_override:
+            pre_span, post_span = span_override
+            outcome.diff_span = pre_span
         artifact.machine_checks["patchApplication"] = {
             "applied": applied,
             "message": patch_message,
@@ -1672,6 +1686,191 @@ class GuidedConvergenceStrategy(PatchStrategy):
     def _split_block_lines(block: str | None) -> List[str]:
         return normalize_replacement_block(block)
 
+    def _apply_diff_text(
+        self,
+        request: GuidedLoopInputs,
+        diff_text: str,
+        replacement_blocks: List[tuple[List[str], List[str]]],
+    ) -> tuple[Optional[str], bool, str, tuple[tuple[int, int] | None, tuple[int, int] | None] | None]:
+        if replacement_blocks and all(original for original, _ in replacement_blocks):
+            return self._apply_three_way_blocks(request, replacement_blocks)
+        patched_text, applied = self._patch_applier.apply(request.source_text, diff_text)
+        if not applied:
+            return None, False, "Patch applier could not locate context", None
+        spans = self._diff_spans(diff_text, source_text=request.source_text)
+        return patched_text, True, "Patch applied successfully", spans
+
+    def _apply_three_way_blocks(
+        self,
+        request: GuidedLoopInputs,
+        replacement_blocks: List[tuple[List[str], List[str]]],
+    ) -> tuple[Optional[str], bool, str, tuple[tuple[int, int] | None, tuple[int, int] | None] | None]:
+        fragment_info = self._context_fragment_lines(request, radius=self.CONTEXT_RADIUS)
+        if not fragment_info:
+            return None, False, "Context fragment unavailable for merge.", None
+        start_line, local_fragment = fragment_info
+        original_length = len(local_fragment)
+        if original_length == 0:
+            return None, False, "Context fragment is empty; cannot run merge.", None
+        base_fragment = list(local_fragment)
+        build_success, target_fragment, build_diag = self._build_target_fragment(
+            base_fragment,
+            replacement_blocks,
+        )
+        if not build_success or target_fragment is None:
+            message = build_diag or "Unable to construct target fragment for merge."
+            return None, False, message, None
+        merge_success, merged_fragment, merge_diag = self._merge_fragment_versions(
+            base_fragment,
+            local_fragment,
+            target_fragment,
+        )
+        if not merge_success or merged_fragment is None:
+            message = merge_diag or "Three-way merge failed while applying patch."
+            return None, False, message, None
+        source_lines = request.source_text.splitlines()
+        start_idx = max(0, start_line - 1)
+        end_idx = start_idx + original_length
+        trailing_lines = source_lines[end_idx:]
+        trailing_lines = self._collapse_suffix_overlap(merged_fragment, trailing_lines)
+        updated_source = source_lines[:start_idx] + merged_fragment + trailing_lines
+        trailing_newline = request.source_text.endswith("\n")
+        patched_text = "\n".join(updated_source)
+        if trailing_newline and not patched_text.endswith("\n"):
+            patched_text += "\n"
+        before_span = (start_line, start_line + original_length - 1) if original_length else None
+        after_span = (start_line, start_line + len(merged_fragment) - 1) if merged_fragment else None
+        span_tuple: tuple[tuple[int, int] | None, tuple[int, int] | None] = (before_span, after_span)
+        return patched_text, True, "Three-way merge applied to context fragment.", span_tuple
+
+    def _build_target_fragment(
+        self,
+        base_fragment: List[str],
+        replacement_blocks: List[tuple[List[str], List[str]]],
+    ) -> tuple[bool, Optional[List[str]], Optional[str]]:
+        working = list(base_fragment)
+        for index, (original_lines, updated_lines) in enumerate(replacement_blocks, start=1):
+            if not original_lines:
+                return False, None, "Replacement block missing ORIGINAL LINES; cannot merge."
+            position = self._patch_applier.find_context(working, list(original_lines))
+            if position is None:
+                return False, None, f"Could not locate ORIGINAL block {index} within context fragment."
+            before = working[:position]
+            after = working[position + len(original_lines) :]
+            working = before + list(updated_lines) + after
+        return True, working, None
+
+    def _merge_fragment_versions(
+        self,
+        base_fragment: Sequence[str],
+        local_fragment: Sequence[str],
+        target_fragment: Sequence[str],
+    ) -> tuple[bool, Optional[List[str]], Optional[str]]:
+        git_executable = shutil.which("git")
+        if not git_executable:
+            return False, None, "Git executable not found; cannot perform three-way merge."
+        with tempfile.TemporaryDirectory(prefix="llm_patch_merge_") as tmpdir:
+            tmp_path = Path(tmpdir)
+            base_path = tmp_path / "base.txt"
+            local_path = tmp_path / "local.txt"
+            target_path = tmp_path / "target.txt"
+            base_path.write_text(self._lines_to_text(base_fragment), encoding="utf-8")
+            local_path.write_text(self._lines_to_text(local_fragment), encoding="utf-8")
+            target_path.write_text(self._lines_to_text(target_fragment), encoding="utf-8")
+            try:
+                proc = subprocess.run(
+                    [git_executable, "merge-file", "-p", str(local_path), str(base_path), str(target_path)],
+                    capture_output=True,
+                    text=True,
+                    check=False,
+                )
+            except OSError as exc:  # pragma: no cover - defensive
+                return False, None, f"git merge-file failed: {exc}"
+        merged_output = proc.stdout
+        stderr_text = proc.stderr.strip()
+        if proc.returncode == 0:
+            merged_lines = merged_output.splitlines()
+            return True, merged_lines, None
+        if proc.returncode == 1:
+            diagnostic = stderr_text or "Merge conflict detected while applying patch."
+            return False, None, diagnostic
+        diagnostic = stderr_text or f"git merge-file exited with {proc.returncode}"
+        return False, None, diagnostic
+
+    def _collapse_suffix_overlap(
+        self,
+        target_fragment: Sequence[str],
+        trailing_lines: Sequence[str],
+    ) -> List[str]:
+        if not target_fragment or not trailing_lines:
+            return list(trailing_lines)
+        max_overlap = min(
+            self.SUFFIX_COLLAPSE_MAX_LINES,
+            len(target_fragment),
+            len(trailing_lines),
+        )
+        for overlap in range(max_overlap, 0, -1):
+            suffix = target_fragment[-overlap:]
+            prefix = trailing_lines[:overlap]
+            if self._blocks_match(suffix, prefix):
+                return list(trailing_lines[overlap:])
+        return list(trailing_lines)
+
+    def _blocks_match(self, suffix: Sequence[str], prefix: Sequence[str]) -> bool:
+        if not suffix and not prefix:
+            return True
+        if len(suffix) != len(prefix):
+            return False
+        if all(self._normalize_line(a) == self._normalize_line(b) for a, b in zip(suffix, prefix)):
+            return True
+        text_a = "\n".join(suffix)
+        text_b = "\n".join(prefix)
+        if not text_a and not text_b:
+            return True
+        diffs = self._dmp.diff_main(text_a, text_b)
+        self._dmp.diff_cleanupSemantic(diffs)
+        equal_chars = sum(len(chunk) for op, chunk in diffs if op == 0)
+        denominator = max(len(text_a), len(text_b), 1)
+        similarity = equal_chars / denominator
+        return similarity >= self.SUFFIX_COLLAPSE_SIMILARITY
+
+    @staticmethod
+    def _normalize_line(line: str) -> str:
+        return " ".join(line.strip().split())
+
+    def _context_fragment_lines(
+        self,
+        request: GuidedLoopInputs,
+        *,
+        radius: int,
+    ) -> Optional[tuple[int, List[str]]]:
+        source = request.source_text or ""
+        if not source:
+            return None
+        lines = source.splitlines()
+        if not lines:
+            return None
+        filename = request.source_path.name if request.source_path else ""
+        error_line = self._detect_error_line(request.error_text or "", filename)
+        if error_line is None:
+            start = 1
+            end = min(len(lines), start + (radius * 2))
+        else:
+            center = max(1, min(error_line, len(lines)))
+            start = max(1, center - radius)
+            end = min(len(lines), center + radius)
+        fragment = lines[start - 1 : end]
+        return start, fragment
+
+    @staticmethod
+    def _lines_to_text(lines: Sequence[str]) -> str:
+        if not lines:
+            return ""
+        text = "\n".join(lines)
+        if not text.endswith("\n"):
+            text += "\n"
+        return text
+
     def _critique_snippet(
         self,
         text: Optional[str],
@@ -1805,20 +2004,56 @@ class GuidedConvergenceStrategy(PatchStrategy):
     def _detect_error_line(error_text: str, filename: str) -> Optional[int]:
         if not error_text:
             return None
-        pattern = re.compile(rf"{re.escape(filename)}:(\d+)")
-        match = pattern.search(error_text)
+        filename_pattern = re.compile(rf"{re.escape(filename)}:(\d+)") if filename else None
+        generic_pattern = re.compile(r":(\d+):")
+        keyword_pattern = re.compile(r"line\s+(\d+)", re.IGNORECASE)
+
+        def extract_number(line: str) -> Optional[int]:
+            match = filename_pattern.search(line) if filename_pattern else None
+            if match:
+                try:
+                    return int(match.group(1))
+                except ValueError:  # pragma: no cover - defensive
+                    return None
+            match = generic_pattern.search(line)
+            if match:
+                try:
+                    return int(match.group(1))
+                except ValueError:  # pragma: no cover - defensive
+                    return None
+            match = keyword_pattern.search(line)
+            if match:
+                try:
+                    return int(match.group(1))
+                except ValueError:  # pragma: no cover - defensive
+                    return None
+            return None
+
+        lines = error_text.splitlines()
+        priority_lines = [
+            line
+            for line in lines
+            if GuidedConvergenceStrategy.ERROR_LINE_PATTERN.search(line)
+            or GuidedConvergenceStrategy.WARNING_LINE_PATTERN.search(line)
+        ]
+        for line in priority_lines:
+            extracted = extract_number(line)
+            if extracted is not None:
+                return extracted
+
+        match = filename_pattern.search(error_text) if filename_pattern else None
         if match:
             try:
                 return int(match.group(1))
             except ValueError:  # pragma: no cover - defensive
                 return None
-        generic = re.search(r":(\d+):", error_text)
+        generic = generic_pattern.search(error_text)
         if generic:
             try:
                 return int(generic.group(1))
             except ValueError:  # pragma: no cover - defensive
                 return None
-        fallback = re.search(r"line\s+(\d+)", error_text)
+        fallback = keyword_pattern.search(error_text)
         if fallback:
             try:
                 return int(fallback.group(1))
@@ -1829,7 +2064,9 @@ class GuidedConvergenceStrategy(PatchStrategy):
     # ------------------------------------------------------------------
     @staticmethod
     def _summarize_diff(diff_text: str) -> Dict[str, Any]:
-        if "ORIGINAL LINES:" in diff_text and "NEW LINES:" in diff_text:
+        if "ORIGINAL LINES:" in diff_text and (
+            "NEW LINES:" in diff_text or "CHANGED LINES:" in diff_text
+        ):
             return GuidedConvergenceStrategy._summarize_replacement_blocks(diff_text)
         added = 0
         removed = 0

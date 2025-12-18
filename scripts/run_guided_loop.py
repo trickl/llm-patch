@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
+from typing import Optional, Sequence
 from llm_patch.clients import OllamaLLMClient
 from llm_patch.strategies.guided_loop import GuidedConvergenceStrategy, GuidedLoopConfig, GuidedLoopInputs
 
@@ -50,12 +51,13 @@ def main() -> None:
     manifest = json.loads((case_dir / "manifest.json").read_text(encoding="utf-8"))
     before_path = find_before_file(case_dir)
     before_text = before_path.read_text(encoding="utf-8")
+    source_path = resolve_source_path(case_dir, before_path, manifest.get("compile_command"))
     error_text = extract_first_error(case_dir)
 
     request = GuidedLoopInputs(
         case_id=manifest["case_id"],
         language=manifest["language"],
-        source_path=before_path,
+        source_path=source_path,
         source_text=before_text,
         error_text=error_text,
         manifest=manifest,
@@ -77,10 +79,10 @@ def main() -> None:
     if not result.trace:
         raise RuntimeError("Guided loop did not return a trace")
 
-    diff_path = write_diff_artifact(case_dir, before_path.name, args.model, result.diff_text)
+    diff_path = write_diff_artifact(case_dir, source_path.name, args.model, result.diff_text)
     after_path = None
     if result.after_text:
-        after_path = write_after_artifact(case_dir, before_path.name, args.model, result.after_text)
+        after_path = write_after_artifact(case_dir, source_path.name, args.model, result.after_text)
     result_path = write_result_payload(case_dir, diff_path, after_path, args.model, manifest, result)
     print(f"Guided loop trace saved to {result_path}")
 
@@ -98,6 +100,32 @@ def find_before_file(case_dir: Path) -> Path:
         if candidate.is_file():
             return candidate
     raise FileNotFoundError(f"Missing before.* file in {case_dir}")
+
+
+def resolve_source_path(case_dir: Path, before_path: Path, compile_command: Sequence[str] | None) -> Path:
+    candidate = _select_manifest_source_name(compile_command, before_path.suffix)
+    if not candidate:
+        return before_path
+    candidate_path = Path(candidate)
+    if candidate_path.is_absolute():
+        candidate_path = Path(candidate_path.name)
+    return case_dir / candidate_path
+
+
+def _select_manifest_source_name(compile_command: Sequence[str] | None, default_suffix: str) -> Optional[str]:
+    if not compile_command:
+        return None
+    expected_suffix = default_suffix.lower()
+    for token in compile_command:
+        if not token or token.startswith("-"):
+            continue
+        candidate_suffix = Path(token).suffix.lower()
+        if expected_suffix and candidate_suffix != expected_suffix:
+            continue
+        if not candidate_suffix and expected_suffix:
+            continue
+        return token
+    return None
 
 
 def extract_first_error(case_dir: Path) -> str:

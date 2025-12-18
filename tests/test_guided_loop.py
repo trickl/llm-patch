@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import sys
 from pathlib import Path
+from textwrap import dedent
 
 import pytest
 
@@ -151,6 +152,22 @@ def test_compile_error_preprocessing_non_target_language_is_noop() -> None:
     assert processed == raw_error
 
 
+def test_detect_error_line_prioritizes_error_lines_over_prefix_lines() -> None:
+    error_text = """In file included from expression_evaluator.c:1:\nexpression_evaluator.c:8:63: error: expected identifier before '(' token\n    8 | typedef enum { NUMBER, PLUS, MINUS, MUL, DIV, LPAREN, RPAREN, EOF } TokenType;\n      |                                                               ^~~\n"""
+
+    line = GuidedConvergenceStrategy._detect_error_line(error_text, "expression_evaluator.c")
+
+    assert line == 8
+
+
+def test_detect_error_line_falls_back_when_no_error_or_warning_lines() -> None:
+    error_text = """In file included from expression_evaluator.c:1:\ncompilation terminated.\n"""
+
+    line = GuidedConvergenceStrategy._detect_error_line(error_text, "expression_evaluator.c")
+
+    assert line == 1
+
+
 def test_ensure_inputs_reprocesses_error_text_for_guided_inputs(tmp_path: Path) -> None:
     raw_error = """ExpressionEvaluator.java:41: error: ';' expected
                         ? \"0-\" : token)
@@ -279,6 +296,137 @@ def test_guided_loop_applies_and_compiles(sample_before_file: Path) -> None:
     assert "iterations" in first_iteration.history_context.lower()
     assert first_iteration.history_entry is not None
     assert isinstance(first_iteration.telemetry, dict)
+
+
+def test_three_way_merge_preserves_duplicate_lines(tmp_path: Path) -> None:
+    before_path = tmp_path / "dup.py"
+    before_path.write_text(
+        "def greet():\n    print('hello')\n    print('hello')\n    return True\n",
+        encoding="utf-8",
+    )
+    diff = replacement_block(
+        "    print('hello')\n    print('hello')",
+        "    print('hi')\n    print('hi')",
+    )
+    client = StubLLMClient([
+        diagnosis_payload("dupe"),
+        planning_payload("dupe-H1"),
+        proposal_payload("dupe"),
+        diff,
+        "Duplicate lines preserved.",
+    ])
+    compile_command = [sys.executable, "-c", "import sys; sys.exit(0)"]
+    request = GuidedLoopInputs(
+        case_id="duplicate-case",
+        language="python",
+        source_path=before_path,
+        source_text=before_path.read_text(encoding="utf-8"),
+        error_text=f"{before_path.name}:2: error",
+        manifest={"compile_command": compile_command},
+        compile_command=compile_command,
+        extra={},
+    )
+    strategy = GuidedConvergenceStrategy(
+        client=client,
+        config=GuidedLoopConfig(
+            interpreter_model="test",
+            patch_model="test",
+            max_iterations=1,
+            refine_sub_iterations=0,
+        ),
+    )
+
+    result = strategy.run(request)
+
+    assert result.applied is True
+    assert result.after_text is not None
+    assert result.after_text.count("print('hi')") == 2
+    first_iteration = result.trace.iterations[0]
+    critique_phase = next(
+        phase for phase in first_iteration.phases if phase.phase.value == "critique"
+    )
+    patch_diagnostics = critique_phase.machine_checks.get("patchApplication")
+    assert patch_diagnostics and patch_diagnostics["applied"] is True
+    assert "Three-way merge" in patch_diagnostics["message"]
+
+
+def test_three_way_merge_collapses_suffix_duplicates(tmp_path: Path) -> None:
+    before_text = dedent(
+        r"""
+        // header 1
+        // header 2
+        // header 3
+        // header 4
+        // header 5
+        // header 6
+        // header 7
+        // header 8
+        // header 9
+        // header 10
+        class ExpressionEvaluator {
+                List<String> normalize(List<String> tokens) {
+                return tokens.stream()
+                    .map(token -> token.equals("-") && (tokens.isEmpty() || tokens.get(tokens.size() - 1).matches("[\\(+-]")))
+                        ? "0-" : token)
+                    .collect(Collectors.toList());
+            }
+        }
+        """
+    ).lstrip("\n")
+    before_path = tmp_path / "ExpressionEvaluator.java"
+    before_path.write_text(before_text, encoding="utf-8")
+
+    original_lines = before_text.splitlines()
+    start_idx = next(
+        idx for idx, line in enumerate(original_lines) if line.strip().startswith("return tokens.stream()")
+    )
+    original_block = "\n".join(original_lines[start_idx : start_idx + 3])
+    new_block = "\n".join(
+        [
+            "                return tokens.stream()",
+            "                        .map(token -> {",
+            r'                            if (token.equals("-") && (tokens.isEmpty() || tokens.get(tokens.size() - 1).matches("[\(+-]"))) {',
+            '                                return "0-";',
+            '                            }',
+            '                            return token;',
+            '                        })',
+            '                        .collect(Collectors.toList());',
+        ]
+    )
+    diff = replacement_block(original_block, new_block)
+
+    request = GuidedLoopInputs(
+        case_id="java-duplicate-collapse",
+        language="java",
+        source_path=before_path,
+        source_text=before_text,
+        error_text="ExpressionEvaluator.java:10: error",
+        manifest={},
+    )
+    strategy = GuidedConvergenceStrategy(client=None, config=GuidedLoopConfig())
+    replacement_blocks = strategy._parse_replacement_blocks(diff)
+
+    patched_text, applied, _, _ = strategy._apply_three_way_blocks(request, replacement_blocks)
+
+    assert applied is True
+    assert patched_text.count(".collect(Collectors.toList());") == 1
+    assert "return token" in patched_text
+
+
+def test_changed_lines_replacement_blocks_are_summarized() -> None:
+    diff_text = (
+        "ORIGINAL LINES:\n"
+        "print('hello')\n"
+        "CHANGED LINES:\n"
+        "print('goodbye')\n"
+    )
+
+    stats = GuidedConvergenceStrategy._summarize_diff(diff_text)
+
+    assert stats["hunks"] == 1
+    assert stats["added_lines"] == 1
+    assert stats["removed_lines"] == 1
+    assert stats["delete_only"] is False
 
 
 def test_guided_loop_compile_failure(sample_before_file: Path) -> None:

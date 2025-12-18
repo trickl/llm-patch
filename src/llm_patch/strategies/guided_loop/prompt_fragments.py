@@ -103,6 +103,8 @@ GENERATE_PATCH_INSTRUCTIONS_FRAGMENT = dedent(
     Constraints:
     * The ORIGINAL LINES must match exactly a contiguous block in the source code.
     * The CHANGED LINES must implement the structural change described in the proposal, they must not contain unchanged lines.
+    * Never abbreviate or shorten any line with ellipses ("..." or "…"); copy each line exactly as it appears in the source.
+    * ORIGINAL LINES must be stated verbatim, exactly as they appear in the file, with no summarization or omission of characters.
 
     If multiple replacements are required, repeat the template with a blank line between blocks. The applier will locate ORIGINAL LINES via
     diff-match-patch style search, so only include the lines that truly need to change.

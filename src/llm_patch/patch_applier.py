@@ -11,7 +11,7 @@ from .fuzzy_matcher import FuzzyMatcher
 
 HUNK_HEADER_RE = re.compile(r"@@ -(?P<orig_start>\d+)(?:,(?P<orig_count>\d+))? \+(?P<new_start>\d+)(?:,(?P<new_count>\d+))? @@")
 REPLACEMENT_BLOCK_RE = re.compile(
-    r"ORIGINAL LINES:\s*\n(?P<original>.*?)\nNEW LINES:\s*\n(?P<updated>.*?)(?=(?:\nORIGINAL LINES:|\Z))",
+    r"ORIGINAL LINES:\s*\n(?P<original>.*?)\n(?:CHANGED|NEW) LINES:\s*\n(?P<updated>.*?)(?=(?:\nORIGINAL LINES:|\Z))",
     re.DOTALL,
 )
 
@@ -85,7 +85,9 @@ class PatchApplier:
 
     @staticmethod
     def _looks_like_replacement_patch(patch: str) -> bool:
-        return "ORIGINAL LINES:" in patch and "NEW LINES:" in patch
+        if "ORIGINAL LINES:" not in patch:
+            return False
+        return "NEW LINES:" in patch or "CHANGED LINES:" in patch
 
     @staticmethod
     def _split_preserving_trailing_newline(source: str) -> tuple[List[str], bool]:
