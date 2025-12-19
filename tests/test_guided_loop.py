@@ -233,6 +233,7 @@ def test_guided_loop_applies_and_compiles(sample_before_file: Path) -> None:
             patch_model="test",
             max_iterations=1,
             refine_sub_iterations=0,
+            main_loop_passes=1,
         ),
     )
 
@@ -333,6 +334,7 @@ def test_three_way_merge_preserves_duplicate_lines(tmp_path: Path) -> None:
             patch_model="test",
             max_iterations=1,
             refine_sub_iterations=0,
+            main_loop_passes=1,
         ),
     )
 
@@ -447,6 +449,7 @@ def test_guided_loop_compile_failure(sample_before_file: Path) -> None:
             patch_model="test",
             max_iterations=1,
             refine_sub_iterations=0,
+            main_loop_passes=1,
         ),
     )
 
@@ -499,6 +502,7 @@ def test_guided_loop_multiple_iterations_succeed(sample_before_file: Path) -> No
             patch_model="test",
             max_iterations=1,
             refine_sub_iterations=1,
+            main_loop_passes=1,
         ),
     )
 
@@ -547,6 +551,7 @@ def test_guided_loop_history_seed_in_prompts(sample_before_file: Path) -> None:
             patch_model="test",
             max_iterations=1,
             refine_sub_iterations=0,
+            main_loop_passes=1,
         ),
     )
 
@@ -581,6 +586,7 @@ def test_hypothesis_reset_before_refinement(sample_before_file: Path) -> None:
             patch_model="test",
             max_iterations=1,
             refine_sub_iterations=1,
+            main_loop_passes=1,
         ),
     )
 
@@ -624,6 +630,7 @@ def test_stall_detection_archives_hypothesis(sample_before_file: Path) -> None:
             patch_model="test",
             max_iterations=1,
             refine_sub_iterations=1,
+            main_loop_passes=1,
         ),
     )
 
@@ -636,3 +643,44 @@ def test_stall_detection_archives_hypothesis(sample_before_file: Path) -> None:
     assert "stall" in telemetry
     assert telemetry["stall"][0]["errorLocation"] == 1
     assert any(event.message.startswith("Stall detected") for event in result.events)
+
+
+def test_second_main_loop_uses_full_critique_history(sample_before_file: Path) -> None:
+    missing_diff = replacement_block("print('unavailable context')", "print('still missing')")
+    first_critique = "First loop critique transcript."
+    client = StubLLMClient(
+        [
+            diagnosis_payload("primary-1"),
+            planning_payload("primary-1-H1"),
+            proposal_payload("primary-1"),
+            missing_diff,
+            first_critique,
+            diagnosis_payload("primary-2"),
+            planning_payload("primary-2-H1"),
+            proposal_payload("primary-2"),
+            missing_diff,
+            "Second loop critique transcript.",
+        ]
+    )
+    request = build_request(sample_before_file, [])
+    strategy = GuidedConvergenceStrategy(
+        client=client,
+        config=GuidedLoopConfig(
+            interpreter_model="test",
+            patch_model="test",
+            max_iterations=1,
+            refine_sub_iterations=0,
+            main_loop_passes=2,
+        ),
+    )
+
+    result = strategy.run(request)
+
+    assert len(result.trace.iterations) == 2
+    second_loop = result.trace.iterations[1]
+    assert second_loop.pass_index == 2
+    assert second_loop.include_full_critiques is True
+    diagnose_phase = next(
+        phase for phase in second_loop.phases if phase.phase == GuidedPhase.DIAGNOSE
+    )
+    assert first_critique in diagnose_phase.prompt

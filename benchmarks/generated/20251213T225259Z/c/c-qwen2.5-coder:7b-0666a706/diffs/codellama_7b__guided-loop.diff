@@ -1,0 +1,15 @@
+ORIGINAL LINES:
+```scss
+enum TokenType {
+  LPAREN,
+  RPAREN,
+  EOF;
+}
+```
+CHANGED LINES:
+```scss
+enum TokenType {
+  LPAREN,
+  RPAREN;
+}
+```

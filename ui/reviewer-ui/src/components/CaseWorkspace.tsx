@@ -786,7 +786,13 @@ function buildIterationDescriptors(trace?: StrategyTrace | null): IterationGroup
   if (!trace || !trace.iterations?.length) {
     return []
   }
-  return trace.iterations
+  const executedIterations = trace.iterations.filter((iteration) => {
+    if (!iteration.phases?.length) {
+      return false
+    }
+    return iteration.phases.some((phase) => phase.status !== 'planned')
+  })
+  return executedIterations
     .slice()
     .sort((a, b) => a.index - b.index)
     .map((iteration) => {

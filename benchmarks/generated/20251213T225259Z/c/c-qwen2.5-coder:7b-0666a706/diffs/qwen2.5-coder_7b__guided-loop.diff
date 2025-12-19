@@ -1,9 +1,5 @@
 ORIGINAL LINES:
-```c
 typedef enum { NUMBER, PLUS, MINUS, MUL, DIV, LPAREN, RPAREN, EOF } TokenType;
-```
 
 CHANGED LINES:
-```c
-typedef enum TokenType { NUMBER, PLUS, MINUS, MUL, DIV, LPAREN, RPAREN, EOF } TokenType;
-```
+typedef enum { NUMBER, PLUS, MINUS, MUL, DIV, LPAREN, RPAREN, END_OF_FILE } TokenType;

@@ -1,0 +1,14 @@
+ORIGINAL LINES:
+```
+39 |     return tokens.stream()
+40 |             .map(token -> token.equals("-") && inPrefixContext(previous))
+41 |                     ? "0-" : token)
+42 |             .collect(Collectors.toList());
+```
+CHANGED LINES:
+```
+39 |     return tokens.stream()
+40 |             .map(token -> token.equals("-") && inPrefixContext(previous))
+41 |                     ? "0-" : token)
+42 |             .collect(Collectors.toList());
+```

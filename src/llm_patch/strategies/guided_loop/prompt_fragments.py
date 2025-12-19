@@ -21,7 +21,7 @@ def compose_prompt(*segments: str) -> str:
 DIAGNOSE_INSTRUCTIONS_FRAGMENT = dedent(
     """
     Given the compiler/test output and the focused code window, identify the precise construct causing the failure. Cite the
-    relevant line numbers from the snippet and explain why the construct is invalid in {language}. Do not propose fixes or emit new code—focus solely on diagnosis.
+    relevant line numbers from the snippet and explain why the construct is invalid in the {language} language. Do not propose fixes or emit new code—focus solely on diagnosis.
 
     The diagnosis must not imply a specific edit (for example: "add", "remove", or "move" code). Describe observations and structural defects only.
 
@@ -33,7 +33,9 @@ DIAGNOSE_INSTRUCTIONS_FRAGMENT = dedent(
     Play particular attention to the position of the error within the line and any significance of the previous and current tokens.
     Analyze the current token's role in the surrounding code and grammar, and explain why it might be invalid or unexpected in this context.
 
-    Enumerate at least four mutually exclusive hypotheses that could explain the observed failure. Treat the compiler message as potentially incomplete or misleading.
+    Enumerate at least four mutually exclusive hypotheses that could explain the observed failure.
+    Each hypothesis must not have been previously rejected or falsified in prior iterations.
+    Treat the compiler message as potentially incomplete or misleading.
     For each hypothesis, respond in plain English (paragraphs or bullet points) and include:
         • A stable label such as "H1" / "H2".
         • A structural claim describing the suspected issue.
@@ -90,25 +92,28 @@ DIAGNOSIS_OUTPUT_FRAGMENT = "{diagnosis_output}"
 REFINEMENT_CONTEXT_FRAGMENT = "Refinement guidance:\n{refinement_context}"
 
 GENERATE_PATCH_INSTRUCTIONS_FRAGMENT = dedent(
-    """
-    Produce the patch as plain text using the following template for each edit. Do not add code fences, commentary, or diagnostics outside
-    the template, and keep every block as small as possible so fuzzy matching stays accurate.
+        """
+        Produce the patch as plain text using the template below for each edit. There must be exactly two labeled sections per edit—one
+        starting with 'ORIGINAL LINES:' and the next with 'CHANGED LINES:'. Do not add code fences, bullet lists, or commentary before,
+        between, or after those sections, and keep every block as small as possible so fuzzy matching stays accurate.
 
-    ORIGINAL LINES:
-    <verbatim snippet exactly as it appears now>
+        ORIGINAL LINES:
+        <verbatim snippet exactly as it appears now>
 
-    CHANGED LINES:
-    <replacement snippet>
+        CHANGED LINES:
+        <replacement snippet>
 
-    Constraints:
-    * The ORIGINAL LINES must match exactly a contiguous block in the source code.
-    * The CHANGED LINES must implement the structural change described in the proposal, they must not contain unchanged lines.
-    * Never abbreviate or shorten any line with ellipses ("..." or "…"); copy each line exactly as it appears in the source.
-    * ORIGINAL LINES must be stated verbatim, exactly as they appear in the file, with no summarization or omission of characters.
+        Constraints:
+        * Copy the ORIGINAL LINES verbatim from the file. The focused context is numbered (e.g., " 123 | code"), but when you copy into the
+            template you must remove the leading line number and bar so the snippet matches the actual source text byte-for-byte.
+        * The ORIGINAL LINES must match exactly a contiguous block in the source code.
+        * The CHANGED LINES must implement the structural change described in the proposal and must not contain any unchanged lines.
+        * Never abbreviate or shorten any line with ellipses ("..." or "…"); copy every character that actually exists in the file.
+        * Do not wrap the template in Markdown fences or add explanations—only the two labeled sections per edit.
 
-    If multiple replacements are required, repeat the template with a blank line between blocks. The applier will locate ORIGINAL LINES via
-    diff-match-patch style search, so only include the lines that truly need to change.
-    """
+        If multiple replacements are required, repeat the template with a blank line between blocks. The applier will locate ORIGINAL LINES via
+        diff-match-patch style search, so only include the lines that truly need to change.
+        """
 )
 
 HISTORY_FRAGMENT = "Recent iteration history:\n{history_context}"

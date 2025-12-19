@@ -71,6 +71,8 @@ class GuidedIterationArtifact:
     hypotheses: "HypothesisSet" | None = None
     selected_hypothesis_id: Optional[str] = None
     telemetry: Dict[str, Any] = field(default_factory=dict)
+    pass_index: int = 1
+    include_full_critiques: bool = False
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -85,6 +87,8 @@ class GuidedIterationArtifact:
             "hypotheses": self.hypotheses.to_dict() if self.hypotheses else None,
             "selectedHypothesisId": self.selected_hypothesis_id,
             "telemetry": dict(self.telemetry),
+            "passIndex": self.pass_index,
+            "includeFullCritiques": self.include_full_critiques,
         }
 
 

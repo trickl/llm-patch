@@ -5,7 +5,7 @@
 
 #define MAX_TOKENS 100
 
-typedef enum TokenType { NUMBER, PLUS, MINUS, MUL, DIV, LPAREN, RPAREN, EOF } TokenType;
+typedef enum { NUMBER, PLUS, MINUS, MUL, DIV, LPAREN, RPAREN, END_OF_FILE } TokenType;
 
 typedef struct {
     TokenType type;

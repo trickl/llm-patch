@@ -29,7 +29,7 @@ PATCH_EXAMPLE_DIFF = (
     "return tokens.stream()\n"
     "        .map(token -> token.equals(\"-\") && inPrefixContext(previous))\n"
     "                ? \"0-\" : token);\n"
-    "NEW LINES:\n"
+    "CHANGED LINES:\n"
     "return tokens.stream()\n"
     "        .map(token -> token.equals(\"-\") && inPrefixContext(previous)\n"
     "                ? \"0-\" : token)\n"
@@ -87,6 +87,7 @@ class GuidedLoopConfig:
 
     max_iterations: int = 1
     refine_sub_iterations: int = 3
+    main_loop_passes: int = 2
     interpreter_model: str = "planner"
     patch_model: str = "patcher"
     critique_model: Optional[str] = None
@@ -97,7 +98,8 @@ class GuidedLoopConfig:
     def total_iterations(self) -> int:
         base = max(1, self.max_iterations)
         refinements = max(0, self.refine_sub_iterations)
-        return base + refinements
+        passes = max(1, self.main_loop_passes)
+        return (base + refinements) * passes
 
 @dataclass(slots=True)
 class GuidedLoopInputs(PatchRequest):
@@ -573,21 +575,46 @@ class GuidedConvergenceStrategy(PatchStrategy):
         )
         primary_iterations = max(1, self._config.max_iterations)
         refine_iterations = max(0, self._config.refine_sub_iterations)
-        total_iterations = primary_iterations + refine_iterations
-        for iteration_index in range(1, total_iterations + 1):
-            if iteration_index <= primary_iterations:
-                iteration_kind = "primary"
-                label = f"Loop {iteration_index}"
-            else:
-                iteration_kind = "refine"
-                refine_position = iteration_index - primary_iterations
-                label = f"Refine {refine_position}"
-            iteration = GuidedIterationArtifact(index=iteration_index, kind=iteration_kind, label=label)
-            for phase in self._phase_order(kind=iteration_kind):
-                prompt = self._render_prompt(phase, request)
-                artifact = PhaseArtifact(phase=phase, status=PhaseStatus.PLANNED, prompt=prompt)
-                trace.add_phase(iteration, artifact)
-            trace.iterations.append(iteration)
+        passes = max(1, self._config.main_loop_passes)
+        iteration_counter = 0
+        loop_counter = 0
+        refine_counter = 0
+
+        for pass_index in range(1, passes + 1):
+            include_full_critiques = pass_index > 1
+            for _ in range(primary_iterations):
+                iteration_counter += 1
+                loop_counter += 1
+                label = f"Loop {loop_counter}"
+                iteration = GuidedIterationArtifact(
+                    index=iteration_counter,
+                    kind="primary",
+                    label=label,
+                    pass_index=pass_index,
+                    include_full_critiques=include_full_critiques,
+                )
+                for phase in self._phase_order(kind="primary"):
+                    prompt = self._render_prompt(phase, request)
+                    artifact = PhaseArtifact(phase=phase, status=PhaseStatus.PLANNED, prompt=prompt)
+                    trace.add_phase(iteration, artifact)
+                trace.iterations.append(iteration)
+
+            for _ in range(refine_iterations):
+                iteration_counter += 1
+                refine_counter += 1
+                label = f"Refine {refine_counter}"
+                iteration = GuidedIterationArtifact(
+                    index=iteration_counter,
+                    kind="refine",
+                    label=label,
+                    pass_index=pass_index,
+                    include_full_critiques=include_full_critiques,
+                )
+                for phase in self._phase_order(kind="refine"):
+                    prompt = self._render_prompt(phase, request)
+                    artifact = PhaseArtifact(phase=phase, status=PhaseStatus.PLANNED, prompt=prompt)
+                    trace.add_phase(iteration, artifact)
+                trace.iterations.append(iteration)
         trace.notes = (
             "Trace contains prompt templates only. Actual execution will attach responses, checks, "
             "and iteration history entries for each loop."
@@ -1093,19 +1120,19 @@ class GuidedConvergenceStrategy(PatchStrategy):
         if diff_stats["hunks"] == 0:
             artifact.status = PhaseStatus.FAILED
             artifact.completed_at = self._now()
-            artifact.human_notes = "Diff contained no @@ hunks; cannot apply."
+            artifact.human_notes = "Diff template invalid: no ORIGINAL/CHANGED blocks or @@ hunks were found."
             iteration.failure_reason = "empty-diff"
             failure_event = self._event(
                 kind=StrategyEventKind.NOTE,
-                message="Critique failed: diff missing hunks",
+                message="Critique failed: malformed diff template",
                 phase=artifact.phase.value,
                 iteration=iteration_index,
                 data={"diff_excerpt": diff_text[:200]},
             )
             self.emit(failure_event)
             events.append(failure_event)
-            outcome.patch_diagnostics = "Diff missing hunks"
-            after_snippet = "Patched output unavailable because the diff has no hunks."
+            outcome.patch_diagnostics = "Diff template missing ORIGINAL/CHANGED blocks"
+            after_snippet = "Patched output unavailable because the diff template had no ORIGINAL/CHANGED blocks."
             self._finalize_critique_response(
                 artifact,
                 iteration_index,
@@ -1301,6 +1328,11 @@ class GuidedConvergenceStrategy(PatchStrategy):
         refinement_context_text = self._refinement_context_placeholder()
         if is_refine_iteration:
             refinement_context_text = self._build_refinement_context(prior_outcome)
+
+        if getattr(iteration, "include_full_critiques", False):
+            full_transcript = self._critique_history_text()
+            if full_transcript:
+                critique_feedback = full_transcript
 
         phase_history_context = history_context
         phase_previous_diff = previous_diff
