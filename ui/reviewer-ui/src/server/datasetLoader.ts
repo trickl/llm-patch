@@ -112,13 +112,7 @@ export class DatasetLoader {
           diffName,
           filePath: manifest.compile_command?.at(-1) ?? 'unknown',
           patchApplied,
-          success: normalizeSuccess(
-            Boolean(result.success),
-            patchApplied,
-            compileReturncode,
-            errorsAfter,
-            errorsBefore,
-          ),
+          success: normalizeSuccess(Boolean(result.success), patchApplied, compileReturncode),
           errorsBefore,
           errorsAfter,
           patchDiagnostics: result.patch_diagnostics ?? null,
@@ -268,17 +262,10 @@ function normalizeSuccess(
   successFlag: boolean,
   patchApplied: boolean,
   compileReturncode: number | null,
-  errorsAfter: number | null,
-  errorsBefore: number | null,
 ): boolean {
-  if (!successFlag) return false
   if (!patchApplied) return false
-  if (compileReturncode !== 0) return false
-  if (errorsAfter === null) return false
-  if (errorsAfter > 0) return false
-  if (errorsBefore !== null && errorsBefore > 0 && errorsAfter >= errorsBefore) {
-    return false
-  }
+  if (!successFlag) return false
+  if (compileReturncode !== null && compileReturncode !== 0) return false
   return true
 }
 
