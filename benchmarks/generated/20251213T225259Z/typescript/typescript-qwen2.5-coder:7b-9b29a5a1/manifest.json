@@ -1,10 +1,5 @@
 {
   "case_id": "typescript-qwen2.5-coder:7b-9b29a5a1",
-  "language": "typescript",
-  "problem_id": "expr_eval_v1",
-  "model": "qwen2.5-coder:7b",
-  "provider": "ollama",
-  "timestamp_utc": "2025-12-13T23:58:38.383351+00:00",
   "compile_command": [
     "tsc",
     "--strict",
@@ -15,5 +10,15 @@
     "--noEmit",
     "expression_evaluator.ts"
   ],
-  "return_code": 2
+  "first_error_category": 3,
+  "first_error_category_model": "gpt-oss:20b",
+  "first_error_category_timestamp_utc": "2025-12-20T12:54:12.889971+00:00",
+  "first_error_category_version": "v1",
+  "first_error_message": "expression_evaluator.ts(23,27): error TS2322: Type 'number' is not assignable to type '\"number\" | \"operator\" | \"parenthesis\"'.",
+  "language": "typescript",
+  "model": "qwen2.5-coder:7b",
+  "problem_id": "expr_eval_v1",
+  "provider": "ollama",
+  "return_code": 2,
+  "timestamp_utc": "2025-12-13T23:58:38.383351+00:00"
 }

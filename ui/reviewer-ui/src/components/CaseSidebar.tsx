@@ -14,6 +14,21 @@ import { defaultAnnotation } from '../types'
 import type { FiltersState, FilterKey } from '../store/useReviewStore'
 import { CASE_STATUS_OPTIONS, deriveCaseStatus, type CaseStatusFilter } from '../utils/caseFilters'
 
+const FIRST_ERROR_CATEGORY_LABELS: Record<string, string> = {
+  '1': 'Syntactic / Local Structural',
+  '2': 'Name Resolution / Imports / Scope',
+  '3': 'Type / Signature / API Compatibility',
+  '4': 'Control Flow / Contract Enforcement',
+  '5': 'Build System / Dependency / Config',
+  '6': 'Cross-Module Semantic / Architectural',
+  '7': 'Linting / Style / Policy',
+  unlabeled: 'Unlabeled',
+}
+
+function formatFirstErrorCategoryLabel(key: string): string {
+  return FIRST_ERROR_CATEGORY_LABELS[key] ?? `Category ${key}`
+}
+
 interface CaseSidebarProps {
   cases: CaseSummary[]
   allCases: CaseSummary[]
@@ -28,6 +43,20 @@ interface CaseSidebarProps {
   datasetRefreshing: boolean
   datasetRefreshError: string | null
   onRefreshDataset: () => Promise<void>
+}
+
+interface LanguageGroup {
+  key: string
+  label: string
+  count: number
+  categories: ErrorCategoryGroup[]
+}
+
+interface ErrorCategoryGroup {
+  key: string
+  label: string
+  count: number
+  algorithms: AlgorithmGroup[]
 }
 
 interface AlgorithmGroup {
@@ -45,13 +74,6 @@ interface StatusGroup {
 }
 
 interface ModelGroup {
-  key: string
-  label: string
-  count: number
-  languages: LanguageGroup[]
-}
-
-interface LanguageGroup {
   key: string
   label: string
   count: number
@@ -75,7 +97,11 @@ export function CaseSidebar({
 }: CaseSidebarProps) {
   const suiteLabel = allCases[0]?.problemId ?? 'Test Cases'
   const filterActive =
-    filters.languages.length + filters.models.length + filters.algorithms.length + filters.statuses.length > 0
+    filters.languages.length +
+    filters.errorCategories.length +
+    filters.models.length +
+    filters.algorithms.length +
+    filters.statuses.length > 0
   const filteredCount = cases.length
   const totalCount = allCases.length
 
@@ -91,6 +117,7 @@ export function CaseSidebar({
     () => buildFilterOptions(allCases, (testCase) => testCase.algorithm),
     [allCases],
   )
+  const errorCategoryOptions = useMemo(() => buildErrorCategoryOptions(allCases), [allCases])
   const statusOptions = useMemo(() => buildStatusOptions(allCases), [allCases])
   const [expandedNodes, setExpandedNodes] = useState<Record<string, boolean>>({})
   const caseTree = useMemo(() => buildCaseTree(cases), [cases])
@@ -131,39 +158,16 @@ export function CaseSidebar({
     )
   }, [annotations, onSelect, selectedId])
 
-  const renderLanguageBranch = useCallback((language: LanguageGroup, prefix: string) => {
-    const nodeId = `${prefix}|lang:${language.key}`
-    const expanded = isNodeExpanded(nodeId)
-    const containsSelection = language.cases.some((entry) => entry.id === selectedId)
-    return (
-      <div
-        key={nodeId}
-        className={clsx(
-          'case-tree__node',
-          'case-tree__node--level-3',
-          containsSelection && 'is-highlighted',
-          expanded && 'is-expanded',
-        )}
-      >
-        <button type="button" className="case-tree__toggle" onClick={() => toggleNode(nodeId)} aria-expanded={expanded}>
-          <span>{language.label}</span>
-          <span className="case-tree__count">{language.count}</span>
-        </button>
-        {expanded && <ul className="case-tree__cases">{language.cases.map(renderCaseEntry)}</ul>}
-      </div>
-    )
-  }, [isNodeExpanded, renderCaseEntry, selectedId, toggleNode])
-
   const renderModelBranch = useCallback((model: ModelGroup, prefix: string) => {
     const nodeId = `${prefix}|model:${model.key}`
     const expanded = isNodeExpanded(nodeId)
-    const containsSelection = model.languages.some((language) => language.cases.some((entry) => entry.id === selectedId))
+    const containsSelection = model.cases.some((entry) => entry.id === selectedId)
     return (
       <div
         key={nodeId}
         className={clsx(
           'case-tree__node',
-          'case-tree__node--level-2',
+          'case-tree__node--level-4',
           containsSelection && 'is-highlighted',
           expanded && 'is-expanded',
         )}
@@ -172,27 +176,21 @@ export function CaseSidebar({
           <span>{model.label}</span>
           <span className="case-tree__count">{model.count}</span>
         </button>
-        {expanded && (
-          <div className="case-tree__children">
-            {model.languages.map((language) => renderLanguageBranch(language, nodeId))}
-          </div>
-        )}
+        {expanded && <ul className="case-tree__cases">{model.cases.map(renderCaseEntry)}</ul>}
       </div>
     )
-  }, [isNodeExpanded, renderLanguageBranch, selectedId, toggleNode])
+  }, [isNodeExpanded, renderCaseEntry, selectedId, toggleNode])
 
   const renderStatusBranch = useCallback((status: StatusGroup, prefix: string) => {
     const nodeId = `${prefix}|status:${status.key}`
     const expanded = isNodeExpanded(nodeId)
-    const containsSelection = status.models.some((model) =>
-      model.languages.some((language) => language.cases.some((entry) => entry.id === selectedId)),
-    )
+    const containsSelection = status.models.some((model) => model.cases.some((entry) => entry.id === selectedId))
     return (
       <div
         key={nodeId}
         className={clsx(
           'case-tree__node',
-          'case-tree__node--level-1',
+          'case-tree__node--level-3',
           containsSelection && 'is-highlighted',
           expanded && 'is-expanded',
         )}
@@ -210,18 +208,18 @@ export function CaseSidebar({
     )
   }, [isNodeExpanded, renderModelBranch, selectedId, toggleNode])
 
-  const renderAlgorithmBranch = useCallback((algorithm: AlgorithmGroup) => {
-    const nodeId = `algorithm:${algorithm.key}`
+  const renderAlgorithmBranch = useCallback((algorithm: AlgorithmGroup, prefix: string) => {
+    const nodeId = `${prefix}|algorithm:${algorithm.key}`
     const expanded = isNodeExpanded(nodeId)
     const containsSelection = algorithm.statuses.some((status) =>
-      status.models.some((model) => model.languages.some((language) => language.cases.some((entry) => entry.id === selectedId))),
+      status.models.some((model) => model.cases.some((entry) => entry.id === selectedId)),
     )
     return (
       <div
         key={nodeId}
         className={clsx(
           'case-tree__node',
-          'case-tree__node--level-0',
+          'case-tree__node--level-2',
           containsSelection && 'is-highlighted',
           expanded && 'is-expanded',
         )}
@@ -238,6 +236,66 @@ export function CaseSidebar({
       </div>
     )
   }, [isNodeExpanded, renderStatusBranch, selectedId, toggleNode])
+
+  const renderCategoryBranch = useCallback((category: ErrorCategoryGroup, prefix: string) => {
+    const nodeId = `${prefix}|category:${category.key}`
+    const expanded = isNodeExpanded(nodeId)
+    const containsSelection = category.algorithms.some((algorithm) =>
+      algorithm.statuses.some((status) => status.models.some((model) => model.cases.some((entry) => entry.id === selectedId))),
+    )
+    return (
+      <div
+        key={nodeId}
+        className={clsx(
+          'case-tree__node',
+          'case-tree__node--level-1',
+          containsSelection && 'is-highlighted',
+          expanded && 'is-expanded',
+        )}
+      >
+        <button type="button" className="case-tree__toggle" onClick={() => toggleNode(nodeId)} aria-expanded={expanded}>
+          <span>{category.label}</span>
+          <span className="case-tree__count">{category.count}</span>
+        </button>
+        {expanded && (
+          <div className="case-tree__children">
+            {category.algorithms.map((algorithm) => renderAlgorithmBranch(algorithm, nodeId))}
+          </div>
+        )}
+      </div>
+    )
+  }, [isNodeExpanded, renderAlgorithmBranch, selectedId, toggleNode])
+
+  const renderLanguageBranch = useCallback((language: LanguageGroup) => {
+    const nodeId = `lang:${language.key}`
+    const expanded = isNodeExpanded(nodeId)
+    const containsSelection = language.categories.some((category) =>
+      category.algorithms.some((algorithm) =>
+        algorithm.statuses.some((status) => status.models.some((model) => model.cases.some((entry) => entry.id === selectedId))),
+      ),
+    )
+    return (
+      <div
+        key={nodeId}
+        className={clsx(
+          'case-tree__node',
+          'case-tree__node--level-0',
+          containsSelection && 'is-highlighted',
+          expanded && 'is-expanded',
+        )}
+      >
+        <button type="button" className="case-tree__toggle" onClick={() => toggleNode(nodeId)} aria-expanded={expanded}>
+          <span>{language.label}</span>
+          <span className="case-tree__count">{language.count}</span>
+        </button>
+        {expanded && (
+          <div className="case-tree__children">
+            {language.categories.map((category) => renderCategoryBranch(category, nodeId))}
+          </div>
+        )}
+      </div>
+    )
+  }, [isNodeExpanded, renderCategoryBranch, selectedId, toggleNode])
 
   return (
     <aside className="sidebar">
@@ -297,6 +355,13 @@ export function CaseSidebar({
             onChange={(values) => onSetFilterValues('languages', values)}
           />
           <FilterMultiSelect
+            label="First-error type"
+            placeholder="All error types"
+            options={errorCategoryOptions}
+            values={filters.errorCategories}
+            onChange={(values) => onSetFilterValues('errorCategories', values)}
+          />
+          <FilterMultiSelect
             label="Model"
             placeholder="All models"
             options={modelOptions}
@@ -325,7 +390,7 @@ export function CaseSidebar({
         <p className="sidebar__status">No cases match your filters.</p>
       ) : (
         <div className="case-tree" role="tree">
-          {caseTree.map((algorithm) => renderAlgorithmBranch(algorithm))}
+          {caseTree.map((language) => renderLanguageBranch(language))}
         </div>
       )}
     </aside>
@@ -538,23 +603,70 @@ function buildStatusOptions(cases: CaseSummary[]): FilterOption[] {
   }))
 }
 
-function buildCaseTree(cases: CaseSummary[]): AlgorithmGroup[] {
-  const algorithmMap = new Map<string, AlgorithmBuilder>()
+function buildErrorCategoryOptions(cases: CaseSummary[]): FilterOption[] {
+  const counts: Record<string, number> = {}
   for (const testCase of cases) {
+    const key = testCase.firstErrorCategory == null ? 'unlabeled' : String(testCase.firstErrorCategory)
+    counts[key] = (counts[key] ?? 0) + 1
+  }
+
+  const keys = Object.keys(counts)
+  keys.sort((a, b) => {
+    if (a === 'unlabeled') return 1
+    if (b === 'unlabeled') return -1
+    const ai = Number.parseInt(a, 10)
+    const bi = Number.parseInt(b, 10)
+    if (Number.isFinite(ai) && Number.isFinite(bi)) return ai - bi
+    return a.localeCompare(b)
+  })
+
+  return keys.map((key) => ({
+    value: key,
+    label: formatFirstErrorCategoryLabel(key),
+    count: counts[key] ?? 0,
+  }))
+}
+
+function buildCaseTree(cases: CaseSummary[]): LanguageGroup[] {
+  const languageMap = new Map<string, LanguageBuilder>()
+  for (const testCase of cases) {
+    const languageKey = testCase.language || 'Unknown Language'
+    const categoryKey = testCase.firstErrorCategory == null ? 'unlabeled' : String(testCase.firstErrorCategory)
     const algorithmKey = testCase.algorithm || 'Unknown Algorithm'
     const statusKey = deriveCaseStatus(testCase)
     const modelKey = testCase.modelSlug || 'Unknown Model'
-    const languageKey = testCase.language || 'Unknown Language'
 
-    if (!algorithmMap.has(algorithmKey)) {
-      algorithmMap.set(algorithmKey, {
+    if (!languageMap.has(languageKey)) {
+      languageMap.set(languageKey, {
+        key: languageKey,
+        label: languageKey,
+        count: 0,
+        categories: new Map(),
+      })
+    }
+    const languageNode = languageMap.get(languageKey)!
+    languageNode.count += 1
+
+    if (!languageNode.categories.has(categoryKey)) {
+      languageNode.categories.set(categoryKey, {
+        key: categoryKey,
+        label: formatFirstErrorCategoryLabel(categoryKey),
+        count: 0,
+        algorithms: new Map(),
+      })
+    }
+    const categoryNode = languageNode.categories.get(categoryKey)!
+    categoryNode.count += 1
+
+    if (!categoryNode.algorithms.has(algorithmKey)) {
+      categoryNode.algorithms.set(algorithmKey, {
         key: algorithmKey,
         label: algorithmKey,
         count: 0,
         statuses: new Map(),
       })
     }
-    const algorithmNode = algorithmMap.get(algorithmKey)!
+    const algorithmNode = categoryNode.algorithms.get(algorithmKey)!
     algorithmNode.count += 1
 
     if (!algorithmNode.statuses.has(statusKey)) {
@@ -573,48 +685,53 @@ function buildCaseTree(cases: CaseSummary[]): AlgorithmGroup[] {
         key: modelKey,
         label: modelKey,
         count: 0,
-        languages: new Map(),
+        cases: [],
       })
     }
     const modelNode = statusNode.models.get(modelKey)!
     modelNode.count += 1
-
-    if (!modelNode.languages.has(languageKey)) {
-      modelNode.languages.set(languageKey, {
-        key: languageKey,
-        label: languageKey,
-        cases: [],
-      })
-    }
-    const languageNode = modelNode.languages.get(languageKey)!
-    languageNode.cases.push(testCase)
+    modelNode.cases.push(testCase)
   }
 
-  return Array.from(algorithmMap.values())
+  return Array.from(languageMap.values())
     .sort((a, b) => a.label.localeCompare(b.label))
-    .map((algorithm) => ({
-      key: algorithm.key,
-      label: algorithm.label,
-      count: algorithm.count,
-      statuses: Array.from(algorithm.statuses.values())
-        .sort((a, b) => statusOrder(a.key) - statusOrder(b.key))
-        .map((status) => ({
-          key: status.key,
-          label: status.label,
-          count: status.count,
-          models: Array.from(status.models.values())
+    .map((language) => ({
+      key: language.key,
+      label: language.label,
+      count: language.count,
+      categories: Array.from(language.categories.values())
+        .sort((a, b) => {
+          if (a.key === 'unlabeled') return 1
+          if (b.key === 'unlabeled') return -1
+          const ai = Number.parseInt(a.key, 10)
+          const bi = Number.parseInt(b.key, 10)
+          if (Number.isFinite(ai) && Number.isFinite(bi)) return ai - bi
+          return a.label.localeCompare(b.label)
+        })
+        .map((category) => ({
+          key: category.key,
+          label: category.label,
+          count: category.count,
+          algorithms: Array.from(category.algorithms.values())
             .sort((a, b) => a.label.localeCompare(b.label))
-            .map((model) => ({
-              key: model.key,
-              label: model.label,
-              count: model.count,
-              languages: Array.from(model.languages.values())
-                .sort((a, b) => a.label.localeCompare(b.label))
-                .map((language) => ({
-                  key: language.key,
-                  label: language.label,
-                  count: language.cases.length,
-                  cases: [...language.cases].sort((aCase, bCase) => aCase.filePath.localeCompare(bCase.filePath)),
+            .map((algorithm) => ({
+              key: algorithm.key,
+              label: algorithm.label,
+              count: algorithm.count,
+              statuses: Array.from(algorithm.statuses.values())
+                .sort((a, b) => statusOrder(a.key) - statusOrder(b.key))
+                .map((status) => ({
+                  key: status.key,
+                  label: status.label,
+                  count: status.count,
+                  models: Array.from(status.models.values())
+                    .sort((a, b) => a.label.localeCompare(b.label))
+                    .map((model) => ({
+                      key: model.key,
+                      label: model.label,
+                      count: model.count,
+                      cases: [...model.cases].sort((aCase, bCase) => aCase.filePath.localeCompare(bCase.filePath)),
+                    })),
                 })),
             })),
         })),
@@ -624,6 +741,20 @@ function buildCaseTree(cases: CaseSummary[]): AlgorithmGroup[] {
 function statusOrder(value: CaseStatusFilter): number {
   const index = CASE_STATUS_OPTIONS.findIndex((option) => option.value === value)
   return index === -1 ? CASE_STATUS_OPTIONS.length : index
+}
+
+interface LanguageBuilder {
+  key: string
+  label: string
+  count: number
+  categories: Map<string, ErrorCategoryBuilder>
+}
+
+interface ErrorCategoryBuilder {
+  key: string
+  label: string
+  count: number
+  algorithms: Map<string, AlgorithmBuilder>
 }
 
 interface AlgorithmBuilder {
@@ -644,11 +775,5 @@ interface ModelBuilder {
   key: string
   label: string
   count: number
-  languages: Map<string, LanguageBuilder>
-}
-
-interface LanguageBuilder {
-  key: string
-  label: string
   cases: CaseSummary[]
 }

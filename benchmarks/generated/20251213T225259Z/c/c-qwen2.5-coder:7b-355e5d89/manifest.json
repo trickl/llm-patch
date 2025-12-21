@@ -1,10 +1,5 @@
 {
   "case_id": "c-qwen2.5-coder:7b-355e5d89",
-  "language": "c",
-  "problem_id": "expr_eval_v1",
-  "model": "qwen2.5-coder:7b",
-  "provider": "ollama",
-  "timestamp_utc": "2025-12-13T23:08:01.094028+00:00",
   "compile_command": [
     "gcc",
     "expression_evaluator.c",
@@ -15,5 +10,15 @@
     "-o",
     "expr_eval.out"
   ],
-  "return_code": 1
+  "first_error_category": 2,
+  "first_error_category_model": "gpt-oss:20b",
+  "first_error_category_timestamp_utc": "2025-12-20T12:53:12.159067+00:00",
+  "first_error_category_version": "v1",
+  "first_error_message": "expression_evaluator.c:146:39: error: \u2018token\u2019 undeclared (first use in this function); did you mean \u2018Token\u2019?",
+  "language": "c",
+  "model": "qwen2.5-coder:7b",
+  "problem_id": "expr_eval_v1",
+  "provider": "ollama",
+  "return_code": 1,
+  "timestamp_utc": "2025-12-13T23:08:01.094028+00:00"
 }

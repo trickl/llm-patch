@@ -1,15 +1,20 @@
 {
   "case_id": "python-qwen2.5-coder:7b-f8db2149",
-  "language": "python",
-  "problem_id": "expr_eval_v1",
-  "model": "qwen2.5-coder:7b",
-  "provider": "ollama",
-  "timestamp_utc": "2025-12-14T00:25:20.370009+00:00",
   "compile_command": [
     "/usr/bin/python3",
     "-m",
     "py_compile",
     "expression_evaluator.py"
   ],
-  "return_code": 1
+  "first_error_category": 1,
+  "first_error_category_model": "gpt-oss:20b",
+  "first_error_category_timestamp_utc": "2025-12-20T12:54:27.780416+00:00",
+  "first_error_category_version": "v1",
+  "first_error_message": "SyntaxError: '(' was never closed",
+  "language": "python",
+  "model": "qwen2.5-coder:7b",
+  "problem_id": "expr_eval_v1",
+  "provider": "ollama",
+  "return_code": 1,
+  "timestamp_utc": "2025-12-14T00:25:20.370009+00:00"
 }

@@ -205,3 +205,23 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Benchmark dataset (inputs vs outputs)
+#
+# We keep test inputs (source fixtures + diffs + manifest) in source control, but
+# we do NOT want to version control per-run outputs produced by evaluation runs.
+#
+# Inputs we keep (NOT ignored):
+#   - benchmarks/generated/**/manifest.json
+#   - benchmarks/generated/**/before.*
+#   - benchmarks/generated/**/diffs/**
+#
+# Outputs we ignore:
+benchmarks/generated/**/results/
+benchmarks/generated/**/after/
+benchmarks/generated/**/after__*
+benchmarks/generated/**/compiler_stderr.txt
+benchmarks/generated/**/compiler_stdout.txt
+benchmarks/generated/**/prompt.txt
+benchmarks/generated/**/model_response.txt
+benchmarks/generated/**/summary.json

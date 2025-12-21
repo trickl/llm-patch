@@ -1,15 +1,20 @@
 {
   "case_id": "python-qwen2.5-coder:7b-6ba5106a",
-  "language": "python",
-  "problem_id": "expr_eval_v1",
-  "model": "qwen2.5-coder:7b",
-  "provider": "ollama",
-  "timestamp_utc": "2025-12-14T01:23:50.754040+00:00",
   "compile_command": [
     "/usr/bin/python3",
     "-m",
     "py_compile",
     "expression_evaluator.py"
   ],
-  "return_code": 1
+  "first_error_category": 1,
+  "first_error_category_model": "gpt-oss:20b",
+  "first_error_category_timestamp_utc": "2025-12-20T12:54:24.876020+00:00",
+  "first_error_category_version": "v1",
+  "first_error_message": "SyntaxError: unterminated string literal (detected at line 6)",
+  "language": "python",
+  "model": "qwen2.5-coder:7b",
+  "problem_id": "expr_eval_v1",
+  "provider": "ollama",
+  "return_code": 1,
+  "timestamp_utc": "2025-12-14T01:23:50.754040+00:00"
 }

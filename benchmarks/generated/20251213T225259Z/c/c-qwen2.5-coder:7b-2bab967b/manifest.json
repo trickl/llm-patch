@@ -1,10 +1,5 @@
 {
   "case_id": "c-qwen2.5-coder:7b-2bab967b",
-  "language": "c",
-  "problem_id": "expr_eval_v1",
-  "model": "qwen2.5-coder:7b",
-  "provider": "ollama",
-  "timestamp_utc": "2025-12-13T23:07:07.382238+00:00",
   "compile_command": [
     "gcc",
     "expression_evaluator.c",
@@ -15,5 +10,15 @@
     "-o",
     "expr_eval.out"
   ],
-  "return_code": 1
+  "first_error_category": 3,
+  "first_error_category_model": "gpt-oss:20b",
+  "first_error_category_timestamp_utc": "2025-12-20T12:53:11.160444+00:00",
+  "first_error_category_version": "v1",
+  "first_error_message": "expression_evaluator.c:150:35: error: passing argument 1 of \u2018get_next_token\u2019 from incompatible pointer type [-Wincompatible-pointer-types]",
+  "language": "c",
+  "model": "qwen2.5-coder:7b",
+  "problem_id": "expr_eval_v1",
+  "provider": "ollama",
+  "return_code": 1,
+  "timestamp_utc": "2025-12-13T23:07:07.382238+00:00"
 }

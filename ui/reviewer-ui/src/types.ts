@@ -18,6 +18,8 @@ export interface CaseSummary {
   algorithm: string
   diffName: string
   filePath: string
+  firstErrorCategory: number | null
+  firstErrorMessage: string | null
   patchApplied: boolean
   success: boolean
   errorsBefore: number | null

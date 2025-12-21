@@ -12,10 +12,11 @@ import { defaultAnnotation } from '../types'
 import type { CaseStatusFilter } from '../utils/caseFilters'
 import { deriveCaseStatus } from '../utils/caseFilters'
 
-export type FilterKey = 'languages' | 'models' | 'algorithms' | 'statuses'
+export type FilterKey = 'languages' | 'errorCategories' | 'models' | 'algorithms' | 'statuses'
 
 export interface FiltersState {
   languages: string[]
+  errorCategories: string[]
   models: string[]
   algorithms: string[]
   statuses: CaseStatusFilter[]
@@ -24,6 +25,7 @@ export interface FiltersState {
 function createEmptyFilters(): FiltersState {
   return {
     languages: [],
+    errorCategories: [],
     models: [],
     algorithms: [],
     statuses: [],
@@ -376,6 +378,7 @@ function annotate(existing: AnnotationState | undefined, updates?: Partial<CaseM
 function applyFilters(cases: CaseSummary[], filters: FiltersState): CaseSummary[] {
   if (
     !filters.languages.length &&
+    !filters.errorCategories.length &&
     !filters.models.length &&
     !filters.algorithms.length &&
     !filters.statuses.length
@@ -385,6 +388,12 @@ function applyFilters(cases: CaseSummary[], filters: FiltersState): CaseSummary[
   return cases.filter((summary) => {
     if (filters.languages.length && !filters.languages.includes(summary.language)) {
       return false
+    }
+    if (filters.errorCategories.length) {
+      const key = summary.firstErrorCategory == null ? 'unlabeled' : String(summary.firstErrorCategory)
+      if (!filters.errorCategories.includes(key)) {
+        return false
+      }
     }
     if (filters.models.length && !filters.models.includes(summary.modelSlug)) {
       return false

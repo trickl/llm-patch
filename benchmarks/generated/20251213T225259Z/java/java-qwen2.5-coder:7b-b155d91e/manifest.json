@@ -1,13 +1,18 @@
 {
   "case_id": "java-qwen2.5-coder:7b-b155d91e",
-  "language": "java",
-  "problem_id": "expr_eval_v1",
-  "model": "qwen2.5-coder:7b",
-  "provider": "ollama",
-  "timestamp_utc": "2025-12-13T23:17:59.571424+00:00",
   "compile_command": [
     "javac",
     "ExpressionEvaluator.java"
   ],
-  "return_code": 1
+  "first_error_category": 3,
+  "first_error_category_model": "gpt-oss:20b",
+  "first_error_category_timestamp_utc": "2025-12-20T12:53:50.107899+00:00",
+  "first_error_category_version": "v1",
+  "first_error_message": "ExpressionEvaluator.java:13: error: incompatible types: Tokenizer cannot be converted to List<Object>",
+  "language": "java",
+  "model": "qwen2.5-coder:7b",
+  "problem_id": "expr_eval_v1",
+  "provider": "ollama",
+  "return_code": 1,
+  "timestamp_utc": "2025-12-13T23:17:59.571424+00:00"
 }

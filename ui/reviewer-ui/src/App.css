@@ -146,6 +146,10 @@
   margin-left: 1rem;
 }
 
+.case-tree__node--level-4 {
+  margin-left: 1.35rem;
+}
+
 .case-tree__node.is-highlighted {
   border-color: rgba(92, 200, 255, 0.4);
   background: rgba(92, 200, 255, 0.05);

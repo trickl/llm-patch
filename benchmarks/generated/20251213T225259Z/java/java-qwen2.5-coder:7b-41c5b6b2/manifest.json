@@ -1,13 +1,18 @@
 {
   "case_id": "java-qwen2.5-coder:7b-41c5b6b2",
-  "language": "java",
-  "problem_id": "expr_eval_v1",
-  "model": "qwen2.5-coder:7b",
-  "provider": "ollama",
-  "timestamp_utc": "2025-12-13T23:17:50.826970+00:00",
   "compile_command": [
     "javac",
     "ExpressionEvaluator.java"
   ],
-  "return_code": 1
+  "first_error_category": 3,
+  "first_error_category_model": "gpt-oss:20b",
+  "first_error_category_timestamp_utc": "2025-12-20T12:53:36.809871+00:00",
+  "first_error_category_version": "v1",
+  "first_error_message": "ExpressionEvaluator.java:101: error: Node is not abstract and does not override abstract method evaluate() in Node",
+  "language": "java",
+  "model": "qwen2.5-coder:7b",
+  "problem_id": "expr_eval_v1",
+  "provider": "ollama",
+  "return_code": 1,
+  "timestamp_utc": "2025-12-13T23:17:50.826970+00:00"
 }

@@ -100,6 +100,12 @@ export class DatasetLoader {
         const errorsBefore = coerceNumber(result.errors_before)
         const errorsAfter = coerceNumber(result.errors_after)
         const compileReturncode = typeof result.compile_returncode === 'number' ? result.compile_returncode : null
+
+        const firstErrorCategory = coerceNumber((manifest as Record<string, unknown>)['first_error_category'])
+        const firstErrorMessage =
+          typeof (manifest as Record<string, unknown>)['first_error_message'] === 'string'
+            ? String((manifest as Record<string, unknown>)['first_error_message'])
+            : null
         const summary: PatchSummaryPublic = {
           id: patchId,
           caseId: manifest.case_id,
@@ -111,6 +117,8 @@ export class DatasetLoader {
           algorithm: result.algorithm,
           diffName,
           filePath: manifest.compile_command?.at(-1) ?? 'unknown',
+          firstErrorCategory,
+          firstErrorMessage,
           patchApplied,
           success: normalizeSuccess(Boolean(result.success), patchApplied, compileReturncode),
           errorsBefore,

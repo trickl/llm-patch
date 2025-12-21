@@ -1,10 +1,5 @@
 {
   "case_id": "typescript-qwen2.5-coder:7b-a5e5c7f4",
-  "language": "typescript",
-  "problem_id": "expr_eval_v1",
-  "model": "qwen2.5-coder:7b",
-  "provider": "ollama",
-  "timestamp_utc": "2025-12-13T23:56:02.212631+00:00",
   "compile_command": [
     "tsc",
     "--strict",
@@ -15,5 +10,15 @@
     "--noEmit",
     "expression_evaluator.ts"
   ],
-  "return_code": 2
+  "first_error_category": 1,
+  "first_error_category_model": "gpt-oss:20b",
+  "first_error_category_timestamp_utc": "2025-12-20T12:54:13.977364+00:00",
+  "first_error_category_version": "v1",
+  "first_error_message": "expression_evaluator.ts(123,1): error TS1434: Unexpected keyword or identifier.",
+  "language": "typescript",
+  "model": "qwen2.5-coder:7b",
+  "problem_id": "expr_eval_v1",
+  "provider": "ollama",
+  "return_code": 2,
+  "timestamp_utc": "2025-12-13T23:56:02.212631+00:00"
 }
