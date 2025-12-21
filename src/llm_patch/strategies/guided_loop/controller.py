@@ -21,6 +21,15 @@ from . import gathering
 from . import patching
 from . import prompting
 from . import evaluation
+from . import history
+from . import trace_planning
+from . import iteration_utils
+from . import critiques
+from . import phase_runner
+from . import gather_phase
+from . import critique_phase
+from . import phase_prompt_preparer
+from . import post_iteration
 PATCH_CONSTRAINTS_TEXT = "\n".join(
     [
         "- Do not reformat unrelated code.",
@@ -294,130 +303,28 @@ class GuidedConvergenceStrategy(PatchStrategy):
         )
 
     def _initial_history(self, inputs: GuidedLoopInputs) -> List[str]:
-        entries: List[str] = []
-        entries.extend(self._coerce_history_entries(inputs.history_seed))
-        entries.extend(self._coerce_history_entries(inputs.additional_context.get("history_seed")))
-        return entries
+        return history.initial_history(inputs)
 
     def _format_history(self, entries: Sequence[str], limit: int = 5) -> str:
-        filtered = [entry for entry in entries if entry]
-        if not filtered:
-            return self._history_placeholder()
-        tail = filtered[-limit:]
-        return "\n".join(f"- {entry}" for entry in tail)
+        return history.format_history(entries, placeholder=self._history_placeholder(), limit=limit)
 
     def _history_entry(self, iteration_index: int, outcome: IterationOutcome) -> str:
-        patch_state = "applied" if outcome.patch_applied else "not applied"
-        if outcome.patch_applied:
-            if outcome.compile_returncode is None:
-                compile_desc = "compile/test skipped"
-            elif outcome.compile_success:
-                compile_desc = "compile/test passed"
-            else:
-                compile_desc = f"compile/test failed (rc={outcome.compile_returncode})"
-        else:
-            compile_desc = outcome.patch_diagnostics or "patch unavailable"
-        critique_line = ""
-        if outcome.critique_feedback:
-            head = outcome.critique_feedback.strip().splitlines()[0].strip()
-            if head:
-                critique_line = f"critique: {head}"
-        parts = [f"Loop {iteration_index}: patch {patch_state}", compile_desc]
-        if critique_line:
-            parts.append(critique_line)
-        return "; ".join(parts)
+        return history.history_entry(iteration_index, outcome)
 
     @staticmethod
     def _coerce_history_entries(source: Any) -> List[str]:
-        if not source:
-            return []
-        if isinstance(source, str):
-            text = source.strip()
-            return [text] if text else []
-        if isinstance(source, Sequence):
-            entries: List[str] = []
-            for item in source:
-                if item is None:
-                    continue
-                text = str(item).strip()
-                if text:
-                    entries.append(text)
-            return entries
-        text = str(source).strip()
-        return [text] if text else []
+        return history.coerce_history_entries(source)
 
     def _plan_trace(self, request: GuidedLoopInputs) -> GuidedLoopTrace:
-        trace = GuidedLoopTrace(
-            strategy=self.name,
-            target_language=request.language,
-            case_id=request.case_id,
-            build_command=" ".join(request.compile_command or []) or None,
+        return trace_planning.plan_trace(
+            strategy_name=self.name,
+            config=self._config,
+            request=request,
+            render_prompt=lambda phase, req: self._render_prompt(phase, req),
         )
-        primary_iterations = max(1, self._config.max_iterations)
-        refine_iterations = max(0, self._config.refine_sub_iterations)
-        passes = max(1, self._config.main_loop_passes)
-        iteration_counter = 0
-        loop_counter = 0
-        refine_counter = 0
-
-        for pass_index in range(1, passes + 1):
-            include_full_critiques = pass_index > 1
-            for _ in range(primary_iterations):
-                iteration_counter += 1
-                loop_counter += 1
-                label = f"Loop {loop_counter}"
-                iteration = GuidedIterationArtifact(
-                    index=iteration_counter,
-                    kind="primary",
-                    label=label,
-                    pass_index=pass_index,
-                    include_full_critiques=include_full_critiques,
-                )
-                for phase in self._phase_order(kind="primary"):
-                    prompt = self._render_prompt(phase, request)
-                    artifact = PhaseArtifact(phase=phase, status=PhaseStatus.PLANNED, prompt=prompt)
-                    trace.add_phase(iteration, artifact)
-                trace.iterations.append(iteration)
-
-            for _ in range(refine_iterations):
-                iteration_counter += 1
-                refine_counter += 1
-                label = f"Refine {refine_counter}"
-                iteration = GuidedIterationArtifact(
-                    index=iteration_counter,
-                    kind="refine",
-                    label=label,
-                    pass_index=pass_index,
-                    include_full_critiques=include_full_critiques,
-                )
-                for phase in self._phase_order(kind="refine"):
-                    prompt = self._render_prompt(phase, request)
-                    artifact = PhaseArtifact(phase=phase, status=PhaseStatus.PLANNED, prompt=prompt)
-                    trace.add_phase(iteration, artifact)
-                trace.iterations.append(iteration)
-        trace.notes = (
-            "Trace contains prompt templates only. Actual execution will attach responses, checks, "
-            "and iteration history entries for each loop."
-        )
-        return trace
 
     def _phase_order(self, *, kind: str = "primary") -> List[GuidedPhase]:
-        if kind == "refine":
-            return [
-                GuidedPhase.PLANNING,
-                GuidedPhase.GATHER,
-                GuidedPhase.PROPOSE,
-                GuidedPhase.GENERATE_PATCH,
-                GuidedPhase.CRITIQUE,
-            ]
-        return [
-            GuidedPhase.DIAGNOSE,
-            GuidedPhase.PLANNING,
-            GuidedPhase.GATHER,
-            GuidedPhase.PROPOSE,
-            GuidedPhase.GENERATE_PATCH,
-            GuidedPhase.CRITIQUE,
-        ]
+        return trace_planning.phase_order(kind=kind)
 
     def _render_prompt(
         self,
@@ -522,66 +429,32 @@ class GuidedConvergenceStrategy(PatchStrategy):
     ) -> List[StrategyEvent]:
         if self._client is None:
             raise RuntimeError("GuidedConvergenceStrategy requires an LLM client to execute phases")
-        events: List[StrategyEvent] = []
-        artifact.status = PhaseStatus.RUNNING
-        artifact.started_at = self._now()
-        start_event = self._event(
-            kind=StrategyEventKind.PHASE_TRANSITION,
-            message="Starting Diagnose phase",
-            phase=artifact.phase.value,
-            iteration=iteration_index,
+        spec = phase_runner.PhaseRunSpec(
+            start_message="Starting Diagnose phase",
+            completed_message="Diagnose phase completed",
+            failed_message="Diagnose phase failed",
+            empty_failed_message="Diagnose phase failed: empty response",
+            exception_human_notes_prefix="Diagnose phase failed: ",
+            empty_human_notes="Diagnose phase returned an empty response.",
+            require_non_empty=True,
+            machine_check_key="diagnosis_text",
         )
-        self.emit(start_event)
-        events.append(start_event)
-        try:
-            response = self._client.complete(
+        events, response_text = phase_runner.run_phase(
+            artifact=artifact,
+            iteration=iteration,
+            iteration_index=iteration_index,
+            complete=lambda: self._client.complete(
                 prompt=artifact.prompt,
                 temperature=self._config.temperature,
                 model=self._config.interpreter_model,
-            )
-        except Exception as exc:  # pragma: no cover - transport level failure
-            artifact.status = PhaseStatus.FAILED
-            artifact.completed_at = self._now()
-            artifact.human_notes = f"Diagnose phase failed: {exc}"
-            failure_event = self._event(
-                kind=StrategyEventKind.NOTE,
-                message="Diagnose phase failed",
-                phase=artifact.phase.value,
-                iteration=iteration_index,
-                data={"error": str(exc)},
-            )
-            self.emit(failure_event)
-            events.append(failure_event)
-            return events
-        artifact.response = response.strip()
-        if artifact.response:
-            self._latest_diagnosis_output = artifact.response
-        if not artifact.response:
-            artifact.status = PhaseStatus.FAILED
-            artifact.completed_at = self._now()
-            artifact.human_notes = "Diagnose phase returned an empty response."
-            failure_event = self._event(
-                kind=StrategyEventKind.NOTE,
-                message="Diagnose phase failed: empty response",
-                phase=artifact.phase.value,
-                iteration=iteration_index,
-            )
-            self.emit(failure_event)
-            events.append(failure_event)
-            return events
-        machine_checks = self._ensure_machine_checks_dict(artifact)
-        machine_checks["diagnosis_text"] = artifact.response
-        artifact.status = PhaseStatus.COMPLETED
-        artifact.completed_at = self._now()
-        completion_event = self._event(
-            kind=StrategyEventKind.PHASE_TRANSITION,
-            message="Diagnose phase completed",
-            phase=artifact.phase.value,
-            iteration=iteration_index,
-            data={"characters": len(artifact.response)},
+            ),
+            spec=spec,
+            now=self._now,
+            make_event=self._event,
+            emit=self.emit,
+            ensure_machine_checks=self._ensure_machine_checks_dict,
+            on_response=lambda text: setattr(self, "_latest_diagnosis_output", text),
         )
-        self.emit(completion_event)
-        events.append(completion_event)
         return events
 
     def _execute_planning(
@@ -593,67 +466,32 @@ class GuidedConvergenceStrategy(PatchStrategy):
     ) -> List[StrategyEvent]:
         if self._client is None:
             raise RuntimeError("GuidedConvergenceStrategy requires an LLM client to execute phases")
-        events: List[StrategyEvent] = []
-        artifact.status = PhaseStatus.RUNNING
-        artifact.started_at = self._now()
-        start_event = self._event(
-            kind=StrategyEventKind.PHASE_TRANSITION,
-            message="Starting Planning phase",
-            phase=artifact.phase.value,
-            iteration=iteration_index,
+        spec = phase_runner.PhaseRunSpec(
+            start_message="Starting Planning phase",
+            completed_message="Planning phase completed",
+            failed_message="Planning phase failed",
+            empty_failed_message="Planning phase failed: empty response",
+            exception_human_notes_prefix="Planning phase failed: ",
+            empty_human_notes="Planning phase returned an empty response.",
+            require_non_empty=True,
+            machine_check_key="planning_notes",
+            set_iteration_failure_reason_on_empty="empty-response",
         )
-        self.emit(start_event)
-        events.append(start_event)
-        try:
-            response = self._client.complete(
+        events, _ = phase_runner.run_phase(
+            artifact=artifact,
+            iteration=iteration,
+            iteration_index=iteration_index,
+            complete=lambda: self._client.complete(
                 prompt=artifact.prompt,
                 temperature=self._config.temperature,
                 model=self._config.interpreter_model,
-            )
-        except Exception as exc:  # pragma: no cover - transport level failure
-            artifact.status = PhaseStatus.FAILED
-            artifact.completed_at = self._now()
-            artifact.human_notes = f"Planning phase failed: {exc}"
-            failure_event = self._event(
-                kind=StrategyEventKind.NOTE,
-                message="Planning phase failed",
-                phase=artifact.phase.value,
-                iteration=iteration_index,
-                data={"error": str(exc)},
-            )
-            self.emit(failure_event)
-            events.append(failure_event)
-            return events
-
-        artifact.response = response.strip()
-        if not artifact.response:
-            artifact.status = PhaseStatus.FAILED
-            artifact.completed_at = self._now()
-            artifact.human_notes = "Planning phase returned an empty response."
-            failure_event = self._event(
-                kind=StrategyEventKind.NOTE,
-                message="Planning phase failed: empty response",
-                phase=artifact.phase.value,
-                iteration=iteration_index,
-            )
-            iteration.failure_reason = "empty-response"
-            self.emit(failure_event)
-            events.append(failure_event)
-            return events
-
-        machine_checks = self._ensure_machine_checks_dict(artifact)
-        machine_checks["planning_notes"] = artifact.response
-        artifact.status = PhaseStatus.COMPLETED
-        artifact.completed_at = self._now()
-        completion_event = self._event(
-            kind=StrategyEventKind.PHASE_TRANSITION,
-            message="Planning phase completed",
-            phase=artifact.phase.value,
-            iteration=iteration_index,
-            data={"characters": len(artifact.response)},
+            ),
+            spec=spec,
+            now=self._now,
+            make_event=self._event,
+            emit=self.emit,
+            ensure_machine_checks=self._ensure_machine_checks_dict,
         )
-        self.emit(completion_event)
-        events.append(completion_event)
         return events
 
     def _execute_gather(
@@ -665,132 +503,30 @@ class GuidedConvergenceStrategy(PatchStrategy):
     ) -> List[StrategyEvent]:
         if self._client is None:
             raise RuntimeError("GuidedConvergenceStrategy requires an LLM client to execute phases")
-        events: List[StrategyEvent] = []
-        artifact.status = PhaseStatus.RUNNING
-        artifact.started_at = self._now()
-        start_event = self._event(
-            kind=StrategyEventKind.PHASE_TRANSITION,
-            message="Starting Gather phase",
-            phase=artifact.phase.value,
-            iteration=iteration_index,
+        return gather_phase.execute_gather(
+            artifact=artifact,
+            iteration=iteration,
+            iteration_index=iteration_index,
+            request=request,
+            complete=self._client.complete,
+            temperature=self._config.temperature,
+            model=self._config.interpreter_model,
+            allowed_categories=sorted(self.GATHER_ALLOWED_CATEGORIES),
+            allowed_target_kinds=sorted(self.GATHER_ALLOWED_TARGET_KINDS),
+            focused_context_window=lambda: self._focused_context_window(request),
+            find_phase_response=self._find_phase_response,
+            coerce_string=self._coerce_string,
+            record_iteration_telemetry=lambda iter_art, key, payload: self._record_iteration_telemetry(
+                iter_art,
+                key,
+                payload,
+                append=True,
+            ),
+            now=self._now,
+            make_event=self._event,
+            emit=self.emit,
+            ensure_machine_checks=self._ensure_machine_checks_dict,
         )
-        self.emit(start_event)
-        events.append(start_event)
-
-        base_prompt = artifact.prompt
-        response_text: str = ""
-        parsed: Optional[Dict[str, Any]] = None
-        last_error: Optional[str] = None
-        attempts = 0
-        for attempt in range(1, 4):
-            attempts = attempt
-            try:
-                # Gather requires strict structured output; if the client/provider supports it,
-                # request native JSON formatting at the API layer (e.g., Ollama "format": "json").
-                try:
-                    response = self._client.complete(
-                        prompt=artifact.prompt,
-                        temperature=self._config.temperature,
-                        model=self._config.interpreter_model,
-                        response_format="json",
-                    )
-                except TypeError:
-                    response = self._client.complete(
-                        prompt=artifact.prompt,
-                        temperature=self._config.temperature,
-                        model=self._config.interpreter_model,
-                    )
-            except Exception as exc:  # pragma: no cover - transport level failure
-                artifact.status = PhaseStatus.FAILED
-                artifact.completed_at = self._now()
-                artifact.human_notes = f"Gather phase failed: {exc}"
-                failure_event = self._event(
-                    kind=StrategyEventKind.NOTE,
-                    message="Gather phase failed",
-                    phase=artifact.phase.value,
-                    iteration=iteration_index,
-                    data={"error": str(exc)},
-                )
-                self.emit(failure_event)
-                events.append(failure_event)
-                return events
-
-            response_text = response.strip()
-            try:
-                parsed = gathering.parse_gather_response(
-                    response_text,
-                    allowed_categories=self.GATHER_ALLOWED_CATEGORIES,
-                    allowed_target_kinds=self.GATHER_ALLOWED_TARGET_KINDS,
-                )
-                last_error = None
-                break
-            except ValueError as exc:
-                parsed = None
-                last_error = str(exc)
-                # retry with a stronger constraint suffix
-                artifact.prompt = (
-                    base_prompt
-                    + "\n\nIMPORTANT: Your previous response was invalid. Output ONLY the JSON object (no prose, no code fences), matching the schema exactly."
-                )
-
-        # restore original prompt so the trace remains stable
-        artifact.prompt = base_prompt
-        artifact.response = response_text
-        machine_checks = self._ensure_machine_checks_dict(artifact)
-        machine_checks["gather"] = {
-            "attempts": attempts,
-            "parseError": last_error,
-        }
-
-        if parsed is None:
-            parsed = {"needs_more_context": False, "requests": []}
-            artifact.human_notes = (
-                "Gather stage did not return parseable JSON after 3 attempts; continuing without additional context."
-            )
-
-        planning_text = self._coerce_string(self._find_phase_response(iteration, GuidedPhase.PLANNING))
-        enforced_reason: Optional[str]
-        parsed, enforced_reason = gathering.enforce_gather_structural_requirements(
-            gather_request=parsed,
-            planning_text=planning_text,
-            context_window=self._focused_context_window(request),
-        )
-        machine_checks["gather"]["enforced"] = enforced_reason is not None
-        machine_checks["gather"]["enforcementReason"] = enforced_reason
-
-        machine_checks["gather_request"] = parsed
-        gathered_text, gathered_details = gathering.collect_gathered_context(
-            request,
-            parsed,
-            detect_error_line=error_processing.detect_error_line,
-        )
-        machine_checks["gathered_context_text"] = gathered_text
-        machine_checks["gathered_context"] = gathered_details
-        self._record_iteration_telemetry(
-            iteration,
-            "gather",
-            {
-                "request": parsed,
-                "collected": gathered_details,
-            },
-            append=True,
-        )
-
-        artifact.status = PhaseStatus.COMPLETED
-        artifact.completed_at = self._now()
-        completion_event = self._event(
-            kind=StrategyEventKind.PHASE_TRANSITION,
-            message="Gather phase completed",
-            phase=artifact.phase.value,
-            iteration=iteration_index,
-            data={
-                "characters": len(artifact.response or ""),
-                "gatheredCharacters": len(gathered_text or ""),
-            },
-        )
-        self.emit(completion_event)
-        events.append(completion_event)
-        return events
 
 
     def _execute_propose(
@@ -802,65 +538,31 @@ class GuidedConvergenceStrategy(PatchStrategy):
     ) -> List[StrategyEvent]:
         if self._client is None:
             raise RuntimeError("GuidedConvergenceStrategy requires an LLM client to execute phases")
-        events: List[StrategyEvent] = []
-        artifact.status = PhaseStatus.RUNNING
-        artifact.started_at = self._now()
-        start_event = self._event(
-            kind=StrategyEventKind.PHASE_TRANSITION,
-            message="Starting Propose phase",
-            phase=artifact.phase.value,
-            iteration=iteration_index,
+        spec = phase_runner.PhaseRunSpec(
+            start_message="Starting Propose phase",
+            completed_message="Propose phase completed",
+            failed_message="Propose phase failed",
+            empty_failed_message="Propose phase failed: empty response",
+            exception_human_notes_prefix="Propose phase failed: ",
+            empty_human_notes="Proposal response was empty.",
+            require_non_empty=True,
+            machine_check_key="proposal",
         )
-        self.emit(start_event)
-        events.append(start_event)
-        try:
-            response = self._client.complete(
+        events, _ = phase_runner.run_phase(
+            artifact=artifact,
+            iteration=iteration,
+            iteration_index=iteration_index,
+            complete=lambda: self._client.complete(
                 prompt=artifact.prompt,
                 temperature=self._config.temperature,
                 model=self._config.patch_model,
-            )
-        except Exception as exc:  # pragma: no cover - transport level failure
-            artifact.status = PhaseStatus.FAILED
-            artifact.completed_at = self._now()
-            artifact.human_notes = f"Propose phase failed: {exc}"
-            failure_event = self._event(
-                kind=StrategyEventKind.NOTE,
-                message="Propose phase failed",
-                phase=artifact.phase.value,
-                iteration=iteration_index,
-                data={"error": str(exc)},
-            )
-            self.emit(failure_event)
-            events.append(failure_event)
-            return events
-        artifact.response = response.strip()
-        artifact.response = response.strip()
-        if not artifact.response:
-            artifact.status = PhaseStatus.FAILED
-            artifact.completed_at = self._now()
-            artifact.human_notes = "Proposal response was empty."
-            failure_event = self._event(
-                kind=StrategyEventKind.NOTE,
-                message="Propose phase failed: empty response",
-                phase=artifact.phase.value,
-                iteration=iteration_index,
-            )
-            self.emit(failure_event)
-            events.append(failure_event)
-            return events
-        machine_checks = self._ensure_machine_checks_dict(artifact)
-        machine_checks["proposal"] = artifact.response
-        artifact.status = PhaseStatus.COMPLETED
-        artifact.completed_at = self._now()
-        completion_event = self._event(
-            kind=StrategyEventKind.PHASE_TRANSITION,
-            message="Propose phase completed",
-            phase=artifact.phase.value,
-            iteration=iteration_index,
-            data={"characters": len(artifact.response)},
+            ),
+            spec=spec,
+            now=self._now,
+            make_event=self._event,
+            emit=self.emit,
+            ensure_machine_checks=self._ensure_machine_checks_dict,
         )
-        self.emit(completion_event)
-        events.append(completion_event)
         return events
 
     def _execute_generate_patch(
@@ -871,49 +573,31 @@ class GuidedConvergenceStrategy(PatchStrategy):
     ) -> List[StrategyEvent]:
         if self._client is None:
             raise RuntimeError("GuidedConvergenceStrategy requires an LLM client to execute phases")
-        events: List[StrategyEvent] = []
-        artifact.status = PhaseStatus.RUNNING
-        artifact.started_at = self._now()
-        start_event = self._event(
-            kind=StrategyEventKind.PHASE_TRANSITION,
-            message="Starting Generate Patch phase",
-            phase=artifact.phase.value,
-            iteration=iteration_index,
+        spec = phase_runner.PhaseRunSpec(
+            start_message="Starting Generate Patch phase",
+            completed_message="Generate Patch phase completed",
+            failed_message="Generate Patch phase failed",
+            empty_failed_message="Generate Patch phase failed: empty response",
+            exception_human_notes_prefix="Generate Patch phase failed: ",
+            empty_human_notes="Generate Patch phase returned an empty response.",
+            require_non_empty=False,
+            machine_check_key=None,
         )
-        self.emit(start_event)
-        events.append(start_event)
-        try:
-            response = self._client.complete(
+        events, _ = phase_runner.run_phase(
+            artifact=artifact,
+            iteration=None,
+            iteration_index=iteration_index,
+            complete=lambda: self._client.complete(
                 prompt=artifact.prompt,
                 temperature=self._config.temperature,
                 model=self._config.patch_model,
-            )
-        except Exception as exc:  # pragma: no cover - transport level failure
-            artifact.status = PhaseStatus.FAILED
-            artifact.completed_at = self._now()
-            artifact.human_notes = f"Generate Patch phase failed: {exc}"
-            failure_event = self._event(
-                kind=StrategyEventKind.NOTE,
-                message="Generate Patch phase failed",
-                phase=artifact.phase.value,
-                iteration=iteration_index,
-                data={"error": str(exc)},
-            )
-            self.emit(failure_event)
-            events.append(failure_event)
-            return events
-        artifact.response = response.strip()
-        artifact.status = PhaseStatus.COMPLETED
-        artifact.completed_at = self._now()
-        completion_event = self._event(
-            kind=StrategyEventKind.PHASE_TRANSITION,
-            message="Generate Patch phase completed",
-            phase=artifact.phase.value,
-            iteration=iteration_index,
-            data={"characters": len(artifact.response)},
+            ),
+            spec=spec,
+            now=self._now,
+            make_event=self._event,
+            emit=self.emit,
+            ensure_machine_checks=self._ensure_machine_checks_dict,
         )
-        self.emit(completion_event)
-        events.append(completion_event)
         return events
 
     def _execute_critique(
@@ -925,260 +609,31 @@ class GuidedConvergenceStrategy(PatchStrategy):
     ) -> tuple[List[StrategyEvent], IterationOutcome | None]:
         if self._client is None:
             raise RuntimeError("GuidedConvergenceStrategy requires an LLM client to execute phases")
-        events: List[StrategyEvent] = []
-        artifact.status = PhaseStatus.RUNNING
-        artifact.started_at = self._now()
-        start_event = self._event(
-            kind=StrategyEventKind.PHASE_TRANSITION,
-            message="Starting Critique checks",
-            phase=artifact.phase.value,
-            iteration=iteration_index,
-        )
-        self.emit(start_event)
-        events.append(start_event)
-
-        diff_text = self._find_phase_response(iteration, GuidedPhase.GENERATE_PATCH)
-        if not diff_text:
-            artifact.status = PhaseStatus.FAILED
-            artifact.completed_at = self._now()
-            artifact.human_notes = "Generate Patch did not produce a diff to critique."
-            failure_event = self._event(
-                kind=StrategyEventKind.NOTE,
-                message="Critique skipped: missing diff",
-                phase=artifact.phase.value,
-                iteration=iteration_index,
-            )
-            iteration.failure_reason = "missing-diff"
-            self.emit(failure_event)
-            events.append(failure_event)
-            return events, IterationOutcome(
-                diff_text=None,
-                patch_applied=False,
-                patch_diagnostics="No diff available",
-                critique_feedback=artifact.response or artifact.human_notes,
-            )
-
-        diff_stats = self._summarize_diff(diff_text)
-        replacement_blocks = patching.parse_replacement_blocks(diff_text)
-        artifact.machine_checks = {
-            "diffStats": diff_stats,
-        }
-        artifact.metrics = {
-            "diff_added": float(diff_stats["added_lines"]),
-            "diff_removed": float(diff_stats["removed_lines"]),
-            "diff_hunks": float(diff_stats["hunks"]),
-        }
-
-        experiment_summary = self._coerce_string(self._find_phase_response(iteration, GuidedPhase.PLANNING))
-        active_hypothesis_text = experiment_summary or self._experiment_summary_placeholder()
-        error_text = request.error_text or "(error unavailable)"
-        history_context = iteration.history_context or self._history_placeholder()
-        pre_span, post_span = patching.diff_spans(
-            diff_text,
-            source_text=request.source_text,
-            patch_applier=self._patch_applier,
-        )
-        before_snippet = self._critique_snippet(
-            request.source_text,
-            pre_span,
-            fallback=self._focused_context_window(request),
-        )
-        outcome = IterationOutcome(diff_text=diff_text, critique_feedback=artifact.response)
-        outcome.diff_span = pre_span
-
-        if diff_stats["hunks"] == 0:
-            artifact.status = PhaseStatus.FAILED
-            artifact.completed_at = self._now()
-            artifact.human_notes = "Diff template invalid: no ORIGINAL/CHANGED blocks or @@ hunks were found."
-            iteration.failure_reason = "empty-diff"
-            failure_event = self._event(
-                kind=StrategyEventKind.NOTE,
-                message="Critique failed: malformed diff template",
-                phase=artifact.phase.value,
-                iteration=iteration_index,
-                data={"diff_excerpt": diff_text[:200]},
-            )
-            self.emit(failure_event)
-            events.append(failure_event)
-            outcome.patch_diagnostics = "Diff template missing ORIGINAL/CHANGED blocks"
-            after_snippet = "Patched output unavailable because the diff template had no ORIGINAL/CHANGED blocks."
-            self._finalize_critique_response(
-                artifact,
-                iteration_index,
-                events,
-                applied=False,
-                history_context=history_context,
-                error_text=error_text,
-                active_hypothesis_text=active_hypothesis_text,
-                before_snippet=before_snippet,
-                after_snippet=after_snippet,
-                diff_text=diff_text,
-                diff_stats=diff_stats,
-                outcome=outcome,
-            )
-            return events, outcome
-
-        patched_text, applied, patch_message, span_override = patching.apply_diff_text(
-            request,
-            diff_text,
-            replacement_blocks,
+        return critique_phase.execute_critique(
+            artifact=artifact,
+            iteration=iteration,
+            iteration_index=iteration_index,
+            request=request,
+            compile_check=self._config.compile_check,
+            now=self._now,
+            make_event=self._event,
+            emit=self.emit,
+            summarize_diff=self._summarize_diff,
+            critique_snippet=lambda text, span, **kwargs: self._critique_snippet(text, span, **kwargs),
+            focused_context_window=lambda req: self._focused_context_window(req),
+            find_phase_response=self._find_phase_response,
+            coerce_string=self._coerce_string,
+            detect_error_line=self._detect_error_line,
+            error_fingerprint=self._error_fingerprint,
+            finalize_critique_response=self._finalize_critique_response,
+            history_placeholder=self._history_placeholder,
+            experiment_summary_placeholder=self._experiment_summary_placeholder,
             patch_applier=self._patch_applier,
             dmp=self._dmp,
-            detect_error_line=error_processing.detect_error_line,
             context_radius=self.CONTEXT_RADIUS,
             suffix_collapse_max_lines=self.SUFFIX_COLLAPSE_MAX_LINES,
             suffix_collapse_similarity=self.SUFFIX_COLLAPSE_SIMILARITY,
         )
-        if span_override:
-            pre_span, post_span = span_override
-            outcome.diff_span = pre_span
-        artifact.machine_checks["patchApplication"] = {
-            "applied": applied,
-            "message": patch_message,
-        }
-        outcome.patch_applied = applied
-        outcome.patch_diagnostics = patch_message
-        if applied:
-            outcome.patched_text = patched_text
-
-        if not applied:
-            artifact.status = PhaseStatus.FAILED
-            artifact.completed_at = self._now()
-            artifact.human_notes = "Patch application failed; queue another guided loop iteration to retry."
-            iteration.failure_reason = "patch-apply"
-            failure_event = self._event(
-                kind=StrategyEventKind.NOTE,
-                message="Critique failed: patch application",
-                phase=artifact.phase.value,
-                iteration=iteration_index,
-                data={"diagnostics": patch_message},
-            )
-            self.emit(failure_event)
-            events.append(failure_event)
-            after_snippet = "Patched output unavailable because the diff could not be applied."
-            self._finalize_critique_response(
-                artifact,
-                iteration_index,
-                events,
-                applied=False,
-                history_context=history_context,
-                error_text=error_text,
-                active_hypothesis_text=active_hypothesis_text,
-                before_snippet=before_snippet,
-                after_snippet=after_snippet,
-                diff_text=diff_text,
-                diff_stats=diff_stats,
-                outcome=outcome,
-            )
-            return events, outcome
-
-        compile_result = None
-        if self._config.compile_check and request.compile_command:
-            compile_result = run_compile(request, patched_text)
-            artifact.machine_checks["compile"] = dict(compile_result)
-            outcome.compile_returncode = compile_result.get("returncode")
-            outcome.compile_stdout = compile_result.get("stdout")
-            outcome.compile_stderr = compile_result.get("stderr")
-            fingerprint_source: Optional[str]
-            compile_event = self._event(
-                kind=StrategyEventKind.NOTE,
-                message="Compile command completed",
-                phase=artifact.phase.value,
-                iteration=iteration_index,
-                data={
-                    "command": compile_result.get("command"),
-                    "returncode": compile_result.get("returncode"),
-                },
-            )
-            self.emit(compile_event)
-            events.append(compile_event)
-            if compile_result.get("returncode") == 0:
-                fingerprint_source = None
-            else:
-                fingerprint_source = compile_result.get("stderr") or compile_result.get("stdout")
-                error_message = (fingerprint_source or "").strip()
-                outcome.error_message = error_message or None
-                if error_message:
-                    outcome.error_location = self._detect_error_line(error_message, request.source_path.name)
-            outcome.error_fingerprint = self._error_fingerprint(fingerprint_source)
-            if compile_result.get("returncode") != 0:
-                artifact.status = PhaseStatus.FAILED
-                artifact.completed_at = self._now()
-                artifact.human_notes = "Compile/Test command failed; provide diagnostics to the next guided loop iteration."
-                iteration.failure_reason = f"compile-{compile_result.get('returncode')}"
-                failure_event = self._event(
-                    kind=StrategyEventKind.NOTE,
-                    message="Critique failed: compile",
-                    phase=artifact.phase.value,
-                    iteration=iteration_index,
-                    data={
-                        "returncode": compile_result.get("returncode"),
-                        "stderr": compile_result.get("stderr", "")[:500],
-                    },
-                )
-                self.emit(failure_event)
-                events.append(failure_event)
-                after_snippet = self._critique_snippet(
-                    patched_text,
-                    post_span,
-                    fallback="Patched output unavailable.",
-                )
-                self._finalize_critique_response(
-                    artifact,
-                    iteration_index,
-                    events,
-                    applied=True,
-                    history_context=history_context,
-                    error_text=error_text,
-                    active_hypothesis_text=active_hypothesis_text,
-                    before_snippet=before_snippet,
-                    after_snippet=after_snippet,
-                    diff_text=diff_text,
-                    diff_stats=diff_stats,
-                    outcome=outcome,
-                )
-                return events, outcome
-
-        artifact.status = PhaseStatus.COMPLETED
-        artifact.completed_at = self._now()
-        after_snippet = self._critique_snippet(
-            patched_text,
-            post_span,
-            fallback="Patched output unavailable.",
-        )
-        self._finalize_critique_response(
-            artifact,
-            iteration_index,
-            events,
-            applied=True,
-            history_context=history_context,
-            error_text=error_text,
-            active_hypothesis_text=active_hypothesis_text,
-            before_snippet=before_snippet,
-            after_snippet=after_snippet,
-            diff_text=diff_text,
-            diff_stats=diff_stats,
-            outcome=outcome,
-        )
-        iteration.failure_reason = None
-        iteration.accepted = outcome.patch_applied and (
-            not self._config.compile_check or not request.compile_command or outcome.compile_success
-        )
-        completion_event = self._event(
-            kind=StrategyEventKind.PHASE_TRANSITION,
-            message="Critique checks completed",
-            phase=artifact.phase.value,
-            iteration=iteration_index,
-            data={
-                "patch_applied": outcome.patch_applied,
-                "compile_success": outcome.compile_success,
-            },
-        )
-        self.emit(completion_event)
-        events.append(completion_event)
-        if not outcome.critique_feedback:
-            outcome.critique_feedback = artifact.response or artifact.human_notes
-        return events, outcome
 
     @staticmethod
     def _now() -> str:
@@ -1193,99 +648,31 @@ class GuidedConvergenceStrategy(PatchStrategy):
         prior_outcome: IterationOutcome | None,
         history_context: str,
     ) -> None:
-        critique_feedback = prior_outcome.critique_feedback if prior_outcome else self._critique_placeholder()
-        previous_diff = (
-            prior_outcome.diff_text if (prior_outcome and prior_outcome.diff_text) else self._previous_diff_placeholder()
+        phase_prompt_preparer.prepare_phase_prompt(
+            artifact=artifact,
+            iteration=iteration,
+            request=request,
+            prior_outcome=prior_outcome,
+            history_context=history_context,
+            render_prompt=lambda phase, req, **kwargs: self._render_prompt(phase, req, **kwargs),
+            focused_context_window=self._focused_context_window,
+            format_prior_patch_summary=lambda outcome: self._format_prior_patch_summary(outcome),
+            build_refinement_context=self._build_refinement_context,
+            critique_history_text=lambda: self._critique_history_text(),
+            find_phase_response=self._find_phase_response,
+            find_gathered_context=self._find_gathered_context,
+            coerce_string=self._coerce_string,
+            latest_diagnosis_output=self._latest_diagnosis_output,
+            critique_placeholder=self._critique_placeholder,
+            previous_diff_placeholder=self._previous_diff_placeholder,
+            experiment_summary_placeholder=self._experiment_summary_placeholder,
+            diagnosis_output_placeholder=self._diagnosis_output_placeholder,
+            critique_output_placeholder=self._critique_output_placeholder,
+            proposal_placeholder=self._proposal_placeholder,
+            gathered_context_placeholder=self._gathered_context_placeholder,
+            history_placeholder=self._history_placeholder,
+            refinement_context_placeholder=self._refinement_context_placeholder,
         )
-        context_override = self._focused_context_window(request)
-        prior_patch_summary = self._format_prior_patch_summary(prior_outcome)
-        is_refine_iteration = iteration.kind == "refine"
-        refinement_context_text = self._refinement_context_placeholder()
-        if is_refine_iteration:
-            refinement_context_text = self._build_refinement_context(prior_outcome)
-
-        if getattr(iteration, "include_full_critiques", False):
-            full_transcript = self._critique_history_text()
-            if full_transcript:
-                critique_feedback = full_transcript
-
-        phase_history_context = history_context
-        phase_previous_diff = previous_diff
-        phase_critique_feedback = critique_feedback
-        phase_prior_patch_summary = prior_patch_summary
-
-        if artifact.phase == GuidedPhase.DIAGNOSE:
-            artifact.prompt = self._render_prompt(
-                GuidedPhase.DIAGNOSE,
-                request,
-                context_override=context_override,
-                extra={
-                    "critique_feedback": phase_critique_feedback,
-                    "previous_diff": phase_previous_diff,
-                    "history_context": phase_history_context,
-                    "prior_patch_summary": phase_prior_patch_summary,
-                },
-            )
-        elif artifact.phase == GuidedPhase.PLANNING:
-            diagnosis_output = self._find_phase_response(iteration, GuidedPhase.DIAGNOSE)
-            if not diagnosis_output:
-                diagnosis_output = self._latest_diagnosis_output
-            critique_transcript = self._critique_history_text()
-            artifact.prompt = self._render_prompt(
-                GuidedPhase.PLANNING,
-                request,
-                context_override=context_override,
-                extra={
-                    "diagnosis_output": diagnosis_output or self._diagnosis_output_placeholder(),
-                    "critique_output": critique_transcript or self._critique_output_placeholder(),
-                },
-            )
-        elif artifact.phase == GuidedPhase.PROPOSE:
-            experiment_result = self._coerce_string(self._find_phase_response(iteration, GuidedPhase.PLANNING))
-            gathered_context = self._coerce_string(self._find_gathered_context(iteration))
-            artifact.prompt = self._render_prompt(
-                GuidedPhase.PROPOSE,
-                request,
-                context_override=context_override,
-                extra={
-                    "experiment_summary": experiment_result or self._experiment_summary_placeholder(),
-                    "gathered_context": gathered_context or self._gathered_context_placeholder(),
-                    "critique_feedback": phase_critique_feedback,
-                    "history_context": phase_history_context,
-                    "previous_diff": phase_previous_diff,
-                    "prior_patch_summary": phase_prior_patch_summary,
-                    "refinement_context": refinement_context_text,
-                },
-            )
-        elif artifact.phase == GuidedPhase.GATHER:
-            experiment_result = self._coerce_string(self._find_phase_response(iteration, GuidedPhase.PLANNING))
-            artifact.prompt = self._render_prompt(
-                GuidedPhase.GATHER,
-                request,
-                context_override=context_override,
-                extra={
-                    "experiment_summary": experiment_result or self._experiment_summary_placeholder(),
-                },
-            )
-        elif artifact.phase == GuidedPhase.GENERATE_PATCH:
-            planning_result = self._coerce_string(self._find_phase_response(iteration, GuidedPhase.PLANNING))
-            active_hypothesis_text = planning_result or self._experiment_summary_placeholder()
-            proposal_summary = self._coerce_string(self._find_phase_response(iteration, GuidedPhase.PROPOSE))
-            gathered_context = self._coerce_string(self._find_gathered_context(iteration))
-            artifact.prompt = self._render_prompt(
-                GuidedPhase.GENERATE_PATCH,
-                request,
-                context_override=context_override,
-                extra={
-                    "diagnosis": active_hypothesis_text,
-                    "diagnosis_explanation": active_hypothesis_text,
-                    "proposal": proposal_summary or self._proposal_placeholder(),
-                    "gathered_context": gathered_context or self._gathered_context_placeholder(),
-                    "previous_diff": phase_previous_diff,
-                    "prior_patch_summary": phase_prior_patch_summary,
-                    "refinement_context": refinement_context_text,
-                },
-            )
 
     def _format_prior_patch_summary(self, prior_outcome: IterationOutcome | None, *, max_chars: int = 4000) -> str:
         return prompting.format_prior_patch_summary(prior_outcome, max_chars=max_chars)
@@ -1294,43 +681,20 @@ class GuidedConvergenceStrategy(PatchStrategy):
         return "Refinement iterations reuse the most recent Diagnose output; do not rerun Diagnose."
 
     def _critique_history_text(self, limit: Optional[int] = None) -> Optional[str]:
-        if not self._critique_transcripts:
-            return None
-        transcripts = self._critique_transcripts[-limit:] if limit else self._critique_transcripts
-        separator = "\n\n---\n\n"
-        return separator.join(transcripts)
+        return critiques.critique_history_text(self._critique_transcripts, limit=limit)
 
     def _find_phase_response(self, iteration: GuidedIterationArtifact, phase: GuidedPhase) -> Optional[str]:
-        for artifact in iteration.phases:
-            if artifact.phase == phase and artifact.response:
-                return artifact.response
-        return None
+        return iteration_utils.find_phase_response(iteration, phase)
 
     def _find_phase_artifact(self, iteration: GuidedIterationArtifact, phase: GuidedPhase) -> Optional[PhaseArtifact]:
-        for artifact in iteration.phases:
-            if artifact.phase == phase:
-                return artifact
-        return None
+        return iteration_utils.find_phase_artifact(iteration, phase)
 
     def _find_gathered_context(self, iteration: GuidedIterationArtifact) -> Optional[str]:
-        artifact = self._find_phase_artifact(iteration, GuidedPhase.GATHER)
-        if not artifact or not isinstance(artifact.machine_checks, Mapping):
-            return None
-        gathered = artifact.machine_checks.get("gathered_context_text")
-        return gathered if isinstance(gathered, str) else None
+        return iteration_utils.find_gathered_context(iteration)
 
     @staticmethod
     def _coerce_string(value: Any) -> Optional[str]:
-        if value is None:
-            return None
-        if isinstance(value, str):
-            text = value
-        elif isinstance(value, (int, float)):
-            text = str(value)
-        else:
-            text = str(value)
-        stripped = text.strip()
-        return stripped or None
+        return iteration_utils.coerce_string(value)
 
     @staticmethod
     def _record_iteration_telemetry(
@@ -1343,49 +707,27 @@ class GuidedConvergenceStrategy(PatchStrategy):
         evaluation.record_iteration_telemetry(iteration, key, payload, append=append)
 
     def _record_critique_transcript(self, transcript: Optional[str]) -> None:
-        if transcript:
-            self._critique_transcripts.append(transcript)
+        critiques.record_critique_transcript(self._critique_transcripts, transcript)
     def _post_iteration_evaluation(
         self,
         iteration: GuidedIterationArtifact,
         outcome: IterationOutcome,
         previous_outcome: IterationOutcome | None,
     ) -> List[StrategyEvent]:
-        events: List[StrategyEvent] = []
-        if not outcome:
-            return events
-
-        stall_summary = self._detect_stall(previous_outcome, outcome)
-        if stall_summary:
-            iteration.failure_reason = "stall"
-            self._record_iteration_telemetry(iteration, "stall", stall_summary, append=True)
-            stall_event = self._event(
-                kind=StrategyEventKind.NOTE,
-                message="Stall detected: diff and error signature repeated",
-                iteration=iteration.index,
-                data=stall_summary,
-            )
-            self.emit(stall_event)
-            events.append(stall_event)
-            return events
-
-        prev_fp = outcome.previous_error_fingerprint
-        curr_fp = outcome.error_fingerprint
-        if prev_fp is not None and curr_fp is not None and prev_fp == curr_fp:
-            iteration.failure_reason = iteration.failure_reason or "unchanged-error"
-            payload = {"previous": prev_fp, "current": curr_fp}
-            self._record_iteration_telemetry(iteration, "unchangedError", payload, append=True)
-            unchanged_event = self._event(
-                kind=StrategyEventKind.NOTE,
-                message="Error signature unchanged after patch",
-                iteration=iteration.index,
-                data=payload,
-            )
-            self.emit(unchanged_event)
-            events.append(unchanged_event)
-            return events
-
-        return events
+        return post_iteration.post_iteration_evaluation(
+            iteration=iteration,
+            outcome=outcome,
+            previous_outcome=previous_outcome,
+            detect_stall=self._detect_stall,
+            record_iteration_telemetry=lambda iter_art, key, payload: self._record_iteration_telemetry(
+                iter_art,
+                key,
+                payload,
+                append=True,
+            ),
+            make_event=self._event,
+            emit=self.emit,
+        )
 
     def _detect_stall(
         self,
