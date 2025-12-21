@@ -1,7 +1,8 @@
 """Guided Convergence Loop strategy scaffolding."""
 from .checklist import GUIDED_LOOP_CHECKLIST, GUIDED_LOOP_CHECKLIST_JSON, GUIDED_LOOP_CHECKLIST_TEXT
-from .controller import GuidedConvergenceStrategy, GuidedLoopConfig, GuidedLoopInputs, GuidedLoopResult
+from .controller import GuidedConvergenceStrategy
 from .hypothesis import Hypothesis, HypothesisManager, HypothesisSet, HypothesisStatus
+from .models import GuidedLoopConfig, GuidedLoopInputs, GuidedLoopResult
 from .phases import GuidedLoopTrace, GuidedPhase, GuidedIterationArtifact, PhaseArtifact, PhaseStatus
 
 __all__ = [
