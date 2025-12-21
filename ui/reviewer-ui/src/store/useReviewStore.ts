@@ -20,6 +20,7 @@ export interface FiltersState {
   models: string[]
   algorithms: string[]
   statuses: CaseStatusFilter[]
+  fingerprintQuery: string
 }
 
 function createEmptyFilters(): FiltersState {
@@ -29,6 +30,7 @@ function createEmptyFilters(): FiltersState {
     models: [],
     algorithms: [],
     statuses: [],
+    fingerprintQuery: '',
   }
 }
 
@@ -60,6 +62,7 @@ interface ReviewActions {
   updateMetrics: (caseId: string, updates: Partial<CaseMetrics>) => void
   markFinalOutcome: (caseId: string, outcome: FinalOutcome) => void
   setFilterValues: <K extends FilterKey>(key: K, values: FiltersState[K]) => void
+  setFingerprintQuery: (query: string) => void
   clearFilters: () => void
   refreshDataset: () => Promise<void>
   rerunCase: (caseId: string) => Promise<void>
@@ -92,6 +95,7 @@ type ReviewAction =
   | { type: 'SELECT_CASE'; caseId: string | null }
   | { type: 'UPDATE_METRICS'; caseId: string; updates: Partial<CaseMetrics> }
   | { type: 'SET_FILTER_VALUES'; key: FilterKey; values: FiltersState[FilterKey] }
+  | { type: 'SET_FINGERPRINT_QUERY'; query: string }
   | { type: 'CLEAR_FILTERS' }
   | { type: 'DATASET_REFRESH_REQUEST' }
   | { type: 'DATASET_REFRESH_SUCCESS' }
@@ -151,6 +155,14 @@ function reviewReducer(state: ReviewDataState, action: ReviewAction): ReviewData
         filters: {
           ...state.filters,
           [action.key]: action.values,
+        },
+      }
+    case 'SET_FINGERPRINT_QUERY':
+      return {
+        ...state,
+        filters: {
+          ...state.filters,
+          fingerprintQuery: action.query,
         },
       }
     case 'CLEAR_FILTERS':
@@ -277,6 +289,10 @@ export function ReviewProvider({ children }: { children: ReactNode }) {
     [],
   )
 
+  const setFingerprintQuery = useCallback((query: string) => {
+    dispatch({ type: 'SET_FINGERPRINT_QUERY', query })
+  }, [])
+
   const clearFilters = useCallback(() => {
     dispatch({ type: 'CLEAR_FILTERS' })
   }, [])
@@ -328,6 +344,7 @@ export function ReviewProvider({ children }: { children: ReactNode }) {
       updateMetrics,
       markFinalOutcome,
       setFilterValues,
+      setFingerprintQuery,
       clearFilters,
       refreshDataset,
       rerunCase,
@@ -340,6 +357,7 @@ export function ReviewProvider({ children }: { children: ReactNode }) {
       updateMetrics,
       markFinalOutcome,
       setFilterValues,
+      setFingerprintQuery,
       clearFilters,
       refreshDataset,
       rerunCase,
@@ -376,7 +394,9 @@ function annotate(existing: AnnotationState | undefined, updates?: Partial<CaseM
 }
 
 function applyFilters(cases: CaseSummary[], filters: FiltersState): CaseSummary[] {
+  const fingerprintQuery = filters.fingerprintQuery.trim().toLowerCase()
   if (
+    !fingerprintQuery.length &&
     !filters.languages.length &&
     !filters.errorCategories.length &&
     !filters.models.length &&
@@ -386,6 +406,12 @@ function applyFilters(cases: CaseSummary[], filters: FiltersState): CaseSummary[
     return cases
   }
   return cases.filter((summary) => {
+    if (fingerprintQuery.length) {
+      const fingerprint = summary.fingerprint.trim().toLowerCase()
+      if (!fingerprint.includes(fingerprintQuery)) {
+        return false
+      }
+    }
     if (filters.languages.length && !filters.languages.includes(summary.language)) {
       return false
     }
@@ -431,6 +457,7 @@ export const selectFetchCases = (state: ReviewContextValue) => state.fetchCases
 export const selectFetchCaseDetail = (state: ReviewContextValue) => state.fetchCaseDetail
 export const selectClearFilters = (state: ReviewContextValue) => state.clearFilters
 export const selectSetFilterValues = (state: ReviewContextValue) => state.setFilterValues
+export const selectSetFingerprintQuery = (state: ReviewContextValue) => state.setFingerprintQuery
 export const selectDatasetRefreshing = (state: ReviewContextValue) => state.datasetRefreshing
 export const selectDatasetRefreshError = (state: ReviewContextValue) => state.datasetRefreshError
 export const selectRefreshDataset = (state: ReviewContextValue) => state.refreshDataset

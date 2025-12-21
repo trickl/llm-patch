@@ -13,17 +13,28 @@ class OllamaError(RuntimeError):
     """Raised when the Ollama HTTP API cannot satisfy a request."""
 
 
-def call_ollama(model: str, prompt: str, temperature: float = 0.0, *, host: str | None = None) -> str:
+def call_ollama(
+    model: str,
+    prompt: str,
+    temperature: float = 0.0,
+    *,
+    host: str | None = None,
+    response_format: str | None = None,
+) -> str:
     """Send a completion request to Ollama and return the concatenated response."""
 
     resolved_host = (host or os.environ.get("OLLAMA_HOST", "http://localhost:11434")).rstrip("/")
     url = f"{resolved_host}/api/generate"
-    payload = {
+    payload: dict[str, object] = {
         "model": model,
         "prompt": prompt,
         "options": {"temperature": temperature},
         "stream": True,
     }
+    if response_format:
+        # Ollama supports JSON mode via "format": "json".
+        # See: https://github.com/ollama/ollama/blob/main/docs/api.md (generate)
+        payload["format"] = response_format
     request = Request(url, data=json.dumps(payload).encode("utf-8"), headers={"Content-Type": "application/json"})
     chunks: list[str] = []
     try:
@@ -53,7 +64,20 @@ class OllamaLLMClient:
     temperature: float = 0.0
     host: Optional[str] = None
 
-    def complete(self, *, prompt: str, temperature: float | None = None, model: str | None = None) -> str:
+    def complete(
+        self,
+        *,
+        prompt: str,
+        temperature: float | None = None,
+        model: str | None = None,
+        response_format: str | None = None,
+    ) -> str:
         effective_model = model or self.model
         effective_temperature = self.temperature if temperature is None else temperature
-        return call_ollama(effective_model, prompt, effective_temperature, host=self.host)
+        return call_ollama(
+            effective_model,
+            prompt,
+            effective_temperature,
+            host=self.host,
+            response_format=response_format,
+        )

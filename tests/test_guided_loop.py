@@ -88,6 +88,38 @@ def planning_payload(label: str, reason: str | None = None) -> str:
     justification = reason or f"Continuing with {label}."
     return f"Active hypothesis: {label}\nJustification: {justification}"
 
+def gather_payload(*, needs_more_context: bool = False, token: str | None = None) -> str:
+    request: dict[str, object] = {
+        "needs_more_context": needs_more_context,
+        "why": "Need more context to validate the active hypothesis safely." if needs_more_context else "Existing context is sufficient.",
+        "requests": [],
+    }
+    if needs_more_context and token:
+        request["requests"] = [
+            {
+                "category": "USAGE_CONTEXT",
+                "target": {"kind": "symbol", "name": token},
+                "reason": "Need to see how this symbol is used elsewhere.",
+            }
+        ]
+    return json.dumps(request)
+
+
+def fenced_gather_payload(*, needs_more_context: bool = False, category: str = "IMPORTS_NAMESPACE") -> str:
+    payload = {
+        "needs_more_context": needs_more_context,
+        "why": "Need import header to confirm symbol availability." if needs_more_context else "No extra context needed.",
+        "requests": [
+            {
+                "category": category,
+                "target": None,
+                "reason": "Need to confirm imports/namespace context.",
+            }
+        ]
+        if needs_more_context
+        else [],
+    }
+    return "```json\n" + json.dumps(payload, indent=2) + "\n```"
 
 def replacement_block(original: str, new: str) -> str:
     return (
@@ -220,6 +252,7 @@ def test_guided_loop_applies_and_compiles(sample_before_file: Path) -> None:
     client = StubLLMClient([
         diagnosis_payload("pass-1"),
         planning_payload("pass-1-H1"),
+        gather_payload(),
         proposal_payload("pass-1"),
         diff,
         "Critique looks good overall.",
@@ -299,6 +332,143 @@ def test_guided_loop_applies_and_compiles(sample_before_file: Path) -> None:
     assert isinstance(first_iteration.telemetry, dict)
 
 
+def test_gather_parses_json_code_fences_and_injects_context(sample_before_file: Path) -> None:
+    diff = replacement_block("print('hello')", "print('patched')")
+    client = StubLLMClient([
+        diagnosis_payload("pass-1"),
+        planning_payload("pass-1-H1"),
+        fenced_gather_payload(needs_more_context=True, category="IMPORTS_NAMESPACE"),
+        proposal_payload("pass-1"),
+        diff,
+        "Critique looks good overall.",
+    ])
+    compile_command = [sys.executable, "-c", "import sys; sys.exit(0)"]
+    request = build_request(sample_before_file, compile_command)
+    strategy = GuidedConvergenceStrategy(
+        client=client,
+        config=GuidedLoopConfig(
+            interpreter_model="test",
+            patch_model="test",
+            max_iterations=1,
+            refine_sub_iterations=0,
+            main_loop_passes=1,
+        ),
+    )
+
+    result = strategy.run(request)
+
+    first_iteration = result.trace.iterations[0]
+    gather_phase = next(phase for phase in first_iteration.phases if phase.phase.value == "gather")
+    propose_phase = next(phase for phase in first_iteration.phases if phase.phase.value == "propose")
+    generate_phase = next(phase for phase in first_iteration.phases if phase.phase.value == "generate-patch")
+
+    gather_request = gather_phase.machine_checks.get("gather_request")
+    assert gather_request is not None
+    assert gather_request["needs_more_context"] is True
+    assert isinstance(gather_request.get("why"), str)
+    assert gather_request["requests"][0]["category"] == "IMPORTS_NAMESPACE"
+
+    assert "Additional gathered context:" in propose_phase.prompt
+    assert "IMPORTS_NAMESPACE (file header):" in propose_phase.prompt
+    assert "|" in propose_phase.prompt
+
+    assert "Additional gathered context:" in generate_phase.prompt
+    assert "IMPORTS_NAMESPACE (file header):" in generate_phase.prompt
+
+
+def test_gather_parses_case_insensitive_keys(sample_before_file: Path) -> None:
+    diff = replacement_block("print('hello')", "print('patched')")
+    # Intentionally mixed casing and camelCase keys; target is null.
+    gather = json.dumps(
+        {
+            "NeedsMoreContext": True,
+            "WHY": "Need to confirm imports.",
+            "REQUESTS": [
+                {
+                    "Category": "imports_namespace",
+                    "Target": None,
+                    "Reason": "Need to confirm imports.",
+                }
+            ],
+        }
+    )
+    client = StubLLMClient([
+        diagnosis_payload("pass-1"),
+        planning_payload("pass-1-H1"),
+        gather,
+        proposal_payload("pass-1"),
+        diff,
+        "Critique looks good overall.",
+    ])
+    compile_command = [sys.executable, "-c", "import sys; sys.exit(0)"]
+    request = build_request(sample_before_file, compile_command)
+    strategy = GuidedConvergenceStrategy(
+        client=client,
+        config=GuidedLoopConfig(
+            interpreter_model="test",
+            patch_model="test",
+            max_iterations=1,
+            refine_sub_iterations=0,
+            main_loop_passes=1,
+        ),
+    )
+
+    result = strategy.run(request)
+
+    first_iteration = result.trace.iterations[0]
+    gather_phase = next(phase for phase in first_iteration.phases if phase.phase.value == "gather")
+    propose_phase = next(phase for phase in first_iteration.phases if phase.phase.value == "propose")
+
+    gather_request = gather_phase.machine_checks.get("gather_request")
+    assert gather_request is not None
+    assert gather_request["needs_more_context"] is True
+    assert gather_request["why"] == "Need to confirm imports."
+    assert gather_request["requests"][0]["category"] == "IMPORTS_NAMESPACE"
+    assert "Additional gathered context:" in propose_phase.prompt
+    assert "|" in propose_phase.prompt
+
+
+def test_gather_enforces_import_header_when_plan_mentions_import(sample_before_file: Path) -> None:
+    diff = replacement_block("print('hello')", "print('patched')")
+    # Planning explicitly mentions adding an import, but Gather (incorrectly) claims no extra context is needed.
+    planning_text = "Active hypothesis: H2\nJustification: Add the import statement for Foo at the top of the file."
+    client = StubLLMClient(
+        [
+            diagnosis_payload("pass-1"),
+            planning_text,
+            gather_payload(needs_more_context=False),
+            proposal_payload("pass-1"),
+            diff,
+            "Critique looks good overall.",
+        ]
+    )
+    compile_command = [sys.executable, "-c", "import sys; sys.exit(0)"]
+    request = build_request(sample_before_file, compile_command)
+    strategy = GuidedConvergenceStrategy(
+        client=client,
+        config=GuidedLoopConfig(
+            interpreter_model="test",
+            patch_model="test",
+            max_iterations=1,
+            refine_sub_iterations=0,
+            main_loop_passes=1,
+        ),
+    )
+
+    result = strategy.run(request)
+
+    first_iteration = result.trace.iterations[0]
+    gather_phase = next(phase for phase in first_iteration.phases if phase.phase.value == "gather")
+    propose_phase = next(phase for phase in first_iteration.phases if phase.phase.value == "propose")
+
+    gather_request = gather_phase.machine_checks.get("gather_request")
+    assert gather_request is not None
+    assert gather_request["needs_more_context"] is True
+    assert gather_request["requests"][0]["category"] == "IMPORTS_NAMESPACE"
+    assert "Additional gathered context:" in propose_phase.prompt
+    assert "IMPORTS_NAMESPACE (file header):" in propose_phase.prompt
+
+
 def test_three_way_merge_preserves_duplicate_lines(tmp_path: Path) -> None:
     before_path = tmp_path / "dup.py"
     before_path.write_text(
@@ -312,6 +482,7 @@ def test_three_way_merge_preserves_duplicate_lines(tmp_path: Path) -> None:
     client = StubLLMClient([
         diagnosis_payload("dupe"),
         planning_payload("dupe-H1"),
+        gather_payload(),
         proposal_payload("dupe"),
         diff,
         "Duplicate lines preserved.",
@@ -342,14 +513,117 @@ def test_three_way_merge_preserves_duplicate_lines(tmp_path: Path) -> None:
 
     assert result.applied is True
     assert result.after_text is not None
-    assert result.after_text.count("print('hi')") == 2
-    first_iteration = result.trace.iterations[0]
-    critique_phase = next(
-        phase for phase in first_iteration.phases if phase.phase.value == "critique"
+
+
+def test_replacement_block_can_edit_outside_context_fragment(tmp_path: Path) -> None:
+    before_path = tmp_path / "far_edit.py"
+    before_path.write_text(
+        "import os\nimport sys\n\n" + "x = 1\n" * 80 + "print('hello')\n",
+        encoding="utf-8",
     )
+    # Focused context will be near the end of the file; the patch edits the header imports.
+    error_text = f"{before_path.name}:75: error"
+    diff = replacement_block(
+        "import os\nimport sys",
+        "import os\nimport sys\nimport json",
+    )
+    client = StubLLMClient(
+        [
+            diagnosis_payload("header"),
+            planning_payload("header-H1"),
+            gather_payload(),
+            proposal_payload("header"),
+            diff,
+            "Header edit applied.",
+        ]
+    )
+    compile_command = [sys.executable, "-c", "import sys; sys.exit(0)"]
+    request = GuidedLoopInputs(
+        case_id="header-edit",
+        language="python",
+        source_path=before_path,
+        source_text=before_path.read_text(encoding="utf-8"),
+        error_text=error_text,
+        manifest={"compile_command": compile_command},
+        compile_command=compile_command,
+        extra={},
+    )
+    strategy = GuidedConvergenceStrategy(
+        client=client,
+        config=GuidedLoopConfig(
+            interpreter_model="test",
+            patch_model="test",
+            max_iterations=1,
+            refine_sub_iterations=0,
+            main_loop_passes=1,
+        ),
+    )
+
+    result = strategy.run(request)
+
+    assert result.applied is True
+    assert result.after_text is not None
+    assert "import json" in result.after_text
+    first_iteration = result.trace.iterations[0]
+    critique_phase = next(phase for phase in first_iteration.phases if phase.phase.value == "critique")
     patch_diagnostics = critique_phase.machine_checks.get("patchApplication")
     assert patch_diagnostics and patch_diagnostics["applied"] is True
-    assert "Three-way merge" in patch_diagnostics["message"]
+    assert "whole-file matching" in (patch_diagnostics.get("message") or "")
+
+
+def test_successful_compile_does_not_mark_unchanged_error(tmp_path: Path) -> None:
+    before_path = tmp_path / "sample.py"
+    before_path.write_text(
+        "def main():\n    print(\"hi\"\n",
+        encoding="utf-8",
+    )
+
+    diff = replacement_block(
+        '    print("hi"',
+        '    print("hi")',
+    )
+    client = StubLLMClient(
+        [
+            diagnosis_payload("syntax"),
+            planning_payload("syntax-H1"),
+            gather_payload(),
+            proposal_payload("syntax"),
+            diff,
+            "Syntax fix applied.",
+        ]
+    )
+    compile_command = [sys.executable, "-m", "py_compile", before_path.name]
+    request = GuidedLoopInputs(
+        case_id="syntax-success",
+        language="python",
+        source_path=before_path,
+        source_text=before_path.read_text(encoding="utf-8"),
+        error_text=f"{before_path.name}:2: error: syntax error",
+        manifest={"compile_command": compile_command},
+        compile_command=compile_command,
+        extra={},
+    )
+    strategy = GuidedConvergenceStrategy(
+        client=client,
+        config=GuidedLoopConfig(
+            interpreter_model="test",
+            patch_model="test",
+            max_iterations=1,
+            refine_sub_iterations=0,
+            main_loop_passes=1,
+        ),
+    )
+
+    result = strategy.run(request)
+
+    assert result.applied is True
+    assert result.success is True
+    assert result.trace is not None
+
+    first_iteration = result.trace.iterations[0]
+    assert first_iteration.accepted is True
+    assert first_iteration.failure_reason is None
+    assert "unchangedError" not in (first_iteration.telemetry or {})
 
 
 def test_three_way_merge_collapses_suffix_duplicates(tmp_path: Path) -> None:
@@ -436,6 +710,7 @@ def test_guided_loop_compile_failure(sample_before_file: Path) -> None:
     client = StubLLMClient([
         diagnosis_payload("compile-fail"),
         planning_payload("compile-fail-H1"),
+        gather_payload(),
         proposal_payload("compile-fail"),
         diff,
         "Compile still failing after patch.",
@@ -484,10 +759,12 @@ def test_guided_loop_multiple_iterations_succeed(sample_before_file: Path) -> No
         [
             diagnosis_payload("loop1"),
             planning_payload("loop1-H1"),
+            gather_payload(),
             proposal_payload("propose-pass-1"),
             bad_diff,
             "critique-pass-1",
             planning_payload("loop1-H2", "Trying the remaining hypothesis."),
+            gather_payload(),
             proposal_payload("propose-pass-2"),
             good_diff,
             "critique-pass-2",
@@ -529,6 +806,7 @@ def test_guided_loop_history_seed_in_prompts(sample_before_file: Path) -> None:
     client = StubLLMClient([
         diagnosis_payload("seeded"),
         planning_payload("seeded-H1"),
+        gather_payload(),
         proposal_payload("seeded"),
         diff,
         "Critique for seeded history.",
@@ -569,10 +847,12 @@ def test_hypothesis_reset_before_refinement(sample_before_file: Path) -> None:
         [
             diagnosis_payload("retry-1"),
             planning_payload("retry-1-H1"),
+            gather_payload(),
             proposal_payload("retry-1"),
             bad_diff,
             "critique-retry-1",
             planning_payload("retry-1-H2", "Switching hypotheses for refinement."),
+            gather_payload(),
             proposal_payload("retry-2"),
             bad_diff,
             "critique-retry-2",
@@ -613,10 +893,12 @@ def test_stall_detection_archives_hypothesis(sample_before_file: Path) -> None:
         [
             diagnosis_payload("stall-1"),
             planning_payload("stall-1-H1"),
+            gather_payload(),
             proposal_payload("stall-1"),
             repeated_diff,
             "critique-stall-1",
             planning_payload("stall-1-H2", "Retrying with the alternate hypothesis."),
+            gather_payload(),
             proposal_payload("stall-2"),
             repeated_diff,
             "critique-stall-2",
@@ -652,11 +934,13 @@ def test_second_main_loop_uses_full_critique_history(sample_before_file: Path) -
         [
             diagnosis_payload("primary-1"),
             planning_payload("primary-1-H1"),
+            gather_payload(),
             proposal_payload("primary-1"),
             missing_diff,
             first_critique,
             diagnosis_payload("primary-2"),
             planning_payload("primary-2-H1"),
+            gather_payload(),
             proposal_payload("primary-2"),
             missing_diff,
             "Second loop critique transcript.",

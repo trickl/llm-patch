@@ -1,5 +1,5 @@
 import { spawn } from 'node:child_process'
-import { access, readFile } from 'node:fs/promises'
+import { access, readFile, stat } from 'node:fs/promises'
 import { createHash } from 'node:crypto'
 import path from 'node:path'
 import fg from 'fast-glob'
@@ -53,6 +53,10 @@ export class DatasetLoader {
 
   async refresh() {
     this.summaries.length = 0
+    // A single case directory may contain multiple result JSON files that map to the same logical
+    // patch attempt (e.g., manual copies like "__rerun_YYYY..." or repeated reruns that wrote the
+    // canonical filename). The sidebar expects unique patch ids.
+    const summariesById = new Map<string, PatchRecordInternal>()
     try {
       await access(this.datasetRoot)
     } catch (error) {
@@ -128,7 +132,7 @@ export class DatasetLoader {
 
         const afterPath = typeof result.after_path === 'string' ? path.resolve(baseDir, result.after_path) : null
 
-        this.summaries.push({
+        const record: PatchRecordInternal = {
           summary,
           manifest,
           result,
@@ -141,9 +145,41 @@ export class DatasetLoader {
             stderr: stderrPath,
             stdout: stdoutPath,
           },
-        })
+        }
+
+        const existing = summariesById.get(patchId)
+        if (!existing) {
+          summariesById.set(patchId, record)
+          continue
+        }
+
+        // Prefer the canonical filename (without __rerun_) when duplicates exist; otherwise prefer
+        // the newest file by mtime.
+        const existingName = path.basename(existing.paths.resultFile)
+        const candidateName = path.basename(resultFile)
+        const existingIsRerun = existingName.includes('__rerun_')
+        const candidateIsRerun = candidateName.includes('__rerun_')
+
+        if (existingIsRerun !== candidateIsRerun) {
+          if (!candidateIsRerun) {
+            summariesById.set(patchId, record)
+          }
+          continue
+        }
+
+        const [existingStat, candidateStat] = await Promise.all([
+          stat(existing.paths.resultFile).catch(() => null),
+          stat(resultFile).catch(() => null),
+        ])
+        const existingMtime = existingStat?.mtimeMs ?? 0
+        const candidateMtime = candidateStat?.mtimeMs ?? 0
+        if (candidateMtime > existingMtime) {
+          summariesById.set(patchId, record)
+        }
       }
     }
+
+    this.summaries.push(...summariesById.values())
 
     this.isLoaded = true
   }

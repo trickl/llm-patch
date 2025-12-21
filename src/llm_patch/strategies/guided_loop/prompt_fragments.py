@@ -87,6 +87,79 @@ EXPERIMENT_INSTRUCTIONS_FRAGMENT = dedent(
     """
 )
 
+GATHER_INSTRUCTIONS_FRAGMENT = dedent(
+    """
+    You are at the gather stage. Your role is NOT to fix, but to ensure we have enough verified information to implement the active hypothesis safely.
+
+    Treat any missing information as unknown, not assumed.
+    If the hypothesis depends on something that has not been verified, you MUST request the smallest additional context required to confirm it.
+
+    IMPORTANT: being confident that the hypothesis is correct is NOT sufficient.
+    You must ALSO ensure we have enough verified structural context to apply the change deterministically, without guessing.
+    If implementing the fix would require modifying any part of the code that is not currently visible in the provided context, you MUST request that missing context (even if you are certain what the fix should be).
+
+    Note: You will typically be shown only a narrow, numbered context window around the error location, NOT the full file.
+    Do not assume the file header (imports/includes/usings, package/module declarations) is visible unless you can literally see it in the Context section.
+
+    Deterministic application rule:
+        - If you cannot point to the exact insertion/modification location using only currently visible lines and structure, you MUST request the minimum additional context needed to locate it.
+        - If the change affects file-level structure (imports/includes/usings, package/module declarations, top-level declarations, class/function boundaries), request the relevant context category.
+
+    Common cases (examples of when you MUST request context):
+        - Adding/removing/changing an import/include/using => request IMPORTS_NAMESPACE unless it is already visible.
+        - Editing a declaration that is not shown => request DECLARATION.
+        - Inserting/modifying code inside a function/class but the full surrounding scope is not shown => request ENCLOSING_SCOPE.
+        - Needing to understand file-level placement (e.g., where to add a new top-level declaration) => request FILE_CONTEXT.
+        - Fix depends on type/alias/generic constraints not shown => request TYPE_CONTEXT.
+        - Fix depends on how a symbol is used elsewhere => request USAGE_CONTEXT.
+
+    "Minimal" means: do not over-request, but DO request whatever is necessary to be confident.
+    If you cannot be 100% certain without seeing imports, declarations, or scope, you must request them.
+    If you cannot apply the fix deterministically without seeing additional structure (even if you're confident), you must request it.
+
+    Set needs_more_context=false only if BOTH are true:
+        1) The fix is correct (no guessing), AND
+        2) The fix can be applied deterministically using only the currently visible context (no hidden insertion points).
+
+    HARD RULE:
+        - If your intended fix requires adding/removing/changing imports/includes/usings AND those lines are not present in the Context section,
+          then needs_more_context MUST be true and requests MUST include at least one IMPORTS_NAMESPACE request.
+
+    You must respond with a single JSON object and nothing else (no Markdown, no prose, no code fences).
+    Do NOT wrap the JSON in ```json ... ```.
+    Use the EXACT key names (case-sensitive): needs_more_context and requests.
+    You MUST also include a "why" field explaining your decision. If needs_more_context=false, explain why the current context is sufficient.
+
+    You may request additional context categories from this list:
+        - ENCLOSING_SCOPE: surrounding function/class scope for the error location.
+        - DECLARATION: where a referenced symbol is declared/defined.
+        - IMPORTS_NAMESPACE: imports/includes/using statements and relevant namespace/module context.
+        - TYPE_CONTEXT: type aliases, generics, or type information that constrains a fix.
+        - FILE_CONTEXT: file-level metadata and surrounding file structure.
+        - USAGE_CONTEXT: other usages/call sites of a symbol.
+
+    Rules:
+        - Be minimal.
+        - Do not guess. Do not assume missing details.
+        - If no extra context is required, set needs_more_context=false and requests=[].
+        - If you specify a target, it must be a single token (no spaces).
+        - Do not request new Diagnose. This stage is only about gathering context.
+
+    Output JSON schema (must match exactly):
+    {{
+        "needs_more_context": boolean,
+        "why": string,
+        "requests": [
+            {{
+                "category": "ENCLOSING_SCOPE" | "DECLARATION" | "IMPORTS_NAMESPACE" | "TYPE_CONTEXT" | "FILE_CONTEXT" | "USAGE_CONTEXT",
+                "target": {{ "kind": "symbol" | "type" | "module" | "unknown", "name": string }} | null,
+                "reason": string
+            }}
+        ]
+    }}
+    """
+)
+
 DIAGNOSIS_OUTPUT_FRAGMENT = "{diagnosis_output}"
 
 REFINEMENT_CONTEXT_FRAGMENT = "Refinement guidance:\n{refinement_context}"
@@ -127,6 +200,8 @@ PREVIOUS_DIFF_FRAGMENT = "Most recent replacement attempt:\n{previous_diff}"
 PROPOSAL_SUMMARY_FRAGMENT = "Proposal summary:\n{proposal}"
 CONTEXT_FRAGMENT = "Context:\n{context}"
 
+GATHERED_CONTEXT_FRAGMENT = "Additional gathered context:\n{gathered_context}"
+
 CONSTRAINTS_FRAGMENT = "Constraints:\n{constraints}"
 EXAMPLE_REPLACEMENT_FRAGMENT = "Example replacement block:\n{example_diff}"
 
@@ -139,6 +214,7 @@ __all__ = [
     "DIAGNOSIS_OUTPUT_FRAGMENT",
     "REFINEMENT_CONTEXT_FRAGMENT",
     "GENERATE_PATCH_INSTRUCTIONS_FRAGMENT",
+    "GATHER_INSTRUCTIONS_FRAGMENT",
     "HISTORY_FRAGMENT",
     "PRIOR_PATCH_FRAGMENT",
     "CRITIQUE_FRAGMENT",
@@ -149,6 +225,7 @@ __all__ = [
     "PREVIOUS_DIFF_FRAGMENT",
     "PROPOSAL_SUMMARY_FRAGMENT",
     "CONTEXT_FRAGMENT",
+    "GATHERED_CONTEXT_FRAGMENT",
     "CONSTRAINTS_FRAGMENT",
     "EXAMPLE_REPLACEMENT_FRAGMENT",
     "compose_prompt",

@@ -21,6 +21,7 @@ import {
   selectFetchCaseDetail,
   selectClearFilters,
   selectSetFilterValues,
+  selectSetFingerprintQuery,
   selectDatasetRefreshing,
   selectDatasetRefreshError,
   selectRefreshDataset,
@@ -47,6 +48,7 @@ function App() {
   const fetchCaseDetail = useReviewStore(selectFetchCaseDetail)
   const clearFilters = useReviewStore(selectClearFilters)
   const setFilterValues = useReviewStore(selectSetFilterValues)
+  const setFingerprintQuery = useReviewStore(selectSetFingerprintQuery)
   const datasetRefreshing = useReviewStore(selectDatasetRefreshing)
   const datasetRefreshError = useReviewStore(selectDatasetRefreshError)
   const refreshDataset = useReviewStore(selectRefreshDataset)
@@ -98,6 +100,7 @@ function App() {
           onSelect={handleSelect}
           filters={filters}
           onSetFilterValues={setFilterValues}
+          onSetFingerprintQuery={setFingerprintQuery}
           onClearFilters={clearFilters}
           datasetRefreshing={datasetRefreshing}
           datasetRefreshError={datasetRefreshError}

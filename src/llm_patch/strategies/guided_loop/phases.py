@@ -14,6 +14,7 @@ class GuidedPhase(str, Enum):
 
     DIAGNOSE = "diagnose"
     PLANNING = "planning"
+    GATHER = "gather"
     PROPOSE = "propose"
     GENERATE_PATCH = "generate-patch"
     CRITIQUE = "critique"

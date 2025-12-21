@@ -38,6 +38,7 @@ export function CaseWorkspace({ detail, annotation }: CaseWorkspaceProps) {
   const [activeDockTab, setActiveDockTab] = useState<DockTabId>('diff')
   const [guidedDetailTab, setGuidedDetailTab] = useState<GuidedDetailTab>('prompt')
   const [requestedStageId, setRequestedStageId] = useState<string | null>(null)
+  const [timelineExpanded, setTimelineExpanded] = useState(false)
   const [flowCopyStatus, setFlowCopyStatus] = useState<'idle' | 'copied' | 'error'>('idle')
   const updateMetrics = useReviewStore((state) => state.updateMetrics)
   const [beforeEditor, setBeforeEditor] = useState<MonacoEditor.IStandaloneCodeEditor | null>(null)
@@ -392,15 +393,57 @@ export function CaseWorkspace({ detail, annotation }: CaseWorkspaceProps) {
                 <ErrorsPanel before={detail.errors.before} after={detail.errors.after} />
               ) : (
                 <div className="guided-loop-pane">
-                  <GuidedLoopTimeline
-                    groups={iterationGroups}
-                    activeStageId={activeStageId}
-                    onStageSelect={(stageId) => {
-                      setRequestedStageId(stageId)
-                      setActiveDockTab('guided')
-                    }}
-                    completionStatus={detail.summary.success ? 'success' : 'failure'}
-                  />
+                  <details
+                    className="guided-loop-pane__timeline"
+                    open={timelineExpanded}
+                    onToggle={(event) => setTimelineExpanded(event.currentTarget.open)}
+                  >
+                    <summary className="guided-loop-pane__timeline-summary" aria-label="Toggle guided loop stage timeline">
+                      <div className="guided-loop-pane__timeline-summary-left">
+                        <span className="guided-loop-pane__timeline-title">
+                          {activeStageTab ? activeStageTab.label : 'Guided stages'}
+                        </span>
+                        <span className="guided-loop-pane__timeline-subtitle">
+                          {timelineExpanded ? 'Hide stage breakdown' : 'Show stage breakdown'}
+                        </span>
+                      </div>
+                      {activeIteration && activeIteration.stages.length > 0 && (
+                        <div className="guided-loop-pane__timeline-summary-stages" aria-label="Active iteration stages">
+                          {activeIteration.stages.map((stage) => {
+                            const statusClass = `loop-stage--${stage.artifact.status}`
+                            return (
+                              <button
+                                type="button"
+                                key={stage.id}
+                                className={clsx('loop-stage', statusClass, activeStageId === stage.id && 'is-active')}
+                                aria-pressed={activeStageId === stage.id}
+                                title={stage.label}
+                                onClick={(e) => {
+                                  e.preventDefault()
+                                  e.stopPropagation()
+                                  setRequestedStageId(stage.id)
+                                  setActiveDockTab('guided')
+                                }}
+                              >
+                                {stage.shortLabel}
+                              </button>
+                            )
+                          })}
+                        </div>
+                      )}
+                    </summary>
+                    <div className="guided-loop-pane__timeline-body">
+                      <GuidedLoopTimeline
+                        groups={iterationGroups}
+                        activeStageId={activeStageId}
+                        onStageSelect={(stageId) => {
+                          setRequestedStageId(stageId)
+                          setActiveDockTab('guided')
+                        }}
+                        completionStatus={detail.summary.success ? 'success' : 'failure'}
+                      />
+                    </div>
+                  </details>
                   <div className="guided-loop-pane__detail">
                     <div className="guided-loop-pane__detail-tabs" role="tablist" aria-label="Guided loop detail view">
                       <button

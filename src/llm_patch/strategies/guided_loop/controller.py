@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 import re
 import shutil
 import subprocess
@@ -62,6 +63,8 @@ from .prompt_fragments import (
     EXAMPLE_REPLACEMENT_FRAGMENT,
     EXPERIMENT_INSTRUCTIONS_FRAGMENT,
     EXPERIMENT_SUMMARY_FRAGMENT,
+    GATHERED_CONTEXT_FRAGMENT,
+    GATHER_INSTRUCTIONS_FRAGMENT,
     GENERATE_PATCH_INSTRUCTIONS_FRAGMENT,
     HISTORY_FRAGMENT,
     PATCH_DIAGNOSTICS_FRAGMENT,
@@ -170,11 +173,18 @@ class GuidedConvergenceStrategy(PatchStrategy):
             DIAGNOSIS_OUTPUT_FRAGMENT,
             CRITIQUE_OUTPUT_FRAGMENT,
         ),
+        GuidedPhase.GATHER: compose_prompt(
+            GATHER_INSTRUCTIONS_FRAGMENT,
+            ERROR_FRAGMENT,
+            EXPERIMENT_SUMMARY_FRAGMENT,
+            CONTEXT_FRAGMENT,
+        ),
         GuidedPhase.PROPOSE: compose_prompt(
             PROPOSE_INSTRUCTIONS_FRAGMENT,
             REFINEMENT_CONTEXT_FRAGMENT,
             ERROR_FRAGMENT,
             EXPERIMENT_SUMMARY_FRAGMENT,
+            GATHERED_CONTEXT_FRAGMENT,
             CONTEXT_FRAGMENT,
         ),
         GuidedPhase.GENERATE_PATCH: compose_prompt(
@@ -183,6 +193,7 @@ class GuidedConvergenceStrategy(PatchStrategy):
             ERROR_FRAGMENT,
             DIAGNOSIS_SUMMARY_FRAGMENT,
             DIAGNOSIS_RATIONALE_FRAGMENT,
+            GATHERED_CONTEXT_FRAGMENT,
             CONTEXT_FRAGMENT,
             CONSTRAINTS_FRAGMENT,
             EXAMPLE_REPLACEMENT_FRAGMENT,
@@ -205,6 +216,15 @@ class GuidedConvergenceStrategy(PatchStrategy):
     CONTEXT_RADIUS = 5
     SUFFIX_COLLAPSE_MAX_LINES = 8
     SUFFIX_COLLAPSE_SIMILARITY = 0.97
+    GATHER_ALLOWED_CATEGORIES = {
+        "ENCLOSING_SCOPE",
+        "DECLARATION",
+        "IMPORTS_NAMESPACE",
+        "TYPE_CONTEXT",
+        "FILE_CONTEXT",
+        "USAGE_CONTEXT",
+    }
+    GATHER_ALLOWED_TARGET_KINDS = {"symbol", "type", "module", "unknown"}
 
     def __init__(
         self,
@@ -625,6 +645,7 @@ class GuidedConvergenceStrategy(PatchStrategy):
         if kind == "refine":
             return [
                 GuidedPhase.PLANNING,
+                GuidedPhase.GATHER,
                 GuidedPhase.PROPOSE,
                 GuidedPhase.GENERATE_PATCH,
                 GuidedPhase.CRITIQUE,
@@ -632,6 +653,7 @@ class GuidedConvergenceStrategy(PatchStrategy):
         return [
             GuidedPhase.DIAGNOSE,
             GuidedPhase.PLANNING,
+            GuidedPhase.GATHER,
             GuidedPhase.PROPOSE,
             GuidedPhase.GENERATE_PATCH,
             GuidedPhase.CRITIQUE,
@@ -667,6 +689,7 @@ class GuidedConvergenceStrategy(PatchStrategy):
             "diagnosis_output": self._diagnosis_output_placeholder(),
             "experiment_summary": self._experiment_summary_placeholder(),
             "critique_output": self._critique_output_placeholder(),
+            "gathered_context": self._gathered_context_placeholder(),
         }
         if extra:
             data.update({key: value for key, value in extra.items() if value is not None})
@@ -688,6 +711,7 @@ class GuidedConvergenceStrategy(PatchStrategy):
             cls._diagnosis_output_placeholder(),
             cls._experiment_summary_placeholder(),
             cls._critique_output_placeholder(),
+            cls._gathered_context_placeholder(),
         }
 
     def _strip_placeholder_sections(self, text: str) -> str:
@@ -756,6 +780,10 @@ class GuidedConvergenceStrategy(PatchStrategy):
                 if continue_execution:
                     events.extend(self._execute_planning(artifact, iteration, iteration.index, request))
                     continue_execution = artifact.status == PhaseStatus.COMPLETED
+            elif artifact.phase == GuidedPhase.GATHER:
+                if continue_execution:
+                    events.extend(self._execute_gather(artifact, iteration, iteration.index, request))
+                    continue_execution = artifact.status == PhaseStatus.COMPLETED
             elif artifact.phase == GuidedPhase.PROPOSE:
                 if continue_execution:
                     events.extend(self._execute_propose(artifact, iteration, iteration.index, request))
@@ -773,8 +801,6 @@ class GuidedConvergenceStrategy(PatchStrategy):
                 break
         if outcome:
             outcome.previous_error_fingerprint = previous_error_fingerprint
-            if outcome.error_fingerprint is None:
-                outcome.error_fingerprint = previous_error_fingerprint
         return events, outcome
 
     def _reset_for_refinement(self, iteration: GuidedIterationArtifact) -> List[StrategyEvent]:
@@ -927,6 +953,221 @@ class GuidedConvergenceStrategy(PatchStrategy):
         self.emit(completion_event)
         events.append(completion_event)
         return events
+
+    def _execute_gather(
+        self,
+        artifact: PhaseArtifact,
+        iteration: GuidedIterationArtifact,
+        iteration_index: int,
+        request: GuidedLoopInputs,
+    ) -> List[StrategyEvent]:
+        if self._client is None:
+            raise RuntimeError("GuidedConvergenceStrategy requires an LLM client to execute phases")
+        events: List[StrategyEvent] = []
+        artifact.status = PhaseStatus.RUNNING
+        artifact.started_at = self._now()
+        start_event = self._event(
+            kind=StrategyEventKind.PHASE_TRANSITION,
+            message="Starting Gather phase",
+            phase=artifact.phase.value,
+            iteration=iteration_index,
+        )
+        self.emit(start_event)
+        events.append(start_event)
+
+        base_prompt = artifact.prompt
+        response_text: str = ""
+        parsed: Optional[Dict[str, Any]] = None
+        last_error: Optional[str] = None
+        attempts = 0
+        for attempt in range(1, 4):
+            attempts = attempt
+            try:
+                # Gather requires strict structured output; if the client/provider supports it,
+                # request native JSON formatting at the API layer (e.g., Ollama "format": "json").
+                try:
+                    response = self._client.complete(
+                        prompt=artifact.prompt,
+                        temperature=self._config.temperature,
+                        model=self._config.interpreter_model,
+                        response_format="json",
+                    )
+                except TypeError:
+                    response = self._client.complete(
+                        prompt=artifact.prompt,
+                        temperature=self._config.temperature,
+                        model=self._config.interpreter_model,
+                    )
+            except Exception as exc:  # pragma: no cover - transport level failure
+                artifact.status = PhaseStatus.FAILED
+                artifact.completed_at = self._now()
+                artifact.human_notes = f"Gather phase failed: {exc}"
+                failure_event = self._event(
+                    kind=StrategyEventKind.NOTE,
+                    message="Gather phase failed",
+                    phase=artifact.phase.value,
+                    iteration=iteration_index,
+                    data={"error": str(exc)},
+                )
+                self.emit(failure_event)
+                events.append(failure_event)
+                return events
+
+            response_text = response.strip()
+            try:
+                parsed = self._parse_gather_response(response_text)
+                last_error = None
+                break
+            except ValueError as exc:
+                parsed = None
+                last_error = str(exc)
+                # retry with a stronger constraint suffix
+                artifact.prompt = (
+                    base_prompt
+                    + "\n\nIMPORTANT: Your previous response was invalid. Output ONLY the JSON object (no prose, no code fences), matching the schema exactly."
+                )
+
+        # restore original prompt so the trace remains stable
+        artifact.prompt = base_prompt
+        artifact.response = response_text
+        machine_checks = self._ensure_machine_checks_dict(artifact)
+        machine_checks["gather"] = {
+            "attempts": attempts,
+            "parseError": last_error,
+        }
+
+        if parsed is None:
+            parsed = {"needs_more_context": False, "requests": []}
+            artifact.human_notes = (
+                "Gather stage did not return parseable JSON after 3 attempts; continuing without additional context."
+            )
+
+        enforced_reason: Optional[str]
+        parsed, enforced_reason = self._enforce_gather_structural_requirements(
+            request=request,
+            iteration=iteration,
+            gather_request=parsed,
+            context_window=self._focused_context_window(request),
+        )
+        machine_checks["gather"]["enforced"] = enforced_reason is not None
+        machine_checks["gather"]["enforcementReason"] = enforced_reason
+
+        machine_checks["gather_request"] = parsed
+        gathered_text, gathered_details = self._collect_gathered_context(request, parsed)
+        machine_checks["gathered_context_text"] = gathered_text
+        machine_checks["gathered_context"] = gathered_details
+        self._record_iteration_telemetry(
+            iteration,
+            "gather",
+            {
+                "request": parsed,
+                "collected": gathered_details,
+            },
+            append=True,
+        )
+
+        artifact.status = PhaseStatus.COMPLETED
+        artifact.completed_at = self._now()
+        completion_event = self._event(
+            kind=StrategyEventKind.PHASE_TRANSITION,
+            message="Gather phase completed",
+            phase=artifact.phase.value,
+            iteration=iteration_index,
+            data={
+                "characters": len(artifact.response or ""),
+                "gatheredCharacters": len(gathered_text or ""),
+            },
+        )
+        self.emit(completion_event)
+        events.append(completion_event)
+        return events
+
+    @staticmethod
+    def _context_looks_like_import_header(context_window: str) -> bool:
+        """Best-effort heuristic for whether the current context includes a file header/import area."""
+
+        lowered = (context_window or "").lower()
+        return any(
+            marker in lowered
+            for marker in (
+                "import ",
+                "#include",
+                "using ",
+                "package ",
+                "module ",
+                "require(",
+                "from ",
+            )
+        )
+
+    @staticmethod
+    def _planning_mentions_import_edit(planning_text: str) -> bool:
+        lowered = (planning_text or "").lower()
+        return any(
+            token in lowered
+            for token in (
+                " add the import",
+                " add an import",
+                "missing import",
+                "import statement",
+                "#include",
+                "using ",
+            )
+        )
+
+    def _enforce_gather_structural_requirements(
+        self,
+        *,
+        request: GuidedLoopInputs,
+        iteration: GuidedIterationArtifact,
+        gather_request: Dict[str, Any],
+        context_window: str,
+    ) -> tuple[Dict[str, Any], Optional[str]]:
+        """Apply deterministic-application guardrails when the model under-requests context."""
+
+        if bool(gather_request.get("needs_more_context")):
+            return gather_request, None
+
+        planning_text = self._coerce_string(self._find_phase_response(iteration, GuidedPhase.PLANNING))
+        if not planning_text:
+            return gather_request, None
+
+        planning_mentions_import = self._planning_mentions_import_edit(planning_text)
+        context_has_header = self._context_looks_like_import_header(context_window)
+        if planning_mentions_import and not context_has_header:
+            enforced_reason = (
+                "Enforced deterministic-application rule: planning indicates an import/header edit, "
+                "but the current context window does not include the file header."
+            )
+
+            raw_requests = gather_request.get("requests")
+            normalized_requests: list[dict[str, Any]] = []
+            if isinstance(raw_requests, list):
+                normalized_requests = [req for req in raw_requests if isinstance(req, dict)]
+
+            if not any(req.get("category") == "IMPORTS_NAMESPACE" for req in normalized_requests):
+                normalized_requests.append(
+                    {
+                        "category": "IMPORTS_NAMESPACE",
+                        "target": None,
+                        "reason": "Need the file header/imports to apply the planned import edit deterministically.",
+                    }
+                )
+
+            why_text = self._coerce_string(gather_request.get("why"))
+            why_text = (why_text or "").strip()
+            if why_text:
+                why_text = f"{why_text} {enforced_reason}"
+            else:
+                why_text = enforced_reason
+
+            updated = dict(gather_request)
+            updated["needs_more_context"] = True
+            updated["why"] = why_text
+            updated["requests"] = normalized_requests
+            return updated, enforced_reason
+
+        return gather_request, None
 
     def _execute_propose(
         self,
@@ -1367,12 +1608,14 @@ class GuidedConvergenceStrategy(PatchStrategy):
             )
         elif artifact.phase == GuidedPhase.PROPOSE:
             experiment_result = self._coerce_string(self._find_phase_response(iteration, GuidedPhase.PLANNING))
+            gathered_context = self._coerce_string(self._find_gathered_context(iteration))
             artifact.prompt = self._render_prompt(
                 GuidedPhase.PROPOSE,
                 request,
                 context_override=context_override,
                 extra={
                     "experiment_summary": experiment_result or self._experiment_summary_placeholder(),
+                    "gathered_context": gathered_context or self._gathered_context_placeholder(),
                     "critique_feedback": phase_critique_feedback,
                     "history_context": phase_history_context,
                     "previous_diff": phase_previous_diff,
@@ -1380,10 +1623,21 @@ class GuidedConvergenceStrategy(PatchStrategy):
                     "refinement_context": refinement_context_text,
                 },
             )
+        elif artifact.phase == GuidedPhase.GATHER:
+            experiment_result = self._coerce_string(self._find_phase_response(iteration, GuidedPhase.PLANNING))
+            artifact.prompt = self._render_prompt(
+                GuidedPhase.GATHER,
+                request,
+                context_override=context_override,
+                extra={
+                    "experiment_summary": experiment_result or self._experiment_summary_placeholder(),
+                },
+            )
         elif artifact.phase == GuidedPhase.GENERATE_PATCH:
             planning_result = self._coerce_string(self._find_phase_response(iteration, GuidedPhase.PLANNING))
             active_hypothesis_text = planning_result or self._experiment_summary_placeholder()
             proposal_summary = self._coerce_string(self._find_phase_response(iteration, GuidedPhase.PROPOSE))
+            gathered_context = self._coerce_string(self._find_gathered_context(iteration))
             artifact.prompt = self._render_prompt(
                 GuidedPhase.GENERATE_PATCH,
                 request,
@@ -1392,6 +1646,7 @@ class GuidedConvergenceStrategy(PatchStrategy):
                     "diagnosis": active_hypothesis_text,
                     "diagnosis_explanation": active_hypothesis_text,
                     "proposal": proposal_summary or self._proposal_placeholder(),
+                    "gathered_context": gathered_context or self._gathered_context_placeholder(),
                     "previous_diff": phase_previous_diff,
                     "prior_patch_summary": phase_prior_patch_summary,
                     "refinement_context": refinement_context_text,
@@ -1430,6 +1685,19 @@ class GuidedConvergenceStrategy(PatchStrategy):
             if artifact.phase == phase and artifact.response:
                 return artifact.response
         return None
+
+    def _find_phase_artifact(self, iteration: GuidedIterationArtifact, phase: GuidedPhase) -> Optional[PhaseArtifact]:
+        for artifact in iteration.phases:
+            if artifact.phase == phase:
+                return artifact
+        return None
+
+    def _find_gathered_context(self, iteration: GuidedIterationArtifact) -> Optional[str]:
+        artifact = self._find_phase_artifact(iteration, GuidedPhase.GATHER)
+        if not artifact or not isinstance(artifact.machine_checks, Mapping):
+            return None
+        gathered = artifact.machine_checks.get("gathered_context_text")
+        return gathered if isinstance(gathered, str) else None
 
     @staticmethod
     def _coerce_string(value: Any) -> Optional[str]:
@@ -1599,6 +1867,352 @@ class GuidedConvergenceStrategy(PatchStrategy):
         return "No prior suggested patch is available yet."
 
     @staticmethod
+    def _gathered_context_placeholder() -> str:
+        return "No additional context gathered."
+
+    def _parse_gather_response(self, text: str) -> Dict[str, Any]:
+        if not text:
+            raise ValueError("empty response")
+
+        def strip_code_fences(raw: str) -> str:
+            stripped = raw.strip()
+            if not stripped.startswith("```"):
+                return stripped
+            # Drop the opening fence line (``` or ```json) and the closing fence if present.
+            first_newline = stripped.find("\n")
+            if first_newline != -1:
+                stripped = stripped[first_newline + 1 :]
+            stripped = stripped.strip()
+            fence_idx = stripped.rfind("```")
+            if fence_idx != -1:
+                stripped = stripped[:fence_idx]
+            return stripped.strip()
+
+        def extract_first_json_object(raw: str) -> str:
+            # Best-effort: if the model adds prose before/after, extract the first {...} block.
+            candidate = raw.strip()
+            start = candidate.find("{")
+            end = candidate.rfind("}")
+            if start == -1 or end == -1 or end <= start:
+                return candidate
+            return candidate[start : end + 1].strip()
+
+        candidate = strip_code_fences(text)
+        try:
+            payload = json.loads(candidate)
+        except json.JSONDecodeError:
+            candidate = extract_first_json_object(candidate)
+            try:
+                payload = json.loads(candidate)
+            except json.JSONDecodeError as exc:
+                raise ValueError(f"invalid JSON: {exc}") from exc
+        if not isinstance(payload, dict):
+            raise ValueError("root must be a JSON object")
+
+        def norm_key(key: str) -> str:
+            return re.sub(r"[^a-z0-9]", "", key.lower())
+
+        normalized_payload: dict[str, Any] = {}
+        for key, value in payload.items():
+            if isinstance(key, str):
+                normalized_payload[norm_key(key)] = value
+
+        needs = normalized_payload.get("needsmorecontext")
+        why = normalized_payload.get("why")
+        requests = normalized_payload.get("requests")
+        if not isinstance(needs, bool):
+            raise ValueError("needs_more_context must be boolean")
+        if why is None:
+            # Backwards compatibility with older traces / models; prompt requires it but we don't hard-fail.
+            why = ""
+        if not isinstance(why, str):
+            raise ValueError("why must be a string")
+        if not isinstance(requests, list):
+            raise ValueError("requests must be a list")
+        cleaned_requests: list[dict[str, Any]] = []
+        for idx, item in enumerate(requests):
+            if not isinstance(item, dict):
+                raise ValueError(f"requests[{idx}] must be an object")
+            item_norm: dict[str, Any] = {}
+            for key, value in item.items():
+                if isinstance(key, str):
+                    item_norm[norm_key(key)] = value
+
+            category = item_norm.get("category")
+            if isinstance(category, str):
+                category = category.strip().upper()
+            if category not in self.GATHER_ALLOWED_CATEGORIES:
+                raise ValueError(f"requests[{idx}].category must be one of {sorted(self.GATHER_ALLOWED_CATEGORIES)}")
+            reason = item_norm.get("reason")
+            if not isinstance(reason, str) or not reason.strip():
+                raise ValueError(f"requests[{idx}].reason must be a non-empty string")
+            target = item_norm.get("target")
+            cleaned_target: Optional[dict[str, str]] = None
+            if target is not None:
+                if not isinstance(target, dict):
+                    raise ValueError(f"requests[{idx}].target must be object or null")
+                target_norm: dict[str, Any] = {}
+                for key, value in target.items():
+                    if isinstance(key, str):
+                        target_norm[norm_key(key)] = value
+                kind = target_norm.get("kind")
+                name = target_norm.get("name")
+                if isinstance(kind, str):
+                    kind = kind.strip().lower()
+                if kind not in self.GATHER_ALLOWED_TARGET_KINDS:
+                    raise ValueError(
+                        f"requests[{idx}].target.kind must be one of {sorted(self.GATHER_ALLOWED_TARGET_KINDS)}"
+                    )
+                if not isinstance(name, str) or not name.strip():
+                    raise ValueError(f"requests[{idx}].target.name must be a non-empty string")
+                token = name.strip()
+                if any(ch.isspace() for ch in token):
+                    raise ValueError(f"requests[{idx}].target.name must be a single token")
+                cleaned_target = {"kind": str(kind), "name": token}
+            cleaned_requests.append(
+                {
+                    "category": str(category),
+                    "target": cleaned_target,
+                    "reason": reason.strip(),
+                }
+            )
+        return {
+            "needs_more_context": needs,
+            "why": why.strip(),
+            "requests": cleaned_requests,
+        }
+
+    def _collect_gathered_context(
+        self,
+        request: GuidedLoopInputs,
+        gather_request: Mapping[str, Any],
+        *,
+        header_lines: int = 20,
+        usage_radius: int = 3,
+        scope_radius: int = 20,
+        max_hits: int = 5,
+        max_other_files: int = 3,
+        max_file_chars: int = 120_000,
+    ) -> tuple[str, Dict[str, Any]]:
+        needs = gather_request.get("needs_more_context") is True
+        why = gather_request.get("why") if isinstance(gather_request.get("why"), str) else ""
+        requests = gather_request.get("requests") if isinstance(gather_request.get("requests"), list) else []
+        if not needs or not requests:
+            details: Dict[str, Any] = {"note": "no additional context requested"}
+            if why.strip():
+                details["why"] = why.strip()
+            return "", details
+
+        error_line = self._detect_error_line(request.error_text or "", request.source_path.name)
+        all_lines = request.source_text.splitlines()
+        total_lines = len(all_lines)
+
+        def raw_window(start_line: int, end_line: int) -> str:
+            start = max(1, start_line)
+            end = min(total_lines, end_line)
+            if start > end:
+                return ""
+            return "\n".join(all_lines[start - 1 : end]).rstrip()
+
+        def numbered_window(start_line: int, end_line: int) -> str:
+            start = max(1, start_line)
+            end = min(total_lines, end_line)
+            window = []
+            for lineno in range(start, end + 1):
+                raw = all_lines[lineno - 1]
+                window.append(f"{lineno:4d} | {raw}")
+            return "\n".join(window).rstrip()
+
+        # Best-effort read of neighboring files for cross-file name resolution.
+        other_files: list[tuple[str, str]] = []
+        if request.source_path and request.source_path.exists():
+            parent = request.source_path.parent
+            ext = request.source_path.suffix.lower()
+            candidates: list[Path] = []
+            if ext in {".c", ".cc", ".cpp", ".cxx"}:
+                candidates.extend(sorted(parent.glob("*.h")))
+                candidates.extend(sorted(parent.glob(f"*{ext}")))
+            elif ext in {".py"}:
+                candidates.extend(sorted(parent.glob("*.py")))
+            elif ext in {".ts", ".tsx", ".js", ".jsx"}:
+                candidates.extend(sorted(parent.glob("*.ts")))
+                candidates.extend(sorted(parent.glob("*.tsx")))
+                candidates.extend(sorted(parent.glob("*.js")))
+                candidates.extend(sorted(parent.glob("*.jsx")))
+            elif ext in {".java"}:
+                candidates.extend(sorted(parent.glob("*.java")))
+            else:
+                candidates.extend(sorted(parent.iterdir()))
+            seen = set()
+            for path in candidates:
+                if len(other_files) >= max_other_files:
+                    break
+                if not path.is_file() or path == request.source_path:
+                    continue
+                if path.name in seen:
+                    continue
+                seen.add(path.name)
+                try:
+                    text = path.read_text(encoding="utf-8", errors="replace")
+                except OSError:
+                    continue
+                if not text.strip():
+                    continue
+                other_files.append((path.name, text[:max_file_chars]))
+
+        details: Dict[str, Any] = {
+            "errorLine": error_line,
+            "totalLines": total_lines,
+            "why": why.strip(),
+            "requested": [
+                {
+                    "category": item.get("category"),
+                    "target": item.get("target"),
+                    "reason": item.get("reason"),
+                }
+                for item in requests
+                if isinstance(item, Mapping)
+            ],
+            "scannedOtherFiles": [name for name, _ in other_files],
+        }
+
+        sections: list[str] = []
+
+        def infer_token_from_error_text() -> Optional[str]:
+            # Prefer the enriched pointer summary inserted by _prepare_compile_error_text().
+            text = request.error_text or ""
+            if not text:
+                return None
+            match = re.search(r"current token:\s*identifier\s+'([^']+)'", text)
+            if match:
+                candidate = match.group(1).strip()
+                if candidate and not any(ch.isspace() for ch in candidate):
+                    return candidate
+            match = re.search(r"current token:\s*identifier\s+\"([^\"]+)\"", text)
+            if match:
+                candidate = match.group(1).strip()
+                if candidate and not any(ch.isspace() for ch in candidate):
+                    return candidate
+            return None
+
+        # Determine token of interest (single token supported for now).
+        token: Optional[str] = None
+        for item in requests:
+            if not isinstance(item, Mapping):
+                continue
+            target = item.get("target")
+            if isinstance(target, Mapping):
+                name = target.get("name")
+                if isinstance(name, str) and name.strip():
+                    token = name.strip()
+                    break
+
+        if token is None:
+            token = infer_token_from_error_text()
+
+        requested_categories = {
+            item.get("category")
+            for item in requests
+            if isinstance(item, Mapping) and isinstance(item.get("category"), str)
+        }
+
+        if "FILE_CONTEXT" in requested_categories:
+            sections.append(
+                "FILE_CONTEXT:\n"
+                + f"file={request.source_path.name}\n"
+                + f"lines={total_lines}\n"
+            )
+
+        if "IMPORTS_NAMESPACE" in requested_categories:
+            header_end = min(header_lines, total_lines)
+            sections.append("IMPORTS_NAMESPACE (file header):\n" + numbered_window(1, header_end))
+
+        if "ENCLOSING_SCOPE" in requested_categories and error_line:
+            sections.append(
+                "ENCLOSING_SCOPE (around error line):\n"
+                + numbered_window(error_line - scope_radius, error_line + scope_radius)
+            )
+
+        def find_usages_in_text(text: str, *, file_label: str) -> list[str]:
+            if not token:
+                return []
+            lines = text.splitlines()
+            hits: list[str] = []
+            for idx, line in enumerate(lines, start=1):
+                if token in line:
+                    start = max(1, idx - usage_radius)
+                    end = min(len(lines), idx + usage_radius)
+                    excerpt = []
+                    excerpt.append(f"{file_label}:{idx}:")
+                    for lineno in range(start, end + 1):
+                        excerpt.append(f"{lineno:4d} | {lines[lineno - 1]}")
+                    hits.append("\n".join(excerpt))
+                    if len(hits) >= max_hits:
+                        break
+            return hits
+
+        if token and "USAGE_CONTEXT" in requested_categories:
+            hits = find_usages_in_text(request.source_text, file_label=request.source_path.name)
+            for name, text in other_files:
+                if len(hits) >= max_hits:
+                    break
+                hits.extend(find_usages_in_text(text, file_label=name))
+                hits = hits[:max_hits]
+            if hits:
+                sections.append("USAGE_CONTEXT:\n" + "\n\n".join(hits))
+            else:
+                sections.append(f"USAGE_CONTEXT:\n(no occurrences of '{token}' found)")
+
+        def find_declarations_in_text(text: str, *, file_label: str) -> list[str]:
+            if not token:
+                return []
+            patterns = [
+                re.compile(rf"\b(class|struct|enum|interface)\s+{re.escape(token)}\b"),
+                re.compile(rf"\bdef\s+{re.escape(token)}\b"),
+                re.compile(rf"\bfunction\s+{re.escape(token)}\b"),
+                re.compile(rf"\btypedef\b.*\b{re.escape(token)}\b"),
+                re.compile(rf"\b{re.escape(token)}\s*\("),
+            ]
+            lines = text.splitlines()
+            hits: list[str] = []
+            for idx, line in enumerate(lines, start=1):
+                if any(p.search(line) for p in patterns):
+                    hits.append(f"{file_label}:{idx}: {line.strip()}")
+                    if len(hits) >= max_hits:
+                        break
+            return hits
+
+        if token and "DECLARATION" in requested_categories:
+            hits = find_declarations_in_text(request.source_text, file_label=request.source_path.name)
+            for name, text in other_files:
+                if len(hits) >= max_hits:
+                    break
+                hits.extend(find_declarations_in_text(text, file_label=name))
+                hits = hits[:max_hits]
+            if hits:
+                sections.append("DECLARATION:\n" + "\n".join(hits))
+            else:
+                sections.append(f"DECLARATION:\n(no likely declarations of '{token}' found)")
+
+        if token and "TYPE_CONTEXT" in requested_categories:
+            # For now, reuse declaration heuristics; refine later per-language.
+            hits = find_declarations_in_text(request.source_text, file_label=request.source_path.name)
+            for name, text in other_files:
+                if len(hits) >= max_hits:
+                    break
+                hits.extend(find_declarations_in_text(text, file_label=name))
+                hits = hits[:max_hits]
+            if hits:
+                sections.append("TYPE_CONTEXT:\n" + "\n".join(hits))
+            else:
+                sections.append(f"TYPE_CONTEXT:\n(no type context found for '{token}')")
+
+        combined = "\n\n".join(section for section in sections if section.strip()).strip()
+        details["token"] = token
+        details["sections"] = [section.split("\n", 1)[0] for section in sections]
+        return combined, details
+
+    @staticmethod
     def _history_placeholder() -> str:
         return "No prior iterations have run yet."
 
@@ -1725,7 +2339,18 @@ class GuidedConvergenceStrategy(PatchStrategy):
         replacement_blocks: List[tuple[List[str], List[str]]],
     ) -> tuple[Optional[str], bool, str, tuple[tuple[int, int] | None, tuple[int, int] | None] | None]:
         if replacement_blocks and all(original for original, _ in replacement_blocks):
-            return self._apply_three_way_blocks(request, replacement_blocks)
+            patched_text, applied, message, spans = self._apply_three_way_blocks(request, replacement_blocks)
+            if applied:
+                return patched_text, applied, message, spans
+
+            # If the replacement targets lines outside the focused context fragment (for example imports at the
+            # top of the file), the three-way merge will fail to locate the ORIGINAL block locally.
+            # Fall back to a whole-file patch application so header edits can be applied deterministically.
+            patched_text, applied = self._patch_applier.apply(request.source_text, diff_text)
+            if not applied:
+                return None, False, message, None
+            spans = self._diff_spans(diff_text, source_text=request.source_text)
+            return patched_text, True, f"Applied patch using whole-file matching after three-way merge failed: {message}", spans
         patched_text, applied = self._patch_applier.apply(request.source_text, diff_text)
         if not applied:
             return None, False, "Patch applier could not locate context", None

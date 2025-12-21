@@ -2,13 +2,18 @@ import { useCallback, useMemo, useState } from 'react'
 import clsx from 'clsx'
 import {
   Autocomplete,
+  Badge,
   Box,
   Button,
   Chip,
+  Collapse,
   Divider,
+  IconButton,
   TextField,
+  Tooltip,
   Typography,
 } from '@mui/material'
+import FilterListIcon from '@mui/icons-material/FilterList'
 import type { AnnotationState, CaseSummary } from '../types'
 import { defaultAnnotation } from '../types'
 import type { FiltersState, FilterKey } from '../store/useReviewStore'
@@ -39,6 +44,7 @@ interface CaseSidebarProps {
   onSelect: (caseId: string) => void
   filters: FiltersState
   onSetFilterValues: (key: FilterKey, values: string[]) => void
+  onSetFingerprintQuery: (query: string) => void
   onClearFilters: () => void
   datasetRefreshing: boolean
   datasetRefreshError: string | null
@@ -90,18 +96,21 @@ export function CaseSidebar({
   onSelect,
   filters,
   onSetFilterValues,
+  onSetFingerprintQuery,
   onClearFilters,
   datasetRefreshing,
   datasetRefreshError,
   onRefreshDataset,
 }: CaseSidebarProps) {
   const suiteLabel = allCases[0]?.problemId ?? 'Test Cases'
-  const filterActive =
+  const quickSearchActive = filters.fingerprintQuery.trim().length > 0
+  const advancedFiltersActive =
     filters.languages.length +
     filters.errorCategories.length +
     filters.models.length +
     filters.algorithms.length +
     filters.statuses.length > 0
+  const filterActive = quickSearchActive || advancedFiltersActive
   const filteredCount = cases.length
   const totalCount = allCases.length
 
@@ -120,6 +129,7 @@ export function CaseSidebar({
   const errorCategoryOptions = useMemo(() => buildErrorCategoryOptions(allCases), [allCases])
   const statusOptions = useMemo(() => buildStatusOptions(allCases), [allCases])
   const [expandedNodes, setExpandedNodes] = useState<Record<string, boolean>>({})
+  const [advancedOpen, setAdvancedOpen] = useState(false)
   const caseTree = useMemo(() => buildCaseTree(cases), [cases])
   const isNodeExpanded = useCallback((nodeId: string) => expandedNodes[nodeId] ?? true, [expandedNodes])
   const toggleNode = useCallback((nodeId: string) => {
@@ -127,6 +137,10 @@ export function CaseSidebar({
       ...prev,
       [nodeId]: !(prev[nodeId] ?? true),
     }))
+  }, [])
+
+  const toggleAdvanced = useCallback(() => {
+    setAdvancedOpen((prev) => !prev)
   }, [])
 
   const renderCaseEntry = useCallback((testCase: CaseSummary) => {
@@ -323,30 +337,98 @@ export function CaseSidebar({
       </div>
       {datasetRefreshError && <p className="sidebar__status sidebar__status--error sidebar__status--compact">{datasetRefreshError}</p>}
       <div className="sidebar__filters-card">
-        <div className="sidebar__filters-header">
-          <div>
-            <p className="sidebar__eyebrow sidebar__eyebrow--compact">Filters</p>
-            <Typography variant="body2" sx={{ color: 'var(--color-text-dim)' }}>
-              {filterActive ? `${filteredCount} results` : 'Showing all cases'}
-            </Typography>
-          </div>
-          <Button
+        <div className="sidebar__quick-search">
+          <TextField
+            label="Quick Search"
+            placeholder="Fingerprint (prefix ok)"
+            variant="filled"
             size="small"
-            variant="text"
-            color="inherit"
-            disabled={!filterActive}
-            onClick={onClearFilters}
+            value={filters.fingerprintQuery}
+            onChange={(event) => onSetFingerprintQuery(event.target.value)}
+            inputProps={{ spellCheck: false }}
             sx={{
-              color: filterActive ? 'var(--color-accent)' : 'var(--color-text-dim)',
-              minWidth: 0,
-              textTransform: 'none',
+              flex: 1,
+              '& .MuiFilledInput-root': {
+                borderRadius: '0.75rem',
+                backgroundColor: 'rgba(255, 255, 255, 0.04)',
+                color: '#f6fbff',
+              },
+              '& .MuiFilledInput-root:hover': {
+                backgroundColor: 'rgba(255, 255, 255, 0.06)',
+              },
+              '& .MuiFilledInput-root.Mui-focused': {
+                backgroundColor: 'rgba(255, 255, 255, 0.08)',
+              },
+              '& .MuiInputLabel-root': {
+                color: 'var(--color-text-dim)',
+              },
+              '& .MuiInputLabel-root.Mui-focused': {
+                color: 'var(--color-accent)',
+              },
+              '& .MuiFilledInput-input': {
+                color: '#fefefe',
+              },
             }}
-          >
-            Clear all
-          </Button>
+          />
+          <Tooltip title={advancedOpen ? 'Hide advanced filters' : 'Show advanced filters'} placement="top">
+            <Badge
+              variant="dot"
+              color="info"
+              invisible={!advancedFiltersActive}
+              sx={{
+                '& .MuiBadge-badge': {
+                  backgroundColor: 'var(--color-accent)',
+                },
+              }}
+            >
+              <IconButton
+                aria-label={advancedOpen ? 'Hide advanced filters' : 'Show advanced filters'}
+                aria-pressed={advancedOpen}
+                onClick={toggleAdvanced}
+                size="small"
+                sx={{
+                  alignSelf: 'stretch',
+                  borderRadius: '0.75rem',
+                  border: '1px solid var(--color-border)',
+                  backgroundColor: advancedOpen ? 'rgba(92, 200, 255, 0.14)' : 'rgba(255, 255, 255, 0.02)',
+                  color: advancedFiltersActive ? 'var(--color-accent)' : 'var(--color-text-dim)',
+                  '&:hover': {
+                    backgroundColor: 'rgba(92, 200, 255, 0.10)',
+                  },
+                }}
+              >
+                <FilterListIcon fontSize="small" />
+              </IconButton>
+            </Badge>
+          </Tooltip>
         </div>
-        <Divider className="sidebar__filters-divider" />
-        <div className="sidebar__filters-grid">
+
+        <Collapse in={advancedOpen} timeout={180} unmountOnExit>
+          <Divider className="sidebar__filters-divider" sx={{ marginTop: '0.85rem' }} />
+          <div className="sidebar__filters-header" style={{ marginTop: '0.85rem' }}>
+            <div>
+              <p className="sidebar__eyebrow sidebar__eyebrow--compact">Advanced filters</p>
+              <Typography variant="body2" sx={{ color: 'var(--color-text-dim)' }}>
+                {filterActive ? `${filteredCount} results` : 'Showing all cases'}
+              </Typography>
+            </div>
+            <Button
+              size="small"
+              variant="text"
+              color="inherit"
+              disabled={!filterActive}
+              onClick={onClearFilters}
+              sx={{
+                color: filterActive ? 'var(--color-accent)' : 'var(--color-text-dim)',
+                minWidth: 0,
+                textTransform: 'none',
+              }}
+            >
+              Clear all
+            </Button>
+          </div>
+
+          <div className="sidebar__filters-grid">
           <FilterMultiSelect
             label="Language"
             placeholder="All languages"
@@ -382,7 +464,8 @@ export function CaseSidebar({
             values={filters.statuses}
             onChange={(values) => onSetFilterValues('statuses', values)}
           />
-        </div>
+          </div>
+        </Collapse>
       </div>
       {loading && !cases.length && <p className="sidebar__status">Loading…</p>}
       {error && <p className="sidebar__status sidebar__status--error">{error}</p>}
