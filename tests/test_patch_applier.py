@@ -144,6 +144,27 @@ class TestPatchApplier:
         assert "```" not in result
         assert "2 |" not in result
 
+    def test_apply_replacement_block_strips_fences_with_language_tags(self):
+        """Replacement blocks should strip fences like ```scss (any language tag)."""
+        applier = PatchApplier()
+        source = "alpha\nbeta\ngamma\n"
+        replacement = (
+            "```patch\n"
+            "ORIGINAL LINES:\n"
+            "```scss\n"
+            "2 | beta\n"
+            "```\n"
+            "NEW LINES:\n"
+            "```scss\n"
+            "2 | beta_scss_modified\n"
+            "```\n"
+            "```\n"
+        )
+        result, success = applier.apply(source, replacement)
+        assert success is True
+        assert "beta_scss_modified" in result
+        assert "```" not in result
+
     def test_find_context_empty_lists(self):
         """Test finding context with empty lists."""
         applier = PatchApplier()

@@ -17,6 +17,8 @@ import re
 from pathlib import Path
 from typing import Any, Callable, Dict, Mapping, Optional, Sequence, Tuple
 
+from llm_patch.markdown import unwrap_fenced_block
+
 from .models import GuidedLoopInputs
 
 
@@ -118,20 +120,6 @@ def parse_gather_response(
     allowed_categories_set = {str(item) for item in allowed_categories}
     allowed_target_kinds_set = {str(item) for item in allowed_target_kinds}
 
-    def strip_code_fences(raw: str) -> str:
-        stripped = raw.strip()
-        if not stripped.startswith("```"):
-            return stripped
-        # Drop the opening fence line (``` or ```json) and the closing fence if present.
-        first_newline = stripped.find("\n")
-        if first_newline != -1:
-            stripped = stripped[first_newline + 1 :]
-        stripped = stripped.strip()
-        fence_idx = stripped.rfind("```")
-        if fence_idx != -1:
-            stripped = stripped[:fence_idx]
-        return stripped.strip()
-
     def extract_first_json_object(raw: str) -> str:
         # Best-effort: if the model adds prose before/after, extract the first {...} block.
         candidate = raw.strip()
@@ -141,7 +129,7 @@ def parse_gather_response(
             return candidate
         return candidate[start : end + 1].strip()
 
-    candidate = strip_code_fences(text)
+    candidate = unwrap_fenced_block(text).content
     try:
         payload = json.loads(candidate)
     except json.JSONDecodeError:
@@ -264,6 +252,17 @@ def collect_gathered_context(
         for lineno in range(start, end + 1):
             raw = all_lines[lineno - 1]
             window.append(f"{lineno:4d} | {raw}")
+        return "\n".join(window).rstrip()
+
+    def numbered_window_for_text(text: str, *, center_line: int, radius: int) -> str:
+        lines = text.splitlines()
+        if not lines:
+            return ""
+        start = max(1, center_line - radius)
+        end = min(len(lines), center_line + radius)
+        window: list[str] = []
+        for lineno in range(start, end + 1):
+            window.append(f"{lineno:4d} | {lines[lineno - 1]}")
         return "\n".join(window).rstrip()
 
     # Best-effort read of neighboring files for cross-file name resolution.
@@ -405,7 +404,7 @@ def collect_gathered_context(
         else:
             sections.append(f"USAGE_CONTEXT:\n(no occurrences of '{token}' found)")
 
-    def find_declarations_in_text(text: str, *, file_label: str) -> list[str]:
+    def find_declarations_in_text(text: str, *, file_label: str) -> list[tuple[str, int]]:
         if not token:
             return []
         patterns = [
@@ -416,36 +415,90 @@ def collect_gathered_context(
             re.compile(rf"\b{re.escape(token)}\s*\("),
         ]
         lines = text.splitlines()
-        hits: list[str] = []
+        hits: list[tuple[str, int]] = []
         for idx, line in enumerate(lines, start=1):
             if any(p.search(line) for p in patterns):
-                hits.append(f"{file_label}:{idx}: {line.strip()}")
+                hits.append((file_label, idx))
                 if len(hits) >= max_hits:
                     break
         return hits
 
     if token and "DECLARATION" in requested_categories:
-        hits = find_declarations_in_text(request.source_text, file_label=request.source_path.name)
+        hits: list[tuple[str, int, str]] = []
+        for file_label, line_no in find_declarations_in_text(
+            request.source_text, file_label=request.source_path.name
+        ):
+            hits.append(
+                (
+                    file_label,
+                    line_no,
+                    numbered_window_for_text(request.source_text, center_line=line_no, radius=5),
+                )
+            )
+            if len(hits) >= max_hits:
+                break
         for name, text in other_files:
             if len(hits) >= max_hits:
                 break
-            hits.extend(find_declarations_in_text(text, file_label=name))
-            hits = hits[:max_hits]
+            for file_label, line_no in find_declarations_in_text(text, file_label=name):
+                hits.append(
+                    (
+                        file_label,
+                        line_no,
+                        numbered_window_for_text(text, center_line=line_no, radius=5),
+                    )
+                )
+                if len(hits) >= max_hits:
+                    break
         if hits:
-            sections.append("DECLARATION:\n" + "\n".join(hits))
+            blocks: list[str] = []
+            for file_label, line_no, excerpt in hits:
+                header = f"{file_label} (around line {line_no}):"
+                if excerpt.strip():
+                    blocks.append(header + "\n" + excerpt)
+                else:
+                    blocks.append(header)
+            sections.append("DECLARATION CONTEXT:\n" + "\n\n".join(blocks))
         else:
-            sections.append(f"DECLARATION:\n(no likely declarations of '{token}' found)")
+            sections.append(f"DECLARATION CONTEXT:\n(no likely declarations of '{token}' found)")
 
     if token and "TYPE_CONTEXT" in requested_categories:
         # For now, reuse declaration heuristics; refine later per-language.
-        hits = find_declarations_in_text(request.source_text, file_label=request.source_path.name)
+        hits: list[tuple[str, int, str]] = []
+        for file_label, line_no in find_declarations_in_text(
+            request.source_text, file_label=request.source_path.name
+        ):
+            hits.append(
+                (
+                    file_label,
+                    line_no,
+                    numbered_window_for_text(request.source_text, center_line=line_no, radius=5),
+                )
+            )
+            if len(hits) >= max_hits:
+                break
         for name, text in other_files:
             if len(hits) >= max_hits:
                 break
-            hits.extend(find_declarations_in_text(text, file_label=name))
-            hits = hits[:max_hits]
+            for file_label, line_no in find_declarations_in_text(text, file_label=name):
+                hits.append(
+                    (
+                        file_label,
+                        line_no,
+                        numbered_window_for_text(text, center_line=line_no, radius=5),
+                    )
+                )
+                if len(hits) >= max_hits:
+                    break
         if hits:
-            sections.append("TYPE_CONTEXT:\n" + "\n".join(hits))
+            blocks: list[str] = []
+            for file_label, line_no, excerpt in hits:
+                header = f"{file_label} (around line {line_no}):"
+                if excerpt.strip():
+                    blocks.append(header + "\n" + excerpt)
+                else:
+                    blocks.append(header)
+            sections.append("TYPE_CONTEXT:\n" + "\n\n".join(blocks))
         else:
             sections.append(f"TYPE_CONTEXT:\n(no type context found for '{token}')")
 

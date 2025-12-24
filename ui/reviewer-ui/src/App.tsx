@@ -84,7 +84,7 @@ function App() {
     if (!detail || detailLoading) {
       return <LoadingState message="Loading case details…" />
     }
-    return <CaseWorkspace detail={detail} annotation={annotation} />
+    return <CaseWorkspace key={detail.summary.id} detail={detail} annotation={annotation} />
   })()
 
   return (

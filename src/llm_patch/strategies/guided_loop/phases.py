@@ -75,6 +75,17 @@ class GuidedIterationArtifact:
     pass_index: int = 1
     include_full_critiques: bool = False
 
+    # Optional outcome snapshots for UI inspection. These can be large, so they are
+    # not required for the strategy to function, but they are useful for the
+    # reviewer UI to switch between iteration outputs.
+    patch_applied: Optional[bool] = None
+    patched_text: Optional[str] = None
+    diff_text: Optional[str] = None
+    patch_diagnostics: Optional[str] = None
+    compile_returncode: Optional[int] = None
+    compile_stdout: Optional[str] = None
+    compile_stderr: Optional[str] = None
+
     def to_dict(self) -> Dict[str, Any]:
         return {
             "index": self.index,
@@ -90,6 +101,15 @@ class GuidedIterationArtifact:
             "telemetry": dict(self.telemetry),
             "passIndex": self.pass_index,
             "includeFullCritiques": self.include_full_critiques,
+
+            # Optional outcome snapshot fields.
+            "patchApplied": self.patch_applied,
+            "patchedText": self.patched_text,
+            "diffText": self.diff_text,
+            "patchDiagnostics": self.patch_diagnostics,
+            "compileReturncode": self.compile_returncode,
+            "compileStdout": self.compile_stdout,
+            "compileStderr": self.compile_stderr,
         }
 
 

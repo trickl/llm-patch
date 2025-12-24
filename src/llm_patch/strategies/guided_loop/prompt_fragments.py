@@ -101,6 +101,20 @@ GATHER_INSTRUCTIONS_FRAGMENT = dedent(
     Note: You will typically be shown only a narrow, numbered context window around the error location, NOT the full file.
     Do not assume the file header (imports/includes/usings, package/module declarations) is visible unless you can literally see it in the Context section.
 
+    Symbol Resolution Hierarchy (do not skip levels):
+        - If a compiler/test error indicates a symbol/type/identifier cannot be resolved, treat the symbol's origin as UNKNOWN.
+        - You MUST determine whether the symbol is declared:
+            1) in the currently visible scope/context window,
+            2) elsewhere in the same file,
+            3) in another module/namespace/package via imports/includes/usings.
+        - You may NOT assume it comes from imports/includes/usings unless lower scopes (1) and (2) have been explicitly ruled out.
+        - Request only the minimum context needed to confirm or rule out each level.
+
+    Minimal parallel requests (avoid sequential bias):
+        - If multiple resolution sources are plausible (e.g., the symbol could be declared elsewhere in-file OR provided via imports),
+          request the minimum information from EACH relevant category in the same gather response.
+          Example: request DECLARATION(symbol) and IMPORTS_NAMESPACE when both are needed to disambiguate.
+
     Deterministic application rule:
         - If you cannot point to the exact insertion/modification location using only currently visible lines and structure, you MUST request the minimum additional context needed to locate it.
         - If the change affects file-level structure (imports/includes/usings, package/module declarations, top-level declarations, class/function boundaries), request the relevant context category.
@@ -108,7 +122,10 @@ GATHER_INSTRUCTIONS_FRAGMENT = dedent(
     Common cases (examples of when you MUST request context):
         - Adding/removing/changing an import/include/using => request IMPORTS_NAMESPACE unless it is already visible.
         - Editing a declaration that is not shown => request DECLARATION.
-        - Inserting/modifying code inside a function/class but the full surrounding scope is not shown => request ENCLOSING_SCOPE.
+        - Common symbol-resolution requirement:
+            – If an error indicates "cannot find symbol" / "undefined identifier" / "unresolved reference" (or similar),
+              you MUST request DECLARATION unless you can already see where the symbol is declared/defined.
+        - Inserting/modifying code inside an enclosing scope (function/method/class/module block) but the full surrounding scope is not shown => request ENCLOSING_SCOPE.
         - Needing to understand file-level placement (e.g., where to add a new top-level declaration) => request FILE_CONTEXT.
         - Fix depends on type/alias/generic constraints not shown => request TYPE_CONTEXT.
         - Fix depends on how a symbol is used elsewhere => request USAGE_CONTEXT.
@@ -125,13 +142,18 @@ GATHER_INSTRUCTIONS_FRAGMENT = dedent(
         - If your intended fix requires adding/removing/changing imports/includes/usings AND those lines are not present in the Context section,
           then needs_more_context MUST be true and requests MUST include at least one IMPORTS_NAMESPACE request.
 
+        HARD RULE (Declarations):
+                - If your hypothesis involves a symbol that may be declared elsewhere in the same file AND the declaration/definition is not present
+                    in the Context section, then needs_more_context MUST be true and requests MUST include at least one DECLARATION request targeting
+                    that symbol.
+
     You must respond with a single JSON object and nothing else (no Markdown, no prose, no code fences).
     Do NOT wrap the JSON in ```json ... ```.
     Use the EXACT key names (case-sensitive): needs_more_context and requests.
     You MUST also include a "why" field explaining your decision. If needs_more_context=false, explain why the current context is sufficient.
 
     You may request additional context categories from this list:
-        - ENCLOSING_SCOPE: surrounding function/class scope for the error location.
+        - ENCLOSING_SCOPE: surrounding scope for the error location (function/method/class/module block).
         - DECLARATION: where a referenced symbol is declared/defined.
         - IMPORTS_NAMESPACE: imports/includes/using statements and relevant namespace/module context.
         - TYPE_CONTEXT: type aliases, generics, or type information that constrains a fix.

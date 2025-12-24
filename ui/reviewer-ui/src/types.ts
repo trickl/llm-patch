@@ -160,6 +160,15 @@ export interface StrategyIteration {
   hypotheses?: HypothesisBuckets | null
   selectedHypothesisId?: string | null
   telemetry?: IterationTelemetry | null
+
+  // Optional per-iteration outputs (if recorded by the guided loop runner).
+  patchApplied?: boolean | null
+  patchedText?: string | null
+  diffText?: string | null
+  patchDiagnostics?: string | null
+  compileReturncode?: number | null
+  compileStdout?: string | null
+  compileStderr?: string | null
 }
 
 export type StrategyPhaseStatus = 'planned' | 'running' | 'completed' | 'failed'

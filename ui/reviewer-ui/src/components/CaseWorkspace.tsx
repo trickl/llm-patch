@@ -40,6 +40,7 @@ export function CaseWorkspace({ detail, annotation }: CaseWorkspaceProps) {
   const [requestedStageId, setRequestedStageId] = useState<string | null>(null)
   const [timelineExpanded, setTimelineExpanded] = useState(false)
   const [flowCopyStatus, setFlowCopyStatus] = useState<'idle' | 'copied' | 'error'>('idle')
+  const [showInlineErrors, setShowInlineErrors] = useState(true)
   const updateMetrics = useReviewStore((state) => state.updateMetrics)
   const [beforeEditor, setBeforeEditor] = useState<MonacoEditor.IStandaloneCodeEditor | null>(null)
   const [afterEditor, setAfterEditor] = useState<MonacoEditor.IStandaloneCodeEditor | null>(null)
@@ -53,14 +54,6 @@ export function CaseWorkspace({ detail, annotation }: CaseWorkspaceProps) {
     return languageMap[normalized] ?? 'plaintext'
   }, [detail.summary.language])
 
-  const modelPaths = useMemo(() => {
-    const baseId = detail.summary.id
-    return {
-      before: `case://${baseId}/before`,
-      after: `case://${baseId}/after`,
-    }
-  }, [detail.summary.id])
-
   const diagnosticsBefore = useMemo(
     () => parseDiagnostics(detail.errors.before.stderr, detail.summary.language),
     [detail.errors.before.stderr, detail.summary.language],
@@ -72,11 +65,84 @@ export function CaseWorkspace({ detail, annotation }: CaseWorkspaceProps) {
   const patchFailed = !detail.summary.patchApplied
   const afterMissing = detail.derived.afterSource === 'missing'
   const afterUnavailable = patchFailed || afterMissing
-  const afterPlaceholder = afterUnavailable ? (patchFailed ? 'Patch failed' : 'Not available') : undefined
-  const afterValue = afterUnavailable ? '' : detail.after
+  const finalAfterPlaceholder = afterUnavailable ? (patchFailed ? 'Patch failed' : 'Not available') : undefined
+  const finalAfterValue = afterUnavailable ? '' : detail.after
+
+  type AfterVariant = {
+    key: string
+    label: string
+    text: string
+    placeholder?: string
+    disabled?: boolean
+  }
+
+  const afterVariants: AfterVariant[] = useMemo(() => {
+    const variants: AfterVariant[] = []
+
+    variants.push({
+      key: 'final',
+      label: detail.derived.afterSource === 'dataset' ? 'Final (dataset)' : 'Final',
+      text: finalAfterValue,
+      placeholder: finalAfterPlaceholder,
+      disabled: finalAfterValue.trim().length === 0,
+    })
+
+    const iterations = detail.strategyTrace?.iterations ?? []
+    for (const iteration of iterations) {
+      const text = iteration.patchedText ?? ''
+      const applied = iteration.patchApplied
+      const compileRc = iteration.compileReturncode
+      const compileLabel = typeof compileRc === 'number' ? (compileRc === 0 ? 'compile ok' : `compile ${compileRc}`) : null
+      const appliedLabel = applied === true ? 'applied' : applied === false ? 'not applied' : null
+      const statusSuffix = [appliedLabel, compileLabel].filter(Boolean).join(', ')
+      variants.push({
+        key: `iter-${iteration.index}`,
+        label: `Iteration ${iteration.index}${statusSuffix ? ` (${statusSuffix})` : ''}`,
+        text,
+        placeholder: text.trim().length ? undefined : 'No patched output recorded for this iteration',
+        disabled: text.trim().length === 0,
+      })
+    }
+
+    return variants
+  }, [detail.derived.afterSource, detail.strategyTrace, finalAfterPlaceholder, finalAfterValue])
+
+  const defaultAfterKey = useMemo(() => {
+    const iterationVariants = afterVariants.filter((variant) => variant.key.startsWith('iter-') && variant.text.trim().length)
+    if (iterationVariants.length) {
+      return iterationVariants[iterationVariants.length - 1].key
+    }
+    const final = afterVariants.find((variant) => variant.key === 'final')
+    return final && final.text.trim().length ? 'final' : 'final'
+  }, [afterVariants])
+
+  const [selectedAfterKey, setSelectedAfterKey] = useState(defaultAfterKey)
+
+  const resolvedAfterKey = useMemo(() => {
+    if (afterVariants.some((variant) => variant.key === selectedAfterKey)) {
+      return selectedAfterKey
+    }
+    return defaultAfterKey
+  }, [afterVariants, defaultAfterKey, selectedAfterKey])
+
+  const selectedAfterVariant = useMemo(
+    () => afterVariants.find((variant) => variant.key === resolvedAfterKey) ?? afterVariants[0],
+    [afterVariants, resolvedAfterKey],
+  )
+
+  const afterPlaceholder = selectedAfterVariant?.placeholder
+  const afterValue = selectedAfterVariant?.text ?? ''
   const diffLineCount = detail.diff.split('\n').length
   const stderrLineCount = countNonEmptyLines(detail.errors.before.stderr)
-  const hasAfterFile = !afterUnavailable
+  const hasAnyAfterText = useMemo(() => afterVariants.some((variant) => variant.text.trim().length), [afterVariants])
+
+  const modelPaths = useMemo(() => {
+    const baseId = detail.summary.id
+    return {
+      before: `case://${baseId}/before`,
+      after: `case://${baseId}/after/${resolvedAfterKey}`,
+    }
+  }, [detail.summary.id, resolvedAfterKey])
   const iterationGroups = useMemo(() => buildIterationDescriptors(detail.strategyTrace), [detail.strategyTrace])
   const stageTabs = useMemo(() => iterationGroups.flatMap((group) => group.stages), [iterationGroups])
   const activeStageId = useMemo(() => {
@@ -293,13 +359,25 @@ export function CaseWorkspace({ detail, annotation }: CaseWorkspaceProps) {
                 value={detail.before}
                 modelPath={modelPaths.before}
                 diagnostics={diagnosticsBefore}
+                showDiagnostics={showInlineErrors}
                 onEditorMount={handleBeforeMount}
                 headerActions={
-                  <QualityReviewButtons
-                    value={annotation.sourceQuality}
-                    onChange={handleSourceReview}
-                    ariaLabel="Review source quality"
-                  />
+                  <div className="editor-pane__toolbar">
+                    <button
+                      type="button"
+                      className={clsx('editor-pane__tool-button', !showInlineErrors && 'is-off')}
+                      aria-pressed={showInlineErrors}
+                      title={showInlineErrors ? 'Hide inline errors' : 'Show inline errors'}
+                      onClick={() => setShowInlineErrors((current) => !current)}
+                    >
+                      {showInlineErrors ? 'Errors: on' : 'Errors: off'}
+                    </button>
+                    <QualityReviewButtons
+                      value={annotation.sourceQuality}
+                      onChange={handleSourceReview}
+                      ariaLabel="Review source quality"
+                    />
+                  </div>
                 }
               />
             </Panel>
@@ -313,15 +391,42 @@ export function CaseWorkspace({ detail, annotation }: CaseWorkspaceProps) {
                 modelPath={modelPaths.after}
                 diagnostics={diagnosticsAfter}
                 placeholder={afterPlaceholder}
+                showDiagnostics={showInlineErrors}
                 onEditorMount={handleAfterMount}
                 headerActions={
-                  hasAfterFile ? (
-                    <FinalOutcomeButtons
-                      value={annotation.finalOutcome}
-                      onChange={handleFinalOutcome}
-                      ariaLabel="Final application review"
-                    />
-                  ) : undefined
+                  <div className="editor-pane__toolbar">
+                    <button
+                      type="button"
+                      className={clsx('editor-pane__tool-button', !showInlineErrors && 'is-off')}
+                      aria-pressed={showInlineErrors}
+                      title={showInlineErrors ? 'Hide inline errors' : 'Show inline errors'}
+                      onClick={() => setShowInlineErrors((current) => !current)}
+                    >
+                      {showInlineErrors ? 'Errors: on' : 'Errors: off'}
+                    </button>
+                    <label className="editor-pane__tool-label">
+                      After:
+                      <select
+                        className="editor-pane__select"
+                        value={resolvedAfterKey}
+                        onChange={(event) => setSelectedAfterKey(event.target.value)}
+                        aria-label="Select after iteration"
+                      >
+                        {afterVariants.map((variant) => (
+                          <option key={variant.key} value={variant.key} disabled={variant.disabled}>
+                            {variant.label}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    {hasAnyAfterText ? (
+                      <FinalOutcomeButtons
+                        value={annotation.finalOutcome}
+                        onChange={handleFinalOutcome}
+                        ariaLabel="Final application review"
+                      />
+                    ) : undefined}
+                  </div>
                 }
               />
             </Panel>
@@ -516,6 +621,7 @@ interface EditorSectionProps {
   language: string
   modelPath: string
   diagnostics: CompilerDiagnostic[]
+  showDiagnostics?: boolean
   placeholder?: string
   onEditorMount?: (editor: MonacoEditor.IStandaloneCodeEditor) => void
   headerActions?: ReactNode
@@ -682,7 +788,17 @@ function StrategyPhaseContent({ descriptor, view }: { descriptor: StageTabDescri
   )
 }
 
-function EditorSection({ title, value, language, modelPath, diagnostics, placeholder, onEditorMount, headerActions }: EditorSectionProps) {
+function EditorSection({
+  title,
+  value,
+  language,
+  modelPath,
+  diagnostics,
+  showDiagnostics = true,
+  placeholder,
+  onEditorMount,
+  headerActions,
+}: EditorSectionProps) {
   const modelRef = useRef<MonacoEditor.ITextModel | null>(null)
   const monacoRef = useRef<MonacoApi | null>(null)
   const editorRef = useRef<MonacoEditor.IStandaloneCodeEditor | null>(null)
@@ -691,10 +807,12 @@ function EditorSection({ title, value, language, modelPath, diagnostics, placeho
   const lineLeaderRef = useRef<CompilerDiagnostic[]>([])
   const [badgePositions, setBadgePositions] = useState<InlineBadgePosition[]>([])
 
+  const effectiveDiagnostics = useMemo(() => (showDiagnostics ? diagnostics : []), [diagnostics, showDiagnostics])
+
   useEffect(() => {
     if (!modelRef.current || !monacoRef.current) return
-    syncDiagnostics(monacoRef.current, modelRef.current, editorRef.current, decorationsRef, diagnostics)
-  }, [diagnostics])
+    syncDiagnostics(monacoRef.current, modelRef.current, editorRef.current, decorationsRef, effectiveDiagnostics)
+  }, [effectiveDiagnostics])
 
   useEffect(() => () => {
     if (modelRef.current && monacoRef.current) {
@@ -710,6 +828,10 @@ function EditorSection({ title, value, language, modelPath, diagnostics, placeho
   }, [])
 
   const updateBadgePositions = useCallback(() => {
+    if (!showDiagnostics) {
+      setBadgePositions([])
+      return
+    }
     const editor = editorRef.current
     if (!editor) {
       setBadgePositions([])
@@ -725,6 +847,7 @@ function EditorSection({ title, value, language, modelPath, diagnostics, placeho
     const editorRect = editorDomNode.getBoundingClientRect()
     const offsetTop = editorRect.top - parentRect.top
     const offsetLeft = editorRect.left - parentRect.left
+    const anchorLeft = editorRect.width + offsetLeft - 12
     const leaders = lineLeaderRef.current
     const badges: InlineBadgePosition[] = []
     for (let index = 0; index < leaders.length; index += 1) {
@@ -739,19 +862,19 @@ function EditorSection({ title, value, language, modelPath, diagnostics, placeho
         severity: diag.severity,
         message: diag.message,
         top: visible.top + offsetTop - 6,
-        left: visible.left + offsetLeft + 8,
+        left: Math.max(0, anchorLeft),
       })
     }
     setBadgePositions(badges)
-  }, [])
+  }, [showDiagnostics])
 
   useEffect(() => {
-    lineLeaderRef.current = selectLineLeaders(diagnostics)
+    lineLeaderRef.current = showDiagnostics ? selectLineLeaders(diagnostics) : []
     const frame = requestAnimationFrame(() => {
       updateBadgePositions()
     })
     return () => cancelAnimationFrame(frame)
-  }, [diagnostics, updateBadgePositions])
+  }, [diagnostics, showDiagnostics, updateBadgePositions])
 
 
   return (
@@ -785,7 +908,7 @@ function EditorSection({ title, value, language, modelPath, diagnostics, placeho
             monacoRef.current = monaco
             editorRef.current = editorInstance
             if (modelRef.current) {
-              syncDiagnostics(monaco, modelRef.current, editorRef.current, decorationsRef, diagnostics)
+              syncDiagnostics(monaco, modelRef.current, editorRef.current, decorationsRef, effectiveDiagnostics)
             }
             disposeBadgeListeners(badgeListenersRef)
             badgeListenersRef.current = [
@@ -808,18 +931,20 @@ function EditorSection({ title, value, language, modelPath, diagnostics, placeho
           }}
         />
         {placeholder && <div className="editor-pane__placeholder">{placeholder}</div>}
-        <div className="diagnostic-badge-layer" aria-hidden="true">
-          {badgePositions.map((badge) => (
-            <div
-              key={badge.id}
-              className={clsx('diagnostic-inline-badge', `diagnostic-inline-badge--${badge.severity}`)}
-              style={{ top: `${badge.top}px`, left: `${badge.left}px` }}
-            >
-              <span className="diagnostic-inline-badge__icon">{severityIcon(badge.severity)}</span>
-              <span className="diagnostic-inline-badge__text">{truncateMessage(badge.message, 90)}</span>
-            </div>
-          ))}
-        </div>
+        {showDiagnostics && (
+          <div className="diagnostic-badge-layer" aria-hidden="true">
+            {badgePositions.map((badge) => (
+              <div
+                key={badge.id}
+                className={clsx('diagnostic-inline-badge', `diagnostic-inline-badge--${badge.severity}`)}
+                style={{ top: `${badge.top}px`, left: `${badge.left}px` }}
+              >
+                <span className="diagnostic-inline-badge__icon">{severityIcon(badge.severity)}</span>
+                <span className="diagnostic-inline-badge__text">{truncateMessage(badge.message, 90)}</span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   )
@@ -1435,11 +1560,9 @@ function applyDecorations(
   diagnostics: CompilerDiagnostic[],
 ) {
   const capped = diagnostics.slice(0, 100)
-  const lineLeaders = pickLineLeaders(capped)
 
   const decorations = capped.map((diag) => {
     const hoverMessage = createHoverMessage(diag.message)
-    const showLabel = lineLeaders.get(diag.line) === diag
     return {
       range: new monaco.Range(
         Math.max(1, diag.line),
@@ -1454,14 +1577,6 @@ function applyDecorations(
         linesDecorationsClassName: `diagnostic-line diagnostic-line--${diag.severity}`,
         hoverMessage,
         stickiness: monaco.editor.TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
-        renderOptions: showLabel
-          ? {
-              after: {
-                contentText: truncateMessage(diag.message),
-                inlineClassName: `diagnostic-tooltip diagnostic-tooltip--${diag.severity}`,
-              },
-            }
-          : undefined,
       },
     }
   })

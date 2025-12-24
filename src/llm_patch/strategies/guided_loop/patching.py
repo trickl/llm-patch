@@ -23,6 +23,7 @@ from typing import Callable, List, Optional, Sequence, Tuple
 from diff_match_patch import diff_match_patch
 
 from llm_patch.patch_applier import PatchApplier, normalize_replacement_block
+from llm_patch.markdown import strip_fence_lines
 
 from .models import GuidedLoopInputs
 
@@ -31,9 +32,6 @@ REPLACEMENT_BLOCK_PATTERN = re.compile(
     r"ORIGINAL LINES:\s*\n(?P<original>.*?)\n(?:CHANGED|NEW) LINES:\s*\n(?P<updated>.*?)(?=(?:\nORIGINAL LINES:|\Z))",
     re.DOTALL,
 )
-
-
-CODE_FENCE_LINE_RE = re.compile(r"^\s*(?:```|~~~)")
 
 
 def strip_code_fences(text: str) -> str:
@@ -46,12 +44,7 @@ def strip_code_fences(text: str) -> str:
 
     if not text:
         return text
-    kept: List[str] = []
-    for raw_line in text.splitlines():
-        if CODE_FENCE_LINE_RE.match(raw_line.strip()):
-            continue
-        kept.append(raw_line)
-    return "\n".join(kept).strip()
+    return strip_fence_lines(text).strip()
 
 
 def parse_replacement_blocks(diff_text: str) -> List[tuple[List[str], List[str]]]:

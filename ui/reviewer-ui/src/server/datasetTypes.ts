@@ -97,6 +97,15 @@ export interface StrategyIteration {
   failureReason?: string | null
   kind?: 'primary' | 'refine'
   label?: string | null
+
+  // Optional per-iteration outputs (if recorded by the guided loop runner).
+  patchApplied?: boolean | null
+  patchedText?: string | null
+  diffText?: string | null
+  patchDiagnostics?: string | null
+  compileReturncode?: number | null
+  compileStdout?: string | null
+  compileStderr?: string | null
 }
 
 export interface StrategyPhaseArtifact {

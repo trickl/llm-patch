@@ -53,10 +53,15 @@ export class DatasetLoader {
 
   async refresh() {
     this.summaries.length = 0
-    // A single case directory may contain multiple result JSON files that map to the same logical
-    // patch attempt (e.g., manual copies like "__rerun_YYYY..." or repeated reruns that wrote the
-    // canonical filename). The sidebar expects unique patch ids.
-    const summariesById = new Map<string, PatchRecordInternal>()
+    // A single case directory may contain multiple result JSON files.
+    //
+    // For reviewer ergonomics we treat results as unique per (runId, caseId, algorithm). When the
+    // guided-loop is rerun with a different model slug, we want the latest output to replace the
+    // older one rather than showing multiple model variants.
+    //
+    // We keep the newest result file by mtime, with a slight preference for the canonical filename
+    // over "__rerun_YYYY..." copies.
+    const summariesByKey = new Map<string, PatchRecordInternal>()
     try {
       await access(this.datasetRoot)
     } catch (error) {
@@ -96,9 +101,7 @@ export class DatasetLoader {
         const diffPath = path.resolve(baseDir, result.diff_path)
         const diffName = path.basename(result.diff_path)
 
-        const patchId = [runId, result.case_id, result.model_slug, result.algorithm, diffName]
-          .filter(Boolean)
-          .join('::')
+        const patchKey = [runId, result.case_id, result.algorithm].filter(Boolean).join('::')
 
         const patchApplied = Boolean(result.patch_applied)
         const errorsBefore = coerceNumber(result.errors_before)
@@ -111,7 +114,7 @@ export class DatasetLoader {
             ? String((manifest as Record<string, unknown>)['first_error_message'])
             : null
         const summary: PatchSummaryPublic = {
-          id: patchId,
+          id: patchKey,
           caseId: manifest.case_id,
           runId,
           fingerprint,
@@ -147,9 +150,9 @@ export class DatasetLoader {
           },
         }
 
-        const existing = summariesById.get(patchId)
+        const existing = summariesByKey.get(patchKey)
         if (!existing) {
-          summariesById.set(patchId, record)
+          summariesByKey.set(patchKey, record)
           continue
         }
 
@@ -162,7 +165,7 @@ export class DatasetLoader {
 
         if (existingIsRerun !== candidateIsRerun) {
           if (!candidateIsRerun) {
-            summariesById.set(patchId, record)
+            summariesByKey.set(patchKey, record)
           }
           continue
         }
@@ -174,19 +177,19 @@ export class DatasetLoader {
         const existingMtime = existingStat?.mtimeMs ?? 0
         const candidateMtime = candidateStat?.mtimeMs ?? 0
         if (candidateMtime > existingMtime) {
-          summariesById.set(patchId, record)
+          summariesByKey.set(patchKey, record)
         }
       }
     }
 
-    this.summaries.push(...summariesById.values())
+    this.summaries.push(...summariesByKey.values())
 
     this.isLoaded = true
   }
 
   async rerunCase(caseId: string, options: RerunOptions = {}): Promise<CaseRerunResponse> {
     await this.ensureLoaded()
-    const record = this.summaries.find((entry) => entry.summary.caseId === caseId)
+    const record = this.getRecord(caseId)
     if (!record) {
       throw new Error(`Case ${caseId} is not loaded; refresh the dataset and try again.`)
     }

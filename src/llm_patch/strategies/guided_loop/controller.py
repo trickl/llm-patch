@@ -144,7 +144,8 @@ class GuidedConvergenceStrategy(PatchStrategy):
         ),
         GuidedPhase.CRITIQUE: dedent(
             """
-            Begin with a Markdown heading that states the hypothesis label and its description (for example: "### H2 – Missing comma in enum").
+            Begin with a Markdown heading that states the CURRENT iteration's hypothesis identifier and descriptive title (for example: "### H2 – Missing comma in enum").
+            Take care to use the latest hypothesis identifier and title, not a label/title from a prior iteration.
             Critique the replacement block(s). Do they respect the constraints? Identify non-minimal or risky edits.
             Tie your observations back to the named hypothesis so later phases can cite this critique verbatim.
             """
@@ -213,6 +214,16 @@ class GuidedConvergenceStrategy(PatchStrategy):
             )
             events.extend(iteration_events)
             if iteration_outcome:
+                # Persist a snapshot of what this iteration produced for reviewer inspection.
+                # (These are optional fields on GuidedIterationArtifact.)
+                iteration.patch_applied = bool(iteration_outcome.patch_applied)
+                iteration.patched_text = iteration_outcome.patched_text
+                iteration.diff_text = iteration_outcome.diff_text
+                iteration.patch_diagnostics = iteration_outcome.patch_diagnostics
+                iteration.compile_returncode = iteration_outcome.compile_returncode
+                iteration.compile_stdout = iteration_outcome.compile_stdout
+                iteration.compile_stderr = iteration_outcome.compile_stderr
+
                 history_entry = self._history_entry(iteration.index, iteration_outcome)
                 iteration.history_entry = history_entry
                 history_log.append(history_entry)

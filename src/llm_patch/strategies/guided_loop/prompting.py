@@ -210,7 +210,7 @@ def build_critique_prompt(
         else "Summarize concerns about the proposed patch before it is applied."
     )
     checklist = (
-        "Start with a header stating the hypothesis label and title.\n"
+        "Start with a header stating the hypothesis label identifier and descriptive title. Take care to state the current, latest hypothesis identifier and title and not that from prior iterations.\n"
         "Then address each item in order:\n"
         "1) Outcome summary — Did the patch resolve the issue? Mention compile/test status.\n"
         "2) Could the patch be applied? — If not, explain why.\n"

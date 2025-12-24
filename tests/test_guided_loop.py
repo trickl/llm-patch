@@ -121,6 +121,23 @@ def fenced_gather_payload(*, needs_more_context: bool = False, category: str = "
     }
     return "```json\n" + json.dumps(payload, indent=2) + "\n```"
 
+
+def tilde_fenced_gather_payload(*, needs_more_context: bool = False, category: str = "IMPORTS_NAMESPACE") -> str:
+    payload = {
+        "needs_more_context": needs_more_context,
+        "why": "Need import header to confirm symbol availability." if needs_more_context else "No extra context needed.",
+        "requests": [
+            {
+                "category": category,
+                "target": None,
+                "reason": "Need to confirm imports/namespace context.",
+            }
+        ]
+        if needs_more_context
+        else [],
+    }
+    return "~~~json\n" + json.dumps(payload, indent=2) + "\n~~~"
+
 def replacement_block(original: str, new: str) -> str:
     return (
         "ORIGINAL LINES:\n"
@@ -152,7 +169,8 @@ HelloWorld.java:11: error: not a statement
     assert "Position of error on line" in processed
     assert "previous token" in processed
     assert "current token" in processed
-    assert " <ERROR> " in processed
+    assert "<ERROR>" not in processed
+    assert "In the following snippet" not in processed
 
 
 def test_compile_error_preprocessing_c_trims_warnings_and_adds_pointer_summary() -> None:
@@ -172,7 +190,8 @@ expression_evaluator.c:29:9: warning: missing initializer for field 'value' of '
     assert "warning" not in processed
     assert "Position of error on line" in processed
     assert "expression_evaluator.c:29" not in processed
-    assert " <ERROR> " in processed
+    assert "<ERROR>" not in processed
+    assert "In the following snippet" not in processed
 
 
 def test_compile_error_preprocessing_non_target_language_is_noop() -> None:
@@ -224,7 +243,8 @@ def test_ensure_inputs_reprocesses_error_text_for_guided_inputs(tmp_path: Path) 
     assert processed_inputs.error_text != raw_error
     assert "Position of error on line" in processed_inputs.error_text
     assert processed_inputs.raw_error_text == raw_error
-    assert " <ERROR> " in processed_inputs.error_text
+    assert "<ERROR>" not in processed_inputs.error_text
+    assert "In the following snippet" not in processed_inputs.error_text
 
 
 @pytest.fixture()
@@ -407,6 +427,103 @@ def test_gather_parses_json_code_fences_and_injects_context(sample_before_file: 
 
     assert "Additional gathered context:" in generate_phase.prompt
     assert "IMPORTS_NAMESPACE (file header):" in generate_phase.prompt
+
+
+def test_gather_injects_declaration_context_window(tmp_path: Path) -> None:
+    before_path = tmp_path / "sample.py"
+    before_path.write_text(
+        dedent(
+            """\
+            def use():
+                return Token()
+
+
+            class Token:
+                def __init__(self):
+                    pass
+            """
+        ),
+        encoding="utf-8",
+    )
+    diff = replacement_block("pass", "self.value = 0")
+    gather = json.dumps(
+        {
+            "needs_more_context": True,
+            "why": "Need the declaration context for this symbol.",
+            "requests": [
+                {
+                    "category": "DECLARATION",
+                    "target": {"kind": "symbol", "name": "Token"},
+                    "reason": "Need to confirm where Token is declared.",
+                }
+            ],
+        }
+    )
+    client = StubLLMClient(
+        [
+            diagnosis_payload("pass-1"),
+            planning_payload("pass-1-H1"),
+            gather,
+            proposal_payload("pass-1"),
+            diff,
+            "Critique looks good overall.",
+        ]
+    )
+    compile_command = [sys.executable, "-c", "import sys; sys.exit(0)"]
+    request = build_request(before_path, compile_command)
+    strategy = GuidedConvergenceStrategy(
+        client=client,
+        config=GuidedLoopConfig(
+            interpreter_model="test",
+            patch_model="test",
+            max_iterations=1,
+            refine_sub_iterations=0,
+            main_loop_passes=1,
+        ),
+    )
+
+    result = strategy.run(request)
+
+    first_iteration = result.trace.iterations[0]
+    propose_phase = next(phase for phase in first_iteration.phases if phase.phase.value == "propose")
+    assert "Additional gathered context:" in propose_phase.prompt
+    assert "DECLARATION CONTEXT:" in propose_phase.prompt
+    assert "sample.py (around line" in propose_phase.prompt
+    assert "|" in propose_phase.prompt
+    assert "class Token" in propose_phase.prompt
+
+
+def test_gather_parses_tilde_json_code_fences(sample_before_file: Path) -> None:
+    diff = replacement_block("print('hello')", "print('patched')")
+    client = StubLLMClient([
+        diagnosis_payload("pass-1"),
+        planning_payload("pass-1-H1"),
+        tilde_fenced_gather_payload(needs_more_context=True, category="IMPORTS_NAMESPACE"),
+        proposal_payload("pass-1"),
+        diff,
+        "Critique looks good overall.",
+    ])
+    compile_command = [sys.executable, "-c", "import sys; sys.exit(0)"]
+    request = build_request(sample_before_file, compile_command)
+    strategy = GuidedConvergenceStrategy(
+        client=client,
+        config=GuidedLoopConfig(
+            interpreter_model="test",
+            patch_model="test",
+            max_iterations=1,
+            refine_sub_iterations=0,
+            main_loop_passes=1,
+        ),
+    )
+
+    result = strategy.run(request)
+
+    first_iteration = result.trace.iterations[0]
+    gather_phase = next(phase for phase in first_iteration.phases if phase.phase.value == "gather")
+    gather_request = gather_phase.machine_checks.get("gather_request")
+    assert gather_request is not None
+    assert gather_request["needs_more_context"] is True
+    assert gather_request["requests"][0]["category"] == "IMPORTS_NAMESPACE"
 
 
 def test_gather_parses_case_insensitive_keys(sample_before_file: Path) -> None:

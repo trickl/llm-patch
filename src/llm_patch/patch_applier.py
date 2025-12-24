@@ -7,6 +7,7 @@ import re
 from typing import List, Optional, Sequence, Tuple
 
 from .fuzzy_matcher import FuzzyMatcher
+from .markdown import is_fence_line
 
 
 HUNK_HEADER_RE = re.compile(r"@@ -(?P<orig_start>\d+)(?:,(?P<orig_count>\d+))? \+(?P<new_start>\d+)(?:,(?P<new_count>\d+))? @@")
@@ -17,7 +18,6 @@ REPLACEMENT_BLOCK_RE = re.compile(
 
 LINE_NUMBER_PIPE_RE = re.compile(r"^\s*\d+\s*\|\s?(?P<content>.*)$")
 LINE_NUMBER_GENERIC_RE = re.compile(r"^\s*\d+\s*(?:[:>\).¦‖│])\s*(?P<content>.*)$")
-CODE_FENCE_RE = re.compile(r"^\s*(?:```|~~~)")
 
 
 @dataclass(slots=True)
@@ -257,7 +257,7 @@ def normalize_replacement_block(block: Optional[str]) -> List[str]:
         content = _strip_numbered_prefix(line)
         candidate = content if content is not None else ""
         trimmed = candidate.strip()
-        if CODE_FENCE_RE.match(trimmed):
+        if is_fence_line(trimmed):
             continue
         normalized.append(candidate)
     return normalized

@@ -129,16 +129,10 @@ def describe_pointer_context(code_line: str, pointer_line: str) -> Optional[str]
     context = token_context_descriptions(code_expanded, caret_index)
     prev_desc = context["previous"]
     current_desc = context["current"]
-    summary = f"Position of error on line - previous token: {prev_desc}; current token: {current_desc}."
-    marked_line = line_with_marker(code_line, caret_index)
-    if not marked_line:
-        return summary
-    snippet_lines = [
-        summary,
-        "In the following snippet, the position of the error is denoted by  <ERROR> ",
-        marked_line,
-    ]
-    return "\n".join(snippet_lines)
+    # Keep the token-based summary (useful signal) but avoid emitting a synthetic
+    # snippet with an <ERROR> marker, which can mislead models into thinking that
+    # marked-up code exists in the codebase.
+    return f"Position of error on line - previous token: {prev_desc}; current token: {current_desc}."
 
 
 def line_with_marker(code_line: str, caret_index: int, marker: str = " <ERROR> ") -> str:
