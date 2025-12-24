@@ -225,3 +225,4 @@ benchmarks/generated/**/compiler_stdout.txt
 benchmarks/generated/**/prompt.txt
 benchmarks/generated/**/model_response.txt
 benchmarks/generated/**/summary.json
+benchmarks/generated/**/*.diff
