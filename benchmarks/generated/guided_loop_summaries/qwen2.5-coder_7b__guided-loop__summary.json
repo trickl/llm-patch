@@ -1,0 +1,506 @@
+{
+  "model": "qwen2.5-coder:7b",
+  "model_slug": "qwen2.5-coder_7b",
+  "temperature": 0.0,
+  "max_iterations": 1,
+  "refine_iterations": 3,
+  "cases": 162,
+  "elapsed_seconds": 9314.903255939484,
+  "by_language": {
+    "c": {
+      "passed": 24,
+      "total": 50
+    },
+    "java": {
+      "passed": 15,
+      "total": 50
+    },
+    "python": {
+      "passed": 1,
+      "total": 12
+    },
+    "typescript": {
+      "passed": 0,
+      "total": 50
+    }
+  },
+  "by_category": {
+    "1": {
+      "label": "Purely Syntactic / Localized Structural",
+      "passed": 8,
+      "total": 30
+    },
+    "2": {
+      "label": "Symbol Resolution / Name Lookup",
+      "passed": 10,
+      "total": 66
+    },
+    "3": {
+      "label": "Type / Signature Mismatch",
+      "passed": 22,
+      "total": 66
+    }
+  },
+  "by_language_category": {
+    "c": {
+      "1": {
+        "label": "Purely Syntactic / Localized Structural",
+        "passed": 5,
+        "total": 5
+      },
+      "2": {
+        "label": "Symbol Resolution / Name Lookup",
+        "passed": 7,
+        "total": 21
+      },
+      "3": {
+        "label": "Type / Signature Mismatch",
+        "passed": 12,
+        "total": 24
+      }
+    },
+    "java": {
+      "1": {
+        "label": "Purely Syntactic / Localized Structural",
+        "passed": 2,
+        "total": 3
+      },
+      "2": {
+        "label": "Symbol Resolution / Name Lookup",
+        "passed": 3,
+        "total": 19
+      },
+      "3": {
+        "label": "Type / Signature Mismatch",
+        "passed": 10,
+        "total": 28
+      }
+    },
+    "python": {
+      "1": {
+        "label": "Purely Syntactic / Localized Structural",
+        "passed": 1,
+        "total": 12
+      }
+    },
+    "typescript": {
+      "1": {
+        "label": "Purely Syntactic / Localized Structural",
+        "passed": 0,
+        "total": 10
+      },
+      "2": {
+        "label": "Symbol Resolution / Name Lookup",
+        "passed": 0,
+        "total": 26
+      },
+      "3": {
+        "label": "Type / Signature Mismatch",
+        "passed": 0,
+        "total": 14
+      }
+    }
+  },
+  "failures_sample": [
+    {
+      "case_id": "c-qwen2.5-coder:7b-05ab8174",
+      "language": "c",
+      "category": 2,
+      "problem_id": null,
+      "compile_returncode": null,
+      "patch_applied": false
+    },
+    {
+      "case_id": "c-qwen2.5-coder:7b-0a83752a",
+      "language": "c",
+      "category": 3,
+      "problem_id": null,
+      "compile_returncode": null,
+      "patch_applied": false
+    },
+    {
+      "case_id": "c-qwen2.5-coder:7b-15edafce",
+      "language": "c",
+      "category": 3,
+      "problem_id": null,
+      "compile_returncode": 1,
+      "patch_applied": true
+    },
+    {
+      "case_id": "c-qwen2.5-coder:7b-1af8f474",
+      "language": "c",
+      "category": 2,
+      "problem_id": null,
+      "compile_returncode": 1,
+      "patch_applied": true
+    },
+    {
+      "case_id": "c-qwen2.5-coder:7b-1ed2d357",
+      "language": "c",
+      "category": 2,
+      "problem_id": null,
+      "compile_returncode": 1,
+      "patch_applied": true
+    },
+    {
+      "case_id": "c-qwen2.5-coder:7b-2ba23c84",
+      "language": "c",
+      "category": 2,
+      "problem_id": null,
+      "compile_returncode": null,
+      "patch_applied": false
+    },
+    {
+      "case_id": "c-qwen2.5-coder:7b-2bab967b",
+      "language": "c",
+      "category": 3,
+      "problem_id": null,
+      "compile_returncode": 1,
+      "patch_applied": true
+    },
+    {
+      "case_id": "c-qwen2.5-coder:7b-412e9442",
+      "language": "c",
+      "category": 3,
+      "problem_id": null,
+      "compile_returncode": null,
+      "patch_applied": false
+    },
+    {
+      "case_id": "c-qwen2.5-coder:7b-4b733820",
+      "language": "c",
+      "category": 2,
+      "problem_id": null,
+      "compile_returncode": 1,
+      "patch_applied": true
+    },
+    {
+      "case_id": "c-qwen2.5-coder:7b-4d730b75",
+      "language": "c",
+      "category": 3,
+      "problem_id": null,
+      "compile_returncode": null,
+      "patch_applied": false
+    },
+    {
+      "case_id": "c-qwen2.5-coder:7b-4efd549f",
+      "language": "c",
+      "category": 2,
+      "problem_id": null,
+      "compile_returncode": 1,
+      "patch_applied": true
+    },
+    {
+      "case_id": "c-qwen2.5-coder:7b-60134777",
+      "language": "c",
+      "category": 3,
+      "problem_id": null,
+      "compile_returncode": 1,
+      "patch_applied": true
+    },
+    {
+      "case_id": "c-qwen2.5-coder:7b-6601eff8",
+      "language": "c",
+      "category": 3,
+      "problem_id": null,
+      "compile_returncode": 1,
+      "patch_applied": true
+    },
+    {
+      "case_id": "c-qwen2.5-coder:7b-794e8c27",
+      "language": "c",
+      "category": 2,
+      "problem_id": null,
+      "compile_returncode": 1,
+      "patch_applied": true
+    },
+    {
+      "case_id": "c-qwen2.5-coder:7b-7b451b53",
+      "language": "c",
+      "category": 3,
+      "problem_id": null,
+      "compile_returncode": 1,
+      "patch_applied": true
+    },
+    {
+      "case_id": "c-qwen2.5-coder:7b-7db95169",
+      "language": "c",
+      "category": 3,
+      "problem_id": null,
+      "compile_returncode": 1,
+      "patch_applied": true
+    },
+    {
+      "case_id": "c-qwen2.5-coder:7b-99bb5d93",
+      "language": "c",
+      "category": 2,
+      "problem_id": null,
+      "compile_returncode": 1,
+      "patch_applied": true
+    },
+    {
+      "case_id": "c-qwen2.5-coder:7b-a28d05ff",
+      "language": "c",
+      "category": 3,
+      "problem_id": null,
+      "compile_returncode": 1,
+      "patch_applied": true
+    },
+    {
+      "case_id": "c-qwen2.5-coder:7b-c3b28ff6",
+      "language": "c",
+      "category": 2,
+      "problem_id": null,
+      "compile_returncode": 1,
+      "patch_applied": true
+    },
+    {
+      "case_id": "c-qwen2.5-coder:7b-cb9c9bc8",
+      "language": "c",
+      "category": 3,
+      "problem_id": null,
+      "compile_returncode": 1,
+      "patch_applied": true
+    },
+    {
+      "case_id": "c-qwen2.5-coder:7b-d7be9770",
+      "language": "c",
+      "category": 3,
+      "problem_id": null,
+      "compile_returncode": 1,
+      "patch_applied": true
+    },
+    {
+      "case_id": "c-qwen2.5-coder:7b-e44327fc",
+      "language": "c",
+      "category": 2,
+      "problem_id": null,
+      "compile_returncode": 1,
+      "patch_applied": true
+    },
+    {
+      "case_id": "c-qwen2.5-coder:7b-f5dcb0f5",
+      "language": "c",
+      "category": 2,
+      "problem_id": null,
+      "compile_returncode": 1,
+      "patch_applied": true
+    },
+    {
+      "case_id": "c-qwen2.5-coder:7b-fa62352c",
+      "language": "c",
+      "category": 2,
+      "problem_id": null,
+      "compile_returncode": 1,
+      "patch_applied": true
+    },
+    {
+      "case_id": "c-qwen2.5-coder:7b-fb8dd405",
+      "language": "c",
+      "category": 2,
+      "problem_id": null,
+      "compile_returncode": null,
+      "patch_applied": false
+    },
+    {
+      "case_id": "c-qwen2.5-coder:7b-fddb83c8",
+      "language": "c",
+      "category": 2,
+      "problem_id": null,
+      "compile_returncode": 1,
+      "patch_applied": true
+    },
+    {
+      "case_id": "java-qwen2.5-coder:7b-02afc76a",
+      "language": "java",
+      "category": 3,
+      "problem_id": null,
+      "compile_returncode": 1,
+      "patch_applied": true
+    },
+    {
+      "case_id": "java-qwen2.5-coder:7b-16834dff",
+      "language": "java",
+      "category": 3,
+      "problem_id": null,
+      "compile_returncode": 1,
+      "patch_applied": true
+    },
+    {
+      "case_id": "java-qwen2.5-coder:7b-1d47abd2",
+      "language": "java",
+      "category": 3,
+      "problem_id": null,
+      "compile_returncode": 1,
+      "patch_applied": true
+    },
+    {
+      "case_id": "java-qwen2.5-coder:7b-2657608e",
+      "language": "java",
+      "category": 3,
+      "problem_id": null,
+      "compile_returncode": 1,
+      "patch_applied": true
+    },
+    {
+      "case_id": "java-qwen2.5-coder:7b-35d10ad4",
+      "language": "java",
+      "category": 2,
+      "problem_id": null,
+      "compile_returncode": 1,
+      "patch_applied": true
+    },
+    {
+      "case_id": "java-qwen2.5-coder:7b-41c5b6b2",
+      "language": "java",
+      "category": 3,
+      "problem_id": null,
+      "compile_returncode": 1,
+      "patch_applied": true
+    },
+    {
+      "case_id": "java-qwen2.5-coder:7b-52264466",
+      "language": "java",
+      "category": 2,
+      "problem_id": null,
+      "compile_returncode": null,
+      "patch_applied": false
+    },
+    {
+      "case_id": "java-qwen2.5-coder:7b-54da2b1c",
+      "language": "java",
+      "category": 3,
+      "problem_id": null,
+      "compile_returncode": 1,
+      "patch_applied": true
+    },
+    {
+      "case_id": "java-qwen2.5-coder:7b-601cb03c",
+      "language": "java",
+      "category": 3,
+      "problem_id": null,
+      "compile_returncode": 1,
+      "patch_applied": true
+    },
+    {
+      "case_id": "java-qwen2.5-coder:7b-69fff240",
+      "language": "java",
+      "category": 3,
+      "problem_id": null,
+      "compile_returncode": 1,
+      "patch_applied": true
+    },
+    {
+      "case_id": "java-qwen2.5-coder:7b-8b28f424",
+      "language": "java",
+      "category": 3,
+      "problem_id": null,
+      "compile_returncode": 1,
+      "patch_applied": true
+    },
+    {
+      "case_id": "java-qwen2.5-coder:7b-8e60f115",
+      "language": "java",
+      "category": 1,
+      "problem_id": null,
+      "compile_returncode": 1,
+      "patch_applied": true
+    },
+    {
+      "case_id": "java-qwen2.5-coder:7b-8f95d6fc",
+      "language": "java",
+      "category": 3,
+      "problem_id": null,
+      "compile_returncode": 1,
+      "patch_applied": true
+    },
+    {
+      "case_id": "java-qwen2.5-coder:7b-8fa6b358",
+      "language": "java",
+      "category": 3,
+      "problem_id": null,
+      "compile_returncode": 1,
+      "patch_applied": true
+    },
+    {
+      "case_id": "java-qwen2.5-coder:7b-8fcb7bb1",
+      "language": "java",
+      "category": 2,
+      "problem_id": null,
+      "compile_returncode": null,
+      "patch_applied": false
+    },
+    {
+      "case_id": "java-qwen2.5-coder:7b-903b188e",
+      "language": "java",
+      "category": 2,
+      "problem_id": null,
+      "compile_returncode": 1,
+      "patch_applied": true
+    },
+    {
+      "case_id": "java-qwen2.5-coder:7b-98468bc3",
+      "language": "java",
+      "category": 3,
+      "problem_id": null,
+      "compile_returncode": 1,
+      "patch_applied": true
+    },
+    {
+      "case_id": "java-qwen2.5-coder:7b-9b8eda27",
+      "language": "java",
+      "category": 3,
+      "problem_id": null,
+      "compile_returncode": 1,
+      "patch_applied": true
+    },
+    {
+      "case_id": "java-qwen2.5-coder:7b-9eeaed93",
+      "language": "java",
+      "category": 2,
+      "problem_id": null,
+      "compile_returncode": 1,
+      "patch_applied": true
+    },
+    {
+      "case_id": "java-qwen2.5-coder:7b-a0697c1e",
+      "language": "java",
+      "category": 3,
+      "problem_id": null,
+      "compile_returncode": 1,
+      "patch_applied": true
+    },
+    {
+      "case_id": "java-qwen2.5-coder:7b-a44dc493",
+      "language": "java",
+      "category": 2,
+      "problem_id": null,
+      "compile_returncode": 1,
+      "patch_applied": true
+    },
+    {
+      "case_id": "java-qwen2.5-coder:7b-a44f8efd",
+      "language": "java",
+      "category": 2,
+      "problem_id": null,
+      "compile_returncode": 1,
+      "patch_applied": true
+    },
+    {
+      "case_id": "java-qwen2.5-coder:7b-a4ba3138",
+      "language": "java",
+      "category": 2,
+      "problem_id": null,
+      "compile_returncode": 1,
+      "patch_applied": true
+    },
+    {
+      "case_id": "java-qwen2.5-coder:7b-a72d632a",
+      "language": "java",
+      "category": 2,
+      "problem_id": null,
+      "compile_returncode": 1,
+      "patch_applied": true
+    }
+  ]
+}

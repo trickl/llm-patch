@@ -166,9 +166,14 @@ REFINEMENT_CONTEXT_FRAGMENT = "Refinement guidance:\n{refinement_context}"
 
 GENERATE_PATCH_INSTRUCTIONS_FRAGMENT = dedent(
         """
-        Produce the patch as plain text using the template below for each edit. There must be exactly two labeled sections per edit—one
-        starting with 'ORIGINAL LINES:' and the next with 'CHANGED LINES:'. Do not add code fences, bullet lists, or commentary before,
-        between, or after those sections, and keep every block as small as possible so fuzzy matching stays accurate.
+    Produce the patch as plain text using the template below for each edit. There must be exactly two labeled sections per edit—one
+    starting with 'ORIGINAL LINES:' and the next with 'CHANGED LINES:'.
+
+    Output rules (strict):
+    * Return the patch text only (verbatim code lines). Do NOT include any Markdown fences anywhere (no ``` or ~~~ lines, no language tags).
+    * Do NOT add bullet lists, headings, explanations, or commentary before, between, or after the labeled sections.
+    * The example replacement block is only to show the formatting; do NOT reuse its content.
+    * Keep every block as small as possible so fuzzy matching stays accurate.
 
         ORIGINAL LINES:
         <verbatim snippet exactly as it appears now>

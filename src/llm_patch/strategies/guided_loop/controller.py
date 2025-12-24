@@ -41,14 +41,13 @@ PATCH_CONSTRAINTS_TEXT = "\n".join(
 
 PATCH_EXAMPLE_DIFF = (
     "ORIGINAL LINES:\n"
-    "return tokens.stream()\n"
-    "        .map(token -> token.equals(\"-\") && inPrefixContext(previous))\n"
-    "                ? \"0-\" : token);\n"
+    "for (int i = 0; i < 10; ++i) {\n"
+    "    items.insert(item);\n"
+    "}\n"
     "CHANGED LINES:\n"
-    "return tokens.stream()\n"
-    "        .map(token -> token.equals(\"-\") && inPrefixContext(previous)\n"
-    "                ? \"0-\" : token)\n"
-    "        .collect(Collectors.toList());\n"
+    "for (int i = 0; i < 10; ++i) {\n"
+    "    items.add(item);\n"
+    "}\n"
 )
 
 REPLACEMENT_BLOCK_PATTERN = re.compile(
@@ -583,7 +582,7 @@ class GuidedConvergenceStrategy(PatchStrategy):
             require_non_empty=False,
             machine_check_key=None,
         )
-        events, _ = phase_runner.run_phase(
+        events, response_text = phase_runner.run_phase(
             artifact=artifact,
             iteration=None,
             iteration_index=iteration_index,
@@ -598,6 +597,8 @@ class GuidedConvergenceStrategy(PatchStrategy):
             emit=self.emit,
             ensure_machine_checks=self._ensure_machine_checks_dict,
         )
+        if response_text:
+            artifact.response = patching.strip_code_fences(response_text)
         return events
 
     def _execute_critique(

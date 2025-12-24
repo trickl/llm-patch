@@ -33,6 +33,27 @@ REPLACEMENT_BLOCK_PATTERN = re.compile(
 )
 
 
+CODE_FENCE_LINE_RE = re.compile(r"^\s*(?:```|~~~)")
+
+
+def strip_code_fences(text: str) -> str:
+    """Remove Markdown fence lines from an LLM patch response.
+
+    Some models still wrap the patch template in ``` fences despite instructions.
+    The patch parser and applier can usually recover, but stripping fences early
+    keeps downstream telemetry/diff_text stable and easier to reason about.
+    """
+
+    if not text:
+        return text
+    kept: List[str] = []
+    for raw_line in text.splitlines():
+        if CODE_FENCE_LINE_RE.match(raw_line.strip()):
+            continue
+        kept.append(raw_line)
+    return "\n".join(kept).strip()
+
+
 def parse_replacement_blocks(diff_text: str) -> List[tuple[List[str], List[str]]]:
     blocks: List[tuple[List[str], List[str]]] = []
     text = diff_text.strip()

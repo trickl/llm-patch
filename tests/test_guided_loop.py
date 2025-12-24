@@ -332,6 +332,39 @@ def test_guided_loop_applies_and_compiles(sample_before_file: Path) -> None:
     assert isinstance(first_iteration.telemetry, dict)
 
 
+def test_generate_patch_strips_code_fences(sample_before_file: Path) -> None:
+    diff = replacement_block("print('hello')", "print('patched')")
+    fenced_diff = "```python\n" + diff + "```\n"
+    client = StubLLMClient([
+        diagnosis_payload("pass-1"),
+        planning_payload("pass-1-H1"),
+        gather_payload(),
+        proposal_payload("pass-1"),
+        fenced_diff,
+        "Critique looks good overall.",
+    ])
+    compile_command = [sys.executable, "-c", "import sys; sys.exit(0)"]
+    request = build_request(sample_before_file, compile_command)
+    strategy = GuidedConvergenceStrategy(
+        client=client,
+        config=GuidedLoopConfig(
+            interpreter_model="test",
+            patch_model="test",
+            max_iterations=1,
+            refine_sub_iterations=0,
+            main_loop_passes=1,
+        ),
+    )
+
+    result = strategy.run(request)
+
+    assert result.applied is True
+    assert result.success is True
+    assert result.diff_text is not None
+    assert result.diff_text.strip() == diff.strip()
+    assert "```" not in result.diff_text
+
+
 def test_gather_parses_json_code_fences_and_injects_context(sample_before_file: Path) -> None:
     diff = replacement_block("print('hello')", "print('patched')")
     client = StubLLMClient([
