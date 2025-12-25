@@ -1,0 +1,15 @@
+# Keep Docker builds fast and small
+.git
+.venv
+__pycache__
+*.pyc
+htmlcov
+.coverage
+.pytest_cache
+mypy_cache
+benchmarks/generated/**/results
+benchmarks/generated/**/after
+benchmarks/generated/**/compiler_*.txt
+benchmarks/generated/**/*.diff
+ui/reviewer-ui/node_modules
+ui/reviewer-ui/dist
