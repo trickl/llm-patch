@@ -263,6 +263,31 @@ export class DatasetLoader {
       readFile(record.paths.stdout, 'utf8').catch(() => ''),
     ])
 
+    let stderrBefore = typeof record.result.stderr_before === 'string' ? record.result.stderr_before : stderr
+    let stdoutBefore = typeof record.result.stdout_before === 'string' ? record.result.stdout_before : stdout
+
+    // Back-compat / outer-cycle support:
+    // Older guided-loop cycle snapshots did not persist per-cycle stderr/stdout "before". In those cases we can usually infer the "before"
+    // compilation output from the previous outer cycle's "after" compilation output.
+    if (
+      !(typeof record.result.stderr_before === 'string' || typeof record.result.stdout_before === 'string')
+    ) {
+      const cycle = parseGuidedLoopCycle(record.summary.algorithm)
+      if (cycle && cycle > 1) {
+        const prevAlgorithm = formatGuidedLoopCycleAlgorithm(cycle - 1)
+        const prevId = [record.summary.runId, record.summary.caseId, prevAlgorithm].filter(Boolean).join('::')
+        const previous = this.getRecord(prevId)
+        if (previous) {
+          if (typeof previous.result.stderr_after === 'string') {
+            stderrBefore = previous.result.stderr_after
+          }
+          if (typeof previous.result.stdout_after === 'string') {
+            stdoutBefore = previous.result.stdout_after
+          }
+        }
+      }
+    }
+
     let afterSource: 'dataset' | 'missing' = 'missing'
     let after = ''
     if (afterRaw !== null) {
@@ -283,8 +308,8 @@ export class DatasetLoader {
       },
       errors: {
         before: {
-          stderr,
-          stdout,
+          stderr: stderrBefore,
+          stdout: stdoutBefore,
         },
         after: {
           stderr: typeof record.result.stderr_after === 'string' ? record.result.stderr_after : '',
@@ -344,6 +369,21 @@ function coerceNumber(value: unknown): number | null {
 function getRunId(datasetRoot: string, baseDir: string): string {
   const relative = path.relative(datasetRoot, baseDir)
   return relative.split(path.sep)[0] ?? 'unknown-run'
+}
+
+const GUIDED_LOOP_CYCLE_RE = /^guided-loop-cycle-(?<cycle>\d{3})$/
+
+function parseGuidedLoopCycle(algorithm: string): number | null {
+  const match = GUIDED_LOOP_CYCLE_RE.exec(algorithm)
+  if (!match?.groups?.cycle) return null
+  const parsed = Number.parseInt(match.groups.cycle, 10)
+  return Number.isFinite(parsed) ? parsed : null
+}
+
+function formatGuidedLoopCycleAlgorithm(cycle: number): string {
+  const normalized = Math.max(0, Math.floor(cycle))
+  const padded = String(normalized).padStart(3, '0')
+  return `guided-loop-cycle-${padded}`
 }
 
 function runCommand(

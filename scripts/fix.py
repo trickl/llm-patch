@@ -13,6 +13,7 @@ STDERR: diagnostics / per-cycle runner output
 from __future__ import annotations
 
 import argparse
+import difflib
 import json
 import os
 import shlex
@@ -36,6 +37,22 @@ class CycleOutcome:
     compile_returncode: Optional[int]
     patch_applied: Optional[bool]
     first_error_removed: Optional[bool]
+    trace_saved_message: Optional[str]
+
+
+def _csv_event(event: str, **fields: object) -> str:
+    """Render a compact comma-delimited event line for STDERR.
+
+    Example:
+      COMPLETE_SUCCESS,compile_returncode=0,errors_before=9,errors_after=0,cycles=8
+    """
+
+    parts = [event]
+    for key, value in fields.items():
+        if value is None:
+            continue
+        parts.append(f"{key}={value}")
+    return ",".join(parts) + "\n"
 
 
 def sanitize_model_name(model: str) -> str:
@@ -293,6 +310,61 @@ def _read_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def _unified_diff_text(*, before: str, after: str, file_path: str) -> str:
+    """Return a git-style unified diff between before and after.
+
+    Notes:
+      - We keep output deterministic (no timestamps).
+      - We preserve line endings using splitlines(keepends=True).
+    """
+
+    before_lines = before.splitlines(keepends=True)
+    after_lines = after.splitlines(keepends=True)
+
+    diff_iter = difflib.unified_diff(
+        before_lines,
+        after_lines,
+        fromfile=f"a/{file_path}",
+        tofile=f"b/{file_path}",
+        n=3,
+        lineterm="",
+    )
+    diff_lines = list(diff_iter)
+    if not diff_lines:
+        return ""
+    return "\n".join(diff_lines) + "\n"
+
+
+def _file_path_for_unified_diff(*, case_dir: Path, resolved_file: Optional[Path]) -> str:
+    """Best-effort path label for unified diff headers.
+
+    - For single-file runs: prefer a path relative to /project when available.
+    - For benchmark runs: derive the compile target path from manifest compile_command.
+    """
+
+    if resolved_file is not None:
+        try:
+            project_root = Path("/project")
+            if project_root.exists() and resolved_file.is_relative_to(project_root):
+                return resolved_file.relative_to(project_root).as_posix()
+        except Exception:
+            # is_relative_to may raise in older path forms; fall back to name.
+            pass
+        return resolved_file.name
+
+    manifest_path = case_dir / "manifest.json"
+    if manifest_path.exists():
+        manifest = _read_json(manifest_path)
+        compile_command = manifest.get("compile_command") or []
+        before_path = find_before_file(case_dir)
+        targets = _compile_target_paths(before_path.name, list(compile_command) if isinstance(compile_command, list) else [])
+        if targets:
+            return targets[0].as_posix()
+
+    # Fallback to before.* filename.
+    return find_before_file(case_dir).name
+
+
 def _latest_guided_loop_result(case_dir: Path, model: str) -> Path:
     slug = sanitize_model_name(model)
     candidate = case_dir / "results" / f"{slug}__guided-loop.json"
@@ -399,10 +471,20 @@ def run_guided_loop_once(
 
     proc = subprocess.run(cmd, capture_output=True, text=True, check=False)
 
-    # Forward guided-loop runner output to STDERR for inspection.
+    # The guided-loop runner prints a repetitive "Guided loop trace saved to ..." line.
+    # For outer-cycle runs, that's noisy; we emit it only once at the end.
+    trace_saved_message: Optional[str] = None
+
     if proc.stdout:
-        sys.stderr.write(proc.stdout)
-        if not proc.stdout.endswith("\n"):
+        out_lines = proc.stdout.splitlines()
+        forwarded: list[str] = []
+        for line in out_lines:
+            if line.startswith("Guided loop trace saved to "):
+                trace_saved_message = line
+                continue
+            forwarded.append(line)
+        if forwarded:
+            sys.stderr.write("\n".join(forwarded))
             sys.stderr.write("\n")
     if proc.stderr:
         sys.stderr.write(proc.stderr)
@@ -433,6 +515,7 @@ def run_guided_loop_once(
         compile_returncode=payload.get("compile_returncode"),
         patch_applied=payload.get("patch_applied"),
         first_error_removed=payload.get("first_error_removed"),
+        trace_saved_message=trace_saved_message,
     )
 
 
@@ -518,6 +601,11 @@ def main(argv: list[str] | None = None) -> int:
         scratch_case_dir.parent.mkdir(parents=True, exist_ok=True)
         copy_benchmark_seed_dir(case_dir, scratch_case_dir)
 
+    # Capture the original inputs once; the scratch before.* is mutated each cycle.
+    original_before_path: Optional[Path] = None
+    original_source_text: Optional[str] = None
+    unified_diff_path_label: Optional[str] = None
+
     last_errors_after: Optional[int] = None
     final_outcome: Optional[CycleOutcome] = None
     diff_text: Optional[str] = None
@@ -526,8 +614,14 @@ def main(argv: list[str] | None = None) -> int:
     improved_once = False
     removed_once = False
     executed_cycles = 0
+    last_trace_saved_message: Optional[str] = None
 
     try:
+        # Capture the original source for final unified diff output.
+        original_before_path = find_before_file(scratch_case_dir)
+        original_source_text = original_before_path.read_text(encoding="utf-8")
+        unified_diff_path_label = _file_path_for_unified_diff(case_dir=scratch_case_dir, resolved_file=resolved_file)
+
         for cycle in range(1, args.outer_cycles + 1):
             executed_cycles = cycle
             final_outcome = run_guided_loop_once(
@@ -549,6 +643,26 @@ def main(argv: list[str] | None = None) -> int:
 
             if final_outcome.first_error_removed is True:
                 removed_once = True
+
+            if final_outcome.trace_saved_message:
+                last_trace_saved_message = final_outcome.trace_saved_message
+
+            # Per-cycle progress signal (stderr only; diff stays clean on stdout).
+            if final_outcome.errors_before is not None and final_outcome.errors_after is not None:
+                event = "ERROR_FIXED" if final_outcome.errors_after < final_outcome.errors_before else "CYCLE_RESULT"
+            else:
+                event = "CYCLE_RESULT"
+            sys.stderr.write(
+                _csv_event(
+                    event,
+                    cycle=cycle,
+                    compile_returncode=final_outcome.compile_returncode,
+                    errors_before=final_outcome.errors_before,
+                    errors_after=final_outcome.errors_after,
+                    patch_applied=final_outcome.patch_applied,
+                    first_error_removed=final_outcome.first_error_removed,
+                )
+            )
 
             # Persist a stable per-cycle history for the reviewer UI.
             snapshot_cycle_artifacts(outcome=final_outcome, model=args.model, cycle=cycle)
@@ -577,12 +691,24 @@ def main(argv: list[str] | None = None) -> int:
             sys.stderr.write("No guided-loop cycles were executed.\n")
             return 1
 
-        if not final_outcome.diff_path or not final_outcome.diff_path.exists():
-            sys.stderr.write("Final diff artifact not found.\n")
+        if original_source_text is None or unified_diff_path_label is None:
+            sys.stderr.write("Missing original source snapshot for unified diff output.\n")
             return 1
 
-        # Read diff before cleanup.
-        diff_text = final_outcome.diff_path.read_text(encoding="utf-8")
+        # Determine the final source text to diff against.
+        if final_outcome.after_path and final_outcome.after_path.exists():
+            final_source_text = final_outcome.after_path.read_text(encoding="utf-8")
+        else:
+            # If the last cycle failed to apply a patch, the scratch before.* still reflects
+            # the latest successfully applied state.
+            final_source_text = find_before_file(final_outcome.case_dir).read_text(encoding="utf-8")
+
+        # Generate unified diff before cleanup.
+        diff_text = _unified_diff_text(
+            before=original_source_text,
+            after=final_source_text,
+            file_path=unified_diff_path_label,
+        )
     finally:
         if args.keep_workdir:
             sys.stderr.write(f"Scratch dataset preserved at: {scratch_dataset_root}\n")
@@ -596,11 +722,13 @@ def main(argv: list[str] | None = None) -> int:
     # Summarize outcome on STDERR without affecting diff-only STDOUT.
     if final_outcome.compile_returncode == 0:
         sys.stderr.write(
-            "COMPLETE_SUCCESS: compile_returncode=0"
-            + (f" errors_before={baseline_errors}" if baseline_errors is not None else "")
-            + (f" errors_after={final_outcome.errors_after}" if final_outcome.errors_after is not None else "")
-            + f" cycles={executed_cycles}"
-            + "\\n"
+            _csv_event(
+                "COMPLETE_SUCCESS",
+                compile_returncode=0,
+                errors_before=baseline_errors,
+                errors_after=final_outcome.errors_after,
+                cycles=executed_cycles,
+            )
         )
     else:
         # If we saw any decrease in error count at any point, call it partial success.
@@ -609,14 +737,20 @@ def main(argv: list[str] | None = None) -> int:
             partial = True
         label = "PARTIAL_SUCCESS" if partial else "FAILURE"
         sys.stderr.write(
-            f"{label}:"
-            + (f" errors_before={baseline_errors}" if baseline_errors is not None else "")
-            + (f" best_errors_after={best_errors_after}" if best_errors_after is not None else "")
-            + (f" final_errors_after={final_outcome.errors_after}" if final_outcome.errors_after is not None else "")
-            + (f" compile_returncode={final_outcome.compile_returncode}" if final_outcome.compile_returncode is not None else "")
-            + f" cycles={executed_cycles}"
-            + "\\n"
+            _csv_event(
+                label,
+                errors_before=baseline_errors,
+                best_errors_after=best_errors_after,
+                final_errors_after=final_outcome.errors_after,
+                compile_returncode=final_outcome.compile_returncode,
+                cycles=executed_cycles,
+            )
         )
+
+    if last_trace_saved_message:
+        sys.stderr.write(last_trace_saved_message)
+        if not last_trace_saved_message.endswith("\n"):
+            sys.stderr.write("\n")
 
     # Output: unified diff only.
     sys.stdout.write(diff_text)

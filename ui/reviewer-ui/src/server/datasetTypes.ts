@@ -19,6 +19,8 @@ export interface ResultRecord {
   after_path?: string | null
   patch_applied: boolean
   patch_diagnostics?: string
+  stderr_before?: string
+  stdout_before?: string
   compile_returncode?: number
   errors_before?: number
   errors_after?: number

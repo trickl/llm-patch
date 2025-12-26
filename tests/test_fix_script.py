@@ -83,3 +83,31 @@ def test_copy_benchmark_seed_dir_excludes_prior_artifacts(tmp_path: Path) -> Non
     assert not (dest / "results").exists()
     assert not (dest / "diffs").exists()
     assert not (dest / "after").exists()
+
+
+def test_unified_diff_text_git_style_headers() -> None:
+    from scripts.fix import _unified_diff_text
+
+    before = "line1\nline2\n"
+    after = "line1\nline2 changed\n"
+    diff = _unified_diff_text(before=before, after=after, file_path="src/Foo.java")
+
+    assert diff.startswith("--- a/src/Foo.java\n+++ b/src/Foo.java\n")
+    assert "-line2\n" in diff
+    assert "+line2 changed\n" in diff
+
+
+def test_file_path_for_unified_diff_prefers_project_relative(tmp_path: Path) -> None:
+    from scripts.fix import _file_path_for_unified_diff
+
+    # If /project isn't present in the test environment, we at least ensure it falls back safely.
+    source = tmp_path / "MyFile.java"
+    source.write_text("class X {}\n", encoding="utf-8")
+
+    case_dir = tmp_path / "case"
+    case_dir.mkdir()
+    (case_dir / "before.java").write_text("class X {}\n", encoding="utf-8")
+    (case_dir / "manifest.json").write_text('{"compile_command":["javac","MyFile.java"]}', encoding="utf-8")
+
+    label = _file_path_for_unified_diff(case_dir=case_dir, resolved_file=source)
+    assert label in ("MyFile.java", "src/MyFile.java", "MyFile.java")

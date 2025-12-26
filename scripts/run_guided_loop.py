@@ -198,7 +198,22 @@ def write_result_payload(
     payload_path = results_dir / f"{slug}__guided-loop.json"
     trace_dict = result.trace.to_dict() if result.trace else None
     diff_stats = summarize_diff_text(result.diff_text)
-    errors_before = count_compiler_errors((case_dir / "compiler_stderr.txt").read_text(encoding="utf-8") if (case_dir / "compiler_stderr.txt").exists() else "")
+
+    compiler_stderr_before_path = case_dir / "compiler_stderr.txt"
+    compiler_stdout_before_path = case_dir / "compiler_stdout.txt"
+
+    stderr_before = (
+        compiler_stderr_before_path.read_text(encoding="utf-8")
+        if compiler_stderr_before_path.exists()
+        else ""
+    )
+    stdout_before = (
+        compiler_stdout_before_path.read_text(encoding="utf-8")
+        if compiler_stdout_before_path.exists()
+        else ""
+    )
+
+    errors_before = count_compiler_errors(stderr_before)
     errors_after = count_compiler_errors(result.compile_stderr)
     first_error_removed = bool(errors_before) and errors_after == 0 if errors_after is not None else False
     payload = {
@@ -220,6 +235,8 @@ def write_result_payload(
         "delete_only": diff_stats["delete_only"],
         "success": result.success,
         "notes": result.notes,
+        "stderr_before": stderr_before,
+        "stdout_before": stdout_before,
         "stderr_after": result.compile_stderr,
         "stdout_after": result.compile_stdout,
         "strategy_trace": trace_dict,
