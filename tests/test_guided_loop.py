@@ -173,6 +173,30 @@ HelloWorld.java:11: error: not a statement
     assert "In the following snippet" not in processed
 
 
+def test_compile_error_preprocessing_java_keeps_multiline_context_after_pointer() -> None:
+        raw_error = """ExpressionEvaluator.java:81: error: bad operand types for binary operator '=='
+if (token.type != null && (token.type == '+' || token.type == '-')) {
+                                                                            ^
+    first type:  Object
+    second type: char
+ExpressionEvaluator.java:81: error: bad operand types for binary operator '=='
+if (token.type != null && (token.type == '+' || token.type == '-')) {
+                                                                                                                     ^
+    first type:  Object
+    second type: char
+"""
+        strategy = GuidedConvergenceStrategy(client=None, config=GuidedLoopConfig())
+
+        processed = strategy._prepare_compile_error_text(raw_error, "java")
+
+        # We still only keep the FIRST error, but we must retain its multi-line details.
+        assert "ExpressionEvaluator.java:81: error" in processed
+        assert "first type:" in processed
+        assert "second type:" in processed
+        # Second error should be trimmed.
+        assert processed.count("ExpressionEvaluator.java:81: error") == 1
+
+
 def test_compile_error_preprocessing_c_trims_warnings_and_adds_pointer_summary() -> None:
     raw_error = """In file included from expression_evaluator.c:1:
 expression_evaluator.c:8:63: error: expected identifier before '(' token

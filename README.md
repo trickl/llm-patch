@@ -51,6 +51,110 @@ llm-patch is a **staged repair workflow** plus a **robust patch applier**. Given
 
 > ℹ️ Today llm-patch ships as a Python library. A CLI wrapper is on the roadmap—contributions welcome!
 
+### Docker sandbox (fix + inspect UI)
+
+This repo also includes a **Docker execution envelope** that can run the existing guided-loop workflow safely (read-only `/project`, writable `/workspace`) and optionally expose the **reviewer UI** to inspect results.
+
+#### Recommended: pull the official image
+
+Most users should **pull** the prebuilt image rather than building locally:
+
+```bash
+docker pull docker.io/trickl/llm-patch:latest
+```
+
+You can also pin to a specific version tag (recommended for reproducibility):
+
+```bash
+docker pull docker.io/trickl/llm-patch:0.1.0
+```
+
+#### Build the image
+
+```bash
+docker build -t llm-patch:local .
+```
+
+#### Run `fix` and preserve artifacts
+
+Run against a single file and keep the scratch dataset so it can be inspected later:
+
+```bash
+docker run --rm \
+  --network host \
+  --user "$(id -u):$(id -g)" \
+  -v "$(pwd)":/project:ro \
+  -v /tmp/llm-patch:/workspace \
+  -e OLLAMA_HOST="http://127.0.0.1:11434" \
+  docker.io/trickl/llm-patch:latest \
+  fix MyFile.java \
+    --model qwen2.5-coder:7b \
+    --keep-workdir
+```
+
+Notes:
+
+- `--keep-workdir` is required for inspection.
+- STDOUT remains “diff-only”; diagnostics go to STDERR.
+- The wrapper snapshots each outer cycle as its own record (e.g. `guided-loop-cycle-001`, `guided-loop-cycle-002`, …) so you can review every cycle in the UI.
+- The input can be either:
+  - a single source file path (or just a filename under `/project` in Docker), or
+  - a benchmark run directory (advanced / benchmarking only) via `--dataset-root`.
+- `--outer-cycles` is optional: it’s a safety cap on how many “first-error” fix attempts to try. The run still stops early if it stops making progress.
+
+#### Production-style single file usage
+
+For “real” use, you typically want to point at **your file**, not the benchmark dataset.
+
+In Docker, if your repo is mounted at `/project:ro`, you can pass just the filename:
+
+```bash
+docker run --rm \
+  --network host \
+  --user "$(id -u):$(id -g)" \
+  -v "$(pwd)":/project:ro \
+  -v /tmp/llm-patch:/workspace \
+  -e OLLAMA_HOST="http://127.0.0.1:11434" \
+  docker.io/trickl/llm-patch:latest \
+  fix MyFile.java --keep-workdir
+```
+
+The wrapper will generate a temporary run directory under `/workspace` automatically.
+
+If the tool cannot infer the compile command for your file type, provide one explicitly:
+
+```bash
+docker.io/trickl/llm-patch:latest fix MyFile.java \
+  --compile "javac MyFile.java" \
+  --keep-workdir
+```
+
+#### Run `inspect` (starts the UI web service)
+
+Using the **same** `/workspace` mount as above:
+
+```bash
+docker run --rm \
+  -p 4173:4173 \
+  --user "$(id -u):$(id -g)" \
+  -v "$(pwd)":/project:ro \
+  -v /tmp/llm-patch:/workspace \
+  docker.io/trickl/llm-patch:latest \
+  inspect
+```
+
+Open:
+
+- `http://127.0.0.1:4173`
+
+If you want to inspect a specific preserved dataset root, you can override auto-discovery:
+
+```bash
+docker.io/trickl/llm-patch:latest inspect --dataset-root /workspace/llm-patch/fix-*/dataset
+```
+
+Tip: if you built locally, you can replace `docker.io/trickl/llm-patch:latest` with `llm-patch:local`.
+
 ### Minimal Python example
 
 ```python
@@ -162,7 +266,7 @@ The staged repair loop (internally: `guided-loop`) breaks patching into small, t
 3. **Generate patch.** Only after the intent is clear do we request code edits. The prompt includes numbered context, caret-token annotations, and precise error-position metadata so the model never has to infer line numbers.
 4. **Apply with intent matching.** Instead of trusting raw diffs, llm-patch compares “before” and “after” snippets, uses fuzzy/Aider-style alignment to locate the intended region, and applies the change—even when whitespace or surrounding code drifted.
 5. **Compile/test & critique.** The system rebuilds with the original command, checks whether the targeted error vanished, and records a critique entry. Failed hypotheses are retired; the loop either tries the next hypothesis or restarts Diagnose with the new evidence.
-6. **Benchmark + telemetry.** Every run logs strategy traces, success/failure reasons, and per-case metrics, feeding the included harness so improvements are measurable across languages and models.
+6. **Benchmark + telemetry.** Every run logs strategy traces, success/failure reasons, and per-sample metrics, feeding the included harness so improvements are measurable across languages and models.
 
 ---
 
@@ -183,7 +287,7 @@ llm-patch focuses on being a *standalone*, language-agnostic library dedicated s
 
 - ⚠️ **Git apply** succeeds on only **0.3 %** of the real-world diffs in our corpus.
 - 📏 **diff-match-patch** lifts that to **4.9 %**.
-- 🚀 **llm-patch's Aider-style strategy** currently lands **10.2 %** end-to-end successes and applies 86 % of diffs—*verified* by recompiling every case.
+- 🚀 **llm-patch's Aider-style strategy** currently lands **10.2 %** end-to-end successes and applies 86 % of diffs—*verified* by recompiling every benchmark program.
 
 The full heatmap (per language × problem suite) is included below and regenerated via `scripts/run_patch_eval.py --markdown-report docs/patch_eval_results.md`.
 
@@ -294,7 +398,7 @@ We follow the [Contributor Covenant](CODE_OF_CONDUCT.md).
 - Problem catalog: start with the Expression Evaluator spec in `docs/test_cases.md`.
 - Toolchains: install compilers/interpreters as listed in `docs/toolchains.md` (Java, C, Python, TypeScript, plus Ollama models `qwen2.5-coder:7b`, `llama3.2:3b`, and `phi3:mini`).
 - Failure harvesting: run `python -m scripts.generate_failures --target-per-language 100` to collect non-compiling samples (`benchmarks/generated/<run_id>/...`).
-- First-error diffs: run `python -m scripts.generate_patches --models qwen2.5-coder:7b,llama3.2:3b,phi3:mini` to get minimal diffs per case.
+- First-error diffs: run `python -m scripts.generate_patches --models qwen2.5-coder:7b,llama3.2:3b,phi3:mini` to get minimal diffs per benchmark program.
 - Patch evaluation: run `python -m scripts.run_patch_eval --algorithms git,diff-match-patch,aider --markdown-report docs/patch_eval_results.md --log-level WARNING` to apply every diff using git apply, diff-match-patch, and the Aider-style matcher.
 
 These artifacts keep the benchmark reproducible so improvements can be measured quantitatively.

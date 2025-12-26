@@ -62,7 +62,7 @@ PY
 
 cmd="${1:-}"
 if [[ -z "$cmd" ]]; then
-  fail "missing subcommand (expected: fix)"
+  fail "missing subcommand (expected: fix | inspect)"
 fi
 
 case "$cmd" in
@@ -108,7 +108,64 @@ case "$cmd" in
     exec python /app/scripts/fix.py "${orig_args[@]}"
     ;;
 
+  inspect)
+    shift
+
+    # Required mounts.
+    require_dir /workspace "/workspace"
+    assert_writable_dir /workspace
+
+    dataset_root=""
+    port="4173"
+    orig_args=("$@")
+    for ((i=0; i<${#orig_args[@]}; i++)); do
+      arg="${orig_args[$i]}"
+      if [[ "$arg" == "--dataset-root" ]]; then
+        if (( i + 1 < ${#orig_args[@]} )); then
+          dataset_root="${orig_args[$((i+1))]}"
+        fi
+      elif [[ "$arg" == --dataset-root=* ]]; then
+        dataset_root="${arg#*=}"
+      elif [[ "$arg" == "--port" ]]; then
+        if (( i + 1 < ${#orig_args[@]} )); then
+          port="${orig_args[$((i+1))]}"
+        fi
+      elif [[ "$arg" == --port=* ]]; then
+        port="${arg#*=}"
+      fi
+    done
+
+    if [[ -z "$dataset_root" ]]; then
+      # Prefer explicit pointer written by the fix wrapper.
+      if [[ -f /workspace/llm-patch/last_dataset_root.txt ]]; then
+        dataset_root="$(cat /workspace/llm-patch/last_dataset_root.txt 2>/dev/null || true)"
+      fi
+    fi
+
+    if [[ -z "$dataset_root" ]]; then
+      # Fall back to the newest preserved scratch dataset.
+      dataset_root="$(ls -td /workspace/llm-patch/fix-*/dataset 2>/dev/null | head -n 1 || true)"
+    fi
+
+    if [[ -z "$dataset_root" ]]; then
+      fail "could not find a recent run to inspect. Run 'fix ... --keep-workdir' first, or pass --dataset-root"
+    fi
+
+    resolved_dataset_root="$(resolve_path "$dataset_root")"
+    if [[ -z "$resolved_dataset_root" || ! -d "$resolved_dataset_root" ]]; then
+      fail "dataset root does not exist: $dataset_root"
+    fi
+
+    export REVIEWER_DATASET_ROOT="$resolved_dataset_root"
+    export PORT="$port"
+
+    # Run the reviewer UI server.
+    # Note: this subcommand is interactive; it may log to STDOUT.
+    cd /app/ui/reviewer-ui
+    exec ./node_modules/.bin/tsx server/index.ts
+    ;;
+
   *)
-    fail "unknown subcommand: $cmd (expected: fix)"
+    fail "unknown subcommand: $cmd (expected: fix | inspect)"
     ;;
 esac

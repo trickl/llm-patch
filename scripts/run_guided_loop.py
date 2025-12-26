@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from pathlib import Path
 from typing import Optional, Sequence
 from llm_patch.clients import OllamaLLMClient
@@ -197,8 +198,8 @@ def write_result_payload(
     payload_path = results_dir / f"{slug}__guided-loop.json"
     trace_dict = result.trace.to_dict() if result.trace else None
     diff_stats = summarize_diff_text(result.diff_text)
-    errors_before = count_non_empty_lines(case_dir / "compiler_stderr.txt")
-    errors_after = count_non_empty_text_lines(result.compile_stderr)
+    errors_before = count_compiler_errors((case_dir / "compiler_stderr.txt").read_text(encoding="utf-8") if (case_dir / "compiler_stderr.txt").exists() else "")
+    errors_after = count_compiler_errors(result.compile_stderr)
     first_error_removed = bool(errors_before) and errors_after == 0 if errors_after is not None else False
     payload = {
         "case_id": manifest["case_id"],
@@ -227,15 +228,41 @@ def write_result_payload(
     return payload_path
 
 
-def count_non_empty_lines(path: Path) -> int:
-    if not path.exists():
-        return 0
-    return sum(1 for line in path.read_text(encoding="utf-8").splitlines() if line.strip())
+_JAVAC_SUMMARY_RE = re.compile(r"(?m)^\s*(?P<count>\d+)\s+errors?\s*$")
+_FILELINE_ERROR_RE = re.compile(r"(?m)^.+?:\d+?:\s+error:\s+")
 
 
-def count_non_empty_text_lines(text: str | None) -> int | None:
+def count_compiler_errors(text: str | None) -> int | None:
+    """Best-effort count of compiler errors.
+
+    Historically we counted non-empty stderr lines, which inflates counts for compilers
+    that emit multi-line diagnostics per error (e.g. javac).
+
+    This function prefers:
+      1) javac-style summary line: "N errors" / "1 error"
+      2) file:line: error: ... style lines
+
+    Falls back to counting non-empty lines if we cannot infer an error count.
+    """
+
     if text is None:
         return None
+
+    if not text.strip():
+        return 0
+
+    summary = _JAVAC_SUMMARY_RE.search(text)
+    if summary:
+        try:
+            return int(summary.group("count"))
+        except ValueError:
+            pass
+
+    matches = list(_FILELINE_ERROR_RE.finditer(text))
+    if matches:
+        return len(matches)
+
+    # Conservative fallback: count non-empty lines.
     return sum(1 for line in text.splitlines() if line.strip())
 
 

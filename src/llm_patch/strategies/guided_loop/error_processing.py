@@ -63,9 +63,6 @@ def extract_first_error_block(error_text: str) -> str:
 
 
 def error_block_end_index(lines: Sequence[str], start_idx: int) -> int:
-    pointer_relative_idx = find_pointer_line(lines[start_idx:])
-    if pointer_relative_idx is not None:
-        return start_idx + pointer_relative_idx + 1
     for idx in range(start_idx + 1, len(lines)):
         line = lines[idx]
         if ERROR_LINE_PATTERN.search(line) or is_warning_or_note_line(line):
