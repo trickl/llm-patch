@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import time
 from pathlib import Path
 from typing import Optional, Sequence
 from llm_patch.clients import OllamaLLMClient
@@ -66,6 +67,7 @@ def main() -> None:
         compile_command=manifest.get("compile_command"),
     )
     client = OllamaLLMClient(model=args.model, temperature=args.temperature)
+    client.reset_usage()
     strategy = GuidedConvergenceStrategy(
         client=client,
         config=GuidedLoopConfig(
@@ -76,7 +78,10 @@ def main() -> None:
             temperature=args.temperature,
         ),
     )
+
+    cycle_start = time.perf_counter()
     result = strategy.run(request)
+    cycle_seconds = time.perf_counter() - cycle_start
     if not result.trace:
         raise RuntimeError("Guided loop did not return a trace")
 
@@ -84,7 +89,16 @@ def main() -> None:
     after_path = None
     if result.after_text:
         after_path = write_after_artifact(case_dir, source_path.name, args.model, result.after_text)
-    result_path = write_result_payload(case_dir, diff_path, after_path, args.model, manifest, result)
+    result_path = write_result_payload(
+        case_dir,
+        diff_path,
+        after_path,
+        args.model,
+        manifest,
+        result,
+        llm_usage=client.usage_snapshot(),
+        cycle_seconds=cycle_seconds,
+    )
     print(f"Guided loop trace saved to {result_path}")
 
 
@@ -151,6 +165,33 @@ def extract_first_error(case_dir: Path) -> str:
     return ""
 
 
+def extract_first_error_from_streams(stderr_text: str | None, stdout_text: str | None) -> str:
+    """Extract the first non-empty diagnostic block from stderr/stdout.
+
+    This mirrors the on-disk `extract_first_error()` behavior but operates on
+    in-memory strings.
+    """
+
+    def _first_block(text: str | None) -> str:
+        if not text:
+            return ""
+        lines = [line.rstrip("\n") for line in text.splitlines()]
+        chunk: list[str] = []
+        for line in lines:
+            stripped = line.strip()
+            if not chunk:
+                if not stripped:
+                    continue
+                chunk.append(line)
+            else:
+                if not stripped:
+                    break
+                chunk.append(line)
+        return "\n".join(chunk).strip()
+
+    return _first_block(stderr_text) or _first_block(stdout_text)
+
+
 def sanitize_model_name(model: str) -> str:
     return model.replace(":", "_").replace("/", "_")
 
@@ -191,6 +232,9 @@ def write_result_payload(
     model: str,
     manifest: dict,
     result,
+    *,
+    llm_usage: dict[str, object] | None = None,
+    cycle_seconds: float | None = None,
 ) -> Path:
     slug = sanitize_model_name(model)
     results_dir = case_dir / "results"
@@ -215,7 +259,14 @@ def write_result_payload(
 
     errors_before = count_compiler_errors(stderr_before)
     errors_after = count_compiler_errors(result.compile_stderr)
-    first_error_removed = bool(errors_before) and errors_after == 0 if errors_after is not None else False
+
+    # NOTE:
+    # The name is historical: this is not "all errors removed"; it's intended as
+    # a progress signal for outer-loop runs when the *count* may not decrease.
+    # We treat it as "the first diagnostic block changed".
+    before_first_error = extract_first_error_from_streams(stderr_before, stdout_before)
+    after_first_error = extract_first_error_from_streams(result.compile_stderr, result.compile_stdout)
+    first_error_removed = bool(before_first_error) and after_first_error != before_first_error
     payload = {
         "case_id": manifest["case_id"],
         "language": manifest["language"],
@@ -239,6 +290,8 @@ def write_result_payload(
         "stdout_before": stdout_before,
         "stderr_after": result.compile_stderr,
         "stdout_after": result.compile_stdout,
+        "llm_usage": llm_usage,
+        "cycle_seconds": round(float(cycle_seconds), 6) if cycle_seconds is not None else None,
         "strategy_trace": trace_dict,
     }
     payload_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")

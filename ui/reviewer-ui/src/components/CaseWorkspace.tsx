@@ -310,6 +310,14 @@ export function CaseWorkspace({ detail, annotation }: CaseWorkspaceProps) {
     void rerunCase(detail.summary.caseId)
   }, [rerunCase, detail.summary.caseId])
 
+  const resultMeta = detail.metadata?.result as Record<string, unknown> | undefined
+  const llmUsage = (resultMeta?.llm_usage as Record<string, unknown> | undefined) ?? undefined
+  const llmPromptTokens = typeof llmUsage?.prompt_tokens === 'number' ? llmUsage.prompt_tokens : null
+  const llmCompletionTokens = typeof llmUsage?.completion_tokens === 'number' ? llmUsage.completion_tokens : null
+  const llmRequests = typeof llmUsage?.requests === 'number' ? llmUsage.requests : null
+  const cycleSeconds = typeof resultMeta?.cycle_seconds === 'number' ? resultMeta.cycle_seconds : null
+  const hasLLMUsage = llmPromptTokens !== null || llmCompletionTokens !== null || llmRequests !== null
+
   return (
     <section className="workspace" aria-live="polite">
       <header className="workspace__header">
@@ -324,6 +332,14 @@ export function CaseWorkspace({ detail, annotation }: CaseWorkspaceProps) {
             <span className="workspace__language">{detail.summary.language}</span>
             <span>{detail.summary.modelSlug}</span>
             <span>{detail.summary.algorithm}</span>
+            {hasLLMUsage && (
+              <span>
+                LLM {llmRequests !== null ? `${llmRequests} req` : 'reqs'} · in{' '}
+                {llmPromptTokens !== null ? llmPromptTokens : 'n/a'} · out{' '}
+                {llmCompletionTokens !== null ? llmCompletionTokens : 'n/a'}
+              </span>
+            )}
+            {cycleSeconds !== null && <span>Cycle {cycleSeconds.toFixed(1)}s</span>}
           </div>
           <div className="workspace__actions">
             <button

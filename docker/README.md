@@ -146,8 +146,27 @@ docker.io/trickl/llm-patch:latest fix MyFile.java \
 
 ### Output behavior
 
-- **STDOUT**: final unified diff (from the last guided-loop cycle).
-- **STDERR**: wrapper validation errors + per-cycle runner output.
+- **STDOUT**: final unified diff (**original input → final patched file**, across all outer cycles).
+- **STDERR**: wrapper validation errors + per-cycle progress events.
+
+If you want to **see progress live** while also capturing the final diff and a log file:
+
+```bash
+WORKDIR=/tmp/llm-patch
+
+docker run --rm \
+  --network host \
+  --user "$(id -u):$(id -g)" \
+  -v "$(pwd)":/project:ro \
+  -v "$WORKDIR":/workspace \
+  -e OLLAMA_HOST="http://127.0.0.1:11434" \
+  docker.io/trickl/llm-patch:latest \
+  fix MyFile.java --keep-workdir \
+  1> "$WORKDIR/final.diff" \
+  2> >(tee "$WORKDIR/run.log" >&2)
+```
+
+(This uses Bash process substitution. If your shell doesn’t support it, you can redirect `2> "$WORKDIR/run.log"` and tail it in another terminal.)
 
 ## Run (inspect mode / reviewer UI)
 

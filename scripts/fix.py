@@ -21,6 +21,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
@@ -38,6 +39,10 @@ class CycleOutcome:
     patch_applied: Optional[bool]
     first_error_removed: Optional[bool]
     trace_saved_message: Optional[str]
+    cycle_seconds: Optional[float]
+    llm_prompt_tokens: Optional[int]
+    llm_completion_tokens: Optional[int]
+    llm_requests: Optional[int]
 
 
 def _csv_event(event: str, **fields: object) -> str:
@@ -315,11 +320,14 @@ def _unified_diff_text(*, before: str, after: str, file_path: str) -> str:
 
     Notes:
       - We keep output deterministic (no timestamps).
-      - We preserve line endings using splitlines(keepends=True).
+      - We intentionally do NOT preserve line endings when feeding difflib.
+        (If we pass lines with trailing newlines and then join with "\n", we end up
+        with double-newlines and a diff that looks like it has blank lines between
+        every line.)
     """
 
-    before_lines = before.splitlines(keepends=True)
-    after_lines = after.splitlines(keepends=True)
+    before_lines = before.splitlines()
+    after_lines = after.splitlines()
 
     diff_iter = difflib.unified_diff(
         before_lines,
@@ -516,6 +524,10 @@ def run_guided_loop_once(
         patch_applied=payload.get("patch_applied"),
         first_error_removed=payload.get("first_error_removed"),
         trace_saved_message=trace_saved_message,
+        cycle_seconds=payload.get("cycle_seconds"),
+        llm_prompt_tokens=(payload.get("llm_usage") or {}).get("prompt_tokens") if isinstance(payload.get("llm_usage"), dict) else None,
+        llm_completion_tokens=(payload.get("llm_usage") or {}).get("completion_tokens") if isinstance(payload.get("llm_usage"), dict) else None,
+        llm_requests=(payload.get("llm_usage") or {}).get("requests") if isinstance(payload.get("llm_usage"), dict) else None,
     )
 
 
@@ -615,6 +627,11 @@ def main(argv: list[str] | None = None) -> int:
     removed_once = False
     executed_cycles = 0
     last_trace_saved_message: Optional[str] = None
+    total_prompt_tokens = 0
+    total_completion_tokens = 0
+    total_llm_requests = 0
+    total_cycle_seconds = 0.0
+    run_start = time.perf_counter()
 
     try:
         # Capture the original source for final unified diff output.
@@ -647,11 +664,20 @@ def main(argv: list[str] | None = None) -> int:
             if final_outcome.trace_saved_message:
                 last_trace_saved_message = final_outcome.trace_saved_message
 
+            if isinstance(final_outcome.llm_prompt_tokens, int):
+                total_prompt_tokens += final_outcome.llm_prompt_tokens
+            if isinstance(final_outcome.llm_completion_tokens, int):
+                total_completion_tokens += final_outcome.llm_completion_tokens
+            if isinstance(final_outcome.llm_requests, int):
+                total_llm_requests += final_outcome.llm_requests
+            if isinstance(final_outcome.cycle_seconds, (int, float)):
+                total_cycle_seconds += float(final_outcome.cycle_seconds)
+
             # Per-cycle progress signal (stderr only; diff stays clean on stdout).
             if final_outcome.errors_before is not None and final_outcome.errors_after is not None:
-                event = "ERROR_FIXED" if final_outcome.errors_after < final_outcome.errors_before else "CYCLE_RESULT"
+                event = "ERROR_FIXED" if final_outcome.errors_after < final_outcome.errors_before else "CYCLE_FAILURE"
             else:
-                event = "CYCLE_RESULT"
+                event = "CYCLE_FAILURE"
             sys.stderr.write(
                 _csv_event(
                     event,
@@ -659,8 +685,10 @@ def main(argv: list[str] | None = None) -> int:
                     compile_returncode=final_outcome.compile_returncode,
                     errors_before=final_outcome.errors_before,
                     errors_after=final_outcome.errors_after,
-                    patch_applied=final_outcome.patch_applied,
-                    first_error_removed=final_outcome.first_error_removed,
+                    cycle_seconds=(round(float(final_outcome.cycle_seconds), 3) if isinstance(final_outcome.cycle_seconds, (int, float)) else None),
+                    llm_prompt_tokens=final_outcome.llm_prompt_tokens,
+                    llm_completion_tokens=final_outcome.llm_completion_tokens,
+                    llm_requests=final_outcome.llm_requests,
                 )
             )
 
@@ -710,6 +738,7 @@ def main(argv: list[str] | None = None) -> int:
             file_path=unified_diff_path_label,
         )
     finally:
+        run_seconds = time.perf_counter() - run_start
         if args.keep_workdir:
             sys.stderr.write(f"Scratch dataset preserved at: {scratch_dataset_root}\n")
             write_last_dataset_pointer(workdir=args.workdir, dataset_root=scratch_dataset_root)
@@ -728,6 +757,11 @@ def main(argv: list[str] | None = None) -> int:
                 errors_before=baseline_errors,
                 errors_after=final_outcome.errors_after,
                 cycles=executed_cycles,
+                run_seconds=round(float(run_seconds), 3),
+                cycle_seconds=round(float(total_cycle_seconds), 3),
+                llm_prompt_tokens=total_prompt_tokens,
+                llm_completion_tokens=total_completion_tokens,
+                llm_requests=total_llm_requests,
             )
         )
     else:
@@ -744,6 +778,11 @@ def main(argv: list[str] | None = None) -> int:
                 final_errors_after=final_outcome.errors_after,
                 compile_returncode=final_outcome.compile_returncode,
                 cycles=executed_cycles,
+                run_seconds=round(float(run_seconds), 3),
+                cycle_seconds=round(float(total_cycle_seconds), 3),
+                llm_prompt_tokens=total_prompt_tokens,
+                llm_completion_tokens=total_completion_tokens,
+                llm_requests=total_llm_requests,
             )
         )
 

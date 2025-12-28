@@ -80,11 +80,13 @@ docker build -t llm-patch:local .
 Run against a single file and keep the scratch dataset so it can be inspected later:
 
 ```bash
+WORKDIR=/tmp/llm-patch
+
 docker run --rm \
   --network host \
   --user "$(id -u):$(id -g)" \
   -v "$(pwd)":/project:ro \
-  -v /tmp/llm-patch:/workspace \
+  -v "$WORKDIR":/workspace \
   -e OLLAMA_HOST="http://127.0.0.1:11434" \
   docker.io/trickl/llm-patch:latest \
   fix MyFile.java \
@@ -95,7 +97,25 @@ docker run --rm \
 Notes:
 
 - `--keep-workdir` is required for inspection.
-- STDOUT remains “diff-only”; diagnostics go to STDERR.
+- By default, STDOUT is **diff-only**; progress/diagnostics go to STDERR.
+- If you want to **see progress live** *and* save both the diff and the log, use `tee`:
+
+  ```bash
+  WORKDIR=/tmp/llm-patch
+
+  docker run --rm \
+    --network host \
+    --user "$(id -u):$(id -g)" \
+    -v "$(pwd)":/project:ro \
+    -v "$WORKDIR":/workspace \
+    -e OLLAMA_HOST="http://127.0.0.1:11434" \
+    docker.io/trickl/llm-patch:latest \
+    fix MyFile.java --keep-workdir \
+    1> "$WORKDIR/final.diff" \
+    2> >(tee "$WORKDIR/run.log" >&2)
+  ```
+
+  (This uses Bash process substitution; if your shell doesn’t support it, you can still redirect `2> "$WORKDIR/run.log"` and tail it in another terminal.)
 - The wrapper snapshots each outer cycle as its own record (e.g. `guided-loop-cycle-001`, `guided-loop-cycle-002`, …) so you can review every cycle in the UI.
 - The input can be either:
   - a single source file path (or just a filename under `/project` in Docker), or

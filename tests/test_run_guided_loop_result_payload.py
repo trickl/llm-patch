@@ -59,3 +59,7 @@ def test_write_result_payload_includes_before_stdout_stderr(tmp_path: Path) -> N
     # Ensure the numeric counts still reflect the compiler stderr before/after.
     assert payload["errors_before"] == 1
     assert payload["errors_after"] == 1
+
+    # Optional telemetry fields should exist for forward compatibility.
+    assert "llm_usage" in payload
+    assert "cycle_seconds" in payload

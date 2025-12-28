@@ -33,6 +33,15 @@ export interface ResultRecord {
   notes?: string
   stderr_after?: string
   stdout_after?: string
+  llm_usage?: {
+    requests?: number
+    prompt_tokens?: number
+    completion_tokens?: number
+    total_tokens?: number
+    total_duration_s?: number
+    wall_time_s?: number
+  } | null
+  cycle_seconds?: number | null
   strategy_trace?: StrategyTrace | null
   [key: string]: unknown
 }
